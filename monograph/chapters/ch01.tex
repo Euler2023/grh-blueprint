@@ -1,0 +1,2025 @@
+\chapter{核心定理与GRH的证明}
+\label{chap:reduction}
+
+\begin{chapterguide}
+整体证明先对给定的容许数据控制总余项 $S$，再针对任意充分大的主尺度构造适配的容许数据，由此导出素数余项的单侧上界，并最终归约至 $L$ 函数的无零点结论. 本章完整建立上述解析归约链条；其中引用的定理 A、B、C 将分别在\chapref{chap:upperbound}、\chapref{chap:spanning}和\chapref{chap:determinant}中证明.
+\end{chapterguide}
+
+\section{固定参数与容许数据}
+\label{sec:admissible-data}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{58}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L97}{作者库中的虚二次域}.}
+\begin{definition}[固定参数]
+\label{def:parameters}
+\emitthmsource
+固定参数 $P=(q_0,d)$ 由正整数 $q_0$ 与素数 $d$ 组成，满足
+\begin{equation}
+ 18480\mid q_0,\qquad d\equiv q_0/2-1\pmod{q_0}.
+\label{eq:fixed-parameters}
+\end{equation}
+在 Lean 形式化中，第二个同余条件等价地表述为 $q_0\mid 2(d+1)$ 且 $q_0\nmid d+1$.
+由于 $16\mid q_0$，必有 $d\equiv7\pmod8$. 记虚二次域 $K=\mathbb Q(\sqrt{-d})$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{193}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/FieldsAndPlaces.lean\#L102}{塔的次数与模数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/Cyclotomic/Basic.lean\#L652}{Mathlib 的分圆扩域}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean\#L78}{Mathlib 的根判别式}.}
+\begin{definition}[分圆扩域与辅助模数]
+\label{def:cyclotomic-field}
+\emitthmsource
+给定固定参数 $P$ 及正整数 $s$（称为塔指数），令
+\[
+ d_s=3^{\lfloor\log_3s\rfloor+5}2^s,\qquad
+ q_1=q_0d_s,\qquad q_2=(q_0d)^{s+6}.
+\]
+取本原 $q_1$ 次单位根 $\zeta_{q_1}$，记 $E=K(\zeta_{q_1})$.
+该 CM 域（\emph{CM field}）的根判别式（\emph{root discriminant}）记为
+$\mathrm{rd}_E=|\mathrm{Disc}(E)|^{1/[E:\mathbb Q]}$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{280}；另见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean\#L56}{Mathlib 的无穷位}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/Cyclotomic/Gal.lean\#L77}{Mathlib 的分圆 Galois 群}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/FieldsAndPlaces.lean\#L276}{Galois 坐标及整数到无穷位的映射}.}
+\begin{definition}[无穷位的分圆坐标]
+\label{def:infinite-place-coordinates}
+\emitthmsource
+记 $\Phi$ 为 $E$ 的全体无穷位（即阿基米德位，\emph{archimedean place}）构成的集合，并记 $f=|\Phi|$.
+固定 $K$ 的一个复嵌入，则 $E$ 的每个无穷位对应的一对复共轭嵌入中恰有一个延拓了该嵌入.
+考察这一唯一代表在 $\zeta_{q_1}$ 上的作用，即得坐标对应
+\[
+ \Phi\simeq\operatorname{Gal}(E/K)\simeq(\mathbb Z/q_1\mathbb Z)^\times.
+\]
+下文借此坐标把乘法结构赋予 $\Phi$. 对任意因子 $q'\mid q_1$，记 $c_{q'}(\tau)$ 为 $\tau$ 的坐标模 $q'$ 约化所得的单位剩余类.
+对整数 $n$，若 $n$ 与 $q_1$ 互素，记 $\nu_n\in\Phi$ 为坐标 $-n$ 对应的无穷位；否则记 $\nu_n$ 为单位元对应的无穷位.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{71}.}
+\begin{definition}[容许数据]
+\label{def:admissible-data}
+\emitthmsource
+容许数据（\emph{admissible data}）$D$ 是由固定参数 $P$ 决定的一组数据，包含以下分量及其约束：
+\begin{itemize}
+\item 正整数尺度 $x,x_1,b$ 满足尺度约束
+\begin{equation}
+ (\log b)^{100}\le x,\quad x^{10^6}\le x_1,\quad x_1^{10^6}\le b,\quad
+ (\log x_1)^6\le\log b,\quad \log\log b\ge 10^{12}C(P),
+\label{eq:admissible-scales}
+\end{equation}
+其中 $C(P)$ 是仅依赖于 $P$ 的常数，涵括整真空的共轭界、分圆多项式导数项以及 Chowla--Selberg 常数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L50}{参数常数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/IntegralVacuum.lean\#L280}{整真空的共轭界}.}
+\item Theta 提升（\emph{theta lift}）的步数 $m$ 为 $2$ 的正整数次幂且满足 $\sqrt x\le m\le2\sqrt x$；单步下降的共同秩 $r_0$ 为 $3$ 的正整数次幂且满足 $x^5\le r_0\le3x^5$；塔指数 $s$ 由 $2^s=m^{22}$ 确定，并满足 $s\le32\log x$. 此外要求整除条件 $q_1x_1\mid b$.
+\item 记 $a=xb$ 为长阶数（\emph{long order}），并置 $k=r_0+1-m$、$t=5r_0$. 指定 $b$-位集 $\Phi_b\subseteq c_{q_0}^{-1}(-1)$，满足基数下界 $d_s\le|\Phi_b|\log b$ 以及如下稀疏条件（\emph{sparseness}）：对每个素数 $p\le kt$，记 $q'_p$ 为 $q_1$ 中与 $p$ 互素的最大因子，则不存在 $\sigma,\tau,\rho\in\Phi_b$ 与整数 $0<i<j<3^{\lfloor\log_3s\rfloor+4}$，使得
+\[
+ c_{q'_p}(\tau/\sigma)\equiv\pm p^i,\qquad
+ c_{q'_p}(\rho/\sigma)\equiv\pm p^j\pmod{q'_p}
+\]
+同时成立（两处符号可独立选取）. 位权 $\kappa_\tau$ 定义为
+\begin{equation}
+ \kappa_\tau=
+ \begin{cases}
+ b, &\tau\in\Phi_b,\\
+ a/x_1,&\tau\notin\Phi_b.
+ \end{cases}
+\label{eq:admissible-place-weights}
+\end{equation}
+由于 $x_1\mid b$，两档位权均为整数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L58}{稀疏条件}.}
+\item 取主同余层（\emph{principal congruence level}）的两个相异素数 $p_0,p_1\in[b^{10},b^{11}]$，令 $M=p_0p_1$，并取分歧层素数 $N$，要求 $p_0,p_1,N\equiv1\pmod{q_2^2}$. 以 $\bar\kappa=(\prod_{\tau\in\Phi}\kappa_\tau)^{1/f}$ 记位权的几何平均，并规定
+\[
+ N_-=\bar\kappa^m\left(\frac{M\mathrm{rd}_E}{2\pi}\right)^{m-1}b^{-15/2},
+ \qquad \log N_-\le\log N\le\log N_-+\sqrt{\log b}.
+\]
+此外，数据配备 $K$ 中的代数整数 $\pi_M$ 与 $E$ 中的代数整数 $\pi_N$，满足
+$\pi_M\overline{\pi_M}=M$ 及 $\pi_N\overline{\pi_N}=N$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L139}{层素数及其整分解}.}
+\end{itemize}
+\end{definition}
+
+给定容许数据 $D$ 后，正定空间上链的各步秩取为 $n_j=k+j(t+1)$；后文定理 A、B、C 均在固定 $D$ 的情形下围绕这些量展开. 大尺度下容许数据的显式构造与存在性由引理~\ref{lem:admissible-construction}、\ref{lem:admissible-fields} 和~\ref{lem:data-existence} 确立，详见\secref{sec:data-construction}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{237}.}
+\begin{definition}[$a$-位]
+\label{def:a-places}
+\emitthmsource
+设 $D$ 为容许数据，定义 $a$-位集为 $\Phi_a=\{\tau\in\Phi:c_{q_0}(\tau)=1\}$.
+\end{definition}
+
+由于 $q_1/q_0=d_s$ 且 $q_1$ 与 $q_0$ 具有完全相同的素因子，模约化映射 $(\mathbb Z/q_1\mathbb Z)^\times\to(\mathbb Z/q_0\mathbb Z)^\times$ 为满射，且每个剩余类的原像恰含 $d_s$ 个元素. 由此即得 $|\Phi_a|=d_s$ 及 $f=\varphi(q_0)|\Phi_a|$，其中 $\varphi$ 为 Euler 函数（\emph{Euler's totient function}）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L75}{类 $1$ 纤维的基数与无穷位总数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Data/Nat/Totient.lean\#L37}{Mathlib 的 Euler 函数}.}
+
+\section{素数幂权重与余项}
+\label{sec:prime-remainders}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean}{67}；另见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/DirichletCharacter/Basic.lean\#L39}{Mathlib 的 Dirichlet 特征}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L60}{Mathlib 的 Dirichlet $L$ 函数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L337}{Mathlib 的主特征延拓}.}
+\begin{definition}[去极点的 Dirichlet $L$ 函数]
+\label{def:entire-l}
+\emitthmsource
+设 $q\ge1$，$\psi$ 为模 $q$ 的 Dirichlet 特征（\emph{Dirichlet character}），即 $(\mathbb Z/q\mathbb Z)^\times$ 上的复特征并规定在非单位剩余类上取零.
+若 $\psi$ 在所有单位上恒取 $1$，则称其为主特征（\emph{principal character}）.
+定义整函数 $\widetilde L(s,\psi)$ 如下：当 $\psi$ 为非主特征时取 $L(s,\psi)$；当 $\psi$ 为主特征时取 $(s-1)L(s,\psi)$ 在 $s=1$ 处的整函数延拓.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{43}；另见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean\#L66}{Mathlib 的 von Mangoldt 函数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LegendreSymbol/Basic.lean\#L109}{Mathlib 的 Legendre 符号}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L56}{作者库中的二次特征}.}
+\begin{definition}[剩余类上的素数幂权重]
+\label{def:prime-weight}
+\emitthmsource
+对正整数 $q$，设 $\chi_d(n)=(n/d)$ 为模 $d$ 的 Legendre 符号（\emph{Legendre symbol}），记 $\Lambda$ 为 von Mangoldt 函数（\emph{von Mangoldt function}），即在素数幂 $p^j$（$j\ge1$）上取 $\log p$，其余正整数上取零.
+定义
+\[
+ \lambda_q(n)=\mathbf 1_{n\equiv1\pmod q}\Lambda(n)\bigl(1-\chi_d(n)\bigr).
+\]
+当 $q=1$ 时，同余条件对一切整数平凡成立. 对虚二次域 $K=\mathbb Q(\sqrt{-d})$，其对应的二次特征恰为 $\chi_K=\chi_d$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{52}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L62}{作者库中的二次扭转}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Analysis/Calculus/LogDeriv.lean\#L32}{Mathlib 的对数导数}.}
+\begin{definition}[对数导数平均及常数项]
+\label{def:log-derivative-mean}
+\emitthmsource
+设 $q\ge1$，$\psi$ 为模 $q$ 的 Dirichlet 特征. 将 $\psi$ 与 $\chi_d$ 提升至模 $qd$ 后作乘积，记所得二次扭转（\emph{quadratic twist}）为 $\psi\chi_d$.
+对函数 $F$，记 $\mathcal D F=F'/F$ 为其对数导数（\emph{logarithmic derivative}），其中除法沿用 Lean 的全定义约定.
+定义
+\[
+ G_{d,q}(s)=\frac1{\varphi(q)}
+ \left(
+   \sum_{\psi\bmod q}\left[
+      (\mathcal D\widetilde L(\,\cdot\,,\psi\chi_d))(s)
+       -(\mathcal D\widetilde L(\,\cdot\,,\psi))(s)
+   \right]-1
+ \right),\qquad C_{d,q}=\operatorname{Re}G_{d,q}(1),
+\]
+其中求和遍历模 $q$ 的全部复 Dirichlet 特征.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{60}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L60}{余项在 Lean 中的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L198}{余项与正部求和的改写}.}
+\begin{definition}[带权素数余项]
+\label{def:prime-remainder}
+\emitthmsource
+对正整数 $q\ge1$ 与实数 $z>0$，定义带权素数余项（\emph{prime remainder}）
+\begin{equation}
+ R_{d,q}(z)
+ =\sum_{1\le n\le z}\lambda_q(n)\left(\frac1n-\frac1z\right)
+ -\frac{\log z}{\varphi(q)}-C_{d,q}.
+\label{eq:ch1-Rdq}
+\end{equation}
+此处 $n$ 遍历所有不超过 $z$ 的正整数，故和式中包含一般素数幂的贡献. 全文统一以 $u_+=\max(u,0)$ 表示实数 $u$ 的正部（\emph{positive part}）.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{202}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L71}{Chowla--Selberg 常数}.}
+\begin{definition}[CM 周期]
+\label{def:cm-period}
+\emitthmsource
+记 $\gamma_{\mathrm E}$ 为 Euler--Mascheroni 常数. 容许数据所采用的归一化 CM 周期（\emph{CM period}）定义为
+\begin{equation}
+ \Omega=\frac{2\pi}{\mathrm{rd}_E}
+       \exp\!\left(\gamma_{\mathrm E}-\operatorname{Re}
+                       \frac{L'}{L}(1,\chi_K)\right),
+\label{eq:cm-period}
+\end{equation}
+其中指数部分恰为作者库中的 Chowla--Selberg 常数（\emph{Chowla--Selberg constant}，参见 Selberg 与 Chowla 关于复乘周期与 $L$-导数值的经典公式~\cite{SelbergChowla1967}）.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{257}.}
+\begin{definition}[无穷位导数大小]
+\label{def:jet-size}
+\emitthmsource
+对次数 $j\ge0$，记 $s_\infty(j)=\log(j!)+j\log(M/\Omega)$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{248}.}
+\begin{definition}[逐位带权素数和]
+\label{def:weighted-prime-sum}
+\emitthmsource
+对实数 $y$ 与无穷位 $\tau\in\Phi$，定义
+\begin{equation}
+ s_{\rm fin}(y,\tau)
+ =\sum_{1\le n\le a}\lambda_1(n)
+       \bigl(y/n-\kappa_{\nu_n\tau}\bigr)_+ ,
+\label{eq:weighted-prime-sum}
+\end{equation}
+其中 $\nu_n$ 按定义~\ref{def:infinite-place-coordinates} 在 $\Phi$ 上平移无穷位，$\kappa$ 为定义~\ref{def:admissible-data} 给出的两档位权.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{64}.}
+\begin{definition}[带权素数和的平均主项]
+\label{def:prime-sum-main-term}
+\emitthmsource
+记
+\[
+ s_{\rm main}
+ =a\left(\log a-\frac1f\sum_{\tau\in\Phi}\log\kappa_\tau+C_{d,1}\right).
+\]
+该量即为 $s_{\rm fin}(a,\tau)$ 在 $\Phi_a$ 上取平均时对应的主项，具体计算见引理~\ref{lem:cancel-prime-sum-main-term}.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{59}.}
+\begin{definition}[主量]
+\label{def:main-amount}
+\emitthmsource
+定义主量（\emph{main amount}）为
+\begin{equation}
+ H=mk\sum_{\tau\in\Phi}
+       \bigl(s_\infty(\kappa_\tau)-s_{\rm fin}(\kappa_\tau,\tau)\bigr),
+\label{eq:main-amount}
+\end{equation}
+其中 $m$ 为提升步数，$k$ 为上链的初始秩. 下文统一记
+$\ell=\log b$、$B=fa\ell^3$ 及 $L=fa\ell^4$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{71}.}
+\begin{definition}[总余项]
+\label{def:total-remainder}
+\emitthmsource
+定义总余项（\emph{total remainder}）为
+\[
+ S=\sum_{\tau\in\Phi_a}\bigl(s_{\rm fin}(a,\tau)-s_{\rm main}\bigr).
+\]
+下文先借定理~\ref{thm:star} 给出 $mS$ 的上界，再通过引理~\ref{lem:remainder} 建立的双尺度恒等式从中分离出小尺度 $x$ 处的余项 $R_{d,q_0}(x)$.
+\end{definition}
+
+\section{双尺度恒等式}
+\label{sec:two-scale-identity}
+
+通过截断正部和，可将逐位加权的素数和转化为按模 $q_0$ 分类的素数幂和. 本节先统计每个整数 $n$ 经平移落入两档位权区域的次数，再将平均主项精确抵消，最终导出双尺度恒等式~\eqref{eq:ch1-remainder-eq}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{43}.}
+\begin{lemma}[截断正部和]
+\label{lem:positive-part-cutoff}
+\emitthmsource
+设 $a$ 为正整数，$0<z\le a$ 为实数，记
+$F_q(z)=\sum_{1\le n\le a}\lambda_q(n)(a/n-a/z)_+$，则
+\[
+ F_q(z)=a\left(R_{d,q}(z)+\varphi(q)^{-1}\log z+C_{d,q}\right).
+\]
+\end{lemma}
+\begin{proof}
+当 $n>z$ 时正部为零，而 $n=z$ 时括号内亦为零，故求和范围可截断至 $1\le n\le z$. 在此范围内提出公因子 $a$，对照定义~\ref{def:prime-remainder} 即得所求等式.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{99}.}
+\begin{lemma}[平移至高权位的计数]
+\label{lem:count-weighted-places}
+\emitthmsource
+对每个正整数 $n$，有
+\[
+ \bigl|\{\tau\in\Phi_a:\nu_n\tau\in\Phi_b\}\bigr|=
+ \begin{cases}
+ |\Phi_b|,&n\equiv1\pmod{q_0},\\
+ 0,&n\not\equiv1\pmod{q_0}.
+ \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+若 $n\equiv1\pmod{q_0}$，因 $q_1$ 与 $q_0$ 具有相同的素因子，故 $n$ 与 $q_1$ 互素，从而 $c_{q_0}(\nu_n)=-1$. 此时乘以 $\nu_n$ 将类 $1$ 的纤维 $\Phi_a$ 双射至类 $-1$ 的纤维 $c_{q_0}^{-1}(-1)$；又 $\Phi_b\subseteq c_{q_0}^{-1}(-1)$，故 $\Phi_b$ 在 $\Phi_a$ 中恰有 $|\Phi_b|$ 个原像.
+若 $n\not\equiv1\pmod{q_0}$ 且 $(n,q_1)=1$，则对任意 $\tau\in\Phi_a$ 有 $c_{q_0}(\nu_n\tau)=-n\not\equiv-1\pmod{q_0}$；若 $(n,q_1)>1$，则 $\nu_n$ 为单位位，从而 $c_{q_0}(\nu_n\tau)=1\not\equiv-1\pmod{q_0}$. 在后两种情形下均无 $\tau\in\Phi_a$ 满足 $\nu_n\tau\in\Phi_b$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{132}.}
+\begin{lemma}[$a$-位上的带权素数和]
+\label{lem:sum-weighted-prime-sums}
+\emitthmsource
+记 $A=|\Phi_a|$、$J=|\Phi_b|$，则
+\[
+\begin{aligned}
+ \sum_{\tau\in\Phi_a}s_{\rm fin}(a,\tau)
+ &=a\bigl[A R_{d,1}(x_1)+J(R_{d,q_0}(x)-R_{d,q_0}(x_1))\bigr]\\
+ &\quad+a\left[A(\log x_1+C_{d,1})
+           +\frac{J}{\varphi(q_0)}(\log x-\log x_1)\right].
+\end{aligned}
+\]
+\end{lemma}
+\begin{proof}
+交换关于 $n$ 与 $\tau$ 的有限求和次序. 对固定的 $n$，先在全部 $A$ 个位上统一取基准位权 $a/x_1$；再对每个满足 $\nu_n\tau\in\Phi_b$ 的 $\tau\in\Phi_a$，将相应项由 $(a/n-a/x_1)_+$ 替换为 $(a/n-a/x)_+$（因为 $b=a/x$）. 由引理~\ref{lem:count-weighted-places}，上述修正仅在 $n\equiv1\pmod{q_0}$ 时出现，且共发生 $J$ 次，于是总和等于
+\[
+ A F_1(x_1)+J\bigl(F_{q_0}(x)-F_{q_0}(x_1)\bigr).
+\]
+因 $0<x\le x_1\le a$，在两处截点 $x,x_1$ 分别应用引理~\ref{lem:positive-part-cutoff}. 作差时常数项 $C_{d,q_0}$ 相互抵消，整理余项与对数项即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L110}{Lean 中逐整数求和的步骤}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{161}.}
+\begin{lemma}[平均主项的计算]
+\label{lem:cancel-prime-sum-main-term}
+\emitthmsource
+沿用记号 $A,J$，有
+\[
+ A s_{\rm main}=a\left[A(\log x_1+C_{d,1})
+                    +\frac{J}{\varphi(q_0)}(\log x-\log x_1)\right].
+\]
+\end{lemma}
+\begin{proof}
+按两档位权分别取对数求和：以 $\log(a/x_1)$ 为全部 $f$ 个无穷位的基准，并在 $J$ 个高权位上各减去 $\log x-\log x_1$，从而
+\[
+ \sum_{\tau\in\Phi}\log\kappa_\tau
+ =f(\log a-\log x_1)-J(\log x-\log x_1).
+\]
+将其代入定义~\ref{def:prime-sum-main-term}，再结合 $f=\varphi(q_0)A$ 化简即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{175}.}
+\begin{lemma}[双尺度余项恒等式]
+\label{lem:remainder}
+\emitthmsource
+总余项 $S$ 满足双尺度恒等式
+\begin{equation}
+ S=a\left[|\Phi_b|\bigl(R_{d,q_0}(x)-R_{d,q_0}(x_1)\bigr)
+                  +|\Phi_a|R_{d,1}(x_1)\right].
+\label{eq:ch1-remainder-eq}
+\end{equation}
+\end{lemma}
+\begin{proof}
+由定义~\ref{def:total-remainder}，总余项 $S$ 等于引理~\ref{lem:sum-weighted-prime-sums} 的左端减去 $|\Phi_a|s_{\rm main}$. 引理~\ref{lem:cancel-prime-sum-main-term} 给出的表达式恰与其中的主项完全抵消，余下部分即为所求的双尺度余项恒等式.
+\end{proof}
+
+\section{阿代尔酉群、形式空间与扭转格}
+\label{sec:automorphic-spaces}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Adelic/Adeles/Basic.lean}{98}；另见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/RingTheory/DedekindDomain/FiniteAdeleRing.lean\#L95}{Mathlib 的有限阿代尔环}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/AdeleRing.lean\#L56}{Mathlib 的阿代尔环}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/Basic.lean\#L94}{有限阿代尔与阿代尔环}.}
+\begin{definition}[阿代尔环与有限阿代尔]
+\label{def:adele-ring}
+\emitthmsource
+设 $E$ 为 CM 域，$\mathcal O_E$ 为其整数环. 对每个有限素位 $w$（即 $\mathcal O_E$ 的非零素理想），记 $E_w$ 为 $E$ 在 $w$ 处的完备化，$\mathcal O_w$ 为其整数环.
+有限阿代尔环（\emph{ring of finite adeles}）$\mathbb A_f=\mathbb A_{E,f}$ 定义为全体局部域 $E_w$ 关于子环 $\mathcal O_w$ 的限制直积，其整数子环为 $\widehat{\mathcal O}_E=\prod_w\mathcal O_w$.
+由于 $E$ 为全复数域，其阿代尔环（\emph{adele ring}）定义为
+\[
+ \mathbb A=\mathbb A_E=\Bigl(\prod_{\tau\in\Phi}\mathbb C\Bigr)\times\mathbb A_f ,
+\]
+并通过所选无穷位嵌入族将 $E$ 对角嵌入 $\mathbb A$（以及 $\mathbb A_f$）.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Adelic/Unitary/Defs.lean}{496}；另见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/LinearAlgebra/UnitaryGroup.lean\#L105}{Mathlib 的酉矩阵群}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Groups/CongruenceSubgroups.lean\#L302}{一般 Hermite 矩阵的酉群}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Unitary/Defs.lean\#L185}{有限与阿代尔酉群}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Unitary/Defs.lean\#L498}{带基点的 Hermite 空间}.}
+\begin{definition}[Hermite 空间与阿代尔酉群]
+\label{def:unitary-space}
+\emitthmsource
+设 $R$ 为带对合的交换环，$J\in\mathrm M_n(R)$ 为 Hermite 矩阵，其酉群（\emph{unitary group}）定义为
+\[
+ \Ugrp(J)(R)=\bigl\{g\in\mathrm{GL}_n(R): g^* J g=J\bigr\}.
+\]
+取 $R=\mathbb A_f$、$J=I_n$ 得有限阿代尔酉群 $G_f=\Ugrp(I_n)(\mathbb A_f)$，其标准紧开层为 $K_0=G_f\cap\mathrm{GL}_n(\widehat{\mathcal O}_E)$. 给定符号配置 $s\colon I\to\{\pm1\}$，记 $G_\infty=\prod_{\tau\in\Phi}\Ugrp(\operatorname{diag}(s))(\mathbb C)$，并定义阿代尔酉群 $G=G_\infty\times G_f$.
+带基点的 Hermite 空间（\emph{Hermitian space with a point}）$V=(J,x)$ 由 $E$ 上的 Hermite 矩阵 $J$ 与元素 $x\in\mathrm{GL}_n(\mathbb A)$ 组成，满足 $x^*Jx$ 在各无穷位等于 $\operatorname{diag}(s)$、在各有限位等于 $I_n$. 此时共轭映射 $g\mapsto xgx^{-1}$ 给出同构 $G\simeq \Ugrp(J)(\mathbb A)$，有理酉群经此嵌入为离散子群 $\Gamma=x^{-1}\Ugrp(J)(E)x\le G$，其在有限阿代尔群中的投影记为 $\Gamma_f\le G_f$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean}{109}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/Basic.lean\#L104}{阿代尔自守形式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean\#L112}{光滑代数自守形式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean\#L126}{Weyl 规范}.}
+\begin{definition}[自守形式与代数自守形式]
+\label{def:algebraic-form}
+\emitthmsource
+在带基点的 Hermite 空间 $V$ 上，称连续函数 $F\colon G\to\mathbb C$ 为自守形式（\emph{automorphic form}），若其满足左 $\Gamma$-不变性，且在右侧某个紧开子群 $K\le G_f$（称为层）的作用下不变.
+当 $V$ 为秩 $n$ 的标准正定 Hermite 空间时，权 $(\kappa,e)$ 的光滑代数自守形式（\emph{algebraic modular form}，Gross 在文献~\cite{Gross1999}中系统发展了该理论）是指取值于相应 Weyl 表示坐标空间的函数 $\varphi\colon G_f\to\mathbb C^{\operatorname{Weyl}(n,\kappa)}$，满足左等变性 $\varphi(\gamma g)=\rho_{\kappa,e}(\gamma)\varphi(g)$（$\gamma\in\Gamma$）且右平移稳定子群为开子群.
+对每个 $p$-进素位 $\iota$，形式在点 $g$ 处的 Weyl 规范（\emph{Weyl gauge}）度量 $g^{-1}\cdot\iota(\varphi(g))$ 的最大 $p$-进绝对值；称形式在 $\iota$ 处为整，是指该规范在所有点处均不超过 $1$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Lattices/TwistedLattice.lean}{105}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L109}{扭转格的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L159}{局部格指数上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L275}{余体积上界}.}
+\begin{definition}[扭转格、局部格指数与余体积]
+\label{def:twisted-lattice}
+\emitthmsource
+复向量空间 $V$ 上关于扭转集 $T$（含平凡扭转 $1$）的扭转格（\emph{twisted lattice}）$L$ 由如下数据组成：对每个 $\xi\in T$，配备复内积空间 $H_\xi$、线性映射 $\Theta_\xi\colon V\to H_\xi$ 以及对各素数 $p$ 的容许性谓词；对每个 $p$-进同构 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_p$，配备整格子模 $\mathcal L_{\xi,\iota}\subset H_\xi$，记 $\bar\iota(z)=\iota(\bar z)$，要求每个允许于 $p$ 的扭转在整格 $\mathcal L_{\xi,\bar\iota}$ 与 $\mathcal L_{\xi,\iota}$ 之间的内积在 $\iota$ 处为整；此外，在平凡扭转空间 $H_1$ 上给出一组坐标，使内积由有理正定矩阵表示.
+记 $V_\iota^{\mathrm{int}}=\{y\in V:\forall\xi\text{ 允许于 }p,\ \Theta_\xi y\in\mathcal L_{\xi,\iota}\}$ 为 $\iota$ 处的整向量子模. 对有限向量族 $y\colon S\to V$：
+\begin{itemize}
+\item 称 $y$ 满足局部格指数的对数上界 $\mathcal I_\delta(y)$（\emph{IndexLe}），若存在非负局部损失 $(j_p)$ 满足对任意有限素数集均有 $\sum_p j_p\log p\le\delta$，且对每个 $\iota$ 存在与扭转无关的整矩阵 $u\in\mathrm M_S(\mathcal O_\iota)$，其行列式满足 $v_p(\det u)\le j_p$ 并将 $y$ 映入 $V_\iota^{\mathrm{int}}$.
+\item 称 $y$ 满足余体积上界 $\mathcal V_V(y)$（\emph{CovolumeLe}），若对每个复自同构 $\sigma\in\operatorname{Aut}(\mathbb C)$，先将各 $\Theta_1(y_i)$ 的坐标按 $\sigma$ 共轭，再沿用原有理内积矩阵构成 Gram 矩阵，其行列式的绝对值不超过 $e^V$.
+\end{itemize}
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{183}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L741}{分歧源形式空间}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Rows.lean\#L296}{好目标形式空间}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SeriesPeriod.lean\#L743}{Poincaré 级数映射}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L185}{归一化 Poincaré 映射}.}
+\begin{definition}[分歧源形式、好目标形式与归一化 Poincaré 映射]
+\label{def:source-target-poincare}
+\emitthmsource
+对容许数据 $D$，记 $X_0$ 为秩 $k$ 的标准正定空间，$Y_0$ 为秩 $r_0$ 的 Hermite 空间，并令 $G=\prod_{w\mid\pi_M}\mathrm{GL}_{r_0}(\mathbf k_w)$ 为主同余层所选位上的剩余域一般线性群直积.
+\begin{itemize}
+\item 分歧源形式空间（\emph{ramified source forms}）$U$ 由 $X_0$ 上所有满足以下条件的代数形式组成：在 $a$-位处具权 $(a,0,\ldots,0)$，满足主同余层条件与模 $\pi_N$ 末行条件，且在每个整除 $\pi_N$ 的素位处标量平移平均为零.
+\item 好目标形式空间（\emph{good target forms}）$W$ 是 $Y_0$ 上主同余层形式在好标签中心幂等元 $e_0\in\mathbb C[G]$ 下的像空间，记 $r=\dim_{\mathbb C}W$.
+\item 令 $\mathcal P\colon U\to\operatorname{principalForms}(Y_0)$ 为 Poincaré 级数映射，$\rho$ 为 $G$ 在该主同余层形式空间上的平移表示. 对 $g\in G$，仍以 $e_0$ 表示中心幂等元诱导的投影，定义归一化 Poincaré 映射 $P_g\colon U\to W$ 为
+\begin{equation}
+ P_g\phi=c_B c_{\mathrm{ss}}^{-1}|G|\,e_0\rho(g)\mathcal P\phi,
+ \label{eq:normalized-poincare}
+\end{equation}
+其中 $c_B$ 是局部增益归一化的有理因子，$c_{\mathrm{ss}}\ne0$ 来自式~\eqref{eq:a-seesaw}. 因 $e_0$ 属于中心，故 $P_g\phi=\rho(g)P_1\phi$.
+\end{itemize}
+\end{definition}
+
+\section{Theta 提升的定义与归一化}
+\label{sec:theta-lifts}
+
+固定 CM 域 $E$ 及容许数据 $D$. 刻画一个 Theta 提升，需指明其源空间、目标空间、核与测试数据，以及积分测度的归一化方式. 以下先定义阿代尔与代数两种基本提升，再介绍论证实际用到的三个具体限制与复合.
+
+\subsection{阿代尔积分}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{291}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/Basic.lean\#L84}{Theta 核的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/DualPair/ThetaLiftConvergence.lean\#L293}{阿代尔 theta 提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Lift.lean\#L767}{自守形式空间之间的 theta 提升}.}
+\begin{definition}[阿代尔 Theta 提升]
+\label{def:adelic-theta-lift}
+\emitthmsource
+设 $S,T$ 为 CM 域 $E$ 上的两个 Hermite 空间，$\Gamma_S,\Gamma_T$ 分别为其酉群 $\Ugrp(S),\Ugrp(T)$ 的有理点群.
+关于 $(S,T)$ 的 Theta 核（\emph{theta kernel}）$K=(\omega,\theta)$ 由乘积群 $\Ugrp(S)(\mathbb A)\times \Ugrp(T)(\mathbb A)$ 在 Banach 空间 $X$ 上的联合连续线性作用 $\omega$ 与连续线性泛函 $\theta\colon X\to\mathbb C$ 组成，并满足左 $\Gamma_S\times\Gamma_T$-不变性：
+\[
+ \theta\bigl(\omega(\gamma g,\gamma' h)\varphi\bigr)=\theta\bigl(\omega(g,h)\varphi\bigr)
+ \qquad (\gamma\in\Gamma_S,\ \gamma'\in\Gamma_T).
+\]
+给定测试数据 $\varphi\in X$ 与 $\Ugrp(S)(\mathbb A)$ 上的函数 $y$，定义 $y$ 的阿代尔 Theta 提升（\emph{adelic theta lift}）为 $\Ugrp(T)(\mathbb A)$ 上的函数
+\begin{equation}
+ (\operatorname{lift}_K(\varphi,y))(h)
+ =\int_{\Gamma_S\backslash \Ugrp(S)(\mathbb A)}
+   \theta\bigl(\omega(g,h)\varphi\bigr)\,y(g)\,dg ,
+\label{eq:adelic-theta-integral}
+\end{equation}
+其中积分取商空间 $\Gamma_S\backslash \Ugrp(S)(\mathbb A)$ 上的商测度. 当 $y$ 在 $S$ 上快速衰减且提升落入目标类型空间时，该构造诱导自守形式空间之间的双线性提升映射.
+\end{definition}
+
+式~\eqref{eq:adelic-theta-integral} 固定 $h$ 与测试数据 $\varphi$，对源商空间上的变量 $g$ 积分. 当 $y$ 为自守函数时，$y$ 与核均关于源有理点群左不变，因而被积函数下降至该商空间. 对实际采用的核，可以证明其在源变量中至多呈多项式增长，从而保证快速衰减源形式的积分绝对收敛.\leanfn{Lean 源码：\leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{428}.}
+
+对任意 $\delta\in\Gamma_T$，核在 $h$ 与 $\delta h$ 处取值相同，故所得提升关于目标有理点群 $\Gamma_T$ 左不变. 若目标有限阿代尔群的紧开子群 $K_T$ 经作用 $k\mapsto\omega(1,k)$ 固定 $\varphi$，则 $\omega(g,hk)\varphi=\omega(g,h)\varphi$，因而提升对 $K_T$ 右不变. 由积分的线性性，式~\eqref{eq:adelic-theta-integral} 对测试数据 $\varphi$ 与源形式 $y$ 均呈线性；后文涉及 Petersson 配对时将另行指明复共轭所在的一侧.
+
+\subsection{正定酉群上的代数积分}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{186}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/CompactLift/ThetaKernelDefs.lean\#L133}{代数 theta 核}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/CompactLift/ThetaKernelDefs.lean\#L189}{代数 theta 提升}.}
+\begin{definition}[正定酉群上的代数 Theta 提升]
+\label{def:algebraic-theta-lift}
+\emitthmsource
+设 $G_f,G'_f$ 分别为 CM 域 $E$ 上秩为 $n,n'$ 的标准正定酉群的有限阿代尔点群，$\Gamma,\Gamma'$ 为各自的有理点群.
+层为 $K\le G_f$、数据空间为 $S$ 的代数 Theta 核 $k=(\omega,\operatorname{jetMap})$ 由两项组成：$G_f\times G'_f$ 在 $S$ 上的光滑表示 $\omega$（每个数据的稳定子群均为开子群），以及关于 $\Gamma\times\Gamma'$ 满足权 $(\kappa,e)\to(\kappa,e')$ 等变性的射流映射（\emph{jet map}）$\operatorname{jetMap}$.
+对测试数据 $\Phi\in S$ 与权 $(\kappa,e)$ 的代数自守形式 $\varphi$，其代数 Theta 提升（\emph{algebraic theta lift}）定义为权 $(\kappa,e')$ 的代数自守形式
+\begin{equation}
+ h\longmapsto
+ \int_{\Gamma\backslash G_f}
+   \operatorname{jetMap}\bigl(\omega(g,h)\Phi\bigr)\bigl(\varphi(g)\bigr)\,dg ,
+\label{eq:algebraic-theta-integral}
+\end{equation}
+其中有限类积分所用 Haar 测度按 $\operatorname{vol}(K)=1$ 归一化.
+\end{definition}
+
+式~\eqref{eq:algebraic-theta-integral} 仅对有限阿代尔变量积分. 无穷位上的权信息由 Weyl 表示编码，核的射流映射将源权空间中的值映至目标权空间；源有理点作用在 $\varphi(g)$ 上产生的因子被射流映射的等变性吸收，而目标有理点的作用则转化为目标权表示，由此得到双侧等变性.\leanfn{Lean 源码：\leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{157}.}
+
+特别地，当被积函数在层 $K$ 作用下右不变时，取双陪集 $\Gamma\backslash G_f/K$ 的代表元 $g_i$，式~\eqref{eq:algebraic-theta-integral} 即化为有限和
+\begin{equation}
+ \sum_i
+ \frac{\operatorname{jetMap}\bigl(\omega(g_i,h)\Phi\bigr)\bigl(\varphi(g_i)\bigr)}
+ {\lvert\Gamma\cap g_i K g_i^{-1}\rvert},
+ \label{eq:finite-theta-sum}
+\end{equation}
+其中分母源自按 $\operatorname{vol}(K)=1$ 归一化的商测度. \secref{sec:a-short-basis}将给出实际采用的无挠层判据；在该判据成立时，式~\eqref{eq:finite-theta-sum} 中的稳定子阶数分母均为 $1$.
+
+\subsection{下链、上链和单步下降对}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Chain/NormOfChain.lean}{90}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/RowChain.lean\#L120}{单步下链提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/RowChain.lean\#L178}{下链 theta 提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L95}{目标好形式上的 $\Theta_\vartheta$}.}
+\begin{definition}[目标好形式上的下链 Theta 提升]
+\label{def:target-theta-lift}
+\emitthmsource
+给定容许数据 $D$ 与 $m$-重扭转 $\vartheta$，考虑 Hermite 空间链 $Y_0\to\cdots\to Y_m$，其中 $Y_j$ 的秩为 $r_0+jt$ 且末项 $Y_m$ 为正定空间. 记 $\mathcal F_j$ 为 $Y_j$ 上具有指定无穷位类型的自守形式空间. 对 $1\le j\le m$，令 $\mathcal L_{\vartheta,j}\colon\mathcal F_{j-1}\to\mathcal F_j$ 为配备特征 $\mu_j^0\vartheta^j$、相应联合调和多项式及有限位数据的阿代尔 Theta 提升；记该步数据所用层为 $K_{\vartheta,j}$，并置 $T_{\vartheta,j}=[K_0:K_{\vartheta,j}]\mathcal L_{\vartheta,j}$.
+
+记 $\operatorname{toAlg}_{Y_m}$ 为正定空间 $Y_m$ 上自守形式与代数自守形式之间的等同映射. 定义下链映射 $T_\vartheta$ 为如下复合在 $Y_0$ 主同余层形式空间上的限制：
+\begin{equation}
+ T_\vartheta=\operatorname{toAlg}_{Y_m}\circ T_{\vartheta,m}\circ\cdots\circ T_{\vartheta,1}.
+ \label{eq:lower-theta-chain}
+\end{equation}
+将 $T_\vartheta$ 进一步限制到好目标形式空间 $W$ 上，记所得映射为 $\Theta_\vartheta$. 特别地，$\Theta_1$ 对应平凡扭转，而 $Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta)$ 为所取内积下的 Gram 行列式.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Objects/Columns.lean}{990}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L986}{正定链的成对提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L992}{复合 theta 提升}.}
+\begin{definition}[上链的复合 Theta 提升]
+\label{def:composite-theta-lift}
+\emitthmsource
+考虑标准正定空间链 $X_0\to X_1\to\cdots\to X_m$，其中 $X_j$ 的秩为 $n_j=k+j(t+1)$. 给定驯特征 $\vartheta$ 与链数据 $\Psi$，由 $\Psi$ 构造粘合张量，将相邻两步代数 Theta 提升成对复合，从而由 $\varphi$ 得到 $X_m$ 上的代数形式. 对该形式在有限阿代尔点处沿 $h\mapsto\operatorname{diag}(h,1)$ 作末端限制，继而作用分支矩阵并乘以标量 $\prod_{\tau\in\Phi}\tau(\bar\pi_N)^{-n_\tau}$（其中 $n_\tau$ 为相应的分支指数），所得 $Y_m$ 上的代数形式称为复合 Theta 提升，记作 $\operatorname{Comp}_{\vartheta,\Psi}\varphi$.\leanfn{Lean 源码：\leansourcelink{src/New/UpperBound/Objects/Columns.lean}{777}.}
+定理~\ref{thm:a-seesaw}（Seesaw 恒等式）将下链与 Poincaré 映射的复合归结为此复合 Theta 提升.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/FitTwists.lean}{102}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Norms/AdjointThetaLift.lean\#L256}{单步 theta 提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Twist/FitTwists.lean\#L108}{好形式上的单步提升}.}
+\begin{definition}[单步好形式 Theta 提升]
+\label{def:good-theta-lift}
+\emitthmsource
+对 $1\le j\le m$ 与驯特征 $\vartheta$，记 $W_j$ 为秩 $r_0$、在各无穷位具有 $m-j$ 个负号的 Hermite 空间，$V_j$ 为秩 $r_0+t$ 的正定空间.
+将下降对 $(W_j,V_j)$ 上对应于 $\vartheta$ 的单步阿代尔 Theta 提升限制到 $W_j$ 的好形式空间，所得映射称为单步好形式 Theta 提升（\emph{single-step theta lift on good forms}）.
+定理 C 借其 Gram 行列式 $Z_j(\vartheta)$ 将整条下链的余体积分解为 $m$ 步单步高度估计.
+\end{definition}
+
+以下沿用定义~\ref{def:source-target-poincare} 中的记号 $U$、$W$、$P_g$ 与有限平移群 $G$. 同一源向量沿两条提升路径的比较可图示如下：
+\begin{equation}
+\label{eq:lift-comparison}
+\begin{aligned}
+ U &\xrightarrow{\ \mathcal P\ }\operatorname{principalForms}(Y_0)
+     \xrightarrow{\ T_\vartheta\ }\operatorname{AlgForms}(Y_m),\\
+ U &\lhook\joinrel\longrightarrow \operatorname{AlgForms}(X_0)
+     \xrightarrow{\ \operatorname{Comp}_{\vartheta,\Psi_\vartheta}\ }
+        \operatorname{AlgForms}(Y_m).
+\end{aligned}
+\end{equation}
+其中第一行采用式~\eqref{eq:lower-theta-chain} 中的 $T_\vartheta$，而 $\Theta_\vartheta$ 是其在好目标空间 $W$ 上的限制；第二行的复合提升已包含末项限制与相应的归一化因子. 对定理~\ref{thm:a-seesaw} 所构造的链数据 $\Psi_\vartheta$，第二行恰等于第一行乘以 $c_{\rm ss}^{-1}$，其中 $c_{\rm ss}$ 为固定的非零 Seesaw 标量. 截面选取、层指数与 $c_{\rm ss}$ 的确定均在\chapref{chap:upperbound}中完成，式~\eqref{eq:normalized-poincare} 亦用到这一标量.
+
+第三类比较则在逐步下降对 $(W_j,V_j)$ 上进行. 须注意区分记号：$W$ 是固定的好目标形式空间，而 $W_j$ 是第 $j$ 步的源 Hermite 空间；类似地，维数 $r=\dim_{\mathbb C}W$ 与 $W_j$ 的 Hermite 秩 $r_0$ 亦是两个不同的量. \chapref{chap:determinant}利用单步 Gram 行列式控制整条下链，\chapref{chap:onelift}则构造控制单步比值的比较算子. 此外，解析收官阶段所用的特征 Theta 级数见定义~\ref{def:char-theta-series}，其自变量为正实数，用于导出二次扭转的尾积分估计.
+
+\section{由三组估计推出主不等式}
+\label{sec:main-inequality}
+
+定理~\ref{thm:short-forms} 与定理~\ref{thm:index-bound} 分别控制短整源形式的范数以及归一化像的局部格指数；定理~\ref{thm:enough-forms} 进而保证可从这些像中抽取出维数接近 $r$ 的线性无关向量族. 对该向量族应用定理~\ref{thm:long-forms}，即可将余体积的上下界相比较. 这一比较需要用到主量 $H$ 的非负性，下面先建立一个更强的下界.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{204}.}
+\begin{lemma}[带权素数和的截断估计]
+\label{lem:main-prime-bound}
+\emitthmsource
+对 $0\le y\le a$ 及 $\tau\in\Phi$，有
+\[
+ 0\le s_{\rm fin}(y,\tau)\le 4y\log x_1 .
+\]
+\end{lemma}
+\begin{proof}
+和式中各项均非负. 由于 $\kappa_{\nu_n\tau}\ge a/x_1$，当 $n>x_1$ 时有
+$y/n\le a/x_1\le\kappa_{\nu_n\tau}$，相应正部为零. 又 $1-\chi_d(n)\le2$，故
+\[
+ s_{\rm fin}(y,\tau)\le 2y\sum_{1\le n\le x_1}\frac{\Lambda(n)}{n}.
+\]
+令 $N_1=\lfloor x_1\rfloor\ge1$. 将恒等式 $\log v=\sum_{n\mid v}\Lambda(n)$ 对 $1\le v\le N_1$ 求和，并利用 $t\ge1$ 时的不等式 $\lfloor t\rfloor\ge t/2$，可得
+\[
+ \log(N_1!)=\sum_{1\le n\le N_1}\Lambda(n)\left\lfloor\frac{N_1}{n}\right\rfloor
+ \ge\frac{N_1}{2}\sum_{1\le n\le N_1}\frac{\Lambda(n)}{n}.
+\]
+结合 $\log(N_1!)\le N_1\log N_1$ 与 $N_1\le x_1$ 即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{285}.}
+\begin{lemma}[主量的下界]
+\label{lem:main-amount-lower}
+\emitthmsource
+容许数据的主量满足 $H\ge x^4fa$；特别地，$H\ge0$.
+\end{lemma}
+\begin{proof}
+两个主同余层素数均落在 $[b^{10},b^{11}]$ 内，而 CM 周期满足 $0<\Omega\le1$ 及
+$\Omega^{-1}\le x^{13}\le b$，从而 $b^{20}\le M/\Omega\le b^{23}$.
+又因 $a=xb\le b^2$，对任意整数 $0\le y\le a$ 均有 $1\le y!\le b^{2y}$.
+代入 $s_\infty$ 的定义即得 $20y\ell\le s_\infty(y)\le25y\ell$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Sizes.lean\#L210}{主层和 CM 周期的尺度界}.}
+
+对 $y=\kappa_\tau$ 应用引理~\ref{lem:main-prime-bound}，并结合 $4\log x_1\le\ell$，可得
+\[
+ s_\infty(\kappa_\tau)-s_{\rm fin}(\kappa_\tau,\tau)\ge\kappa_\tau\ell .
+\]
+在定义式~\eqref{eq:main-amount} 中仅保留 $\tau\in\Phi_b$ 的非负项，利用 $\Phi_b$ 上 $\kappa_\tau=b$ 以及容许数据条件 $|\Phi_b|\ell\ge d_s=|\Phi_a|$，有
+\[
+ H\ge mk\, b|\Phi_b|\ell\ge mk\, b|\Phi_a|.
+\]
+最后，由 $r_0\ge x^5$、$\sqrt x\le m\le2\sqrt x$ 及 $x\ge2$ 可得
+$k=r_0+1-m\ge x^5/2$.
+此外，由 $x\ge\ell^{100}$、$\log\ell\ge10^{12}c_P$ 与 $c_P\ge\varphi(q_0)$ 可知 $\sqrt x\ge 2\varphi(q_0)$，
+因此 $mk\ge x^5\varphi(q_0)$. 代入 $f=\varphi(q_0)|\Phi_a|$ 与 $a=xb$，
+即得 $H\ge x^5 b f=x^4fa$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/MainInequality.lean}{82}.}
+\begin{theorem}[主不等式]
+\label{thm:star}
+\emitthmsource
+对每组容许数据 $D$，
+\begin{equation}
+  mS\le fa(\log b)^5.
+\tag{$\star$}\label{eq:ch1-star}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{选取近乎张成的向量族.}
+令 $h=H-mS+L$，记 $I_h\subseteq I$ 为对所有 $g,\sigma$ 均满足 $\|\Theta_1P_g\phi\|_\sigma^2\le e^h$ 的整源形式之集. 由定理~\ref{thm:short-forms} 知 $\operatorname{span}_{\mathbb C} I_h=U$. 取定理~\ref{thm:enough-forms} 给出的有限子集 $T$. 由 $P_g$ 的线性性，$P_g(I_h)$ 张成 $P_g(U)$，从而
+\[
+ \operatorname{span}_{\mathbb C}\bigcup_{g\in T}P_g(I_h)
+ =\sum_{g\in T}\operatorname{im}P_g.
+\]
+从左端生成集中抽取一组基 $y=(y_1,\ldots,y_n)$. 由右端的维数下界及其包含于 $W$ 这一事实，得
+\[
+ (1-4/b^2)r\le n\le r.
+\]
+
+\emph{估计该向量族的余体积与局部格指数.}
+对任意 $\sigma$，记 $G_\sigma$ 为共轭后的像 $\Theta_1y_i$ 构成的 Gram 矩阵. 因每个 $y_i$ 均取自某个 $P_g(I_h)$，由 Hadamard 不等式有
+\[
+ |\det G_\sigma|\le\prod_{i=1}^{n}\|\Theta_1y_i\|^2_\sigma
+ \le(e^h)^n=e^{nh},
+\]
+从而 $\mathcal V_V(y)$ 对 $V=nh$ 成立. 又因 $I_h\subseteq I$，定理~\ref{thm:index-bound} 适用于 $y$；结合定理~\ref{thm:enough-forms} 中关于 $|T|$ 的上界与 $B\ge0$，可得局部格指数预算
+\[
+ 2|T|\dim_{\mathbb C}(U)B\le 10r\log(1+2b^2)B=:\delta.
+\]
+由局部格指数条件关于预算的单调性，即有 $\mathcal I_\delta(y)$.
+
+\emph{代入下界并消去公共主项.}
+至此，定理~\ref{thm:long-forms} 的维数、线性无关性以及余体积与指数条件均已满足. 代入 $V$ 与 $\delta$ 得
+\[
+ r(H-3L)\le n(H-mS+L)+20r\log(1+2b^2)B.
+\]
+由引理~\ref{lem:main-amount-lower} 知 $H\ge0$，又 $L>0$，故 $n(H+L)\le r(H+L)$，从而
+\[
+ rH-3rL\le rH+rL-nmS+20r\log(1+2b^2)B.
+\]
+两边消去 $rH$ 并移项，得 $nmS\le r(4L+20\log(1+2b^2)B)$.
+
+\emph{除以向量个数并吸收误差.}
+由容许数据条件知 $\log\ell\ge 10^{12}c_P$，其中 $c_P\ge64$ 为仅依赖于 $P$ 的常数，特别地 $\ell\ge128$ 且 $b=e^\ell\ge3$. 于是 $4/b^2\le1/2$，结合 $r>0$ 与 $n\ge(1-4/b^2)r$ 得 $n\ge r/2>0$. 注意误差项括号非负，两边同除以 $n$ 并利用 $r/n\le2$、$1+2b^2\le3b^2\le b^3$ 及 $L=\ell B$，即得
+\[
+\begin{aligned}
+ mS &\le \frac rn\bigl(4L+20\log(1+2b^2)B\bigr)\\
+    &\le 2(4+60)\ell B
+     =128\ell B\le \ell^2B=fa\ell^5 .
+\end{aligned}
+\]
+此即主不等式.
+\end{proof}
+
+\section{容许数据的构造与素数窗口}
+\label{sec:data-construction}
+
+式~\eqref{eq:ch1-star} 适用于任一给定的容许数据. 为导出尺度 $x$ 处的渐近估计，须对每个充分大的整数 $x$ 构造出同时满足全部尺度、位集与层条件的容许数据. 本节一方面借助去极点正则化建立幂模数的素数窗口定理，另一方面构造稀疏位集以控制位权碰撞.
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean}{175}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean\#L177}{正则化 Dirichlet $L$ 函数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L60}{Mathlib 的 Dirichlet $L$ 函数}.}
+\begin{definition}[去极点正则化 Dirichlet $L$ 函数]
+\label{def:regular-l}
+\emitthmsource
+对模 $q\ge1$ 的 Dirichlet 特征 $\chi$ 与 $\operatorname{Re}s>0$，定义去极点正则化 Dirichlet $L$ 函数（\emph{regularized Dirichlet $L$-function}）为
+\[
+ f_\chi(s)=
+ \begin{cases}
+  \widetilde L(s,\chi)/s,&\chi\text{ 为主特征},\\
+  \widetilde L(s,\chi),&\chi\text{ 非主特征},
+ \end{cases}
+\]
+其中 $\widetilde L(s,\chi)$ 见定义~\ref{def:entire-l}. 对主特征除以 $s$ 可在大 $|s|$ 处保持与 $L(s,\chi)$ 相同的增长阶，同时在半平面 $\operatorname{Re}s>0$ 内保持全纯.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{54}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L58}{稀疏条件}.}
+\begin{definition}[稀疏无穷位集]
+\label{def:sparse-places}
+\emitthmsource
+给定固定参数 $P$、塔指数 $s$、素数上界 $L$ 与分圆塔域 $E$ 的无穷位子集 $T\subseteq\Phi$，令 $l_0=3^{\lfloor\log_3 s\rfloor+4}$. 称 $T$ 为 $(s,L)$-稀疏集（\emph{sparse set}），若对每个素数 $p\le L$（记 $q'_p$ 为 $q_1$ 中与 $p$ 互素的最大因子），均不存在 $\sigma,\tau,\rho\in T$ 与整数 $0<i<j<l_0$，使得
+\[
+ c_{q'_p}(\tau/\sigma)\equiv\pm p^i,\qquad c_{q'_p}(\rho/\sigma)\equiv\pm p^j\pmod{q'_p}
+\]
+同时成立（两处符号可独立选取）. 构造容许数据时，将借助 Behrend 无三项等差数列集合来生成满足此条件的 $b$-位集 $\Phi_b$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean}{294}.}
+\begin{lemma}[去极点正则化 Dirichlet $L$ 函数的增长界]
+\label{lem:regular-l-growth}
+\emitthmsource
+设 $q\ge1$，$\chi$ 为模 $q$ 的 Dirichlet 特征，$f_\chi$ 为定义~\ref{def:regular-l} 中的去极点正则化函数，即主特征时取 $(z-1)L(z,\chi)/z$、非主特征时取 $L(z,\chi)$（在 $\Re z>0$ 上按全纯延拓理解）. 若 $\ell\ge10^{10}$ 且 $q\le e^\ell$，则
+\[
+ \Re s\ge 1-\ell^{-1},\quad |s|\le3e^\ell
+ \quad\Longrightarrow\quad |f_\chi(s)|\le\ell^2.
+\]
+\end{lemma}
+
+\begin{proof}
+当 $\chi$ 为主特征时置 $\delta=1$，否则置 $\delta=0$. 记 $\kappa=q^{-1}\sum_{j=1}^q\chi(j)$，则 $|\kappa|\le1$，且当 $\delta=0$ 时有 $\kappa=0$. 对 $t\ge1$，由周期性可写
+\[
+ \sum_{1\le j\le t}\chi(j)=\kappa t+r(t),\qquad |r(t)|\le2q .
+\]
+确切地，若记 $\lfloor t\rfloor=kq+a$（$0\le a<q$），则
+$r(t)=\sum_{j=1}^a\chi(j)-\kappa(a+t-\lfloor t\rfloor)$，其模不超过 $2q$.
+对 $\Re z>1$ 作分部求和，得
+\[
+ L(z,\chi)
+ =z\left(\frac{\kappa}{z-1}+\Phi(z)\right),
+ \qquad
+ \Phi(z)=\int_1^\infty r(t)t^{-z-1}\,dt .
+\]
+上述积分在 $\Re z>0$ 内局部一致收敛，且在任一紧子集上可用
+$2q(1+\log t)t^{-1-\epsilon}$ 控制被积函数及其关于 $z$ 的导数（其中 $\epsilon>0$ 为该紧子集实部的下界）.
+因而 $\Phi$ 在 $\Re z>0$ 上全纯；由恒等定理知 $f_\chi(z)=\kappa+(z-\delta)\Phi(z)$ 对一切 $\Re z>0$ 成立. 当 $\Re z\ge1/2$ 时，$|z-\delta|\le|z|$ 且
+$|\Phi(z)|\le2q/\Re z\le4q$，故
+\[
+ |f_\chi(z)|\le 1+4q|z| \qquad (\Re z\ge1/2).
+\]
+
+置 $R=e^\ell$、$a=\Re s+2/\ell-1/3$，在闭带形区域 $a\le\Re z\le a+1/3$ 上考察
+\[
+ g(z)=\frac{f_\chi(z)}{z-(s-2)}.
+\]
+该闭带位于 $\Re z>1/2$ 内，且满足 $|z-(s-2)|\ge1$. 由 $|s|\le3R$ 得
+$|z|\le |z-(s-2)|+3R+2\le 4R|z-(s-2)|$，从而
+\[
+ |g(z)|\le1+16R^2\le R^3.
+\]
+在右边界上，$\Re z\ge1+1/\ell$，又因 $|z-\delta|\le|z|$ 而有 $|f_\chi(z)|\le |L(z,\chi)|$，由绝对收敛的 Dirichlet 级数可得
+\[
+ |g(z)|\le\sum_{j\ge1} j^{-\Re z}
+   \le 1+\int_1^\infty t^{-1-1/\ell}\,dt=1+\ell .
+\]
+点 $s$ 距右边界的水平距离为 $2/\ell$，而带形区域的总宽度为 $1/3$. 由 Hadamard 三线定理（\emph{Hadamard three-lines theorem}），左、右边界在 $s$ 处对应的权重分别为 $6/\ell$ 与 $1-6/\ell$，因此
+\[
+ |f_\chi(s)|=2|g(s)|
+ \le 2(R^3)^{6/\ell}(1+\ell)^{1-6/\ell}
+ \le 2e^{18}(1+\ell)\le\ell^2.
+\]
+最后一步由 $e<3$ 与 $4\cdot3^{18}<10^{10}\le\ell$ 得出.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion.lean}{157}.}
+\begin{lemma}[带对数导数界的一致无零点区域]
+\label{lem:zero-free-region}
+\emitthmsource
+设 $\chi$ 为模 $q\ge1$ 的 Dirichlet 特征，满足 $\ell\ge10^{10}$ 且 $q\le e^\ell$，沿用 $f_\chi$ 表示其去极点正则化函数. 若 $\chi^2$ 为主特征，则另假设
+\[
+ |f_\chi(w)|\ge\ell^{-1}\qquad (|w-1|\le\ell^{-1}).
+\]
+记 $\mathcal L_\chi(s)=\widetilde L(s,\chi)$（见定义~\ref{def:entire-l}），则在区域
+\[
+ \Re s\ge 1-\ell^{-25},\qquad |s|\le e^\ell
+\]
+内有 $\mathcal L_\chi(s)\ne0$（即无零点区域，\emph{zero-free region}），且其对数导数（\emph{logarithmic derivative}）满足 $\bigl|\mathcal L_\chi'(s)/\mathcal L_\chi(s)\bigr|\le2\ell^{25}$.
+\end{lemma}
+
+\begin{proof}
+置 $R=e^\ell$、$\eta=\ell^{-25}$. 若 $\Re z\ge1-(2\ell)^{-1}$ 且 $|z|\le2R$，则以 $z$ 为圆心、$(2\ell)^{-1}$ 为半径的闭圆盘完全落入
+$\Re w\ge1-\ell^{-1}$、$|w|\le3R$ 内. 由引理~\ref{lem:regular-l-growth} 与 Cauchy 导数估计，有
+\[
+ |f_\chi'(z)|\le 2\ell^3.
+\]
+
+先在右侧区域 $\Re w\ge1+\eta$、$|w|\le 3R/2$ 内证明 $|f_\chi(w)|\ge12/\ell^{22}$.
+若 $\chi^2$ 为主特征且 $|w-1|\le\ell^{-1}$，则由题设与 $12/\ell^{22}\le\ell^{-1}$ 立得该界.
+其余情形下，记 $w=\sigma+it$、$w_2=\sigma+2it$，并以 $\chi_0$ 表示模 $q$ 的主特征，则 Euler 乘积（\emph{Euler product}）给出
+\[
+ |L(\sigma,\chi_0)|^3\,|L(w,\chi)|^4\,|L(w_2,\chi^2)|\ge1.
+\]
+事实上，取模的对数后左端化为对 $p\nmid q$、$j\ge1$ 的绝对收敛级数，其通项为
+$p^{-j\sigma}(3+4\cos\theta+\cos(2\theta))/j$（其中
+$e^{i\theta}=\chi(p)^j p^{-ijt}$），而括号内恰等于 $2(1+\cos\theta)^2\ge0$.
+
+下面分别估计三个因子. 第一个因子由 Dirichlet 级数直接估计，其模不超过
+$1+(\sigma-1)^{-1}\le2/\eta$.
+对第二个因子，若 $\chi$ 为主特征，则 $|w-1|\ge\ell^{-1}$，故
+$|w/(w-1)|\le1+\ell\le2\ell$；若 $\chi$ 非主特征，则 $L(w,\chi)=f_\chi(w)$.
+因此在两种情形下均有 $|L(w,\chi)|\le2\ell|f_\chi(w)|$.
+同理，第三个因子满足 $|L(w_2,\chi^2)|\le2\ell|f_{\chi^2}(w_2)|$，其中当 $\chi^2$ 为主特征时用到了
+$|w_2-1|\ge|w-1|\ge\ell^{-1}$. 又由 $|w_2|\le2|w|\le3R$ 及 $\Re w_2=\sigma$，引理~\ref{lem:regular-l-growth} 给出
+$|f_{\chi^2}(w_2)|\le\ell^2$. 将三项估计代入上述乘积不等式，得
+\[
+ \eta^3\le 256\ell^7 |f_\chi(w)|^4.
+\]
+由于 $256\cdot12^4\le\ell^6$ 且 $\eta^3=\ell^{-75}$，有
+$256\ell^7(12/\ell^{22})^4\le\eta^3$，由此即证右侧区域中的下界.
+
+对满足题设的点 $s$，取 $v=s+2\eta$，则 $\Re v\ge1+\eta$ 且 $|v|\le3R/2$.
+因为 $\eta\le(2\ell)^{-1}$ 且线段上各点的模均不超过 $R+2\eta\le2R$，连接 $s$ 与 $v$ 的线段完全位于上述导数界成立的区域内. 沿该线段积分得
+\[
+ |f_\chi(v)-f_\chi(s)|\le(2\ell^3)(2\eta)=4/\ell^{22},
+ \qquad |f_\chi(s)|\ge 8/\ell^{22},
+\]
+从而 $f_\chi(s)\ne0$ 且 $|f_\chi'(s)/f_\chi(s)|\le\ell^{25}/4$.
+
+若 $\chi$ 非主特征，则 $\mathcal L_\chi=f_\chi$；若 $\chi$ 为主特征，则 $\mathcal L_\chi(s)=s f_\chi(s)$，而 $|s|\ge\Re s\ge1/2$，故仍有 $\mathcal L_\chi(s)\ne0$，且对数导数仅增加 $1/s$（其模不超过 $2$）. 两种情形均满足上界 $2\ell^{25}$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion.lean}{193}.}
+\begin{lemma}[固定特征的无零点区域]
+\label{lem:fixed-character-zero-free-region}
+\emitthmsource
+固定模 $q\ge1$ 的 Dirichlet 特征 $\chi$，记 $\mathcal L_\chi(s)=\widetilde L(s,\chi)$（见定义~\ref{def:entire-l}）. 对一切充分大的实数 $\ell$，在区域
+$\Re s\ge1-\ell^{-25}$、$|s|\le e^\ell$ 内均有
+\[
+ \mathcal L_\chi(s)\ne0,\qquad
+ |\mathcal L_\chi'(s)/\mathcal L_\chi(s)|\le2\ell^{25}.
+\]
+\end{lemma}
+
+\begin{proof}
+对固定特征 $\chi$，由 Dirichlet $L$ 函数在 $s=1$ 处的非零性及主特征在 $s=1$ 处的非零留数，知 $f_\chi(1)\ne0$. 由连续性，存在 $c,\delta>0$，使得当 $|s-1|\le\delta$ 时 $|f_\chi(s)|\ge c$. 取 $\ell$ 充分大，满足 $\ell\ge10^{10}$、$q\le e^\ell$ 及 $\ell^{-1}\le\min(c,\delta)$，则引理~\ref{lem:zero-free-region} 的各项假设全部成立，结论即得.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/Primes.lean}{133}.}
+\begin{lemma}[幂模数特征在 $1$ 附近的一致估计]
+\label{lem:prime-window-disc}
+\emitthmsource
+设 $M$ 为 $4$ 的正整数倍，$A\in\mathbb N$ 固定，记 $\mathcal L_\chi(s)=\widetilde L(s,\chi)$（见定义~\ref{def:entire-l}）. 对一切充分大的实数 $X$，对所有满足 $k>1$ 且 $M^k\le X^A$ 的 $k\in\mathbb N$、所有模 $M^k$ 的 Dirichlet 特征 $\chi$ 以及所有满足 $|s-1|\le X^{-1}$ 的 $s\in\mathbb C$，均有
+\[
+ \mathcal L_\chi(s)\ne0,\qquad
+ \left|\frac{\mathcal L'_\chi(s)}{\mathcal L_\chi(s)}\right|\le X .
+\]
+\end{lemma}
+
+\begin{proof}
+先确立一个降模性质. 若 $\chi^2=1$，则 $\chi$ 在 $(\mathbb Z/M^k\mathbb Z)^\times$ 的一切平方元上均取值 $1$. 因模数 $M^k$ 与 $M^2$ 具有相同的素因子，自然约化 $(\mathbb Z/M^k\mathbb Z)^\times\to(\mathbb Z/M^2\mathbb Z)^\times$ 为满射. 记 $R=\mathbb Z/M^k\mathbb Z$，任取核中的单位 $u=1+M^2t$，置 $a=M(M/4)t\in MR$，并在 $R$ 中构造迭代
+\[
+ c_0=0,\qquad c_{j+1}=a-c_j^2 .
+\]
+易见所有 $c_j\in MR$，且 $c_1-c_0\in MR$. 由递推关系
+$c_{j+1}-c_j=-(c_j+c_{j-1})(c_j-c_{j-1})$ 归纳可得 $c_{j+1}-c_j\in M^{j+1}R$. 因 $M^kR=0$，迭代经有限步到达不动点 $c\in R$，满足 $c+c^2=a$，进而 $(1+2c)^2=1+4a=u$. 由于 $u$ 是单位，$1+2c$ 亦为单位. 故 $\chi$ 在约化核上恒为 $1$，从而可由某个模 $M^2$ 的特征 $\chi_0$ 拉回得到.
+
+将 $\chi_0$ 与 $\chi$ 延拓为整数上的 Dirichlet 特征后二者逐点相等，因为它们在单位上的取值借约化一致，且在相同的非单位集上取零. 于是二者在 $\Re s>1$ 上的 Dirichlet 级数相同，是否为主特征亦一致，从而相应的整函数与去极点正则化函数满足 $\mathcal L_\chi=\mathcal L_{\chi_0}$ 及 $f_\chi=f_{\chi_0}$.
+
+由 Dirichlet $L$ 函数在 $1$ 处的非零性及主特征的非零留数，对每个模 $M^2$ 的特征 $\chi_0$ 均有 $f_{\chi_0}(1)\ne0$. 由于模 $M^2$ 的特征仅构成固定的有限族，由连续性存在 $\delta,c_*>0$，使得对所有这些特征一致成立
+\[
+ |w-1|\le\delta\quad\Longrightarrow\quad |f_{\chi_0}(w)|\ge c_* .
+\]
+
+现应用引理~\ref{lem:zero-free-region}. 对 $q=M^k$，取 $\ell=(A+1)\log X$. 当 $X$ 充分大时，有
+\[
+ q\le X^A\le e^\ell,\qquad
+ \ell\ge10^{10},\qquad
+ \ell^{-1}\le\min(\delta,c_*),\qquad
+ 2\ell^{25}\le X .
+\]
+结合上述降模性质与模 $M^2$ 特征的一致下界，引理~\ref{lem:zero-free-region} 对二次特征所要求的条件亦获满足. 当 $|s-1|\le X^{-1}$ 时，由 $2\ell^{25}\le X$ 知
+$\Re s\ge1-X^{-1}\ge1-\ell^{-25}$ 且 $|s|\le1+X^{-1}\le e^\ell$.
+于是引理~\ref{lem:zero-free-region} 立即给出所需的非零性与对数导数上界.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/Primes.lean}{386}.}
+\begin{lemma}[固定底数幂模数的素数窗口]
+\label{lem:prime-window}
+\emitthmsource
+设 $M$ 为 $4$ 的正整数倍，$A\in\mathbb N$ 固定. 对一切充分大的实数 $W$，如下性质关于 $k$ 与 $U$ 一致成立：若
+\[
+ k\in\mathbb N,\qquad 1<k,\qquad
+ M^k\le W^A,\qquad W\le U\le W^A,
+\]
+则存在素数 $p$ 满足 $p\equiv1\pmod{M^k}$ 且 $U\le\log p\le U+W$.
+\end{lemma}
+
+\begin{proof}
+置 $X=\sqrt W$、$q=M^k$，则 $X^2\le U\le X^{2A}$ 且 $q\le X^{2A}$. 取 $X\ge200$，记
+\[
+ a_j=\mathbf1_{j\equiv1\pmod q}\Lambda(j),\qquad
+ b_j=\mathbf1_{j\text{ 不是素数}}\Lambda(j)
+ \qquad(j\ge1),
+\]
+其中 $\Lambda$ 为 von Mangoldt 函数. 因 $b_j$ 仅在指数不小于 $2$ 的素数幂处可能非零，故
+\[
+ C:=\sum_{j\ge1}\frac{b_j}{j^{3/4}}
+   =\sum_p\sum_{v\ge2}\frac{\log p}{p^{3v/4}}
+   \le\frac{1}{1-2^{-3/4}}\sum_{j\ge2}\frac{\log j}{j^{3/2}}
+   <\infty .
+\]
+以下进一步要求 $X\ge C$.
+
+对模 $q$ 的 Dirichlet 特征 $\chi$，仍记 $\mathcal L_\chi(s)=\widetilde L(s,\chi)$（见定义~\ref{def:entire-l}），并定义
+\[
+ F(z)=\frac{1}{\varphi(q)}
+      \left(1-z\sum_{\chi\bmod q}
+        \frac{\mathcal L'_\chi(1+z)}{\mathcal L_\chi(1+z)}\right).
+\]
+在 $\Re z>0$ 上，Euler 乘积给出 $\sum_{j\ge1}\chi(j)\Lambda(j)j^{-1-z}=-L'(1+z,\chi)/L(1+z,\chi)$.
+对模 $q$ 的全部特征取平均，正交关系筛出同余类 $1\pmod q$，而去除主特征极点产生项 $1/z$，于是
+\[
+ \sum_{j\ge1}a_j j^{-1-z}=F(z)/z \qquad(\Re z>0).
+\]
+对指数 $2A$ 应用引理~\ref{lem:prime-window-disc}，可知在闭圆盘 $|z|\le1/X$ 上每个 $\mathcal L_\chi(1+z)$ 均非零，且其对数导数的模不超过 $X$. 因而 $F$ 在该闭圆盘的某邻域内全纯，满足 $F(0)=1/\varphi(q)$ 及
+\[
+ |F(z)|\le\frac{1+\varphi(q)}{\varphi(q)}\le2
+ \qquad (|z|\le1/X).
+\]
+
+反设窗口 $[U,U+W]$ 内不含满足条件的素数. 对满足 $U\le\log j\le U+X^2$ 的整数 $j$，若 $j$ 为素数则 $a_j=0$，若 $j$ 为合数则 $a_j\le\Lambda(j)=b_j$，故整个窗口内恒有 $a_j\le b_j$. 定义
+\[
+ P(z)=\sum_{j<e^U}a_j j^{-1-z},\qquad
+ H(z)=2-Uz-\frac X4(1+Xz)^2,\qquad
+ G(z)=\bigl(F(z)-zP(z)\bigr)e^{-H(z)}.
+\]
+下面估计 $G(z)$ 在圆周 $|z|=1/X$ 上的模.
+令 $u=\Re z$、$t=X^2(1+Xu)/2$；由 $|z|=1/X$ 知 $0\le t\le X^2\le U$，且
+\[
+ \Re(1+Xz)^2=2Xu(1+Xu),\qquad
+ h:=\Re H(z)=2-(U+t)u .
+\]
+置 $\sigma=1/U\le1/X$. 由于 $a_j\ge0$，在实点 $z=\sigma$ 处由 Dirichlet 级数得
+\[
+ \sum_{j\ge1} a_j j^{-1-\sigma}
+   =U F(1/U)\le2U .
+\]
+
+若 $u\le\sigma$，则 $t u\le t/U\le1$，故 $h\ge0$ 且
+$U(\sigma-u)=1-Uu\le h$. 从而对所有 $j<e^U$ 有 $(\sigma-u)\log j\le h$，两端乘以 $a_j j^{-1-\sigma}$ 并求和即得 $|P(z)|\le2Ue^h$，于是
+\[
+ |F(z)-zP(z)|\le 2+(2U/X)e^h\le3Ue^h.
+\]
+
+若 $u>\sigma$，则由级数的绝对收敛性有
+$F(z)/z-P(z)=\sum_{j\ge e^U}a_j j^{-1-z}$. 当 $\log j>U+X^2$ 时，因 $\sigma-u<0$，有
+\[
+ (\sigma-u)\log j\le(\sigma-u)(U+t)
+ =1+t/U-(U+t)u\le h,
+\]
+故该部分尾和的模不超过 $2Ue^h$. 当 $U\le\log j\le U+X^2$ 时，由 $u\le1/X$ 得 $tu\le U/X\le U/4$，从而
+\[
+ (-1/4-u)\log j\le -U/4-Uu\le h.
+\]
+在此范围内利用 $a_j\le b_j$，可得 $|a_j j^{-1-z}|\le e^h b_jj^{-3/4}$，其和不超过 $Ce^h$.
+结合 $C\le X\le U$ 与 $|z|\le1$，同样得到 $|F(z)-zP(z)|\le3Ue^h$.
+
+综合两种情形，圆周 $|z|=1/X$ 上恒有 $|G(z)|\le3U$，由最大模原理推知 $|G(0)|\le3U$. 另一方面，
+\[
+ |G(0)|=\frac{e^{X/4-2}}{\varphi(q)}.
+\]
+当 $X$ 充分大时 $e^{X/4-2}>3X^{4A}$，而 $U\varphi(q)\le Uq\le X^{4A}$，从而 $|G(0)|>3U$，矛盾. 上述全部阈值仅依赖于 $M$ 与 $A$，故结论关于 $k$ 与 $U$ 一致成立.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/Existence.lean}{77}.}
+\begin{lemma}[Behrend 指数集]
+\label{lem:behrend-exponents}
+\emitthmsource
+设 $n,H,J,o\in\mathbb N$，满足 $J>0$ 且 $(JH)^n\le o$. 则存在子集 $S\subseteq\{0,\ldots,o-1\}$，使得
+\[
+ |S|\ge\frac{H^n}{nH^2},
+\]
+并且对任意 $e_1,e_2,e_3\in S$ 及满足 $\alpha+\beta\le J$ 的正整数 $\alpha,\beta$，同余式
+\[
+ (\alpha+\beta)e_2\equiv\alpha e_1+\beta e_3\pmod o
+\]
+必蕴含 $e_1=e_2=e_3$. 上述基数下界沿用 Lean 的实数除法约定（分母为零时右端取零）.
+\end{lemma}
+
+\begin{proof}
+若 $nH=0$，取空集即可. 以下设 $n,H\ge1$. 立方体 $\{0,\ldots,H-1\}^n$ 共含 $H^n$ 个整点，其欧氏平方范数 $\|u\|^2$ 取值于 $0$ 至 $n(H-1)^2$ 之间的整数，至多有 $n(H-1)^2+1\le nH^2$ 种可能.
+由抽屉原理，存在落在同一球面上的整点子集 $V$，其基数满足 $|V|\ge H^n/(nH^2)$.
+
+以 $B=JH$ 为底，将每个 $u=(u_0,\ldots,u_{n-1})\in V$ 编码为
+$e(u)=\sum_{j=0}^{n-1}u_j B^j$. 当 $B=1$ 时立方体仅含单点，否则由 $B$ 进制表示的唯一性可知该编码为单射.
+又因 $u_j<H\le B$，有 $e(u)\in[0,B^n)\subseteq[0,o)$. 令 $S=e(V)$，则其基数与范围均合乎要求.
+
+设 $e_1=e(u)$、$e_2=e(v)$、$e_3=e(w)$ 满足题设同余式. 在同余式两端的 $B$ 进制展开中，各位数字均不超过
+$(\alpha+\beta)(H-1)<B$，故加权求和不会产生进位，且两端均落入 $[0,B^n)\subseteq[0,o)$.
+于是同余式化为整数等式，逐位比较得 $(\alpha+\beta)v=\alpha u+\beta w$.
+结合 $\|u\|^2=\|v\|^2=\|w\|^2$，有
+\[
+ 0
+ =\alpha\|u\|^2+\beta\|w\|^2-(\alpha+\beta)\|v\|^2
+ =\frac{\alpha\beta}{\alpha+\beta}\|u-w\|^2 .
+\]
+从而 $u=w$，再由加权等式得 $v=u$，故 $e_1=e_2=e_3$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/Existence.lean}{482}.}
+\begin{lemma}[由秩和尺度参数构造稀疏位集]
+\label{lem:sparse-places-ranks}
+\emitthmsource
+固定 $P=(q_0,d)$. 设 $m,r,s,n\in\mathbb N$ 及 $y,W\in\mathbb R$ 满足
+\[
+\begin{gathered}
+ 2\le y,\qquad 0<n,\qquad 10^6 y\le W\le e^{y/2}\le m,\qquad
+ r\le 3 e^{5y},\\
+ 2^s=m^{22}\le W^n,\qquad s\le32y,\qquad
+ (5184y)^n\le W,\qquad 7776yn2^n\le W .
+\end{gathered}
+\]
+令 $l_0=3^{\lfloor\log_3 s\rfloor+4}$、$A_s=3l_0 2^s$ 及 $q_1=q_0A_s$（其中整数对数在 $s=0$ 时约定取零），并令 $B_r=(r+1-m)5r$（其中减法为自然数减法）.
+记 $\Phi(s)$ 为 $E=K(\zeta_{q_1})$ 的无穷位群，借分圆坐标与 $(\mathbb Z/q_1\mathbb Z)^\times$ 等同. 则存在（Behrend--Shapira 型~\cite{Behrend1946,Shapira2006}）子集 $T\subseteq\Phi(s)$，其元素模 $q_0$ 均落于剩余类 $-1$，满足 $A_s\le|T|W^6$，且对任意素数 $\lambda\le B_r$ 与整数 $0<i<j<l_0$，均不存在 $\sigma,\tau,\rho\in T$ 使得模 $q_1$ 中与 $\lambda$ 互素的最大因子同时满足 $\tau/\sigma\equiv\pm\lambda^i$ 与 $\rho/\sigma\equiv\pm\lambda^j$（两处符号可独立选取）.
+\end{lemma}
+
+\begin{proof}
+先将秩条件转化为指数集的参数估计. 由 $1<W\le m\le m^{22}=2^s$ 知 $s\ge1$，故
+$l_0\le81s\le2592y$，从而
+\[
+ (2l_0)^n\le(5184y)^n\le W,\qquad
+ 3l_0 n2^n\le7776yn2^n\le W\le W^3 .
+\]
+因 $m\ge1$，自然数减法满足 $r+1-m\le r$，进而
+$B_r+1\le 5r^2+1\le46 e^{10y}$.
+结合 $10^6y\le W\le e^{y/2}\le e^y$，可得
+\[
+ 2l_0(B_r+1)
+ \le 2\cdot2592y\cdot46e^{10y}
+ <10^6y e^{10y}\le e^{11y}\le m^{22}=2^s .
+\]
+
+选取 $2$ 的幂 $H\ge1$，使得 $H^n\le2^s/W<(2H)^n$；由于 $n>0$ 且 $W\le2^s$，这样的 $H$ 必然存在.
+又由 $2^s\le W^n$ 得 $H\le W$，且
+\[
+ (2l_0H)^n\le WH^n\le2^s.
+\]
+对参数 $J=2l_0$、$o=2^s$ 应用引理~\ref{lem:behrend-exponents}，即得指数集 $S\subseteq[0,2^s)$，满足相应的加权同余性质及 $|S|\ge H^n/(nH^2)$.
+
+将 $\Phi(s)$ 等同于 $(\mathbb Z/q_1\mathbb Z)^\times$，记 $g$ 为 $1+3l_0q_0$ 对应的剩余类. 因 $q_1$ 的素因子全整除 $q_0$，故 $g$ 为单位类.
+写 $q_0=2^v q_0'$（$q_0'$ 为奇数），由 $4\mid q_0$ 知 $v\ge2$. 整数 $1+3l_0q_0$ 形如 $1+2^v a$（$a$ 为奇数），且 $2^{s+v}\mid q_1$.
+以 $\nu_p$ 记 $p$-进赋值，逐次平方即得
+\[
+ \nu_2\bigl((1+2^v a)^{2^j}-1\bigr)=v+j\qquad(j\ge0).
+\]
+归纳时将新差分解为前一幂之差与之和；因前一幂模 $4$ 同余于 $1$，其和恰被 $2$ 整除一次. 由此可见 $g$ 在模 $2^{s+v}$ 下的阶恰为 $2^s$.
+
+令 $T=\{-g^e:e\in S\}$. 由 $g$ 的阶知，当 $e$ 遍历 $[0,2^s)$ 时各幂互异，故 $|T|=|S|$；又因 $g\equiv1\pmod{q_0}$，$T$ 中元素模 $q_0$ 均为 $-1$. 所需基数下界由下式给出：
+\[
+ A_s=3l_0 2^s
+ <3l_0 2^n H^n W
+ =\frac{H^n}{nH^2}(3l_0 n2^n)W H^2
+ \le |T| W^6 .
+\]
+
+最后验证稀疏性. 反设存在 $\sigma=-g^{e_1}$、$\tau=-g^{e_2}$、$\rho=-g^{e_3}\in T$，对某个素数
+$\lambda\le B_r$ 与 $0<i<j<l_0$ 同时满足两条禁止的同余式. 若 $\lambda=2$，将第一条同余式约化至模
+$3l_0=3^c$（其中 $c=\lfloor\log_3 s\rfloor+5$）；因 $g\equiv1\pmod{3l_0}$，两边平方得 $4^i\equiv1\pmod{3^c}$.
+然而 $4$ 在模 $3^c$ 下的阶为 $3^{c-1}=l_0$：这是因为对任意 $u\equiv1\pmod3$，$u^2+u+1$ 的 $3$-进赋值恰为 $1$，故由
+$u^3-1=(u-1)(u^2+u+1)$ 归纳可得 $\nu_3(4^{3^a}-1)=1+a$. 于是 $l_0\mid i$，与 $0<i<l_0$ 矛盾.
+
+若 $\lambda$ 为奇素数，则两条同余式在模 $2^{s+v}$ 下均成立. 分别取 $2j$ 次幂与 $2i$ 次幂以消去正负号，得
+\[
+ g^{2j(e_2-e_1)}\equiv g^{2i(e_3-e_1)}
+ \pmod{2^{s+v}}.
+\]
+由 $g$ 的阶化为指数同余
+\[
+ 2j e_2\equiv 2(j-i)e_1+2i e_3\pmod{2^s}.
+\]
+两系数 $2(j-i)$ 与 $2i$ 均为正整数且其和 $2j<2l_0$，由指数集 $S$ 的性质必得 $e_1=e_2=e_3$.
+将第一条禁止同余式约化至模 $2^{s+1}$ 并平方，遂有 $\lambda^{2i}\equiv1\pmod{2^{s+1}}$.
+取 $\epsilon\in\{1,-1\}$ 使 $u=\epsilon\lambda\equiv1\pmod4$，则由逐次平方及奇次幂因式分解可得
+\[
+ \nu_2(u^{2i}-1)=\nu_2(u-1)+\nu_2(2i).
+\]
+具体而言，将 $2i$ 写作 $2^h b$（$b$ 为奇数），每次平方使 $2$-进赋值恰增 $1$，而取 $b$ 次幂时伴随因子为奇数. 因 $u^{2i}=\lambda^{2i}$，故
+$2^{s+1}\mid (\lambda-\epsilon)2i$，特别地
+\[
+ 2^s\le(\lambda+1)(2i)\le (B_r+1)2l_0<2^s,
+\]
+再次得出矛盾. 由此排除了所有禁止的三元同余.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/Existence.lean}{812}.}
+\begin{lemma}[从大尺度构造容许数据]
+\label{lem:admissible-construction}
+\emitthmsource
+固定参数 $P=(q_0,d)$. 设 $x$ 为正整数，$n\in\mathbb N$，记 $y=\log x$，并设实数 $W$ 满足
+\[
+\begin{gathered}
+ 100(6\log W+1)\le y,\qquad 10^{12}c_P\le\log W,\qquad
+ 2\cdot10^6y\le W,\qquad 2h_K+2\le W,\\
+ 0<n,\qquad n+1\le W,\qquad 99q_0dy\le n\log W,\\
+ (5184y)^n\le W,\qquad 7776yn2^n\le W,
+\end{gathered}
+\]
+其中 $c_P$ 为固定参数常数，$h_K$ 为虚二次域 $K=\mathbb Q(\sqrt{-d})$ 的类数. 记 $Q=q_0d$，假设对每个满足 $k>1$、$Q^k\le W^{n+7}$ 的整数 $k$ 以及每个 $U\in[W,W^{n+7}]$，均存在素数 $p$ 满足
+\[
+ p\equiv1\pmod{Q^k},\qquad U\le\log p\le U+W.
+\]
+则存在如下一组容许对象：取 $m$ 与 $r$ 分别为不小于 $\sqrt{x}$ 的最小 $2$ 的幂与不小于 $x^5$ 的最小 $3$ 的幂，令 $2^s=m^{22}$，并记
+\[
+ A_s=3^{\lfloor\log_3 s\rfloor+5}2^s,
+ \qquad q_1=q_0 A_s,\qquad q_2=Q^{s+6},\qquad E=K(\zeta_{q_1})
+\]
+（其中幂次里的整数对数在 $s=0$ 时约定取零）. 令 $x_1=\lfloor e^W\rfloor$，取 $b$ 为严格大于 $e^{W^6}$ 的最小 $q_1x_1$ 倍数. 则存在 $E$ 的无穷位子集 $T$，其各元素模 $q_0$ 均同余于 $-1$，满足 $A_s\le |T|\log b$，且对所有不超过 $(r+1-m)5r$ 的素数满足前文定义的稀疏条件；同时存在相异素数 $g_0,g_1\in[b^{10},b^{11}]$、素数 $N$ 以及代数整数 $\alpha\in\mathcal O_K$、$\beta\in\mathcal O_E$，满足
+\[
+ g_0,g_1,N\equiv1\pmod{q_2^2},\qquad
+ \alpha\bar\alpha=g_0g_1,\qquad \beta\bar\beta=N .
+\]
+记 $\Phi(s)$ 为 $E$ 的全体无穷位之集，$\ell=\log b$，$M=g_0g_1$，$R_E$ 为 $E$ 的根判别式，并置
+\[
+ \kappa(\tau)=
+ \begin{cases}
+ b,&\tau\in T,\\
+ xb/x_1,&\tau\notin T,
+ \end{cases}
+ \qquad
+ N_{\log}=\frac{m}{|\Phi(s)|}\sum_{\tau\in\Phi(s)}\log\kappa(\tau)
+     +(m-1)\log\frac{MR_E}{2\pi}-\frac{15}{2}\ell .
+\]
+则 $N_{\log}\le\log N\le N_{\log}+\sqrt \ell$.
+\end{lemma}
+
+\begin{proof}
+由 $W\ge n+1\ge2$ 及第一条尺度条件，可得 $y\ge100$ 与 $\log W\le y/2$. 取所述最小幂 $m=2^a$、$r=3^c$（$a,c>0$）并令 $s=22a$；因低一阶的幂小于相应阈值，故有
+\[
+ e^{y/2}\le m\le 2e^{y/2},\qquad
+ e^{5y}\le r\le3e^{5y},\qquad
+ 2^s=m^{22},\qquad
+ s\le22+\frac{11y}{\log 2}\le32y,
+\]
+最后一步用到了 $\log 2\ge1/2$ 与 $y\ge100$.
+
+由 $6\mid Q$ 及 $\lfloor\log_3 s\rfloor\le s$，得
+\[
+ q_1d=Q\,3^{\lfloor\log_3 s\rfloor+5}2^s\mid Q^{s+6}=q_2 .
+\]
+另一方面 $s+6\le33y$，从而
+\[
+ \log(q_2^2)=2(s+6)\log Q\le66yQ\le99yQ\le n\log W.
+\]
+于是
+\[
+ 2^s\le q_1d\le q_2^2\le W^n,\qquad
+ W\le e^{y/2}\le m\le2^s\le W^n.
+\]
+
+现对参数 $y,W,m,r,s,n$ 应用引理~\ref{lem:sparse-places-ranks}：其所需的各项尺度与秩不等式均已由题设大尺度条件及上述估计满足，故存在元素模 $q_0$ 均为 $-1$ 的子集 $T\subseteq\Phi(s)$，满足 $A_s\le|T|W^6$ 以及对一切素数 $\lambda\le(r+1-m)5r$ 的稀疏条件.
+
+令 $x_1=\lfloor e^W\rfloor$、$u=q_1x_1$. 由 $n+1\le W$ 与 $\log W\le W$，有
+\[
+ 0<u\le W^n e^W\le e^{(n+1)W}\le e^{W^2}\le e^{W^6}.
+\]
+故 $b=u(\lfloor e^{W^6}/u\rfloor+1)$ 确为严格大于 $e^{W^6}$ 的最小 $u$ 倍数，且
+\[
+ e^{W^6}<b\le e^{W^6}+u\le2e^{W^6},\qquad
+ W^6\le \ell\le W^6+1 .
+\]
+由此即得 $A_s\le |T|\ell$. 因 $W\ge y$、$x$ 为整数且 $x_1\mid b$，有 $1\le x\le x_1\le b$，故全部位权 $\kappa(\tau)$ 均为 $[1,b]$ 中的整数. 此外还有
+\[
+ W^2\le \ell,\qquad 7\le \ell,\qquad q_1d\le W^n\le b,\qquad
+ 24\ell\le48W^6\le W^7 ,
+\]
+其中末步用到了 $W\ge2\cdot10^6y\ge2\cdot10^8$.
+
+对每个 $U\in[\ell,24m\ell]$，均有 $\ell\ge W$、$24m\ell\le W^{n+7}$ 及 $q_2^2=Q^{2(s+6)}\le W^n$，故题设素数窗口假设均适用，且所得素数皆模 $q_2^2$ 同余于 $1$. 由 $2h_K+2\le W$ 与 $W^2\le \ell$ 得 $(2h_K+2)W\le \ell$. 对 $i=0,\ldots,h_K$，在起点为
+$10\ell+2iW$ 的窗口内各选取素数 $p_i$. 这些窗口均包含于 $[10\ell,11\ell]$ 且相邻窗口至少相隔 $W>0$，故 $p_i$ 两两相异且均落入 $[b^{10},b^{11}]$.
+
+因 $q_1d\mid q_2^2$，各素数均满足 $p_i\equiv1\pmod{q_1d}$. 特别地 $p_i\equiv1\pmod d$，故 $\chi_K(p_i)=1$，从而主理想
+$(p_i)=\mathfrak p_i\mathfrak p'_i$ 在 $K$ 中分裂为两个范数为 $p_i$ 的素理想之积. 这 $h_K+1$ 个理想 $\mathfrak p_i$ 中必有两个落入同一理想类，取相应的 $i\ne j$. 由 $[\mathfrak p'_j]=[\mathfrak p_j]^{-1}$ 知乘积 $\mathfrak p_i\mathfrak p'_j$ 为主整理想；任取其整数生成元 $\alpha\in\mathcal O_K$，并置 $g_0=p_i$、$g_1=p_j$，则
+\[
+ \alpha\bar\alpha
+ =\operatorname{N}_{K/\mathbb Q}(\mathfrak p_i\mathfrak p'_j)
+ =g_0g_1.
+\]
+这里左端元素范数为正，因而等于主理想的绝对范数.
+
+最后记 $R_E=|\operatorname{disc}E|^{1/[E:\mathbb Q]}$. 分圆塔的差积理想包含 $q_1d$，故
+$\mathfrak D_{E/\mathbb Q}\mid(q_1d)$；取理想范数得 $|\operatorname{disc}E|\le(q_1d)^{[E:\mathbb Q]}$，即 $1\le R_E\le q_1d\le b$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/PrimeDecomposition.lean\#L253}{分圆塔的差积理想}.}
+
+位权对数的均值落于 $[0,\ell]$ 内，且 $M=g_0g_1\in[b^{20},b^{22}]$. 结合 $1\le2\pi\le e^\ell=b$，可得
+\[
+ 19\ell\le\log\frac{MR_E}{2\pi}\le23\ell .
+\]
+于是
+\[
+ m\ell\le \bigl(19(m-1)-15/2\bigr)\ell
+ \le N_{\log}
+ \le \bigl(m+23(m-1)-15/2\bigr)\ell\le24m\ell ,
+\]
+其中第一个不等号用到了 $m\ge2$. 在以 $N_{\log}$ 为起点的素数窗口内取素数 $N\equiv1\pmod{q_2^2}$，则
+$N_{\log}\le\log N\le N_{\log}+W\le N_{\log}+\sqrt \ell$.
+由 $4\mid q_0\mid q_2^2$ 得 $N\equiv1\pmod4$，按 Fermat 二平方和定理可写
+$N=a_0^2+a_1^2$. 又因 $4\mid q_1$，域 $E$ 中含代数整数 $\iota=\zeta_{q_1}^{q_1/4}$，满足 $\iota^2=-1$ 及 $\bar\iota=-\iota$. 置 $\beta=a_0+a_1\iota\in\mathcal O_E$，即有 $\beta\bar\beta=N$. 至此，全部条件均已满足.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/Existence.lean}{729}.}
+\begin{lemma}[由容许对象构造容许数据]
+\label{lem:admissible-fields}
+\emitthmsource
+固定参数 $P$、正整数 $x$ 与 $n\in\mathbb N$，设 $W$ 为 $y=\log x$ 关于指数 $n$ 的大尺度. 给定 $x$ 与 $W$ 处的一组容许对象
+\[
+ (m,r,s,b,T,(g_0,g_1),\alpha,N,\beta),
+\]
+则可由上述对象组装出一组容许数据 $D$，其三个整数尺度依次为 $x$、$x_1=\lfloor e^W\rfloor$ 与 $b$，且满足
+\[
+ W-1\le\log x_1,\qquad W^6\le\log b\le W^6+1 .
+\]
+\end{lemma}
+
+\begin{proof}
+记 $x_1=\lfloor e^W\rfloor$、$\ell=\log b$. 大尺度条件蕴含 $W\ge n+1\ge2$、$y\ge100$ 及 $W\ge2\cdot10^6y$. 由 $\lfloor e^W\rfloor\ge e^W-1\ge e^W/2$ 及 $\log 2\le1$，得
+\[
+ W-1\le\log x_1\le W .
+\]
+由容许对象的最小幂条件，存在正整数 $a,c$ 使 $m=2^a$、$r=3^c$；比较低一阶幂与相应阈值，可得
+\[
+ e^{y/2}\le m\le2e^{y/2},\qquad
+ e^{5y}\le r\le3e^{5y},\qquad
+ s=22a\le22+\frac{11y}{\log2}\le32y ,
+\]
+其中 $s=22a$ 源自 $2^s=m^{22}$. 结合 $q_1d\mid q_2^2$、大尺度条件及 $s+6\le33y$，有
+\[
+ \log(q_2^2)=2(s+6)\log(q_0d)\le99q_0dy\le n\log W,\qquad
+ q_1\le W^n.
+\]
+置 $u=q_1x_1$，则 $u\le W^ne^W\le e^{W^2}\le e^{W^6}$. 因 $b$ 为严格大于 $e^{W^6}$ 的最小 $u$ 倍数，故
+\[
+ e^{W^6}<b\le e^{W^6}+u\le2e^{W^6}.
+\]
+连续取两次对数并利用 $W\ge1$，得
+\[
+ W^6\le \ell\le W^6+1,\qquad
+ 6\log W\le\log \ell\le 6\log W+1 .
+\]
+
+为构造 $D$，将三个对数尺度依次取为 $y$、$\log x_1$ 与 $\ell$，其指数恰为给定的三个整数尺度. 所需的五条对数约束依次由
+\[
+\begin{aligned}
+ 10^{12}c_P &\le \log W\le 6\log W\le\log \ell,\\
+ 100\log \ell &\le100(6\log W+1)\le y,\\
+ 10^6y &\le W-1\le\log x_1,\\
+ 10^6\log x_1 &\le10^6W\le W^2\le \ell,\\
+ 6\log\log x_1 &\le 6\log W\le\log \ell
+\end{aligned}
+\]
+保证，其中第三、四行用到了 $y\ge100$ 与 $W\ge2\cdot10^6y$，末行用到了 $0<\log x_1\le W$.
+将步数、秩与塔指数分别取为 $m,r,s$，上述幂次范围即给出相应参数约束，且 $u\mid b$ 蕴含所需的整除条件. 取 $b$-位集为 $T$，令位权在 $T$ 上取 $b$、其余位上取 $xb/x_1$，则该位权与定义 $N_{\log}$ 所用位权逐点一致. 其余关于剩余类、位集基数、稀疏性、主同余层素数及 $\alpha\bar\alpha$、分歧层素数 $N$ 及 $\beta\bar\beta$ 的全部条件均直接承自容许对象的性质. 由此即得所求容许数据 $D$，并附带已证的两条尺度估计.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Data/Existence.lean}{890}.}
+\begin{lemma}[容许数据的构造与尺度]
+\label{lem:data-existence}
+\emitthmsource
+固定参数 $P=(q_0,d)$ 与 $0<\eta<1/100$. 对每个充分大的整数 $x$，存在第一尺度为 $x$ 的容许数据 $D$，满足
+\[
+ x_1=\lfloor\exp(x^{\eta/6})\rfloor,\qquad
+ x^{\eta/6}-1\le \log x_1,\qquad x^\eta\le\log b\le x^\eta+1,
+\]
+其中 $b$ 为严格大于 $\exp(x^\eta)$ 的最小 $q_1x_1$ 倍数（$q_1$ 为 $D$ 的分圆塔模数），$m$ 为不小于 $\sqrt{x}$ 的最小 $2$ 的幂，目标秩 $r_0$ 为不小于 $x^5$ 的最小 $3$ 的幂.
+\end{lemma}
+\begin{proof}
+置 $W=x^{\eta/6}$、$w=\log x$，首先核验构造数据所需的大尺度假设. 取定正整数 $n$ 满足 $n\eta/6>99q_0d$，则当 $x$ 充分大时
+\[
+ 99q_0dw\le n\log W,\qquad
+ 100(6\log W+1)=100\eta w+100\le w.
+\]
+记 $h_K$ 为 $K=\mathbb Q(\sqrt{-d})$ 的类数，$c_P$ 为仅依赖于固定参数的常数；由 $W\to\infty$ 知当 $x$ 充分大时 $W\ge2h_K+2$、$W\ge n+1$ 且 $\log W\ge10^{12}c_P$. 再由对任意固定整数 $j$ 均有 $(\log x)^j=o(x^{\eta/6})$，可得
+\[
+ W\ge 2\cdot10^6w,\qquad W\ge(5184w)^n,\qquad
+ W\ge7776wn2^n.
+\]
+至此大尺度假设全部成立.
+
+令 $M=q_0d$，则 $4\mid M$. 对指数 $n+7$ 应用引理~\ref{lem:prime-window}，可知当 $W$ 充分大时，对每个满足 $k>1$ 且 $M^k\le W^{n+7}$ 的整数 $k$ 以及每个 $V\in[W,W^{n+7}]$，均存在素数 $p\equiv1\pmod{M^k}$ 满足 $V\le\log p\le V+W$. 由 $W=x^{\eta/6}\to\infty$，当 $x$ 充分大时上述素数窗口条件与大尺度假设同时成立.
+
+据此应用引理~\ref{lem:admissible-construction} 得到相应的容许对象，再由引理~\ref{lem:admissible-fields} 将其组装为容许数据 $D$，满足 $x_1=\lfloor e^W\rfloor$、$W-1\le\log x_1$ 及 $W^6\le\log b\le W^6+1$. 将 $W=x^{\eta/6}$ 代入即得全部结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{69}.}
+\begin{lemma}[容许尺度的存在]
+\label{lem:data-scales}
+\emitthmsource
+固定参数 $P$ 与 $0<\eta<1/100$. 对每个充分大的整数 $x$，均存在第一尺度为 $x$ 的容许数据 $D$，满足
+\[
+ \ell\le2x^\eta,\qquad \sqrt{x}\le m,\qquad
+ \log x_1\ge x^{\eta/12}.
+\]
+\end{lemma}
+\begin{proof}
+应用引理~\ref{lem:data-existence}，对每个充分大的整数 $x$ 均存在第一尺度为 $x$ 的容许数据 $D$，满足 $m\ge\sqrt{x}$ 以及
+\[
+ x^{\eta/6}-1\le \log x_1,\qquad x^\eta\le\log b\le x^\eta+1.
+\]
+当 $x\ge1$ 时显然有 $x^\eta+1\le2x^\eta$，故 $\ell=\log b\le2x^\eta$. 进一步取 $x$ 充分大，使 $v=x^{\eta/12}\ge2$，则由 $v^2-1-v=v(v-1)-1\ge1$ 可得 $x^{\eta/6}-1=v^2-1\ge v$，从而 $\log x_1\ge x^{\eta/12}$. 至此三项估计在同一组容许数据 $D$ 上同时成立.
+\end{proof}
+
+\section{从双尺度恒等式得到单侧界}
+\label{sec:one-sided-bound}
+
+从双尺度恒等式~\eqref{eq:ch1-remainder-eq} 中解出 $R_{d,q_0}(x)$ 后，含总余项 $S$ 的项由主不等式控制，而大尺度 $x_1$ 处的两个余项则由固定模数的带权素数定理控制. 本节由此导出整数点上的单侧界，并进一步过渡至一般实数点.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{27}.}
+\begin{lemma}[归一化的双尺度上界]
+\label{lem:normalized}
+\emitthmsource
+对每组容许数据，
+\[
+ R_{d,q_0}(x)\le\frac{\varphi(q_0)\ell^6}{m}
+                     +|R_{d,q_0}(x_1)|+\ell|R_{d,1}(x_1)|.
+\]
+\end{lemma}
+\begin{proof}
+由容许数据的位计数关系知 $A=|\Phi_a|=q_1/q_0>0$、$f=\varphi(q_0)A$，且稀疏位集基数条件给出 $A\le J\ell$（其中 $J=|\Phi_b|$，$\ell>0$），从而 $J>0$. 记 $u=A/J$，则 $0<u\le\ell$. 又因 $a,m>0$，将双尺度恒等式~\eqref{eq:ch1-remainder-eq} 两边同除以 $aJ$ 并移项，得
+\[
+ R_{d,q_0}(x)
+ =\frac{S}{aJ}+R_{d,q_0}(x_1)-uR_{d,1}(x_1).
+\]
+结合主不等式~\eqref{eq:ch1-star} 与 $maJ>0$，有
+\[
+ \frac{S}{aJ}\le\frac{fa\ell^5}{maJ}
+   =\frac{\varphi(q_0)u\ell^5}{m}
+   \le\frac{\varphi(q_0)\ell^6}{m}.
+\]
+再由 $R_{d,q_0}(x_1)\le |R_{d,q_0}(x_1)|$ 与
+$-uR_{d,1}(x_1)\le u|R_{d,1}(x_1)|\le\ell|R_{d,1}(x_1)|$，将三项相加即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/PrimeNumberTheorem.lean}{212}.}
+\begin{lemma}[固定模数的带权素数定理]
+\label{lem:weighted-pnt}
+\emitthmsource
+设 $d$ 为奇素数，$q\ge1$ 且 $(q,d)=1$. 给定整数 $K\ge0$，对一切充分大的实数 $z$ 有
+\[
+ |R_{d,q}(z)|\le(\log z)^{-K}.
+\]
+\end{lemma}
+\begin{proof}
+记 $\lambda_q(n)=\mathbf 1_{n\equiv1\pmod q}\Lambda(n)(1-(n/d))$、
+$E(y)=\sum_{n\le y}\lambda_q(n)-y/\varphi(q)$ 及 $C=C_{d,q}$. 由
+$0\le\lambda_q(n)\le2\Lambda(n)$ 与 Chebyshev 界 $\sum_{n\le y}\Lambda(n)\le6y$，
+可得 $|E(y)|\le13y$. 对 $y\ge1$ 逐项积分有限和，有
+\[
+ R_{d,q}(y)=\int_1^y E(t)t^{-2}\,dt-C .
+\]
+因而函数 $r(v)=R_{d,q}(e^v)$ 在 $v\ge0$ 上可测，且满足 Lipschitz 估计
+\[
+ |r(v)-r(u)|
+ \le \int_{e^u}^{e^v}|E(t)|t^{-2}\,dt
+ \le13(v-u),\qquad 0\le u\le v .
+\]
+
+记 $G(s)=G_{d,q}(s)$、$F(s)=G(s)/s$. 在 $\operatorname{Re}s>1$ 内，由特征正交性与 Euler 乘积的对数导数可得
+\[
+ \sum_{n\ge1}\frac{\lambda_q(n)}{n^s}
+ =G(s)+\frac{s}{\varphi(q)(s-1)}.
+\]
+其中模 $q$ 的唯一主特征贡献了极点修正项 $1/(s-1)$，而乘以模 $d$ 的二次特征后所得各扭转均非主特征——这一点可由中国剩余定理验证，只需取一个模 $q$ 同余于 $1$、模 $d$ 为二次非剩余的整数即可. 将上式限制于实轴 $s>1$ 可知 $G(s)$ 取实值；结合下文在 $s=1$ 附近的解析性，即得 $F(1)=G(1)=C$. 对 $\operatorname{Re}s>2$ 作分部积分，利用 $R_{d,q}(1)=-C$ 与前述积分表示，有
+\[
+\begin{aligned}
+ \int_0^\infty r(v)e^{(1-s)v}\,dv
+ &=\int_1^\infty R_{d,q}(y)y^{-s}\,dy\\
+ &=\frac{1}{s-1}\left(
+ \frac{1}{s}\sum_{n\ge1}\frac{\lambda_q(n)}{n^s}
+       -\frac{1}{\varphi(q)(s-1)}-C\right)
+ =\frac{F(s)-F(1)}{s-1}.
+\end{aligned}
+\]
+此处由 $R_{d,q}(y)=O(1+\log y)$ 知无穷远边界项为零，而求和与积分的交换在绝对收敛半平面内合法.
+
+现对上述有限多个原特征及其二次扭转应用引理~\ref{lem:fixed-character-zero-free-region}：当 $l$ 充分大时，在区域
+$\operatorname{Re}s\ge1-l^{-25}$、$|s|\le e^l$ 内，这些特征对应的去极点 $L$ 函数均非零，且对数导数的模不超过 $2l^{25}$. 记 $N$ 为模 $q$ 的特征个数，则在较窄区域
+\[
+ \operatorname{Re}s\ge1-l^{-26},\qquad |s|\le e^l
+\]
+内有 $|s|\ge\operatorname{Re}s\ge1/2$，从而 $F$ 在此全纯；按 $G$ 的定义，当 $l$ 充分大时满足
+\[
+ |F(s)|\le 2(4Nl^{25}+1)\le (8N+2)l^{25}\le l^{26}.
+\]
+
+最后由上述解析上界反推逐点估计. 置
+\[
+ \Psi(s)=\frac{F(s)-F(1)}{s-1},
+ \quad k=\lfloor u^{2K+4}\rfloor,
+ \quad H=\frac{k+1}{u},\quad l=(2K+5)\log u,\quad \epsilon=l^{-26},
+\]
+并在 $s=1$ 处以可去奇点延拓 $\Psi$. 取 $u$ 充分大使得 $H>1$；在 $s=1+H$ 处对变换公式求 $k$ 阶导数，得
+\[
+ Z_u:=\frac{(-H)^k H}{k!}\Psi^{(k)}(1+H)
+  =\int_0^\infty r(v)\frac{H^{k+1}v^k e^{-Hv}}{k!}\,dv .
+\]
+在 $1+H$ 的充分小邻域内，指数衰减支配了 $r(v)$ 的线性增长与求导产生的幂因子，故求导与积分可交换. 上述积分核为概率密度函数，由 $\int_0^\infty v^j e^{-Hv}\,dv=j!H^{-j-1}$ 可直接算得其均值为 $(k+1)/H=u$、方差为 $(k+1)/H^2=u^2/(k+1)$. 结合 Lipschitz 估计与 Cauchy--Schwarz 不等式，得
+\[
+ |Z_u-r(u)|\le13\frac{u}{\sqrt{k+1}}\le13u^{-K-1}.
+\]
+
+另一方面，以 $1+H$ 为圆心、$H+\epsilon$ 为半径的闭圆盘完全落入上述解析区域内：其最小实部为 $1-\epsilon$，且圆盘上各点的模不超过 $1+2H+\epsilon\le u^{2K+5}=e^l$. 在圆周上 $|s-1|\ge\epsilon$，故 $|\Psi(s)|\le 2l^{26}/\epsilon=2l^{52}$. 由 Cauchy 系数估计得
+\[
+ |Z_u|\le2Hl^{52}(1+\epsilon/H)^{-k}
+        \le2Hl^{52}e^{-u\epsilon/4},
+\]
+其中末步用到了 $\log(1+t)\ge t/2$（$0\le t\le1$）以及 $k/H\ge u/2$. 因 $H=O(u^{2K+3})$ 且 $u\epsilon/\log u\to\infty$，只要进一步取 $u$ 充分大，右端即不超过 $u^{-K-1}$. 将两项估计相加得 $|r(u)|\le14u^{-K-1}\le u^{-K}$，代入 $u=\log z$ 即证结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{91}.}
+\begin{lemma}[大尺度处的余项]
+\label{lem:second-scale}
+\emitthmsource
+固定参数 $P$ 与 $\eta>0$. 对一切充分大的整数 $x$ 以及所有 $u\ge x^{\eta/12}$，均有
+\[
+ |R_{d,q_0}(e^u)|\le x^{-2},\qquad |R_{d,1}(e^u)|\le x^{-2}.
+\]
+\end{lemma}
+\begin{proof}
+对模数 $q_0$ 与 $1$ 应用固定模数的带权素数定理（引理~\ref{lem:weighted-pnt}）. 记 $h=q_0/2$，因 $18480\mid q_0$ 知 $h$ 为偶数，故 $d\equiv h-1\pmod{2h}$ 为奇素数，且 $(d,q_0)=(h-1,2h)=(h-1,2)=1$；模数 $1$ 显然亦满足互素条件.
+
+取 $K=\lceil24/\eta\rceil$，由引理~\ref{lem:weighted-pnt} 存在共同阈值 $Y>1$，使得对一切实数 $y\ge Y$ 均有 $|R_{d,q}(y)|\le(\log y)^{-K}$（$q\in\{q_0,1\}$）. 因 $x^{\eta/12}\to\infty$，对一切充分大的整数 $x$ 满足 $x\ge1$ 且 $x^{\eta/12}\ge\log Y$. 于是对任意 $u\ge x^{\eta/12}$，有 $e^u\ge Y$，从而
+\[
+ |R_{d,q}(e^u)|\le u^{-K}
+ \le (x^{\eta/12})^{-K}=x^{-\eta K/12}\le x^{-2},
+ \qquad q\in\{q_0,1\},
+\]
+最后一步用到了 $x\ge1$ 与 $\eta K/12\ge2$. 上述对 $x$ 的阈值与 $u$ 无关，故结论对所有此类 $u$ 一致成立.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{119}.}
+\begin{lemma}[整数点处的单侧上界]
+\label{lem:integer-bound}
+\emitthmsource
+固定参数 $P$ 与 $0<\eta<1/100$. 对一切充分大的整数 $x$，
+\[
+ R_{d,q_0}(x)\le \bigl(64\varphi(q_0)+3\bigr)x^{-1/2+6\eta}.
+\]
+\end{lemma}
+\begin{proof}
+取充分大的整数 $x\ge1$，使引理~\ref{lem:data-scales} 与引理~\ref{lem:second-scale} 的条件同时成立. 由引理~\ref{lem:data-scales} 取第一尺度为 $x$ 的容许数据 $D$，满足 $m\ge\sqrt{x}$、$0<\ell\le2x^\eta$ 及 $\log x_1\ge x^{\eta/12}$. 在引理~\ref{lem:second-scale} 中取 $u=\log x_1$，即得 $|R_{d,q_0}(x_1)|\le x^{-2}$ 与 $|R_{d,1}(x_1)|\le x^{-2}$. 代入引理~\ref{lem:normalized} 的归一化上界，有
+\[
+ \begin{aligned}
+ R_{d,q_0}(x)
+ &\le \frac{\varphi(q_0)(2x^\eta)^6}{\sqrt{x}}
+       +x^{-2}+2x^\eta x^{-2}\\
+ &=64\varphi(q_0)x^{-1/2+6\eta}+x^{-2}+2x^{-2+\eta}.
+ \end{aligned}
+\]
+由于 $-2\le -1/2+6\eta$ 且 $-2+\eta\le -1/2+6\eta$，结合 $x\ge1$ 可知后两项分别不超过 $x^{-1/2+6\eta}$ 与 $2x^{-1/2+6\eta}$，合并系数即得 $64\varphi(q_0)+3$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{197}.}
+\begin{theorem}[素数余项的单侧上界]
+\label{thm:one-sided}
+\emitthmsource
+对任意 $\varepsilon>0$ 与固定参数 $P$，一切充分大的实数 $y$ 均满足
+\begin{equation}
+ R_{d,q_0}(y)\le y^{-1/2+\varepsilon}.
+\label{eq:ch1-onesided}
+\end{equation}
+\end{theorem}
+\begin{proof}
+先控制取整带来的误差. 记 $R=R_{d,q_0}$、$A(t)=\sum_{n\le t}\lambda_{q_0}(n)$ 及 $E(t)=A(t)-t/\varphi(q_0)$. 由 $0\le\lambda_{q_0}(n)\le2\Lambda(n)$ 与 Chebyshev 界 $\sum_{n\le t}\Lambda(n)\le6t$，有
+\[
+ |E(t)|\le 12t+t/\varphi(q_0)\le13t,\qquad t\ge0.
+\]
+对 $z\ge1$，逐项应用积分 $\int_n^z t^{-2}\,dt=1/n-1/z$ 并结合 $\Lambda(1)=0$，得
+\[
+ R(z)=\int_1^z E(t)t^{-2}\,dt-C_{d,q_0}.
+\]
+故当 $y\ge2$ 且 $x=\lfloor y\rfloor$ 时，由 $1\le y/2\le x\le y$ 与 $0\le y-x<1$ 可得
+\[
+ R(y)-R(x)
+   \le \int_x^y |E(t)|t^{-2}\,dt
+   \le 13(y-x)/x\le26/y.
+\]
+此步仅依赖有限和的积分恒等式与 Chebyshev 界，与两尺度余项的符号无关.
+
+令 $\eta=\min\{1/200,\varepsilon/7\}$、$C=64\varphi(q_0)+3$ 及 $t_0=-1/2+6\eta$，则 $0<\eta<1/100$、$7\eta\le\varepsilon$ 且 $-1\le t_0\le0$. 注意由 $d+1\equiv q_0/2\pmod{q_0}$ 可知 $q_0\mid2(d+1)$ 且 $q_0\nmid d+1$，故固定参数 $P$ 满足引理~\ref{lem:integer-bound} 的要求. 当 $y$ 充分大时，其下取整 $x=\lfloor y\rfloor$ 超过引理~\ref{lem:integer-bound} 的阈值，从而 $R(x)\le Cx^{t_0}$. 由负幂函数的单调性得 $x^{t_0}\le(y/2)^{t_0}=2^{-t_0}y^{t_0}\le2y^{t_0}$，同时 $y^{-1}\le y^{t_0}$，故
+\[
+ R(y)\le Cx^{t_0}+26y^{-1}\le (2C+26)y^{t_0}.
+\]
+进一步取 $y$ 充分大使 $y^\eta\ge2C+26$，结合 $y\ge1$ 即得 $R(y)\le y^{t_0+\eta}=y^{-1/2+7\eta}\le y^{-1/2+\varepsilon}$.
+\end{proof}
+
+\section{特征 Theta 级数和二次扭转零点计数}
+\label{sec:twist-density}
+
+欲由单侧界~\eqref{eq:ch1-onesided} 推出无零点结论，须避免原特征与二次扭转在留数公式中相互抵消. 本节先由 Poisson 求和导出特征 Theta 级数的反演公式与尾积分估计~\cite{Davenport2000,MontgomeryVaughan2007}，再借二次符号均方界（相关的实特征均值理论参见 Heath-Brown~\cite{HeathBrown1995}）选取素数 $d$，使全部相关二次扭转在指定矩形区域内同时无零点.
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{34}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/DirichletTheta.lean\#L35}{特征 theta 级数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/QuadraticTwist.lean\#L61}{theta 尾积分}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Analysis/MellinTransform.lean\#L91}{Mathlib 的 Mellin 变换}.}
+\begin{definition}[特征 Theta 级数与尾积分]
+\label{def:char-theta-series}
+\emitthmsource
+对奇偶指标 $j\in\{0,1\}$，定义 Gauss 权函数 $w_j(u)=u^j e^{-\pi u^2}$. 对满足 $|c(n)|\le1$ 的复数列 $c\colon\mathbb N\to\mathbb C$ 及实数 $u>0$，定义特征 Theta 级数（\emph{character theta series}）与其尾积分（\emph{theta tail integral}）为
+\[
+ \theta_{j,c}(u)=\sqrt{u}\sum_{n\ge1}c(n)w_j(nu),\qquad
+ J_j(c,T)=\int_{1/T}^\infty
+ \bigl(|\theta_{j,c}(u)|+|\theta_{j,\mu c}(u)|\bigr)\frac{du}{u},
+\]
+其中 $\mu$ 为 Möbius 函数（\emph{Möbius function}）. 权函数 $w_j$ 的 Mellin 变换记作 $\Gamma_j(s)=\int_0^\infty w_j(u)u^s\,\frac{du}{u}$. 下文另记 $n_{\mathrm{odd}}$ 为正整数 $n$ 的奇数部分，$\mathrm J$ 为 Jacobi 符号（\emph{Jacobi symbol}）.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/EntireLFunction.lean}{72}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/EntireLFunction.lean\#L76}{极点型函数的定义}.}
+\begin{definition}[极点型函数]
+\label{def:polar-function}
+\emitthmsource
+设 $E\colon\mathbb R\to\mathbb R$ 为可测函数，$r\colon\mathbb C\to\mathbb C$ 为留数函数. 称 $E$ 为带留数 $r$ 的极点型函数（\emph{polar function}），若存在常数 $C$ 与全平面亚纯函数 $\Phi$，使得：
+\begin{itemize}
+\item 指数增长界：对所有 $v\ge0$ 有 $|E(v)|\le Ce^v$；
+\item 变换表示：对 $\operatorname{Re}s>2$ 有 $\Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv$；
+\item 简单极点与留数：在右半平面 $\operatorname{Re}\rho>0$ 内，$\Phi$ 至多有简单极点，且 $\lim_{z\to\rho}(z-\rho)\Phi(z)=r(\rho)$.
+\end{itemize}
+对 $E(v)=R_{d,q}(e^v)$，该变换即为 $\int_1^\infty R_{d,q}(y)y^{-s}\,dy$.
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{265}.}
+\begin{lemma}[Gauss 权函数的 Poisson 求和公式]
+\label{lem:gaussian-poisson}
+\emitthmsource
+对任意 $u>0$ 与 $a\in\mathbb R$，
+\[
+ \sum_{n\in\mathbb Z} e^{2\pi ian}w_j(n/u)
+   =i^j u\sum_{n\in\mathbb Z}w_j((n+a)u),
+\]
+且左右两端的级数均绝对收敛.
+\end{lemma}
+\begin{proof}
+取 Fourier 变换核为 $e^{-2\pi i x\xi}$，并记
+$g(x)=e^{-\pi x^2}$. 由 $g'(x)=-2\pi xg(x)$，
+在 Fourier 积分内关于 $\xi$ 求导并对 $x$ 分部积分，得
+$\widehat g'(\xi)=-2\pi\xi\widehat g(\xi)$.
+结合 Gauss 积分 $\widehat g(0)=1$，知 $\widehat g(\xi)=e^{-\pi\xi^2}$；
+进而 $\widehat{xg}(\xi)=-\widehat g'(\xi)/(2\pi i)=-i\xi e^{-\pi\xi^2}$.
+故统一有 $\widehat w_j=(-i)^jw_j$.
+
+令 $f(x)=w_j(ux)$，则 $\widehat f(\xi)=u^{-1}\widehat w_j(\xi/u)$.
+对 $f$ 在 $a$ 处的周期化应用经典 Poisson 求和公式（\emph{Poisson summation formula}），得
+\[
+ \sum_{n\in\mathbb Z}f(n+a)
+ = \sum_{n\in\mathbb Z}e^{2\pi ina}\widehat f(n)
+ =\frac{(-i)^j}{u}\sum_{n\in\mathbb Z}e^{2\pi ina}w_j(n/u).
+\]
+Gauss 衰减保证了左右两端的绝对收敛，整理系数即得所求公式.
+\end{proof}
+
+记 $A_c(u)=\sum_{n\ge1}c(n)w_j(nu)$，使得 $\theta_{j,c}(u)=\sqrt u\,A_c(u)$.
+对模 $q$ 的特征 $\chi$，记其逆离散 Fourier 变换为
+\[
+ \check\chi(n)=\frac1q\sum_{a\bmod q}\chi(a)e^{2\pi ian/q}.
+\]
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{357}.}
+\begin{lemma}[特征 Theta 级数的模变换公式]
+\label{lem:theta-poisson-classes}
+\emitthmsource
+设 $\chi$ 为模 $q$ 的非主特征且 $\chi(-1)=(-1)^j$，则对任意 $u>0$ 有
+\[
+ u\,|A_\chi(u)|=|A_{\check\chi}(1/(qu))|.
+\]
+\end{lemma}
+\begin{proof}
+将整数求和按模 $q$ 剩余类拆分. 对每个代表元 $a$，在引理~\ref{lem:gaussian-poisson} 中
+取尺度 $qu$ 与平移 $a/q$，得
+\[
+ \sum_{n\in\mathbb Z} e^{2\pi ian/q}w_j(n/(qu))
+ =i^jqu\sum_{h\in\mathbb Z}w_j((qh+a)u).
+\]
+两端同乘 $\chi(a)/q$ 并对 $a\bmod q$ 求和，左端即化为 $\sum_{n\in\mathbb Z}\check\chi(n)w_j(n/(qu))$，
+右端化为 $i^j u\sum_{n\in\mathbb Z}\chi(n)w_j(nu)$；
+因系数有界且权函数具 Gauss 衰减，求和次序可自由交换.
+
+显然 $\chi(0)=0$；又因非主特征在单位群上的和为零（任取单位 $b$ 使 $\chi(b)\ne1$，将指标乘以 $b$ 即知该和等于自身的 $\chi(b)$ 倍），故 $\check\chi(0)=0$.
+代换 $a\mapsto-a$ 给出 $\check\chi(-n)=(-1)^j\check\chi(n)$.
+结合 $\chi$ 的奇偶性与 $w_j(-v)=(-1)^jw_j(v)$ 可知，两个双向级数的零项消失且正负项逐对相等，两端同除以 $2$ 得
+\[
+ A_{\check\chi}(1/(qu))=i^j u A_\chi(u).
+\]
+取模即证结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{395}.}
+\begin{lemma}[本原特征 Theta 和的反演]
+\label{lem:theta-primitive-symmetry}
+\emitthmsource
+设 $\chi$ 为模 $q$ 的本原非主特征（\emph{primitive character}，其导子 \emph{conductor} 即为 $q$）. 若 $\chi(-1)=(-1)^j$，则对一切 $u>0$ 有
+\[
+ |\theta_{j,\chi}(1/(qu))|=|\theta_{j,\chi}(u)|.
+\]
+\end{lemma}
+\begin{proof}
+记 $e_q(v)=e^{2\pi iv/q}$，并以 $\tau(\chi)=\sum_{a\bmod q}\chi(a)e_q(a)$ 表示其 Gauss 和（\emph{Gauss sum}）.
+先证 $q\check\chi(n)=\overline{\chi(n)}\tau(\chi)$. 当 $(n,q)=1$ 时，作代换 $a\mapsto n^{-1}a$ 立得；
+否则任取素因子 $p\mid(q,n)$，由于单位群的模约化 $(\mathbb Z/q\mathbb Z)^\times\to(\mathbb Z/(q/p)\mathbb Z)^\times$ 为满射，由 $\chi$ 的本原性存在模 $q$ 的单位 $b$，
+满足 $b\equiv1\pmod{q/p}$ 且 $\chi(b)\ne1$. 此时 $q\mid n(b-1)$，指数因子在 $a\mapsto ba$ 下不变，
+故 $q\check\chi(n)=\chi(b)q\check\chi(n)$，两端同为零.
+
+由有限 Fourier 正交性，
+\[
+ \sum_{n\bmod q}|q\check\chi(n)|^2=q\sum_{a\bmod q}|\chi(a)|^2=q\varphi(q).
+\]
+代入上述关系得 $\varphi(q)|\tau(\chi)|^2=q\varphi(q)$，从而 $|\tau(\chi)|=\sqrt q$.
+将 $\check\chi(n)=q^{-1}\tau(\chi)\bar\chi(n)$ 代入引理~\ref{lem:theta-poisson-classes} 证明中的复等式，
+并除以 $\sqrt{qu}$，得
+\[
+ \theta_{j,\chi}(u)=\frac{i^{-j}\tau(\chi)}{\sqrt q}\,
+                         \theta_{j,\bar\chi}(1/(qu)).
+\]
+因 $w_j$ 取实值，有 $\theta_{j,\bar\chi}(v)=\overline{\theta_{j,\chi}(v)}$，取模即得结论.
+\end{proof}
+
+令
+\[
+ \Gamma_j(s)=\int_0^\infty w_j(u)u^s\,\frac{du}{u}
+              =\frac12\pi^{-(s+j)/2}\Gamma((s+j)/2)
+ \qquad(\operatorname{Re}s>0),
+\]
+其中第二个等号由换元 $v=\pi u^2$ 得出.
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{462}.}
+\begin{lemma}[特征 Theta 函数的 Mellin 公式]
+\label{lem:theta-mellin}
+\emitthmsource
+设 $\chi$ 为模 $q$ 的非主特征且 $\chi(-1)=(-1)^j$.
+当 $\operatorname{Re}s>0$ 时，$\theta_{j,\chi}$ 在 $s-1/2$ 处的 Mellin 变换（\emph{Mellin transform}）积分绝对收敛，且
+\[
+ \int_0^\infty\theta_{j,\chi}(u)u^{s-1/2}\frac{du}{u}
+   =\Gamma_j(s)L(s,\chi).
+\]
+\end{lemma}
+\begin{proof}
+对任意满足 $|c(n)|\le1$ 的系数列，当 $v>0$ 时有 $|w_j(v)|\le3e^{-2v}$：
+当 $j=0$ 时利用 $2v-\pi v^2\le1/\pi$，当 $j=1$ 时结合 $v\le e^{v-1}$ 可得指数上界为 $9/(4\pi)-1$.
+由此
+\[
+ |A_c(u)|\le 3\sum_{n\ge1}e^{-2nu}
+ =\frac{3}{e^{2u}-1}\le\frac{3e^{-u}}{u},
+\]
+其中最后一步用到 $e^{2u}-1=2e^u\sinh u\ge2ue^u$.
+因逆离散 Fourier 变换为 $q$ 项平均，有 $|\check\chi(n)|\le1$；
+由引理~\ref{lem:theta-poisson-classes}，对 $0<u\le1$ 有
+$|A_\chi(u)|\le 3q e^{-1/(qu)}$，而对 $u\ge1$ 直接有 $|A_\chi(u)|\le 3e^{-u}/u$. 合并两段即得 $|A_\chi(u)|\le 3eq e^{-u}$.
+
+设 $\sigma=\operatorname{Re}s>0$. 由
+$\theta_{j,\chi}(u)u^{s-1/2}=A_\chi(u)u^s$ 及上述估计，积分绝对收敛. 在半平面 $\operatorname{Re}s>0$ 的任一紧子集上，
+以该子集的最小与最大实部分别控制 $0<u\le1$ 与 $u\ge1$ 处的幂次，
+乘以 $\log u$ 的任意固定次幂后仍可积，故积分在 $\operatorname{Re}s>0$ 内定义全纯函数.
+
+当 $\sigma>1$ 时，作换元 $v=nu$ 得
+\[
+ \sum_{n\ge1}\int_0^\infty |\chi(n)w_j(nu)|u^\sigma\,\frac{du}{u}
+ \le \Gamma_j(\sigma)\sum_{n\ge1} n^{-\sigma}<\infty ,
+\]
+故可逐项积分而得 $\Gamma_j(s)\sum_{n\ge1}\chi(n)n^{-s}=\Gamma_j(s)L(s,\chi)$.
+由于非主特征的 $L(s,\chi)$ 与 $\Gamma_j(s)$ 均在 $\operatorname{Re}s>0$ 上全纯，由恒等定理即将等式延拓至整个右半平面 $\operatorname{Re}s>0$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{488}.}
+\begin{lemma}[本原特征 Theta 积分的折叠]
+\label{lem:theta-integral-fold}
+\emitthmsource
+若 $\chi$ 为导子 $q$ 的本原非主特征且 $\chi(-1)=(-1)^j$，则
+\[
+ \int_0^\infty|\theta_{j,\chi}(u)|\frac{du}{u}
+ =2\int_{q^{-1/2}}^\infty|\theta_{j,\chi}(u)|\frac{du}{u}.
+\]
+\end{lemma}
+\begin{proof}
+在引理~\ref{lem:theta-mellin} 中取 $s=1/2$ 即知左端积分绝对收敛.
+变量替换 $u\mapsto v=1/(qu)$ 将区间 $(0,q^{-1/2})$ 反向双射至 $(q^{-1/2},\infty)$，
+且满足 $du/u=-dv/v$. 由引理~\ref{lem:theta-primitive-symmetry}，两对应点处 Theta 函数的模相等，
+故两段积分相等，合并即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{199}.}
+\begin{lemma}[由尾积分控制零点处的 Gamma 因子]
+\label{lem:theta-three-lines}
+\emitthmsource
+对每个奇偶指标 $j\in\{0,1\}$ 均存在常数 $C_j>0$，使得如下结论成立：若 $\chi$ 为导子 $q$ 的本原非主特征，满足 $\chi(-1)=(-1)^j$，$\eta,T>0$，$q\le T^2$ 且 $J_j(\chi,T)\le T^{2\eta}$，则 $L(s,\chi)$ 在区域 $1/2+9\eta\le\operatorname{Re}s\le1$ 内的每个零点 $s$ 都满足
+\[
+ |\Gamma_j(s)|^2\le C_j T^{-2\eta}.
+\]
+\end{lemma}
+\begin{proof}
+定义
+\[
+ \mathcal M(z)=\int_{1/T}^\infty \theta_{j,\mu\chi}(u)u^{z-1/2}\frac{du}{u},
+ \qquad
+ \Psi(z)=\Gamma_j(z)L(z,\chi)\mathcal M(z)-\Gamma_j(z)^2.
+\]
+在右边界 $\operatorname{Re}z=2$ 上，$\Gamma_j(z)L(z,\chi)$ 与 $\Gamma_j(z)/L(z,\chi)$ 分别是 $\theta_{j,\chi}$ 与 $\theta_{j,\mu\chi}$ 乘以 $u^{z-1/2}$ 的全 Mellin 积分（逐项积分并利用 $1/L(z,\chi)=\sum_{n\ge1}\mu(n)\chi(n)n^{-z}$ 即得）. 对任一有界系数列 $|c(n)|\le1$，利用 $|w_j(t)|\le3e^{-2t}$ 与 $e^{2u}-1=2e^u\sinh u\ge2ue^u$，有
+\[
+ |\theta_{j,c}(u)u^{z-3/2}|
+ \le 3u\sum_{n\ge1}e^{-2nu}\le 3e^{-u}.
+\]
+由此得 $|\Gamma_j(z)L(z,\chi)|\le3$；另一方面，$\Gamma_j(z)/L(z,\chi)-\mathcal M(z)$ 恰为 $0<u\le1/T$ 上的积分，其模不超过 $3/T$. 两式相乘即得右边界上的估计 $|\Psi(z)|\le9/T$.
+
+在左边界 $\operatorname{Re}z=1/2$ 上，由引理~\ref{lem:theta-mellin} 与引理~\ref{lem:theta-integral-fold}，并注意到 $q^{-1/2}\ge T^{-1}$，可得
+\[
+ |\Gamma_j(z)L(z,\chi)|
+ \le 2\int_{q^{-1/2}}^\infty|\theta_{j,\chi}(u)|\,\frac{du}{u}
+ \le 2J_j(\chi,T).
+\]
+同一边界上显然亦有 $|\mathcal M(z)|\le J_j(\chi,T)$. 由引理~\ref{lem:theta-mellin} 的一致可积界，$\Gamma_j(z)L(z,\chi)$ 在闭带 $1/2\le\operatorname{Re}z\le2$ 上有界且在开带内全纯；$\mathcal M(z)$ 因积分绝对收敛与大 $u$ 处的指数衰减亦在闭带有界、开带全纯；而 $\Gamma_j$ 的 Mellin 积分给出仅依赖于 $j$ 的闭带上界 $G$.
+
+由假设 $J_j(\chi,T)\le T^{2\eta}$ 及 $T\ge1$（因为 $q\ge1$ 且 $q\le T^2$），左边界上满足 $|\Psi(z)|\le (2+G^2)T^{4\eta}$. 令 $C=9+G^2$（仅依赖于 $j$）；对题设零点 $s$ 取 $t=(\operatorname{Re}s-1/2)/(3/2)\ge6\eta$，由 Hadamard 三线定理即得
+\[
+ |\Gamma_j(s)|^2=|\Psi(s)|
+ \le (CT^{4\eta})^{1-t}(CT^{-1})^t
+ =CT^{4\eta-t(1+4\eta)}\le CT^{-2\eta}.
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{271}.}
+\begin{lemma}[三线估计检测零点]
+\label{lem:theta-detect}
+\emitthmsource
+固定奇偶指标 $j$、$\eta>0$ 及实数 $H_0$. 对一切充分大的 $T$（阈值仅依赖于 $j,\eta,H_0$），若本原非主特征 $\chi$ 的导子满足 $q\le T^2$、$\chi(-1)=(-1)^j$，且 $L(s,\chi)$ 在区域 $\operatorname{Re}s\ge1/2+9\eta$、$|\operatorname{Im}s|\le H_0$ 内有零点，则必有 $J_j(\chi,T)>T^{2\eta}$.
+\end{lemma}
+\begin{proof}
+若 $H_0<0$ 或 $1/2+9\eta>1$，则由 $L(s,\chi)$ 在 $\operatorname{Re}s>1$ 内的非零性知所述零点不存在.
+其余情形下，$\Gamma_j$ 在紧矩形
+$1/2\le\operatorname{Re}z\le1$、$|\operatorname{Im}z|\le H_0$ 上连续且无零点，故其模存在正下界 $c$.
+又由 Dirichlet 非零定理知所述零点 $s$ 必满足 $\operatorname{Re}s\le1$.
+若 $J_j(\chi,T)\le T^{2\eta}$，则引理~\ref{lem:theta-three-lines} 给出
+$c^2\le|\Gamma_j(s)|^2\le C_jT^{-2\eta}$，
+当 $T$ 充分大时导致矛盾；且所得阈值仅依赖于 $j,\eta,H_0$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{370}.}
+\begin{lemma}[非完全平方奇数部分的 Jacobi 符号和]
+\label{lem:jacobi-interval}
+\emitthmsource
+若正整数 $N\ge1$ 的奇数部分 $N_{\mathrm{odd}}$ 非完全平方数，且 $\eta>0$，则对任意整数 $X\ge0$ 有
+\[
+ \left|\sum_{v=1}^X\mathrm J(-v\mid N_{\mathrm{odd}})\right|
+ \le 2(1+2/\eta)N^{1/2+\eta/2}.
+\]
+\end{lemma}
+\begin{proof}
+记 $D=N_{\mathrm{odd}}$. 在模 $D$ 的单位剩余类上，Jacobi 符号是各奇素因子处 Legendre 符号按幂次之积，
+在非单位上取零，故构成模 $D$ 的 Dirichlet 特征.
+因 $D$ 非完全平方数，存在奇素数在 $D$ 的素分解中指数为奇；
+在该素数处取二次非剩余、其余素因子处取 $1$，
+由中国剩余定理即得一个模 $D$ 的单位，其 Jacobi 符号为 $-1$，故该特征非主.
+提取因子 $\mathrm J(-1\mid D)$ 不改变绝对值；
+应用 Pólya--Vinogradov 不等式，初始区间和的绝对值不超过 $2\sqrt D(1+\log D)$.
+结合 $D\le N$ 以及由 $N^{\eta/2}\ge1$ 和 $e^v\ge v$（取 $v=(\eta/2)\log N$）导出的不等式
+$1+\log N\le (1+2/\eta)N^{\eta/2}$，即得所求上界.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{626}.}
+\begin{lemma}[二次符号的奇数部分公式]
+\label{lem:twist-reciprocity}
+\emitthmsource
+若 $d$ 为素数且 $d\equiv7\pmod8$，则对任意正整数 $n$ 有
+\[
+ \chi_d(n)=\mathrm J(-d\mid n_{\mathrm{odd}}).
+\]
+\end{lemma}
+\begin{proof}
+将正整数 $n$ 写作 $n=2^a v$（$v$ 为奇数）. 由 $d\equiv7\pmod8$ 知
+$\chi_d(2)=1$，故 $\chi_d(n)=\chi_d(v)$.
+若 $d\mid v$，两端均为零；否则由 $d\equiv3\pmod4$ 及 Jacobi 符号的二次互反律，有
+\[
+ (v/d)=(-1)^{(v-1)/2}\mathrm J(d\mid v)
+       =\mathrm J(-1\mid v)\,\mathrm J(d\mid v)
+       =\mathrm J(-d\mid v).
+\]
+当 $v=1$ 时两端符号显然均为 $1$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{642}.}
+\begin{lemma}[互素导子的本原二次扭转]
+\label{lem:twist-primitivity}
+\emitthmsource
+设 $\psi$ 为导子 $M$ 的本原特征，$d$ 为与 $M$ 互素的奇素数，则二次扭转 $\psi\chi_d$ 的导子为 $Md$.
+\end{lemma}
+\begin{proof}
+因 $\chi_d$ 为素数模 $d$ 的非主特征，其导子为 $d$.
+记 $\psi\chi_d$ 的导子为 $f_0$.
+两个特征之积的导子必整除二者导子的最小公倍数（因两特征均可由该模数上的特征诱导），故 $f_0\mid Md$.
+又逆特征与原特征导子相同，将 $\psi\chi_d$ 分别乘以 $\chi_d^{-1}$ 与 $\psi^{-1}$，
+同理可得 $M\mid f_0d$ 与 $d\mid f_0M$.
+由 $(M,d)=1$ 推知 $M\mid f_0$ 且 $d\mid f_0$，进而 $Md\mid f_0$，与 $f_0\mid Md$ 合并即得 $f_0=Md$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{528}.}
+\begin{lemma}[Jacobi 符号 Theta 和的均方界]
+\label{lem:theta-second-moment}
+\emitthmsource
+固定 $j\in\{0,1\}$ 与 $\eta>0$. 对任意 $T>0$、$u\ge T^{-1}$ 及满足 $|a_n|\le1$ 的系数列，置 $c_v(n)=a_n\mathrm J(-v\mid n_{\mathrm{odd}})$，则
+\[
+ \sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|^2\ll_{j,\eta} T^2u^{-2\eta}.
+\]
+\end{lemma}
+\begin{proof}
+当 $u>0$ 时每个 Theta 级数绝对收敛. 展开平方并交换有限和与绝对收敛的双重级数；由于 Jacobi 符号取实值且关于分母具有完全乘法性，双重级数中 $(n,m)$ 项的贡献为
+\[
+ a_n\bar a_m\,u\,w_j(nu)w_j(mu)
+ \sum_{1\le v\le T^2}\mathrm J(-v\mid(nm)_{\mathrm{odd}}).
+\]
+对任意 $A>0$，函数 $t^A|w_j(t)|$ 在 $t>0$ 上有界，故
+\[
+ u|w_j(nu)w_j(mu)|\ll_{j,A} u^{1-2A}(nm)^{-A}.
+\]
+若 $(nm)_{\mathrm{odd}}$ 为完全平方数，则内层 Jacobi 符号和的绝对值不超过 $T^2$. 取 $A=1/2+\eta$. 此类 $(n,m)$ 必可写作 $n=2^a k h^2$、$m=2^b k l^2$，其中 $k$ 为共同的无平方因子奇数，$h,l$ 为奇数，$a,b\ge0$. 由于当 $A>1/2$ 时
+\[
+ \sum_{\substack{n,m\ge1\\(nm)_{\mathrm{odd}}\ \text{为平方}}}(nm)^{-A}
+ \le\left(\sum_{a\ge0}2^{-aA}\right)^2
+     \left(\sum_{k\ge1}k^{-2A}\right)
+     \left(\sum_{h\ge1}h^{-2A}\right)^2<\infty,
+\]
+故此类项的总贡献不超过 $O_{j,\eta}(T^2u^{-2\eta})$.
+
+若 $(nm)_{\mathrm{odd}}$ 非完全平方数，对 $N=nm$、$X=\lfloor T^2\rfloor$ 应用引理~\ref{lem:jacobi-interval}，知内层区间和为 $O_\eta((nm)^{1/2+\eta/2})$. 取 $A=3/2+\eta$，则每项的绝对值不超过常数乘以
+\[
+ u^{-2-2\eta}(nm)^{-1-\eta/2}
+ \le T^2u^{-2\eta}(nm)^{-1-\eta/2}.
+\]
+右端关于 $(n,m)$ 可和. 将完全平方与非完全平方两类贡献合并，即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{612}.}
+\begin{lemma}[Theta 尾积分的总和界]
+\label{lem:theta-tail-average}
+\emitthmsource
+在引理~\ref{lem:theta-second-moment} 的记号下，
+\[
+ \sum_{1\le v\le T^2}J_j(c_v,T)\ll_{j,\eta}T^{2+\eta}.
+\]
+\end{lemma}
+\begin{proof}
+对每个 $u\ge T^{-1}$，由 Cauchy--Schwarz 不等式与引理~\ref{lem:theta-second-moment} 可得
+\[
+ \sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|
+ \le \sqrt{\lfloor T^2\rfloor}
+       \left(\sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|^2\right)^{1/2}
+ \ll_{j,\eta} T^2u^{-\eta}.
+\]
+以 $\mu(n)a_n$ 替代 $a_n$，同一上界亦适用于 $\theta_{j,\mu c_v}$. 将两项相加并对 $u\in[1/T,\infty)$ 积分，利用 $\int_{1/T}^\infty u^{-\eta-1}\,du=T^\eta/\eta$ 即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{675}.}
+\begin{lemma}[固定本原特征时的坏素数计数]
+\label{lem:primitive-twist-count}
+\emitthmsource
+固定模 $M\ge1$ 的本原特征 $\psi$、$\eta>0$ 及高度 $H_0$. 对充分大的实数 $T$，满足 $d\equiv7\pmod8$、$(M,d)=1$、$Md\le T^2$ 且使 $L(s,\psi\chi_d)$ 在区域 $\operatorname{Re}s\ge1/2+9\eta,\ |\operatorname{Im}s|\le H_0$ 内存在零点的素数 $d$ 至多有 $O(T^{2-\eta})$ 个.
+\end{lemma}
+\begin{proof}
+取 $j\in\{0,1\}$ 使 $\psi(-1)=-(-1)^j$. 因 $\bigl(\frac{-1}{d}\bigr)=-1$，各扭转 $\psi\chi_d$ 的奇偶性恒为 $j$. 由引理~\ref{lem:twist-primitivity} 与引理~\ref{lem:twist-reciprocity}，扭转 $\psi\chi_d$ 为导子 $Md$ 的本原非主特征，且满足 $\chi_d(n)=\mathrm J(-d\mid n_{\mathrm{odd}})$.
+在引理~\ref{lem:theta-tail-average} 中取 $a_n=\psi(n)$，则每个坏素数 $d$ 对应的尾积分恰为该和式中 $v=d$ 处的非负项，而引理~\ref{lem:theta-detect} 保证该项大于 $T^{2\eta}$. 因而坏素数个数乘以 $T^{2\eta}$ 不超过总和 $O(T^{2+\eta})$，两边同除以 $T^{2\eta}$ 即得 $O(T^{2-\eta})$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{728}.}
+\begin{lemma}[固定模数下的坏素数密度]
+\label{lem:twist-density}
+\emitthmsource
+固定模 $q\ge1$ 的剩余类 $a$，设该类中的素数均与 $q$ 互素且模 $8$ 同余于 $7$；另固定 $\eta>0$ 与 $H_0$. 称类中素数 $d$ 为坏素数，若至少存在一个模 $q$ 的特征，其二次扭转 $L$ 函数在区域 $\operatorname{Re}s\ge1/2+9\eta,\ |\operatorname{Im}s|\le H_0$ 内有零点. 则不超过 $X$ 的坏素数个数为 $O(X^{1-\eta/2})$.
+\end{lemma}
+\begin{proof}
+对每个模 $q$ 的特征 $\xi$，取诱导它的本原特征 $\psi_\xi$ 并记其导子为 $M_\xi\mid q$. 对类中素数 $d$，二次扭转 $\xi\chi_d$ 由 $\psi_\xi\chi_d$ 诱导. 若 $L(s,\xi\chi_d)$ 在指定区域内有零点 $s$，由于升模公式中每个有限 Euler 因子在 $s$ 处均非零（事实上，特征值的模不超过 $1$，而 $\operatorname{Re}s>0$ 蕴含 $|p^{-s}|<1$），故 $s$ 必亦为 $L(s,\psi_\xi\chi_d)$ 的零点.
+
+置 $T=\sqrt{qX}$. 当 $d\le X$ 时有 $M_\xi d\le T^2$，引理~\ref{lem:primitive-twist-count} 对固定的 $\xi$ 给出至多 $O(T^{2-\eta})$ 个坏素数 $d$. 因模 $q$ 仅有有限个特征，对全体特征求和并取共同阈值，代入 $T^{2-\eta}=q^{1-\eta/2}X^{1-\eta/2}$ 并将固定因子 $q^{1-\eta/2}$ 吸收至隐含常数，即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{789}.}
+\begin{lemma}[选取在给定区域无零点的二次扭转]
+\label{lem:twist-choice}
+\emitthmsource
+设 $a$ 为模 $q$ 的单位剩余类，且该类中所有素数 $d$ 均满足 $d\equiv7\pmod8$ 及 $(q,d)=1$. 给定 $\beta>1/2$ 与实数 $T$，必可在该类中选取素数 $d$，使模 $q$ 的每个特征 $\xi$ 对应的 $\widetilde L(s,\xi\chi_d)$ 在区域 $\operatorname{Re}s\ge\beta,\ |\operatorname{Im}s|\le T$ 内均非零.
+\end{lemma}
+\begin{proof}
+令 $\eta=(\beta-1/2)/9>0$. 由引理~\ref{lem:twist-density}，不超过 $X$ 的坏素数个数为 $O(X^{1-\eta/2})$（隐含常数可依赖于固定的 $q,\eta,T$）. 注意每个扭转 $\xi\chi_d$ 均为非主特征（由中国剩余定理可取模 $q$ 同余于 $1$、模 $d$ 为二次非剩余的整数，扭转在该整数处取值 $-1$），故计数中的 $L(s,\xi\chi_d)$ 恰为整函数 $\widetilde L(s,\xi\chi_d)$.
+
+若该剩余类中的全部素数均为坏素数，则二进区间 $(2^j,2^{j+1}]$ 对级数 $\sum_{p\equiv a}\log p/p$ 的贡献至多为常数乘以 $(j+1)2^{-j\eta/2}$，对 $j$ 求和收敛；然而 Dirichlet 关于单位剩余类素数级数发散的定理给出 $\sum_{p\equiv a}\log p/p=\infty$，矛盾. 由此可知类中至少存在一个非坏素数 $d$.
+\end{proof}
+
+\section{留数、Landau 引理与右半平面}
+\label{sec:landau-criterion}
+
+式~\eqref{eq:prime-transform-residue} 将对数导数平均的留数表为零点阶数之差. 选定无零点二次扭转后，实轴上的留数符号与单侧上界相结合，便可触发 Landau 引理. 证明的关键在于在收敛横坐标处借助 Taylor 展开与单调收敛定理排除实轴上的可去奇点.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{405}.}
+\begin{lemma}[素数余项的变换与留数]
+\label{lem:prime-transform}
+\emitthmsource
+设 $d\equiv7\pmod8$ 为与 $q$ 互素的素数，令 $E(v)=R_{d,q}(e^v)$，并在半平面 $\operatorname{Re}s>2$ 上定义
+\[
+ \Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv.
+\]
+则 $E$ 可测且满足 $E(v)=O(e^v)$（$v\ge0$），$\Phi$ 可亚纯延拓至全复平面，在右半平面 $\operatorname{Re}z>0$ 内至多有简单极点，且在 $z=1$ 处为可去奇点. 对此类 $z\ne1$，其留数为
+\begin{equation}\label{eq:prime-transform-residue}
+ r_E(z)=\frac{\sum_{\xi\bmod q}
+  \bigl(\operatorname{ord}_z\widetilde L(\cdot,\xi)
+       -\operatorname{ord}_z\widetilde L(\cdot,\xi\chi_d)\bigr)}
+  {\varphi(q)z(1-z)}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+记带权系数 $\lambda(n)=\Lambda(n)(1-\chi_d(n))\mathbf 1_{n\equiv1\bmod q}$，并沿用 $G(s)=G_{d,q}(s)$：
+\[
+ G(s)=\frac1{\varphi(q)}\left(\sum_{\xi\bmod q}
+ \left[\frac{\widetilde L'}{\widetilde L}(s,\xi\chi_d)
+             -\frac{\widetilde L'}{\widetilde L}(s,\xi)\right]-1\right).
+\]
+因 $0\le\lambda(n)\le 2n$，当 $v\ge0$ 时带权和式中每项不超过 $2$ 且项数至多为 $e^v$，而主项仅随 $v$ 线性增长，故 $E(v)=O(e^v)$. 各求和项关于 $v$ 均可测，从而 $E$ 可测.
+
+在 $\operatorname{Re}s>1$ 内，由特征正交性将 $\lambda$ 写作 $\varphi(q)^{-1}\sum_\xi \Lambda(\xi-\xi\chi_d)$. 由 Euler 乘积的对数导数得 $-L'/L(s,\xi)$；改用去极点整函数 $\widetilde L$ 时，仅主特征需补入 $1/(s-1)$，各二次扭转均非主特征，于是
+\[
+ \sum_{n\ge1}\frac{\lambda(n)}{n^s}
+ =\frac1{\varphi(q)(s-1)}+G(s)+\frac1{\varphi(q)}
+ =\frac{s}{\varphi(q)(s-1)}+G(s).
+\]
+对每一项自 $v=\log n$ 起作积分变换：
+\[
+ \int_{\log n}^\infty (n^{-1}-e^{-v})e^{(1-s)v}\,dv
+ =\frac{n^{-s}}{s-1}-\frac{n^{-s}}s=\frac{n^{-s}}{s(s-1)}.
+\]
+在 $\operatorname{Re}s>2$ 内，估计 $\lambda(n)\le 2n$ 保证绝对可积性，从而可逐项积分. 再减去 $v/\varphi(q)$ 与常数 $C_{d,q}$ 对应的变换，即得
+\[
+ \Phi(s)=\frac{1}{s(s-1)}\sum_{n\ge1}\frac{\lambda(n)}{n^s}
+            -\frac{1}{\varphi(q)(s-1)^2}-\frac{C_{d,q}}{s-1}
+         =\frac{G(s)/s-C_{d,q}}{s-1}.
+\]
+由对数导数的亚纯性立得 $\Phi$ 至全平面的亚纯延拓. 在 $\operatorname{Re}s\ge1$ 上所有 $\widetilde L$ 均非零，故 $G$ 在此区域解析；又对实数 $s>1$，由上述 Dirichlet 级数恒等式知 $G(s)$ 取实值，令 $s\downarrow1$ 得 $G(1)=C_{d,q}$，因而 $\Phi$ 在 $s=1$ 处奇点可去.
+
+在任意 $z\ne1$（$\operatorname{Re}z>0$）处，若 $\widetilde L$ 在 $z$ 处的零点阶为 $k$，则可写 $\widetilde L(s)=(s-z)^k u(s)$（$u(z)\ne0$），从而 $\widetilde L'/\widetilde L=k/(s-z)+u'/u$. 将各特征的留数代入 $\Phi$ 的表达式，并将分母 $z(z-1)$ 写作 $-z(1-z)$，恰得式~\eqref{eq:prime-transform-residue}.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/Landau.lean}{212}.}
+\begin{lemma}[Landau 引理的单侧形式]
+\label{lem:landau}
+\emitthmsource
+设实值函数 $E$ 可测且满足 $|E(v)|\le C e^v$（$v\ge0$），其积分变换 $\Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv$ 可亚纯延拓，在 $\operatorname{Re}s>0$ 内至多有简单极点，留数记作 $r_E(s)$（关于非负函数 Dirichlet/Laplace 积分的经典 Landau 定理，参见 Montgomery--Vaughan~\cite{MontgomeryVaughan2007}）. 设 $\beta>0$，且对每个实数 $x>\beta$ 均有 $\operatorname{Re}r_E(x)\ge0$. 若对一切充分大的 $v$ 成立 $E(v)\le e^{(\beta-1)v}$，则对所有满足 $\operatorname{Re}z>\beta$ 的 $z$ 均有 $r_E(z)=0$.
+\end{lemma}
+\begin{proof}
+取充分大的常数 $K\ge1$，使 $u(v)=Ke^{\beta v}-E(v)e^v\ge0$ 对所有 $v>0$ 成立（充分大的 $v$ 处由单侧界保证，其余有界区间由指数增长界保证）. 非负函数 $u$ 的 Laplace 变换（\emph{Laplace transform}）$F(s)=\int_0^\infty e^{-sv}u(v)\,dv$ 在充分靠右的半平面内绝对收敛，且等于
+\[
+ \Psi(s)=\frac K{s-\beta}-\Phi(s).
+\]
+记 $a$ 为 $\beta$ 与 $F$ 的实收敛横坐标二者中的较大者（若积分对一切实数收敛则取 $a=\beta$）. 因 $u\ge0$，使积分收敛的实点集为向右的射线. 在半平面 $\operatorname{Re}s>a$ 内，取积分已收敛的更小实点作为控制函数，即可在紧子集上积分号下逐次求导，故 $F$ 在 $\operatorname{Re}s>a$ 上全纯. 由亚纯函数的恒等定理，$F$ 与 $\Psi$ 在该半平面内重合，因而 $\Psi$ 在其中若有孤立奇点必为可去奇点.
+
+反设 $a>\beta$. 此时 $\Psi$ 在 $a$ 处的留数为 $-r_E(a)$，其实部非正. 另一方面，对实数 $x>a$ 恒有 $(x-a)F(x)\ge0$，令 $x\downarrow a$ 知该留数实且非负，故必为零. 因 $\Psi$ 在右半平面至多有简单极点，故 $\Psi$ 可全纯延拓至 $a$ 的某邻域.
+
+基于这一延拓，选取实点 $x>a$ 使 $\Psi$ 在 $x$ 处的 Taylor 收敛圆盘包含某个实点 $\sigma<a$. 对每个 $k\ge0$，有 $F^{(k)}(x)=\int_0^\infty(-v)^k e^{-xv}u(v)\,dv$，因而在 $\sigma$ 处 Taylor 级数的每一项均化为非负积分：
+\[
+ \frac{F^{(k)}(x)(\sigma-x)^k}{k!}
+   =\int_0^\infty e^{-xv}\frac{((x-\sigma)v)^k}{k!}u(v)\,dv.
+\]
+由于该 Taylor 级数收敛于有限值，由单调收敛定理知右端各项之和等于有限积分 $\int_0^\infty e^{-\sigma v}u(v)\,dv$，这与 $a>\beta$ 时 $a$ 为实收敛横坐标矛盾. 由此必有 $a=\beta$，故 $\Psi$ 在 $\operatorname{Re}s>\beta$ 内全纯；又 $K/(s-\beta)$ 在此亦全纯，从而 $\Phi$ 在半平面 $\operatorname{Re}s>\beta$ 内的留数恒为零.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/Criterion.lean}{31}.}
+\begin{theorem}[Landau 型无零点判据]
+\label{thm:criterion}
+\emitthmsource
+设 $8\mid q_0$，$d_0$ 与 $q_0$ 互素且 $d_0\equiv7\pmod 8$，给定 $\beta>1/2$. 假设对每个满足 $d\equiv d_0\pmod{q_0}$ 的素数 $d$，当 $x$ 充分大时均有 $R_{d,q_0}(x)\le x^{\beta-1}$. 则对模 $q_0$ 的任意特征 $\psi$，在 $\operatorname{Re}\rho>\beta$ 且 $\rho\ne1$ 处均有 $L(\rho,\psi)\ne0$.
+\end{theorem}
+\begin{proof}
+固定待检验的复数 $\rho\ne1$（$\operatorname{Re}\rho>\beta$）. 由 $8\mid q_0$ 知 $d\equiv d_0\pmod{q_0}$ 蕴含 $d\equiv7\pmod8$，且该剩余类为单位类，故类中素数 $d$ 均与 $q_0$ 互素. 在引理~\ref{lem:twist-choice} 中取 $T=|\operatorname{Im}\rho|$，选取类中素数 $d$ 使所有模 $q_0$ 特征的二次扭转在区域 $\operatorname{Re}s\ge\beta$、$|\operatorname{Im}s|\le T$ 内均无零点.
+
+记 $n(z)=\sum_{\xi\bmod q_0}\operatorname{ord}_z\widetilde L(\cdot,\xi)$. 在上述区域内满足 $\operatorname{Re}z>\beta$ 且 $z\ne1$ 的点处，式~\eqref{eq:prime-transform-residue} 中各二次扭转的零点阶数全为零，故
+\[
+ r_E(z)=\frac{n(z)}{\varphi(q_0)z(1-z)}.
+\]
+特别地，所有实数 $x>\beta$ 均落于所选无零点区域内：当 $\beta<x<1$ 时分母为正且 $n(x)\ge0$，故 $r_E(x)\ge0$；当 $x>1$ 时各 $\widetilde L$ 均非零，分子为零；当 $x=1$ 时引理~\ref{lem:prime-transform} 给出 $r_E(1)=0$. 此外，题设对所选 $d$ 给出充分大 $v$ 时的单侧界 $E(v)\le e^{(\beta-1)v}$，因此引理~\ref{lem:landau} 适用，从而 $r_E(\rho)=0$.
+
+因 $\operatorname{Re}\rho>\beta>0$ 且 $\rho\ne1$，分母 $\varphi(q_0)\rho(1-\rho)\ne0$，故 $n(\rho)=0$. 由于 $n(\rho)$ 是有限个非负整数之和，每项均为零，特别地 $\operatorname{ord}_\rho\widetilde L(\cdot,\psi)=0$. 当 $\psi$ 为主特征时，在 $\rho\ne1$ 处仍有 $\widetilde L(\rho,\psi)=(\rho-1)L(\rho,\psi)$，故 $L(\rho,\psi)\ne0$；非主特征时二者直接相等，结论亦成立.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{237}.}
+\begin{theorem}[右半平面无零点]
+\label{thm:half-plane}
+\emitthmsource
+对任意模 $q\ge1$ 的 Dirichlet 特征 $\chi$，若 $\operatorname{Re}\rho>1/2$ 且当 $\chi$ 为主特征时 $\rho\ne1$，则 $L(\rho,\chi)\ne0$.
+\end{theorem}
+\begin{proof}
+当 $\rho=1$ 时，题设已排除主特征，由 Dirichlet 非零性定理直接得证. 以下设 $\rho\ne1$，取 $1/2<\beta<\operatorname{Re}\rho$，并置 $q_0=18480q$ 及 $d_0=q_0/2-1=9240q-1$. 易验 $8\mid q_0$ 且 $d_0\equiv7\pmod8$；又 $d_0$ 为奇数且与 $d_0+1$ 互素，故与 $q_0=2(d_0+1)$ 互素.
+
+对任一素数 $d\equiv d_0\pmod{q_0}$，以 $\varepsilon=\beta-1/2>0$ 应用定理~\ref{thm:one-sided}，可知当 $x$ 充分大时 $R_{d,q_0}(x)\le x^{-1/2+\varepsilon}=x^{\beta-1}$. 将 $\chi$ 升模至 $q_0$ 得特征 $\chi_{q_0}$；定理~\ref{thm:criterion} 的各项条件均已满足，故 $L(\rho,\chi_{q_0})\ne0$.
+
+由于 $q\mid q_0$ 且 $\rho\ne1$，升模的有限 Euler 乘积公式给出
+\[
+ L(\rho,\chi_{q_0})=L(\rho,\chi)\prod_{p\mid q_0}(1-\chi(p)p^{-\rho}).
+\]
+右端为有限乘积；若 $L(\rho,\chi)=0$，则左端必为零，矛盾. 故 $L(\rho,\chi)\ne0$.
+\end{proof}
+
+\section{函数方程与五条公开定理}
+\label{sec:public-theorems}
+
+\begin{definition}[完备 $L$ 函数、Gamma 因子与公开定理陈述]
+\label{def:completed-l-and-statements}
+对模 $N\ge1$ 的 Dirichlet 特征 $\chi$，其 Gamma 因子（\emph{gamma factor}）记作 $\Gamma_\chi(s)$，完备 $L$ 函数（\emph{completed $L$-function}）记作 $\Lambda(s,\chi)=\Gamma_\chi(s)L(s,\chi)$；特别地，Riemann $\zeta$ 函数的完备函数记作 $\Lambda(s)$. 当 $\psi$ 为模 $M$ 的本原特征时，Mathlib 中的函数方程给出
+\[
+ \Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi),
+\]
+其中 $\varepsilon(\psi^{-1})$ 为根数（\emph{root number}）. 以下结合定理~\ref{thm:half-plane} 给出的右半平面无零点结论与上述函数方程，依次证明 Mathlib 的 \texttt{RiemannHypothesis} 以及作者公开的其余四条主定理.\leanfn{源码参见 \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L206}{Mathlib 的 Gamma 因子与完备 $L$ 函数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L68}{Mathlib 的完备 $\zeta$ 函数}、\href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L185}{Mathlib 的 Riemann 猜想}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Statements.lean\#L3}{五条公开定理的陈述文件}.}
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Analytic/ZeroSymmetry.lean}{55}.}
+\begin{lemma}[由本原特征的函数方程推出一般特征的零点对称性]
+\label{lem:primitive-zero-reflection}
+\emitthmsource
+设 $\chi$ 为任意 Dirichlet 特征，若 $\operatorname{Re}s\ne0$、$s\ne1$ 且 $L(s,\chi)=0$，则按 Gamma 因子取值的约定，或者 $\Gamma_\chi(s)=0$，或者 $L(1-s,\chi^{-1})=0$.
+\end{lemma}
+\begin{proof}
+设 $\chi$ 的模数为 $N$，诱导 $\chi$ 的本原特征为 $\psi$（模数为 $M$）. 由升模公式 $L(s,\chi)=L(s,\psi)\prod_{p\mid N}(1-\psi(p)p^{-s})$，其中每个有限 Euler 因子均非零（若 $\psi(p)=0$ 则因子为 $1$，否则 $|\psi(p)|=1$ 而 $|p^{-s}|=p^{-\operatorname{Re}s}\ne1$），故 $L(s,\psi)=0$.
+
+现设 $\Gamma_\chi(s)\ne0$. 因升模保持特征在 $-1$ 处的取值，即保持奇偶性，有 $\Gamma_\psi(s)=\Gamma_\chi(s)\ne0$. 又因 $s\ne0$，完备 $L$ 函数满足 $\Lambda(s,\psi)=\Gamma_\psi(s)L(s,\psi)=0$. 逆特征 $\psi^{-1}$ 仍为本原特征，对其应用 Mathlib 中的函数方程得
+\[
+ \Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi)=0,
+\]
+其中 $\varepsilon(\psi^{-1})$ 为根数（\emph{root number}）.
+
+由于 $1-s\ne0$，借完备函数除以 Gamma 因子的恒等式（按该恒等式在 Gamma 因子极点处的取值约定）可得 $L(1-s,\psi^{-1})=0$. 再由 $1-s\ne1$，将 $\psi^{-1}$ 升模至 $\chi^{-1}$，有限 Euler 乘积公式保持零值，从而 $L(1-s,\chi^{-1})=0$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Main.lean}{25}.}
+\begin{lemma}[Dirichlet $L$ 函数的零点对称性]
+\label{lem:dirichlet-reflection}
+\emitthmsource
+若右半平面无零点结论成立，则任意 Dirichlet $L$ 函数在临界带 $0<\operatorname{Re}s<1$ 内的零点均满足 $\operatorname{Re}s=1/2$.
+\end{lemma}
+\begin{proof}
+设 $L(s,\chi)=0$ 且 $0<\operatorname{Re}s<1$. 依特征奇偶性有 $\Gamma_\chi(s)=\Gamma_{\mathbb R}(s+a)$（其中 $a\in\{0,1\}$）；由 $\operatorname{Re}(s+a)>0$ 知 Gamma 因子非零. 又 $s\ne1$ 且 $\operatorname{Re}s\ne0$，故引理~\ref{lem:primitive-zero-reflection} 给出 $L(1-s,\chi^{-1})=0$. 因 $s$ 与 $1-s$ 均异于 $1$，对二者分别应用右半平面无零点假设即得
+\[
+ \operatorname{Re}s\le\tfrac12,
+ \qquad 1-\operatorname{Re}s=\operatorname{Re}(1-s)\le\tfrac12.
+\]
+两式合并遂得 $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Main.lean}{44}.}
+\begin{lemma}[Riemann $\zeta$ 函数的零点对称性]
+\label{lem:zeta-reflection}
+\emitthmsource
+若右半平面无零点结论成立，则 $\zeta$ 在 $\{1,-2,-4,\dots\}$ 之外的所有零点均满足 $\operatorname{Re}s=1/2$.
+\end{lemma}
+\begin{proof}
+模 $1$ 主特征对应的 $L$ 函数即为 Riemann $\zeta$ 函数. 设 $\zeta(s)=0$ 且 $s\notin\{1,-2,-4,\ldots\}$. 对 $s$ 应用右半平面无零点假设得 $\operatorname{Re}s\le1/2$. 又因 $\zeta(0)=-1/2$，必有 $s\ne0$，故 $s$ 避开了 $\Gamma_{\mathbb R}(s)=\pi^{-s/2}\Gamma(s/2)$ 的全部极点，从而完备函数 $\Lambda(s)=\Gamma_{\mathbb R}(s)\zeta(s)=0$.
+
+由函数方程 $\Lambda(1-s)=\Lambda(s)$ 得 $\Lambda(1-s)=0$. 此时 $\operatorname{Re}(1-s)\ge1/2>0$，故 $\Gamma_{\mathbb R}(1-s)$ 有限且非零，从而 $\zeta(1-s)=0$. 又因 $s\ne0$ 蕴含 $1-s\ne1$，再次对模 $1$ 主特征应用右半平面无零点假设得 $1-\operatorname{Re}s\le1/2$，由此即得 $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Main.lean}{4}.}
+\begin{theorem}[Riemann 猜想]
+\label{thm:rh}
+\emitthmsource
+Riemann $\zeta$ 函数的所有非平凡零点（\emph{nontrivial zeros}）均位于临界线（\emph{critical line}）上.
+\end{theorem}
+\begin{proof}
+定理~\ref{thm:half-plane} 满足引理~\ref{lem:zeta-reflection} 的前提，故对任意复数 $s$，若 $\zeta(s)=0$、$s\ne1$ 且 $s\notin\{-2,-4,\ldots\}$，则 $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Main.lean}{7}.}
+\begin{theorem}[Riemann $\zeta$ 函数零点的实部]
+\label{thm:zeta-zeros}
+\emitthmsource
+若 $\zeta(s)=0$、$s\ne1$ 且 $s$ 不是负偶整数，则 $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+任取满足题设三个条件的复数 $s$. 定理~\ref{thm:rh} 恰对这类 $s$ 断言 $\operatorname{Re}s=1/2$；两者在 Lean 中展开定义后完全一致.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Main.lean}{10}.}
+\begin{theorem}[Dirichlet $L$ 函数在右半平面的非零性]
+\label{thm:right-nonvanishing}
+\emitthmsource
+对任意模数 $q\ge1$ 及模 $q$ 的 Dirichlet 特征 $\chi$，在 $\operatorname{Re}s>1/2$ 且排除主特征极点 $s=1$ 时，恒有 $L(s,\chi)\ne0$.
+\end{theorem}
+\begin{proof}
+任取模 $q\ge1$ 及其特征 $\chi$. 若 $\operatorname{Re}s>1/2$ 且 $\chi\ne1$ 与 $s\ne1$ 中至少有一项成立，则直接对 $q,\chi,s$ 应用定理~\ref{thm:half-plane}，即得 $L(s,\chi)\ne0$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Main.lean}{15}.}
+\begin{theorem}[Dirichlet $L$ 函数在临界带内的零点实部]
+\label{thm:l-zeros}
+\emitthmsource
+任意 Dirichlet $L$ 函数在临界带 $0<\operatorname{Re}s<1$ 内的零点均满足 $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+由定理~\ref{thm:half-plane}，引理~\ref{lem:dirichlet-reflection} 的右半平面无零点前提对一切模数与特征均成立. 对任意模 $q$ 的特征 $\chi$ 及满足 $0<\operatorname{Re}s<1$、$L(s,\chi)=0$ 的复数 $s$ 应用该引理，即得 $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Main.lean}{19}.}
+\begin{theorem}[本原特征的 GRH]
+\label{thm:primitive}
+\emitthmsource
+若 $\chi$ 为本原特征，则 $L(s,\chi)$ 在临界带（\emph{critical strip}）内的所有零点均满足 $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+任取模 $q$ 的本原特征 $\chi$. 由定理~\ref{thm:l-zeros} 对模 $q$ 的一切特征均成立，立知 $L(s,\chi)$ 在临界带内的任意零点 $s$ 均满足 $\operatorname{Re}s=1/2$.
+\end{proof}

@@ -1,0 +1,536 @@
+\chapter{复乘形式群与 Theta 导数}
+\label{chap:derivatives}
+
+\begin{chapterguide}
+本章研究标准正定酉空间上 Theta 核在原点处的高阶导数与 Taylor 系数. 一方面，借助复乘（CM）形式群的正规形建立子式积导数的 $p$-进赋值下界，为\chapref{chap:upperbound}中定理~\ref{thm:index-bound} 的局部整性与整除增益论证提供算术基础；另一方面，在每个有限素位构造剩余类指示向量，使其 Taylor 系数达到式~\eqref{eq:ch2-sharpness} 的模长下界，供\chapref{chap:onelift}进行单步提升的比较估计.
+\end{chapterguide}
+
+\section{CM 格与 Taylor 尺度}
+\label{sec:ch2-cm-field}
+
+固定\chapref{chap:reduction}中的容许数据. 记 $K=\QQ(\sqrt{-d})$、$E=K(\zeta)$，其中 $\zeta$ 是 $q_1$ 次本原单位根. 记 $\Phi$ 为 $E$ 的无穷位集；在每个无穷位处选取延拓所选嵌入 $K\hookrightarrow\CC$ 的代表复嵌入，并沿用同一记号表示该嵌入.
+
+\begin{proposition}[分圆扩张的差积理想]
+\label{prop:ch2-field-different}
+令 $\Phi_{q_1}(T)$ 为 $q_1$ 次分圆多项式，则有
+\begin{equation}
+\label{eq:ch2-different}
+ \OO_E=\OO_K[\zeta],\qquad
+ \mathfrak D_{E/K}=(\Phi_{q_1}'(\zeta)),\qquad
+ \mathfrak D_{E/\QQ}=(\sqrt{-d}\,\Phi_{q_1}'(\zeta)).
+\end{equation}
+此外，每个整除 $q_1$ 的素数均在 $K$ 中分裂.
+\end{proposition}
+
+\begin{proof}
+由于 $d\equiv7\pmod8$，有 $\OO_K=\ZZ[(1+\sqrt{-d})/2]$，其判别式为 $-d$. 因 $q_1$ 与 $q_0$ 具有相同的素因子且 $q_0\mid2(d+1)$，每个整除 $q_1$ 的奇素数 $p$ 均整除 $(d+1)/4$；对 $p=2$，由 $d\equiv7\pmod8$ 同样有 $2\mid(d+1)/4$. 因而生成元的极小多项式 $T^2-T+(d+1)/4$ 模 $p$ 有两个相异根 $0$ 与 $1$. 这既证明所述分裂性，又蕴含 $\gcd(d,q_1)=1$.
+
+分圆域 $\QQ(\zeta)$ 的判别式仅含整除 $q_1$ 的素因子，故与 $K$ 的判别式互素. 互素判别式的整基复合定理立得 $\OO_E=\OO_K[\zeta]$. 再者，这两个扩张在 $\QQ$ 上线性不交——$K$ 的唯一非平凡子扩张在 $d$ 处分歧，而 $\QQ(\zeta)$ 在 $d$ 处不分歧——故 $\Phi_{q_1}(T)$ 亦为 $\zeta$ 在 $K$ 上的极小多项式. 由单生成扩张的差积理想公式即得相对差积 $\mathfrak D_{E/K}$，再由塔的传递性即算出绝对差积 $\mathfrak D_{E/\QQ}$.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Field/PrimeDecomposition.lean}{206}、\leansourcelink{src/New/Derivatives/Field/PrimeDecomposition.lean}{271}.}
+\end{proof}
+
+在 $E$ 的 Weil 数据中，固定有限 idèle $\alpha$ 并令 $\mathfrak a_0=E\cap\alpha\widehat{\OO}_E$，其中 $\widehat{\OO}_E$ 为各有限位整数环的直积；所采用的正规化满足 $\mathfrak a_0\overline{\mathfrak a_0}=\mathfrak D_{E/K}^{-1}$.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Field/WeilData.lean}{445}.}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/General/LinearAlgebra/PolarDecomposition.lean}{97}.}
+\begin{definition}[紧标架]
+\label{def:ch2-tight-frame}
+\emitthmsource
+给定有限指标集、向量 $w_i\in\mathfrak a_0$ 与非负整数重数 $c_i$. 若对一切 $\sigma,\tau\in\Phi$ 均满足
+\begin{equation}
+\label{eq:ch2-tight-frame}
+ \sum_i c_i\,\sigma(w_i)\overline{\tau(w_i)}=M\delta_{\sigma,\tau},
+\end{equation}
+则称 $(w_i,c_i)$ 为长度 $M$ 的紧标架.
+\end{definition}
+
+记 $w_i^\dagger Z=\sum_{\tau\in\Phi}\overline{\tau(w_i)}Z_\tau$. 展开模平方并将内层系数按式~\eqref{eq:ch2-tight-frame} 化简，即得
+\begin{equation}
+\label{eq:ch2-tight-frame-norm}
+ \sum_i c_i\,|w_i^\dagger Z|^2=M\sum_{\tau\in\Phi}|Z_\tau|^2.
+\end{equation}
+由此可见，经由标架线性形式拉回后，各一维 Theta 截面的 Hermite 形式之和恰还原为给定的标准 Hermite 形式；这项相容性将在引理~\ref{lem:c-derivative-twelve-realization} 中用于核对平移乘子.
+
+设 $\Omega_0\ne0$ 为选定的复周期，$\mathcal C=\CC/(\Omega_0\OO_K)$ 为相应的 CM 椭圆曲线. 记满足 $\theta(0)=1$ 的归一化曲线 Theta 函数为 $\theta$，记 $y$ 为在所选二阶挠点处平移后的局部形式参数（故 $y(0)=0$）. 须注意，$\Omega_0$ 用于刻画曲线的周期格，而\chapref{chap:reduction}用于无穷位估计的正实数 $\Omega$ 采用另一套由 Chowla--Selberg 公式~\cite{SelbergChowla1967}确定的归一化. 令 $C_{\rm per}$ 为 Weil 数据规定的真空尺度 $\operatorname{vacuumRoot}$ 除以 Chowla--Selberg 单位，并置 $a_{\rm area}=\sqrt{2\pi/\sqrt d}$. 本章采用的 Taylor 尺度为
+\begin{equation}
+\label{eq:ch2-jet-scale}
+ s_{\rm jet}=C_{\rm per}a_{\rm area}/\Omega_0.
+\end{equation}
+取复系数级数的 $p$-进像时，仅对展开系数施加给定嵌入 $\iota\colon\CC\hookrightarrow\CC_p$.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{90}、\leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{122}.}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{297}、\leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{323}、\leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{338}.}
+\begin{definition}[整真空与标准有限数据]
+\label{def:ch2-int-vacuum}
+\emitthmsource
+在秩 $n$ 的标准正定空间的 Weil 模型中，记真空向量为 $v_{\rm vac}$，秩一整化常数为 $V\ne0$，定义秩 $n$ 的整真空为 $\theta^\circ=V^n v_{\rm vac}$. 令 $\operatorname{finVec}(x)$ 表示无穷分量为零、且第 $i$ 个有限坐标为 $\alpha x_i$ 的有限阿代尔向量. 对素数 $p$ 与嵌入 $\iota$，标准有限数据是指由 $\theta^\circ$ 经在 $p$ 上方逐位整的有限 Heisenberg 平移所生成的 $\iota^{-1}(\OO_{\CC_p})$-子模.
+\end{definition}
+
+整化常数的构造保证了秩一整真空在每个 $\operatorname{finVec}(x)$ 处取值的 $p$-进整性，以及形如 $\exp(C_Eq_1^2)$ 的复共轭模界. 由于标准正定空间的真空取值等于各坐标真空取值的乘积，对任意 $\sigma\in\operatorname{Aut}(\CC)$ 均成立秩 $n$ 的估计
+\begin{equation}
+\label{eq:ch2-vacuum-bounds}
+ \bigl|\iota(\theta^\circ(\operatorname{finVec}(x)))\bigr|_p\le1,\qquad
+ \bigl|\sigma(\theta^\circ(\operatorname{finVec}(x)))\bigr|
+ \le\exp(nC_Eq_1^2),
+\end{equation}
+其中 $C_E$ 为源码中仅依赖于固定参数的秩一真空上界常数. 秩一共轭界先对固定 $K$ 的复自同构建立：因 $K$ 为虚二次域，任意复自同构在 $K$ 上的限制非恒等即复共轭，在后一情形下外复合复共轭即可固定 $K$ 而不改变模长.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{363}、\leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{400}.}
+
+\section{非分裂素数处的正规形}
+\label{sec:ch2-normal-form}
+
+固定素数 $p$ 与嵌入 $\iota$，记 $v_p$ 为满足 $v_p(p)=1$ 的归一化加法赋值，并约定 $v_p(0)=+\infty$. 记 $\pi_p$ 为底域 $K$ 在 $p$ 上方的局部素元（下文仅用于 $p$ 不分裂的情形）. 下表列出坐标缩放赋值 $\rho_p$ 以及缩放后由阶乘带来的每次数净增益 $\gamma_p$：
+\begin{equation}
+\label{eq:ch2-slopes}
+\begin{array}{c|ccc}
+p\text{ 在 }K\text{ 中的类型}&\text{分裂}&\text{惰性}&\text{分歧 }(p=d)\\ \hline
+\rho_p &\dfrac1{p-1}&\dfrac1{p^2-1}&\dfrac1{2(p-1)}\\[3pt]
+\gamma_p=\dfrac1{p-1}-\rho_p
+  &0&\dfrac{p}{p^2-1}&\dfrac1{2(p-1)}
+\end{array}
+\end{equation}
+若 $p$ 惰性，则 $v_p(\pi_p)=1$ 且局部剩余域基数为 $p^2$；若 $p=d$，则 $v_p(\pi_p)=1/2$ 且局部剩余域基数为 $p$. 故在这两种非分裂情形中，$\rho_p$ 恰等于 $v_p(\pi_p)$ 除以局部剩余域基数减一.\leanfn{Lean 源码：\leansourcelink{src/Lib/CM/FormalGroup/PrimeNotation.lean}{100}.}
+
+记 $I_p^\circ$ 为正规形所允许的伙伴指数集：当 $p$ 惰性时取正奇数集，当 $p=d$ 时取全体非负整数，当 $p$ 分裂时取空集；并令 $I_p=I_p^\circ\cap\ZZ_{>0}$. 由命题~\ref{prop:ch2-field-different}，当 $p$ 不分裂时必有 $p\nmid q_1$，从而对每个 $e\in I_p^\circ$，乘以 $-p^e$ 所代表的单位类给出伙伴无穷位 $\tau'=\nu_{p^e}\tau$. 设变量 $Z_{\tau,i}$ 的第二下标遍历一固定有限集，定义耦合多项式为\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/FormalGroup/ThetaProducts.lean}{107}、\leansourcelink{src/Lib/CM/FormalGroup/PrimeNotation.lean}{163}.}
+\begin{equation}
+\label{eq:ch2-coupling}
+ \Gamma_e(Z)=\sum_{\tau,i}Z_{\tau,i}^{p^e}Z_{\nu_{p^e}\tau,i}.
+\end{equation}
+
+\begin{definition}[正规形]
+\label{def:ch2-normal-form}
+设 $p$ 在 $K$ 中不分裂. 若存在满足 $v_p(\varpi)=\rho_p$ 的缩放元 $\varpi$、整系数形式幂级数 $W$ 与 $p$-进整数 $\lambda_{e,j}$，使得
+\begin{equation}
+\label{eq:ch2-normal-form}
+ F(\varpi Z)=W(Z)\exp\!\left(
+    \frac{\varpi^{p+1}}{p}
+    \sum_{e\in I_p^\circ}\sum_{j\ge0}
+          \lambda_{e,j}\Gamma_e(Z)^{p^j}
+ \right),
+\end{equation}
+则称 $F$ 具有上述正规形.
+\end{definition}
+由于 $\Gamma_e$ 为 $p^e+1$ 次齐次多项式，对任意给定的总次数，上述双重和仅有有限项能作贡献；又指数内的幂级数常数项为零，故右端在形式幂级数环中良定.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Divisibility/NormalForm.lean}{50}.}
+
+\begin{theorem}[标准 Theta 数据的正规形]
+\label{thm:ch2-normal-form}
+设 $p$ 在 $K$ 中不分裂. 给定定义~\ref{def:ch2-int-vacuum} 中的标准有限数据 $\psi$ 及满足 $|\iota(c)|_p\le1$ 的复标量 $c$. 取 $\psi$ 的 Theta 函数在尺度 $c\,s_{\rm jet}$ 下的 Taylor 级数并通过 $\iota$ 读取其系数，则所得级数 $F$ 满足定义~\ref{def:ch2-normal-form} 的正规形（关于 CM 形式群与代数 Theta 函数的 $p$-进指数结构，可参见 Lubin--Tate~\cite{LubinTate1965} 与 Bannai--Kobayashi~\cite{BannaiKobayashi2010}）.
+\end{theorem}
+
+\begin{proof}
+证明依托两项关于 CM Theta 数据的前置结论. 第一，设 $u_i$ 为在 $p$ 上方整的 $E$-向量，$m_i$ 为非负整数；若恒等式 $\sum_i m_i u_i(u_i^\dagger Z)=Z$ 对一切 $Z$ 成立，则乘积 $\prod_i\theta(u_i^\dagger Z)^{m_i}$ 乘以任意关于 $y(u_i^\dagger Z)$ 的整系数级数均具有正规形~\eqref{eq:ch2-normal-form}，且在惰性情形中对每个奇数 $e$ 均有 $\lambda_{e,0}$ 为 $p$-进单位. 第二，标准有限数据在尺度 $a_{\rm area}/\Omega_0$ 下的 Taylor 级数恰可表为此类乘积——这一步利用标准数据的有限平移分解，并由 $p\nmid q_1$ 确保所用向量在 $p$ 上方整.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/FormalGroup/ThetaProducts.lean}{434}、\leansourcelink{src/New/Derivatives/Vacuum/Divisibility.lean}{170}.}
+
+由尺度 $a_{\rm area}/\Omega_0$ 过渡至 $c\,s_{\rm jet}$，仅需将各变量统一乘以标量 $cC_{\rm per}$. 因 $C_{\rm per}$ 在不整除 $q_1$ 的素数处为局部单位，该因子在 $\iota$ 处为整. 整标量缩放既保持 $W$ 的系数整性，又将每项 $\Gamma_e^{p^j}$ 的系数乘以 $(cC_{\rm per})^{(p^e+1)p^j}$ 而不破坏整性，故正规形依然成立.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{341}.}
+\end{proof}
+
+\begin{lemma}[替换后的有限阶整性]
+\label{lem:ch2-truncated-integrality}
+设 $F$ 满足正规形~\eqref{eq:ch2-normal-form}，$Y$ 为一组无常数项的整系数幂级数. 若每个次数 $p^e+1\le B$ 的允许耦合 $\Gamma_e(Y)$ 均被 $\pi_p$ 整除，则 $F(\varpi Y)$ 中所有总次数不超过 $B$ 的系数均整.
+\end{lemma}
+
+\begin{proof}
+在总次数不超过 $B$ 的截断范围内，可略去所有满足 $p^e+1>B$ 的耦合项. 由式~\eqref{eq:ch2-slopes} 对惰性与分歧两种情形分别核验，恒有
+\begin{equation}
+\label{eq:ch2-exp-valuation}
+ (p+1)\rho_p-1+v_p(\pi_p)=\frac1{p-1}.
+\end{equation}
+因此，指数内所保留幂级数的每一项系数赋值均至少为 $1/(p-1)$. 于是其 $k$ 次幂的系数赋值至少为 $k/(p-1)$，而 $v_p(k!)\le k/(p-1)$，故除以 $k!$ 后仍为整系数. 结合 $W(Y)$ 系数整性，乘积的相应截断系数亦皆整.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Divisibility/NormalForm.lean}{262}.}
+\end{proof}
+
+\section{子式积导数的赋值下界}
+\label{sec:ch2-jet-divisibility}
+
+对每个无穷位 $\tau$，记 $\kappa(\tau,h)$ 为 Young 图中高度为 $h$ 的列数；在下文的 Schur 导数估计中，以 $\kappa$ 表示这一 Young 图族，而记号 $\kappa_\tau$ 仍专指容许数据的位权. 设 $F$ 为变量组 $Z$ 上的形式幂级数，$Q$ 为齐次多项式，记相应的微分算子取值为 $J(Q,F)=Q(\partial_Z)F(0)$. 设标准填充 $I$ 与 $I'$ 分别标定源与目标 Weyl 模型的基；以 $Z_\tau$ 的矩阵元为多项式变量，取两 Weyl 模型间 Schur 矩阵的 $(I',I)$ 元作为 $Q$，所得 $J(Q,F)$ 即为相应的 Schur 导数.
+
+\begin{lemma}[齐次导数的阶乘估计]
+\label{lem:ch2-legendre-jet}
+设 $Q$ 为总次数为 $L$、变量数为 $s_{\rm var}$ 的整系数齐次多项式. 若形式幂级数 $F$ 在总次数 $L$ 处的系数皆整，则
+\begin{equation}
+\label{eq:ch2-legendre-jet}
+ v_p\bigl(J(Q,F)\bigr)\ge
+ \frac{L}{p-1}-s_{\rm var}\bigl(1+\lfloor\log_p\max(L,1)\rfloor\bigr).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+对每个满足 $\sum_i\eta_i=L$ 的多重指标 $\eta$，其对 $J(Q,F)$ 的贡献等于 $Q$ 与 $F$ 各自对应系数之积再乘以 $\prod_i\eta_i!$. 由 Legendre 公式，$v_p(\eta_i!)=(\eta_i-s_p^{\rm dig}(\eta_i))/(p-1)$，其中 $s_p^{\rm dig}$ 表示 $p$-进制数字和. 由于每个 $\eta_i\le L$，其 $p$-进制数字和不超过 $(p-1)\bigl(1+\lfloor\log_p\max(L,1)\rfloor\bigr)$. 对所有坐标 $i$ 求和并对各项贡献应用超度量不等式，即得式~\eqref{eq:ch2-legendre-jet}；容易核对，该估计在 $L=0$ 时同样成立.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Divisibility/Count.lean}{68}.}
+\end{proof}
+
+为将上述估计施用于 Schur 导数，固定目标秩 $n'$，并在每个无穷位 $\tau$ 仅计入高度严格小于 $n'$ 的列：将高度为 $1$ 的列数、其余列数及这些其余列的总方格数分别记为 $a_\tau,a'_\tau,\ell_\tau$. 令 $\tau_e=\nu_{p^e}\tau$，定义分歧校正项
+\begin{equation}
+\label{eq:ch2-ramified-correction}
+ R_{p,\kappa}
+ =\begin{cases}
+ \dfrac12\displaystyle\sum_\tau
+ \bigl(\min(a_\tau,a_{\tau_0}+a'_{\tau_0})+a'_\tau+
+                 \min(\ell_\tau,\ell_{\tau_0})\bigr),&p=d,\\[4pt]
+ 0,&p\ne d,
+ \end{cases}
+\end{equation}
+并定义预测整除性为
+\begin{equation}
+\label{eq:ch2-predicted-divisibility}
+\begin{aligned}
+ \operatorname{Pred}_p(\kappa,n')={}&v_p(\pi_p)\sum_{e\in I_p}\sum_\tau
+    \left(
+      \left(\frac{a_\tau}{p^e}-a_{\tau_e}-a'_{\tau_e}\right)_+
+     +\left(\frac{\ell_\tau}{p^e}-\ell_{\tau_e}\right)_+
+     -\frac{a'_\tau}{p^e}
+    \right)-R_{p,\kappa}.
+\end{aligned}
+\end{equation}
+其中两项正部源于方向替换时的列数与方格数计数；由于各项绝对值随 $p^{-e}$ 衰减，双重和绝对收敛，而分歧情形下指数 $e=0$ 的贡献已单独归入式~\eqref{eq:ch2-ramified-correction}.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Divisibility/Count.lean}{422}.}
+
+接下来的引理~\ref{lem:a-charged-schur-jet} 将任意 Schur 导数矩阵元的估值归约至某个子式积导数. 论证的核心在于：先于高阶求导之前选取适当的方向替换，使截断范围内的所有耦合多项式均被 $\pi_p$ 整除；再于应用式~\eqref{eq:ch2-legendre-jet} 后，将方向替换及各行补偿引入的行列式因子精确计回.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/Divisibility.lean}{228}.}
+\begin{lemma}[以子式积控制带权 Schur 导数]
+\label{lem:a-charged-schur-jet}
+\label{thm:ch2-jet-count}
+\emitthmsource
+设 $p$ 在 $K$ 中不分裂，取定义~\ref{def:ch2-int-vacuum} 的标准有限数据 $\psi$，以额外的 $p$-进整标量乘以标准 Taylor 尺度，记所得 Theta 级数为 $F$. 设 $\kappa$ 为适配源与目标秩的 Young 图族，$n'$ 为目标秩，$B_\kappa$ 为高度小于 $n'$ 的列的总方格数. 对无穷位子集 $S'$，记 $\kappa^\circ$ 为在 $S'$ 上删去所有高度为 $1$ 的列所得的图族. 给定赋值补偿 $c(\tau,h,b)\in\mathbb N$（指标分别为位 $\tau$、列高 $h$ 与行标 $b$），假定对任一容许配对指数 $e$，只要 $\tau'=\nu_{p^e}\tau$ 且满足「$\tau\in S'$」或「$h=1$ 且 $\tau'\in S'$」，即有
+\[
+             c(\tau,1,b)+c(\tau',h,b)>0.
+\]
+对目标杨表 $I'$，记 $c(I')$ 为其各方格所对应赋值补偿之和. 则任一 Schur 导数矩阵元均满足
+\[
+ v_p\bigl(\operatorname{SchurJet}_{\kappa,F}(I',I)\bigr)+c(I')
+ \ \ge\
+ \operatorname{Pred}_p(\kappa^\circ,n')
+ +\gamma_{p,\mathrm{box}}(B_\kappa-B_{\kappa^\circ})
+ - f(n')^3\bigl(1+\log_p\max(B_\kappa,1)\bigr),
+\]
+其中 $\operatorname{Pred}_p$ 由式~\eqref{eq:ch2-predicted-divisibility} 给出，$\gamma_{p,\mathrm{box}}=(p-1)^{-1}-v_p(\varpi)$，$\varpi$ 为标准级数正规形的缩放元.
+\end{lemma}
+\begin{proof}
+首先将给定行中所有 Schur 矩阵元的 $p$-进绝对值归约至某个子式积导数. 固定目标杨表 $I'$，简记导数矩阵该行的各矩阵元为 $J_I$. 为每个源杨表 $I$ 配置相应的旗子式基多项式 $B_I(Y)$ 并乘以权表示所需的行列式因子. Schur 展开表明，对任意整矩阵族 $Y$，将每列视作 $ZY$ 的子式后所取的子式积导数恰等于 $\sum_I J_I B_I(Y)$. 这些基多项式 $B_I$ 模极大理想后仍线性无关，且 $\mathbb C_p$ 的剩余域无限. 若该行非零，取绝对值最大的一项 $J_\ast$ 并将整行除以 $J_\ast$：所得多项式约化后非零，故必在某个剩余矩阵族处取非零值；选取其整提升 $Y$，则相应子式积导数的 $p$-进绝对值恰为 $|J_\ast|_p$，从而控制该行的每一个 Schur 项（全行为零时任取 $Y$ 即可）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L772}{子式积的 Schur 展开}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L800}{选择整矩阵使子式积控制 Schur 项}.}
+
+由定理~\ref{thm:ch2-normal-form}，$F$ 具有正规形~\eqref{eq:ch2-normal-form}. 对所选 $Y$ 的子式积施行整方向替换，记
+\[
+ L_0=\left\lfloor\log_p\max(B_\kappa,1)\right\rfloor,\qquad
+ D_0=\sum_{\substack{e\le L_0\\ e\ \text{容许}}}
+          \sum_\tau \operatorname{deductionTerm}_{p,\kappa,n',S'}(\tau,\nu_{p^e}\tau,e).
+\]
+可选取第 $\tau$ 位、列高 $h$ 的方向替换矩阵 $G_{\tau,h}$，使其行列式绝对值之积满足
+\[
+ \prod_{\tau,h<n'}|\det G_{\tau,h}|_p^{\kappa(\tau,h)}
+ \ge p^{-v_p(\pi_p)D_0},
+\]
+其中 $\pi_p$ 为 $K$ 在 $p$ 上方的局部素元. 再将各方向乘以补偿因子 $p^{c(\tau,h,b)}$. 依假设，任何涉及删列的配对项均至少有一个方向携此额外因子，因而相应耦合式被 $\pi_p$ 整除；其余耦合式的整除性则由所选方向的配对条件保证. 于是引理~\ref{lem:ch2-truncated-integrality} 表明，替换后的级数在所需总次数 $B_\kappa$ 处所有系数均整.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/Divisibility.lean\#L170}{标准数据的非分裂正规形}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/NullFrames.lean\#L361}{配对项与新方向的行列式代价}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L585}{正规形中加入赋值补偿}.}
+
+在替换后的变量上，对整系数级数求总次数为 $B_\kappa$ 的导数. 每个多重指标 $\eta$ 带来阶乘因子 $\prod_\ell\eta_\ell!$；由式~\eqref{eq:ch2-legendre-jet} 中的 Legendre 估计，其赋值至少为 $B_\kappa/(p-1)$ 减去非零坐标个数乘以 $1+L_0$（因为每个坐标的 $p$-进制数字和至多为 $(p-1)(1+L_0)$）. 由于方向变量总数不超过 $f(n')^3$，替换后导数的赋值至少为 $B_\kappa/(p-1)-f(n')^3(1+L_0)$. 链式法则表明，该导数相较于原子式积导数多乘了 $\varpi^{B_\kappa}$、总补偿 $p^{c(I')}$ 以及上述方向矩阵的行列式乘积. 移回这些因子后，原子式积导数的赋值加上 $c(I')$ 至少为
+\[
+ \gamma_{p,\mathrm{box}} B_\kappa-v_p(\pi_p)D_0
+ -f(n')^3(1+L_0).
+\]
+扣除项的计数上界给出
+\[
+ \gamma_{p,\mathrm{box}} B_\kappa-v_p(\pi_p)D_0
+ \ge\operatorname{Pred}_p(\kappa^\circ,n')
+   +\gamma_{p,\mathrm{box}}(B_\kappa-B_{\kappa^\circ}).
+\]
+最后利用 $L_0\le\log_p\max(B_\kappa,1)$，并以所选子式积控制原 Schur 矩阵元，即证得所求下界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L369}{链式法则中的行列式与补偿}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L547}{扣除项与预测整除性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/Divisibility.lean\#L246}{带权 Schur 导数}.}
+\end{proof}
+
+\section{局部素数和与系数的赋值上界}
+\label{sec:ch2-sharpness}
+
+现固定容许数据的位权 $\kappa_\tau$. 对每个素数 $p$ 定义局部素数和
+\begin{equation}
+\label{eq:ch2-localprimesum}
+\begin{aligned}
+ s_p(y,\tau)&=v_p^*\sum_{e\in I_p}
+      \bigl(y/p^e-\kappa_{\nu_{p^e}\tau}\bigr)_+,\\
+ S_{p,\tau}&=s_p(\kappa_\tau,\tau),\qquad
+ S_p=\sum_{\tau\in\Phi}S_{p,\tau},\qquad
+ v_p^*=\begin{cases}1/2,&p=d,\\1,&p\ne d.\end{cases}
+\end{aligned}
+\end{equation}
+当 $p$ 在 $K$ 中分裂时，$I_p=\varnothing$，故 $s_p(y,\tau)=0$；由正部截断，对任意固定 $y$ 和式中仅有有限项非零. 记 $\Lambda$ 为 von Mangoldt 函数，则对任意整数 $e\ge1$ 成立
+\begin{equation}
+\label{eq:ch2-weighted-primes}
+ 2\log p\;v_p^*\,\mathbf1_{e\in I_p}
+ =\Lambda(p^e)(1-\chi_K(p^e)).
+\end{equation}
+确切地说，当 $p$ 惰性时右端对奇数 $e$ 取 $2\log p$、对偶数 $e$ 取零；当 $p=d$ 分歧时恒取 $\log p$；当 $p$ 分裂时恒为零. 因而对所有素数 $p$ 求和，即可将式~\eqref{eq:ch2-localprimesum} 与\chapref{chap:reduction}的带权素数幂和精确对接.\leanfn{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{65}.}
+
+定理 A 的局部整性论证使用导数的 $p$-进赋值下界，而定理 C 的单步比较还需要在指定次数下反过来寻得赋值不超过给定上界的系数（即下界的可达性）. 本节先构造紧标架并建立十二份曲线级数乘积的系数赋值上界，下一节再借有限 Fourier 反演将其转移至剩余类指示向量. 记 $l_0=3^{\lfloor\log_3 s\rfloor+4}$ 为由塔指数 $s$ 决定的稀疏参数，用以约束小素数处的近配对指数；位权为 $b$ 的无穷位集合仍记为 $\Phi_b$.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Vacuum/ShortVectors.lean}{780}.}
+\begin{lemma}[主层上具有单位系数的紧标架]
+\label{lem:c-derivative-frame}
+\emitthmsource
+取容许数据，令 $\mathfrak a_0=E\cap\alpha\widehat{\mathcal O}_E$，其中 $\alpha$ 为 Weil 数据的有限 idèle. 则存在有限向量族 $w_i\in\mathfrak a_0$ 与整数重数 $c_i\ge6fb$，满足紧标架恒等式
+\[
+       \sum_i c_i\,\sigma(w_i)\overline{\tau(w_i)}
+        =M\delta_{\sigma,\tau}
+        \qquad(\sigma,\tau\in\Phi).
+\]
+进一步，设 $C_{\mathrm{per}}$ 为曲线周期与真空比较所定的周期因子，则对每个素数 $p$ 与 $p$-进嵌入 $\iota$，均存在同一个指标 $i_0$，使得对所有 $\tau\in\Phi$ 均有 $|\iota(C_{\mathrm{per}}\overline{\tau(w_{i_0})})|_p=1$.
+\end{lemma}
+
+\begin{proof}
+设 $\zeta$ 为 $E$ 中阶为 $q_1$ 的本原单位根. 单位根幂 $\zeta^a$（$0\le a<q_1$）构成长度 $q_1$、各项重数均为 $1$ 的紧标架：同一嵌入处的乘积之和显然为 $q_1$，而两相异嵌入处为非平凡几何级数求和，故为零. 此外，还可构造长度 $h$、重数均为 $1$ 的辅助紧标架 $(v_i)$，满足 $1\le h\le b$ 且 $\gcd(h,q_1)=1$. 对每个 $p$-进嵌入 $\iota$，在这两族向量的并中总能选出一位向量，使其周期线性形式的所有系数均为 $p$-进单位——具体取法为 $1$ 或 $\zeta$ 乘以相对迹对偶基的末项向量，视底二次域生成元的共轭在 $\iota$ 处是否为单位而定.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L388}{单位根的紧标架}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L552}{单位系数的两种选择}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L753}{与 $q_1$ 互素的短标架}.}
+
+令 $R=\lceil6fb\rceil$. 容许数据的尺度约束保证了 $M\ge q_1h+R(q_1+h)$. 由 $\gcd(q_1,h)=1$ 及两生成元的非负整数表示定理，存在非负整数 $a_1,a_2$ 使得
+\[
+ a_1q_1+a_2h=M-R(q_1+h).
+\]
+为每个单位根幂赋予重数 $a_1+R$，为每个辅助标架向量赋予重数 $a_2+R$，再将两套标架恒等式相加，右侧标量恰为 $(a_1+R)q_1+(a_2+R)h=M$. 此时所有重数均至少为 $R$，且适配各 $\iota$ 的单位系数向量仍位于两族向量的并中.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L584}{互素长度的合并}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L787}{主层标架的尺度核对}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/Couplings.lean}{568}.}
+\begin{lemma}[惰性素数处的六份 Theta 耦合]
+\label{lem:c-derivative-six-coupling}
+\emitthmsource
+设 $C$ 为虚二次域 $\mathbb Q(\sqrt{-d})$ 的 CM 格，其中 $d\equiv7\pmod8$ 为素数，且 $p>2$ 在该域中惰性. 令 $\Theta=\prod_i\theta(\mu_i z)^{m_i}$，其中 $\mu_i$ 为整线性形式. 取满足 $v_p(\varpi)=\rho_p=1/(p^2-1)$ 的缩放元，并设其具有正规形~\eqref{eq:ch2-normal-form}：
+\[
+ \Theta(\varpi z)=W(z)\exp(\kappa\Xi(z)),\qquad
+ \kappa=\varpi^{p+1}/p,\qquad
+ \Xi=\sum_{\substack{a\ \text{奇}\\ b\ge0}}\lambda_{a,b}\Gamma_a^{p^b},
+ \qquad
+ \Gamma_a=\sum_\tau z_\tau^{p^a}z_{\operatorname{pr}(a,\tau)},
+\]
+其中 $W,\lambda_{a,b}$ 皆整，且每个 $\lambda_{a,0}$ 为单位. 给定一族耦合——即在选定的始端位 $\tau$ 上指定奇数 $e_\tau$，使得所选耦合项以 $\tau^+=\operatorname{pr}(e_\tau,\tau)$ 为邻位，且在选定始端集合中所有同邻位耦合项里次数严格最低. 对非负整数次数分配 $j_\tau\ge0$，记 $\nu'$ 与 $\nu''$ 分别为单项式 $\prod_\tau z_\tau^{p^{e_\tau}j_\tau}$ 与 $\prod_\tau z_{\tau^+}^{j_\tau}$ 的指数向量，置 $\nu=\nu'+\nu''$ 及 $J=\sum_\tau j_\tau$. 对多重指标 $\beta$，记 $v_p(\beta!)=\sum_i v_p(\beta_i!)$. 写 $\operatorname{val}_6(\nu)\le r$ 表示存在由平移坐标 $y(\mu_i z_c)$ 生成的整级数环中的元素 $H_c$，使得六组独立变量乘积 $\prod_{c=0}^5(H_c\Theta)(z_c)$ 中存在逐位合计次数为 $\nu$、赋值至多为 $r$ 的系数. 则成立
+\[
+ \operatorname{val}_6(\nu)\le -J,\qquad
+ \operatorname{val}_6(\nu)+v_p(\nu'!\nu''!)\le\gamma_p|\nu|-J,
+ \qquad \gamma_p=\frac1{p-1}-\rho_p.
+\]
+\end{lemma}
+
+\begin{proof}
+记 $F(z)=\Theta(\varpi z)$. 因 $F(0)=1$ 且 $\Xi(0)=0$，整系数级数 $W$ 为单位. 六份 Theta 乘积的整化给出整标量 $\delta_c$（$\delta_0=1$），使 $U(z)=\prod_c F(\delta_c z)$ 为常数项为 $1$ 的整系数级数. 引入两组独立变量 $z',z''$，考虑 $G=F(z'+z'')\prod_{c\ne0}F(\delta_c z')$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L471}{六份缩放的整乘积}.}
+
+对 $G$ 依次就第二组变量 $z''$ 施行由 $\nu''$ 指定的偏导数. 设已求导 $k$ 次后所得结果为 $\kappa^kQ_kG$（其中 $Q_0=1$），记下一步的偏导算子为 $\partial$. 由于 $W$ 为整系数单位，递推关系为
+\[
+ Q_{k+1}=\kappa^{-1}\partial Q_k+
+    \left(\kappa^{-1}\frac{\partial W}{W}+\partial\Xi\right)Q_k ,
+\]
+其中 $W$ 与 $\Xi$ 均在 $z'+z''$ 处求值. 因 $v_p(\kappa^{-1})>0$，所有 $Q_k$ 均保持整性，且其模极大理想的约化仅由各次 $\partial\Xi$ 之积给出. 令 $z''=0$，该约化化为 $\prod_\tau(\partial_{\tau^+}\Xi)^{j_\tau}$，同时 $G(z',0)=U(z')$. 模极大理想时，$b>0$ 的高次幂项以及对 $z_\tau^{p^a}$ 求导的项均告消失；在选定的始端变量中，每个 $\partial_{\tau^+}\Xi$ 的最低次数项恰为单位倍的 $z_\tau^{p^{e_\tau}}$. 将其余未选定变量置零并利用 $U(0)=1$，可知乘积在 $z'^{\nu'}$ 处的系数仍为单位. 由高阶导数与 Taylor 系数的关系，得到\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L201}{同邻位的最低次数项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L358}{双组变量的系数恒等式}.}
+\[
+ v_p([z'^{\nu'}z''^{\nu''}]G)=J\,v_p(\kappa)-v_p(\nu''!).
+\]
+
+撤去变量缩放 $\varpi$ 后，该系数的赋值下降 $\rho_p|\nu|$. 由于两组变量的线性代换均具整系数，该系数是六份乘积中合计逐位次数为 $\nu$ 的诸系数的整线性组合. 由超度量不等式遂得
+\[
+ \operatorname{val}_6(\nu)\le \frac{J}{p-1}-J-\rho_p|\nu|-v_p(\nu''!).
+\]
+一方面，由 $|\nu|\ge(p+1)J$ 与 $\rho_p(p+1)=1/(p-1)$，右端至多为 $-J$，此即第一式；另一方面，Legendre 公式给出 $v_p(\nu'!)\le|\nu'|/(p-1)$，将两项阶乘赋值加回并结合 $|\nu|=|\nu'|+J$，即得第二式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L506}{撤除缩放与整代换}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L581}{两个赋值界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/Cases.lean}{669}.}
+\begin{lemma}[十二份曲线级数的赋值估计]
+\label{lem:c-derivative-valuation}
+\emitthmsource
+设 $p$ 为素数，固定 $p$-进嵌入 $\iota$. 取长度 $M$ 的紧标架 $(w_i,c_i)$，使其某条线性形式 $\mu_{i_0}$ 的各系数均为 $p$-进单位. 设整数 $d_\tau$ 满足 $\kappa_\tau\le d_\tau\le\kappa_\tau+x^{42}$，记 $\boldsymbol d=(d_\tau)_\tau$，并置
+\[
+ n^\sharp=\lceil6b/k\rceil,\qquad
+ B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr).
+\]
+记 $v(\boldsymbol\nu!)=\sum_\tau v_p(\nu_\tau!)$. 对 $n$ 份曲线级数，写 $\operatorname{val}_n(\boldsymbol\nu)\le r$ 表示可在 $n$ 份 $H_j\Theta$ 中选取逐位合计次数为 $\boldsymbol\nu$ 的系数，使其乘积的赋值至多为 $r$，其中 $\Theta=\prod_i\theta(\mu_i X)^{c_i}$，各 $H_j$ 为关于曲线坐标 $y(\mu_i X)$ 的整系数级数. 则有
+\[
+ \operatorname{val}_{12}(\boldsymbol d)
+ \le S_p+2\sum_\tau v_p(B_\tau)-v(\boldsymbol d!).
+\]
+\end{lemma}
+
+\begin{proof}
+将逐位次数拆分并在不同份中分别取系数时，合计逐位次数相加，乘积的赋值上界亦随之相加；此外，每份级数的常数项允许以零次系数零成本补足份数. 以下按 $p$ 的算术类型分三种情形讨论.
+
+\emph{情形一：$p$ 在 $K$ 中分裂.} 此时 $S_p=0$. 沿系数全为 $p$-进单位的那条线性形式 $\mu_{i_0}$ 所作的六份估计给出 $\operatorname{val}_6(\boldsymbol d)\le-v(\boldsymbol d!)$；其余六份全取零次系数补足，注意到每个 $v_p(B_\tau)\ge0$，结论立得.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/LeastValuation.lean\#L509}{一条单位线性形式的估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L526}{分裂素数情形}.}
+
+\emph{情形二：$p>k$ 且 $p$ 不分裂.} 因分歧素数满足 $d\le k$，故 $p$ 必为惰性素数. 记 $\tau(1)$ 为 $\tau$ 在指数 $1$ 处的伙伴位，并置
+\[
+ i_\tau=\left\lfloor\frac{(d_\tau-n^\sharp)_+}{p}\right\rfloor,
+ \qquad j_\tau=\min\{i_\tau,d_{\tau(1)}\}.
+\]
+在第一组六份中，令每个 $\tau$ 与其伙伴 $\tau(1)$ 耦合 $j_\tau$ 次，其中始端每次消耗 $p$ 个次数、终端每次消耗 $1$ 个次数. 因映射 $\tau\mapsto\tau(1)$ 为双射且 $j_\tau\le n^\sharp$，所消耗的总次数不超过 $\boldsymbol d$. 由正规形及引理~\ref{lem:c-derivative-six-coupling}，第一组六份给出的赋值至多为 $-\sum_\tau j_\tau$；剩余次数由第二组六份补齐，而在惰性情形下补齐任意次数的额外赋值代价至多为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L504}{逐位次数的分配}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L581}{六份耦合估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L220}{惰性情形补余次数}.}
+
+进一步，由 $i_\tau\le n^\sharp$ 及 $n^\sharp!\mid B_\tau$ 可知 $v_p(i_\tau!)\le v_p(B_\tau)$. 对 $(d_\tau-n^\sharp)_+!$ 施用 Legendre 递推公式并补回缺失因子，可得 $v_p(d_\tau!)\le i_\tau+2v_p(B_\tau)$. 另一方面，利用 $(d_\tau-n^\sharp)_+\le\kappa_\tau$ 与 $d_{\tau(1)}\ge\kappa_{\tau(1)}$，再仅保留局部素数和中指数为 $1$ 的那一项，即有
+\[
+ i_\tau-j_\tau
+  \le (\kappa_\tau/p-\kappa_{\tau(1)})_+
+  \le S_{p,\tau}.
+\]
+对所有 $\tau\in\Phi$ 求和即得该情形的上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L349}{惰性大素数的阶乘误差}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L544}{惰性大素数情形}.}
+
+\emph{情形三：$p\le k$ 且 $p$ 不分裂.} 令 $\Phi_0$ 为存在近配对的始端位集合——所谓近配对，是指存在该素数的允许伙伴指数 $e<l_0/2$，使得始端与终端均落入权为 $b$ 的无穷位集合 $\Phi_b$；由稀疏条件，每个 $\tau\in\Phi_0$ 对应的此类指数 $e_\tau$ 唯一. 对 $\tau\in\Phi_0$ 取 $j_\tau=\lfloor d_\tau/p^{e_\tau}\rfloor$，其余位取零，并记 $\boldsymbol\nu'$、$\boldsymbol\nu''$ 分别为这些耦合在始端与终端所占的次数向量. 逐位次数比较给出分解 $\boldsymbol d=\boldsymbol\nu'+\boldsymbol\nu''+\boldsymbol\eta$，其中 $\boldsymbol\eta\ge0$. 记 $\gamma_p$ 为式~\eqref{eq:ch2-slopes} 中的净增益斜率（惰性时为 $p/(p^2-1)$，分歧时为 $1/(2p-2)$）. 第一组六份按近配对施行耦合，第二组六份则借助单位系数线性形式补齐余量 $\boldsymbol\eta$，由此得到
+\[
+ \operatorname{val}_{12}(\boldsymbol d)
+ \le \gamma_p\sum_\tau d_\tau-\sum_\tau j_\tau
+    -v(\boldsymbol\nu'!)-v(\boldsymbol\nu''!)-v(\boldsymbol\eta!).
+\]
+在分歧素数 $p=d$ 处，近配对集合为空，第一组六份直接取零次即可.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/NearPairs.lean\#L113}{近配对的条件}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L595}{近配对的六份估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L619}{非分裂小素数情形}.}
+
+逐位应用 Legendre 公式可知，$v(\boldsymbol d!)$ 与上述三项阶乘赋值之和的差至多为 $3f(\log b+2)$. 另一方面，综合比较近配对项与其余伙伴指数的贡献，得到
+\[
+  \gamma_p\sum_\tau d_\tau-\sum_\tau j_\tau+3f(\log b+2)
+      \le S_p+\sum_\tau v_p(B_\tau).
+\]
+因此，在 $p\le k$ 情形中甚至仅损失一份 $\sum_\tau v_p(B_\tau)$. 汇总上述三种情形，即证得统一的赋值上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L377}{Legendre 舍入误差}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L403}{与局部素数和的比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L672}{三种情形的合并}.}
+\end{proof}
+
+\section{从曲线系数到 Theta 核的指示向量}
+\label{sec:ch2-realization}
+
+引理~\ref{lem:c-derivative-valuation} 约束了十二组独立曲线变量的乘积系数. 本节将这一系数实现为目标 Weil 模型中某个向量的 Taylor 系数：截面乘积的平移乘子由标架恒等式~\eqref{eq:ch2-tight-frame-norm} 精确确定，而剩余类指示向量的存在性则由有限 Fourier 展开导出.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{154}.}
+\begin{lemma}[十二份椭圆曲线截面乘积的整 Theta 实现]
+\label{lem:c-derivative-twelve-realization}
+\emitthmsource
+取长度 $M$ 的紧标架 $(w_i,c_i)$，令 $\mu_i(X)=C_{\mathrm{per}}\sum_\tau\overline{\tau(w_i)}X_\tau$ 为其周期线性形式. 给定满足 $3e_{j,i}\le c_i$ 的非负整数 $e_{j,i}$（$1\le j\le12$），固定素数 $p$ 与 $p$-进嵌入 $\iota$. 则存在第一块 Heisenberg 向量 $F$，它在所有无穷分量为零的阿代尔点处均取 $p$-进整数值，且其 Theta 函数在沿 $\pi_M\mathfrak a_0^{12}$ 的带符号平移下不变；对其按尺度 $\pi_M s_{\mathrm{jet}}$ 所取 Taylor 级数施加 $\iota$ 后，有
+\[
+ \iota_*\mathcal J(F)=
+ \prod_{j=1}^{12}\prod_i
+       y(\mu_i(X_j))^{e_{j,i}}\theta(\mu_i(X_j))^{c_i},
+\]
+其中 $X_j=(X_{j,\tau})_\tau$ 为第 $j$ 份变量，右端的曲线函数取原点 Taylor 级数并经 $\iota$ 读入 $\CC_p$.
+\end{lemma}
+
+\begin{proof}
+在 CM 曲线 $C=\mathbb C/(\Omega_0\mathcal O_K)$ 上，考虑指数为 $(c_i-3e_{j,i},0,e_{j,i})$ 的单项式截面，其加权次数为 $c_i$，函数表达式为 $\theta^{c_i-3e_{j,i}}(y\theta^3)^{e_{j,i}}=y^{e_{j,i}}\theta^{c_i}$. 令 $a_{\mathrm{area}}=\sqrt{2\pi/\sqrt d}$，经线性形式
+\[
+ A_{j,i}(Z)=\frac{\Omega_0}{\pi_M a_{\mathrm{area}}}
+                \sum_\tau\overline{\tau(w_i)}Z_{j,\tau}
+\]
+拉回这些截面并相乘，得到整函数 $S$. 曲线周期格的余面积为 $|\Omega_0|^2\sqrt d/2$；又因 $\pi_M\bar\pi_M=M$，原曲线的 Hermite 形式 $B_C$ 乘以 $A_{j,i}$ 的尺度平方后含因子 $1/M$. 借助紧标架恒等式~\eqref{eq:ch2-tight-frame-norm} 求和，可知 $\sum_{j,i}A_{j,i}^*(c_i B_C)$ 恰好等于第一块的标准 Fock Hermite 形式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L795}{拉回的 Hermite 形式求和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L183}{曲线周期与面积}.}
+
+由 CM 型内积的整性，$\Omega_0$ 乘以格向量与 $w_i$ 的 CM 内积落入曲线周期格，故无穷位格 $\pi_M\mathfrak a_0^{12}$ 经每个 $A_{j,i}$ 均映入曲线周期格. 各截面的平移乘子相乘后恰还原为上述 Fock 形式的规范乘子，因此带符号平移固定 $S$. 对该周期格施用 Theta 函数的有限 Fourier 反演，即得 $S=\Theta_F$，其中 $F$ 属于有限部分.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L686}{周期格的整性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L824}{乘积的平移乘子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L860}{Theta 乘积的实现}.}
+
+对任意有限阿代尔平移，均可替换为在 $F$ 上作用相同的有理平移. 该点处的取值等于平移后 Theta 函数在原点的值，因而等于各截面在相应平移点处扭转值之积. 若以正整数 $L$ 清去有理平移的格分母，则 $ML$ 倍的平移点落入曲线周期格，故每个平移点皆为曲线的挠点. 因单项式截面的扭转挠点值均为 $p$-进整数，其乘积亦然.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L755}{挠点值给出的整性}.}
+
+最后按整化尺度取 $Z=\pi_M s_{\mathrm{jet}}X$，由式~\eqref{eq:ch2-jet-scale} 立得 $A_{j,i}(Z)=\mu_i(X_j)$. 在十二份互异变量中展开各曲线截面并将系数经 $\iota$ 映入 $\mathbb C_p$，即得所求 Taylor 恒等式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L169}{十二份变量的 Taylor 恒等式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{216}.}
+\begin{lemma}[有限 Fourier 反演的指示向量比较]
+\label{lem:c-derivative-fourier-indicator}
+\emitthmsource
+固定素数 $p$ 与 $p$-进嵌入 $\iota$. 令 $F$ 为第一块的 Heisenberg 向量，它在所有无穷分量为零的阿代尔点处取 $p$-进整数值，且其 Theta 函数在沿 $\pi_M\mathfrak a_0^{12}$ 的带符号平移下不变. 记 $v_0$ 为未整化真空在任一无穷分量为零的阿代尔点处的取值. 给定第一块向量空间上的任意复线性泛函 $L$ 及理想为 $(\pi_M)$ 的模 $\mathfrak m$，必存在模 $\mathfrak m$ 的剩余类 $a$，使得
+\[
+  |\iota(M^{12f}L(F)v_0)|_p\le|\iota(L(D_a))|_p ,
+\]
+其中 $D_a$ 为在有限模 $\mathfrak m$ 处取剩余类 $a$ 之指示函数的真空向量.
+\end{lemma}
+
+\begin{proof}
+在第一块上应用有限 Fourier 反演，取一般公式中的整数 $\delta=\bar\pi_M$（满足 $\delta\bar\delta=M$）. 设 $v$ 为未整化的真空向量，$\rho(u)$ 为有理向量 $u$ 的有限 Heisenberg 平移. 反演公式给出有限个 $u$ 与标量 $b_u$，使得
+\[
+ M^{12f}F=\sum_u b_u\rho(u)v,\qquad
+ \bar\pi_M u\in\mathfrak a_0^{12}.
+\]
+每个 $b_u v$ 可表为先将 $F$ 沿 $-u$ 平移、再沿一组格代表作带相位平移之和；这类平移在无穷分量为零的点求值时，仅改变有限坐标并乘以单位根，故每项的 $p$-进模长均至多为 $1$. 由超度量不等式即得 $|\iota(b_u v_0)|_p\le1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Construction/FourierInversion.lean\#L429}{反演与取值公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Construction/FourierInversion.lean\#L478}{带相位平移和的整性}.}
+
+因 $\bar\pi_M u\in\mathfrak a_0^{12}$，$\rho(u)v$ 的有限分量在模 $\pi_M$ 的每个剩余类上均为单位根乘以相应的真空指示向量，即 $\rho(u)v=\sum_a\epsilon_{u,a}D_a$ 且 $|\iota(\epsilon_{u,a})|_p=1$. 对反演式两端施用线性泛函 $L$ 并同乘 $v_0$，得到
+\[
+ M^{12f}v_0 L(F)
+      =\sum_{u,a}(v_0 b_u)\epsilon_{u,a}L(D_a).
+\]
+再次应用超度量不等式，右端的 $p$-进模长不超过 $\max_a|\iota(L(D_a))|_p$；取达到该最大值的剩余类 $a$ 即证毕.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Algebra/LevelModulus.lean\#L258}{按剩余类展开真空平移}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L224}{指示向量比较}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{272}.}
+\begin{lemma}[曲线级数系数向剩余类指示向量的传递]
+\label{lem:c-derivative-indicator}
+\emitthmsource
+固定素数 $p$ 与 $p$-进嵌入 $\iota$，取长度 $M$ 的紧标架 $(w_i,c_i)$，记其周期线性形式为 $\mu_i$，曲线 Theta 乘积为 $\Theta=\prod_i\theta(\mu_i X)^{c_i}$. 设非负逐位次数 $\boldsymbol d=(d_\tau)$ 对每个 $i$ 均满足 $3\sum_\tau d_\tau\le c_i$. 假定可在 $12$ 份 $H_j\Theta$（其中各 $H_j$ 为曲线坐标 $y(\mu_i X)$ 的整系数幂级数）中选取逐份系数，其逐位次数之和为 $\boldsymbol d$，且系数乘积的赋值至多为 $r$.
+
+令 $c_{\mathrm{vac}}$ 为 $12$ 行整真空在任一无穷分量为零的阿代尔点处的取值. 则对任一理想为 $(\pi_M)$ 的模 $\mathfrak m$，存在剩余类 $a$ 与多重指标 $\gamma$，满足 $\sum_j\gamma_{\tau,j}=d_\tau$ 及
+\[
+  p^{-r}|\iota(M^{12f}c_{\mathrm{vac}})|_p
+      \le \bigl|\iota(V^{12}[X^\gamma]\mathcal J(D_a))\bigr|_p ,
+\]
+其中 $D_a$ 为第一块的指示向量，$\mathcal J$ 是按尺度 $\pi_M s_{\mathrm{jet}}$ 所取的 Taylor 变换.
+\end{lemma}
+
+\begin{proof}
+固定假设所给的逐份次数 $\boldsymbol\gamma_j$. 由于每个 $y(\mu_i X)$ 均无常数项，仅有次数不超过 $|\boldsymbol\gamma_j|$ 的单项式能对所选系数作贡献. 由整系数的超度量不等式，可将每一份 $H_j$ 替换为某个单项式 $\prod_i y(\mu_i X)^{e_{j,i}}$ 而不减小第 $j$ 份系数的 $p$-进模长；且由 $\sum_i e_{j,i}\le|\boldsymbol\gamma_j|\le\sum_\tau d_\tau$ 自动满足 $3e_{j,i}\le c_i$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/LeastValuation.lean\#L362}{取单项式达到系数模长}.}
+
+在第 $j$ 份的第 $i$ 个线性形式处，借恒等式 $y^{e_{j,i}}\theta^{c_i}=(y\theta^3)^{e_{j,i}}\theta^{c_i-3e_{j,i}}$ 将其视作次数为 $c_i$ 的曲线截面. 由引理~\ref{lem:c-derivative-twelve-realization}，这些截面乘积可实现为某个 Heisenberg 向量 $F$ 的 Theta 函数，该向量在无穷分量为零的有限阿代尔点处取 $p$-进整数值，且其 Theta 函数在沿 $\pi_M\mathfrak a_0^{12}$ 的带符号平移下不变. 变换尺度 $\pi_M s_{\mathrm{jet}}$ 代入各截面后恰还原周期线性形式 $\mu_i$；又十二份变量互异，故 $\mathcal J(F)$ 的 $\gamma=(\boldsymbol\gamma_j)_j$ 次系数 $a_F$ 恰等于 $12$ 份所选系数之积，从而 $|\iota(a_F)|_p\ge p^{-r}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L78}{不同变量份的系数乘积}.}
+
+记 $v_0$ 为未整化真空在所选阿代尔点处的值，于是 $c_{\mathrm{vac}}=V^{12}v_0$. 构造线性泛函 $L_\gamma(F')=V^{12}[X^\gamma]\mathcal J(F')$，由引理~\ref{lem:c-derivative-fourier-indicator} 可得
+\[
+ |\iota(M^{12f}v_0 L_\gamma(F))|_p
+ \,\le\,\max_a|\iota(L_\gamma(D_a))|_p .
+\]
+左端恰等于 $|\iota(M^{12f} c_{\mathrm{vac}}a_F)|_p\ge p^{-r}|\iota(M^{12f}c_{\mathrm{vac}})|_p$，取使右端达到最大值的剩余类 $a$ 即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L226}{系数的超度量比较}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{323}.}
+\begin{lemma}[导数共同缩放因子的共轭模界]
+\label{lem:c-derivative-height}
+\emitthmsource
+取容许数据，设非负整数 $d_\tau\le\kappa_\tau+x^{42}$，并令 $n^\sharp=\lceil6b/k\rceil$、$B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr)$. 对第一块整真空在任一无穷分量为零的阿代尔点处的取值 $c_{\mathrm{vac}}$ 及任意 $\sigma\in\operatorname{Aut}(\mathbb C)$，均有
+\[
+ \left|\sigma\left(M^{12f}c_{\mathrm{vac}}\prod_\tau B_\tau^2\right)\right|
+       \le\exp(fmb/k).
+\]
+\end{lemma}
+
+\begin{proof}
+设 $C_E$ 为参数的固定常数上界，$q_1$ 为 $E$ 的分圆部分单位根阶数. 由整真空的复共轭范数界~\eqref{eq:ch2-vacuum-bounds}，有 $|\sigma(c_{\mathrm{vac}})|\le\exp(12C_E q_1^2)$. 又由 $d_\tau\le2b$ 知每个 $B_\tau$ 的各个因子皆不超过 $2b+n^\sharp$，从而
+\[
+ \prod_\tau B_\tau^2\le(2b+n^\sharp)^{2f n^\sharp}.
+\]
+因复自同构固定有理整数，三因子共轭模长之积至多为
+\[
+ \exp\left(12f\log M+2f n^\sharp\log(2b+n^\sharp)+12 C_E q_1^2\right).
+\]
+将 $n^\sharp=\lceil6b/k\rceil$ 代入并与容许数据对主层、秩及域常数的对数界比较，可知上述指数不超过 $fmb/k$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L332}{三个因子的估计和尺度比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Magnitudes.lean\#L77}{容许数据的尺度关系}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{371}.}
+\begin{lemma}[第一块导数系数的有限位下界]
+\label{lem:c-derivative-sharpness}
+\label{thm:ch2-sharpness}
+\emitthmsource
+取容许数据. 记 $V$ 为秩一真空的整化常数，$s_{\mathrm{jet}}$ 为 Taylor 缩放的整化因子，$S_p$ 为位权 $\boldsymbol\kappa$ 在素数 $p$ 处的各无穷位局部素数和之和. 设每个无穷位 $\tau$ 上的整数 $d_\tau$ 满足 $\kappa_\tau\le d_\tau\le\kappa_\tau+x^{42}$. 在 $12$ 行的正定第一块上，记 $D_a$ 为在无穷位取真空、在有限模 $\mathfrak m$ 处取剩余类 $a$ 之指示函数、在其余有限位取真空的向量，并令 $\mathcal J(D_a)$ 为其 Theta 函数按尺度 $\pi_M s_{\mathrm{jet}}$ 在原点的 Taylor 级数.
+
+则存在不依赖于有限位及模的选取的非零常数 $u$，对所有 $\sigma\in\operatorname{Aut}(\mathbb C)$ 满足
+\[
+     |\sigma(u)|\le \exp(fmb/k)；
+\]
+并且对每个理想为 $(\pi_M)$ 的模 $\mathfrak m$、每个素数 $p$ 及每个 $p$-进嵌入 $\iota$，均存在剩余类 $a$ 与多重指标 $\gamma=(\gamma_{\tau,j})$（$1\le j\le12$），使得
+\begin{equation}
+\label{eq:ch2-sharpness}
+\begin{gathered}
+ \sum_{j=1}^{12}\gamma_{\tau,j}=d_\tau\qquad(\tau\in\Phi),\\
+ \left|\iota\left(\frac{V^{12}}{u}\,
+       \Bigl(\prod_\tau d_\tau!\Bigr)
+       [X^\gamma]\mathcal J(D_a)\right)\right|_p
+ \ge p^{-S_p}.
+\end{gathered}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+令 $n^\sharp=\lceil6b/k\rceil$，并对每个无穷位 $\tau$ 置
+\[
+ B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr),
+ \qquad
+ F_{\boldsymbol d}=\prod_\tau d_\tau!,
+ \qquad B_{\boldsymbol d}=\prod_\tau B_\tau .
+\]
+在秩 $12$ 的整真空中选取一个无穷分量为零、且取值 $c_{\mathrm{vac}}$ 非零的阿代尔点，定义
+\[
+ U=M^{12f}c_{\mathrm{vac}},\qquad u=U B_{\boldsymbol d}^2 .
+\]
+因各 $B_\tau$ 皆为正整数且 $M>0$，故 $u\ne0$；引理~\ref{lem:c-derivative-height} 随即给出所需的共轭模上界，且此 $u$ 在选取 $p,\iota,\mathfrak m$ 之前便已完全固定.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/IntegralVacuum.lean\#L428}{具有非零值的整真空}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L393}{共同缩放的选取}.}
+
+由引理~\ref{lem:c-derivative-frame} 取长度 $M$、重数满足 $c_i\ge6fb$ 的紧标架；对给定的 $p,\iota$，其中某条分解线性形式在各无穷位坐标上的系数均为 $p$-进单位. 又由 $d_\tau\le\kappa_\tau+x^{42}\le2b$ 知 $3\sum_\tau d_\tau\le6fb\le c_i$，故可沿该标架应用引理~\ref{lem:c-derivative-valuation}，获得 $12$ 份曲线级数乘积系数的赋值上界
+\[
+ r_p=S_p+2v_p(B_{\boldsymbol d})-v_p(F_{\boldsymbol d})
+\]
+（这里 $v_p(p)=1$）. 再由引理~\ref{lem:c-derivative-indicator} 将此系数传递至某个有限剩余类的指示向量，即得满足逐位次数要求的 $a,\gamma$，使得
+\[
+ \bigl|\iota(V^{12}[X^\gamma]\mathcal J(D_a))\bigr|_p
+       \ge p^{-r_p}|\iota(U)|_p .
+\]
+两端同乘 $|\iota(F_{\boldsymbol d}/u)|_p$ 并代入 $u=U B_{\boldsymbol d}^2$，右端恰好化为
+\[
+ p^{-r_p}\frac{|\iota(F_{\boldsymbol d})|_p}
+                     {|\iota(B_{\boldsymbol d})|_p^2}
+ =p^{-S_p},
+\]
+这也顺带保证了所得 Taylor 系数非零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L406}{曲线赋值与阶乘补偿}.}
+\end{proof}
+
+须注意，式~\eqref{eq:ch2-sharpness} 中的共同缩放因子 $u$ 一经给定次数向量 $\boldsymbol d$ 便完全确定，而在不同有限位处则允许分别选取剩余类 $a$ 与多重指标 $\gamma$. \chapref{chap:onelift}在建立单步提升的高度比较时，将同时运用 $u$ 的全局复共轭模界与各有限素位 $p$ 处的系数下界.

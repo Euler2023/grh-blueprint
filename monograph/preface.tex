@@ -1,0 +1,137 @@
+\chapter*{前言}
+\addcontentsline{toc}{chapter}{前言}
+\markboth{前言}{前言}
+
+\section*{来源与形式化核验}
+
+本书以
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh}{可读版 \texttt{grh/}}
+为蓝本，对应 Lean~4.35.0 与 Mathlib 提交 \texttt{56a00585}. 证明框架归功于 Levent Alpöge 与 Claude，原始说明见文献~\cite{Alpoge2026}；上游仓库另载 Lean 代码与配套文档的写作说明. 五条公开定理汇集于
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Main.lean}{\texttt{Main.lean}}：
+其中第一条直接采用 Mathlib 中的
+\leanlink{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L185}{RiemannHypothesis}，
+其余四条的命题陈述见
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Statements.lean}{\texttt{Statements.lean}}.
+
+上游仓库记录的公理核验与独立证明项检查见
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/README.md}{可读版说明}.
+据该记录，五条公开定理仅依赖 Lean 标准公理 \lean{propext}、\lean{Classical.choice} 与 \lean{Quot.sound}. 为保持正文数学叙述的连贯与可读性，本书将各定义、定理、引理及证明步骤对应的 Lean 源码出处统一置入页下脚注，并全部固定至上述提交与精确行号，以便读者按图索骥、逐条核验假设与结论. 可读版与精简版的记号和解析路线对照见\appref{app:edition-comparison}.
+
+\section*{Riemann 猜想、广义 Riemann 猜想及其推论}
+
+1859 年，Riemann 在其奠基性论文~\cite{Riemann1859} 中将素数分布问题与复变量函数 $\zeta(s)$ 的解析延拓、函数方程及非平凡零点位置紧密联系起来，并提出著名的 Riemann 猜想（RH）：$\zeta(s)$ 的一切非平凡零点均位于临界线 $\RePart s=1/2$ 上. 此后，Piltz~\cite{Piltz1884} 将该猜想推广至全体 Dirichlet $L$ 函数，即本书所证明的广义 Riemann 猜想（GRH）. 关于 Riemann $\zeta$ 函数的系统理论，经典专著可参见 Titchmarsh~\cite{Titchmarsh1986}、Edwards~\cite{Edwards1974} 与 Ivić~\cite{Ivic1985}；关于 Dirichlet $L$ 函数、零点分布与乘法解析数论的标准教材，可参见 Davenport~\cite{Davenport2000}、Iwaniec--Kowalski~\cite{IwaniecKowalski2004} 与 Montgomery--Vaughan~\cite{MontgomeryVaughan2007}；围绕该问题的现代综述与背景阐述则见 Bombieri~\cite{Bombieri2000} 与 Conrey~\cite{Conrey2003}.
+
+一旦 RH 与 Dirichlet $L$ 函数的 GRH 成立，解析数论、代数数论与计算数论中的一大批经典条件性命题便随之无条件成立. 关于 RH 各类算术与解析等价表述及推论的系统专著汇编，可参见 Broughan 的三卷本专著~\cite{Broughan2017a,Broughan2017b,Broughan2023} 与 Borwein 等人编著的文集~\cite{BorweinEtAl2008}. 仅就本书五条公开定理直接蕴含的代表性推论而言：
+\begin{itemize}
+\item \emph{素数分布与算术函数的最优估计：}RH 等价于素数定理的平方根量级误差项 $\pi(x)=\operatorname{li}(x)+O(\sqrt{x}\log x)$ 与 $\psi(x)=x+O(\sqrt{x}(\log x)^2)$（von Koch~\cite{vonKoch1901}，显式常数界见 Schoenfeld~\cite{Schoenfeld1976}），亦等价于除数和函数的 Robin 不等式 $\sigma(n)<e^{\gamma_{\mathrm E}}n\log\log n$（$n>5040$）~\cite{Robin1984} 及其 Lagarias 初等等价形式~\cite{Lagarias2002}；同时还直接蕴含 Lindelöf 猜想与 Möbius 函数的平方根抵消 $\sum_{n\le x}\mu(n)=O_\varepsilon(x^{1/2+\varepsilon})$~\cite{Titchmarsh1986,IwaniecKowalski2004}.
+\item \emph{算术级数素数与类数下界：}Dirichlet $L$ 函数的 GRH 给出算术级数素数计数的一致平方根误差项 $\psi(x;q,a)=x/\varphi(q)+O(\sqrt{x}(\log qx)^2)$ 及最小算术级数素数的 $O\bigl((\varphi(q)\log q)^2\bigr)$ 上界，并彻底排除 Siegel 零点的存在，从而导出虚二次域类数 $h(-D)$ 的精细有效下界~\cite{Davenport2000,IwaniecKowalski2004,MontgomeryVaughan2007}.
+\item \emph{最小二次非剩余与确定性素性检验：}由 Dirichlet $L$ 函数的 GRH，模素数 $p$ 的最小二次非剩余满足 $O((\log p)^2)$ 上界（Ankeny~\cite{Ankeny1952}，显式常数界 $2(\log p)^2$ 见 Bach~\cite{Bach1990}），进而使 Miller 素性检验算法成为确定性多项式时间算法~\cite{Miller1976,Bach1990}.
+\end{itemize}
+须加区分的是，某些依赖一般数域 Dedekind $\zeta$ 函数或高秩自守 $L$ 函数广义 Riemann 猜想的命题（例如 Hooley 关于 Artin 原根猜想的条件证明）超出了 Dirichlet $L$ 函数的范围，并非本书公开定理的直接推论.
+
+\section*{从 Jacobi 的 Theta 函数到 Theta 提升}
+
+经典 Theta 函数源于雅克比（Carl Gustav Jacob Jacobi）对椭圆函数的研究. 他在 1828 年的论文中用 Theta 函数表示椭圆函数，并在次年出版的《椭圆函数理论的新基础》中进一步发展了这一理论~\cite{Jacobi1828,Jacobi1829}. 其中一个常用的特例是把高斯函数在整数上求和所得的级数
+\[
+  \theta(t)=\sum_{n\in\mathbb Z} e^{-\pi n^2t},
+  \qquad t>0.
+\]
+Poisson 求和公式给出变换律 $\theta(t)=t^{-1/2}\theta(1/t)$. Riemann 在 1859 年的论文中用这条变换律给出了 $\zeta$ 函数方程的一种证明，并明确引了 Jacobi 专著的第 184 页~\cite{Riemann1859,Jacobi1829}. 他先在 $\RePart s>1$ 时将完备函数 $\Lambda(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$ 写成 $(\theta(t)-1)/2$ 的 Mellin 积分，再在 $t=1$ 处分开积分，用变换律将 $0<t<1$ 的部分改写为 $t>1$ 上的积分. 所得表达式给出亚纯延拓，并在交换 $s$ 与 $1-s$ 后保持不变，因而 $\Lambda(s)=\Lambda(1-s)$. \secref{sec:public-theorems}使用相应的函数方程，将右半平面的无零点结论转移到临界线另一侧.
+
+在 Jacobi 的例子中，指数中的 $n^2$ 是一元二次型. 用正定二次型替换它，所得 Theta 级数就记录了该二次型表示整数的次数. Siegel 将同一属内的 Theta 级数作加权平均，并将所得级数与 Eisenstein 级数联系起来~\cite{Siegel1935}. Weil 用辛群的亚辛覆盖上的表示统一解释了 Theta 级数的变换律，并把这类平均恒等式推广为经典群上的 Siegel--Weil 公式~\cite{Weil1964,Weil1965}. Howe 的对偶约化对把一对互为中心化子的群同时引入这一框架，使同一个 Theta 核可以承担两个群之间的积分变换~\cite{Howe1979,Howe1989}.
+
+具体地，先用 Weil 表示把测试函数 $\varphi$ 按源群变量 $g$ 和目标群变量 $h$ 变换，再对所得函数在相应向量空间的有理点上求和，便得到 Theta 核 $\theta_\varphi(g,h)$. 固定 $h$，将核与源群上的自守形式相乘，并在源群的自守商上对 $g$ 积分. 积分后得到目标群上的自守形式，这就是 Theta 提升. Kudla 的 Seesaw 恒等式允许交换提升和限制在配对中的位置~\cite{Kudla1984}. Rallis 内积公式则借助 Siegel--Weil 公式，把提升的 Petersson 配对与自守 $L$ 函数的特殊值及局部配对联系起来~\cite{Li1992,KudlaRallis1994,GQT2014}.
+
+Levent Alpöge 与 Claude（AI）给出的论证取法于 Stepanov 的函数域方法.
+\begin{itemize}
+\item \emph{用提升步数模拟重数.} 在有限域曲线上，构造一个在有理点处高重消失的非零函数，再用极点次数限制零点总重数，就能从重数中取得点数上界~\cite{Bombieri1974}. 与此相应，Alpöge 在说明稿中指出，反复作 Theta 提升可以在数域上起到类似增加重数的作用. 对长度尺度为 $x$ 的 von Mangoldt 加权和，Claude 提议令提升步数 $m$ 取 $\sqrt{x}$ 的量级~\cite{Alpoge2026}. 要让这一设想产生素数和的估计，需让各步的局部整除增益累积，同时控制每步提升带来的范数增长与清分母代价.
+
+\item \emph{用两条提升链传递整除增益.} Alpöge--Claude 证明在 CM 扩张上的酉群间安排两条链，借助分裂特征使用 Weil 表示~\cite{HKS1996}. 正定上链的无穷位核作用由 Taylor 系数给出的射流映射表达，有限阿代尔积分化为加权类和. 这样，复乘椭圆曲线上得到的高阶导数整除性便能用于逐步控制提升核. 各步的局部赋值界沿链相加，其中惰性素数处的增益由加权素数幂和记录. 两种提升的定义及链配置见\secref{sec:theta-lifts}，射流的整除估计见\chapref{chap:derivatives}.
+
+这里用到的 Seesaw 恒等式比较整条提升链. 从正定源形式出发，一条路径先作 Poincaré 映射，再沿由不定到正定的下链提升. 另一条路径沿正定上链作复合代数 Theta 提升，再限制到同一个末端空间. 逐步展开下链的 Bessel 周期后，可得式~\eqref{eq:a-seesaw} 的比例关系. 比例常数独立于源形式和扭转，构造还保证上链的核数据在扭转模之外满足所需的整性条件. 因此，上链上的整除性估计可用于控制下链提升的整格. 按局部增益作有理归一化后，定理 A(a) 给出的短整形式，其归一化像在平凡扭转下的提升平方范数，对每个复共轭都以 $\exp(H-mS+L)$ 为上界，其中 $H$ 是公共主量，$S$ 是双尺度素数幂总余项，$L$ 是误差预算. 相关构造和上界见\chapref{chap:upperbound}.
+
+\item \emph{以扭转比较控制提升代价.} 余体积下界依靠对整条链的 Gram 行列式作扭转比较. 证明将单步 Rallis 配对沿交换图传递，把整链行列式之比分解为单步行列式比、层因子及部分 Hecke $L$ 值比的乘积. 在每个 $p$-进嵌入处选一个正则扭转，使它的前 $m$ 次幂同时满足各步所需的局部分母界. 将这些比较纳入全局乘积公式，得到平凡扭转下的余体积下界. 整链分解见式~\eqref{eq:c-chain-ratio}，单步高度和同余分母的控制分别见\chapref{chap:onelift}和\chapref{chap:congruences}.
+\end{itemize}
+
+定理 B 保证少量 Poincaré 平移像之和几乎张成目标空间. 从这些像中选取由短整形式得到的一组线性无关向量，便可对同一族应用范数和格指数的上界与余体积下界. 比较上下界时，公共主量 $H$ 抵消，得到控制 $mS$ 的主不等式~\eqref{eq:ch1-star}. 除以 $m$ 后，提升步数转化为素数幂余项估计中的平方根量级节省. 从该估计到 Dirichlet $L$ 函数广义 Riemann 猜想的推导见\chapref{chap:reduction}.
+
+\section*{主要结果间的关系}
+
+设 $U$、$W$ 分别为分歧源形式空间与好目标形式空间，记 $r=\dim_{\CC}W$. 令 $h=H-mS+L$，其中 $H$ 为上下界共有的主量，$S$ 为双尺度总余项，$L=fa(\log b)^4$ 为误差预算. 定理 A(a) 给出用以构造短向量的源形式生成集，定理 A(b) 控制这些向量归一化像的局部格指数；定理 B 以二阶矩方法同时约束所需平移的个数与平移像之和的维数，保证能从中抽取满足定理 C 秩条件的线性无关族；定理 C 则通过反分圆扭转链分解与全局乘积公式~\cite{BombieriGubler2006} 确立该向量族的余体积下界. 图~\ref{fig:global-arch} 展示了这些核心定理汇聚为主不等式 \eqref{eq:ch1-star}，并最终导出 RH 与 Dirichlet $L$ 函数 GRH 成立的逻辑脉络.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+  input/.style={draw=OxfordNavy, rounded corners=1.5pt, fill=SoftSlateBg,
+    text width=2.75cm, minimum height=0.90cm, inner sep=2pt, align=center, font=\small},
+  result/.style={draw=OxfordNavy, rounded corners=1.5pt,
+    text width=7.5cm, minimum height=0.62cm, inner sep=2pt, align=center, font=\small},
+  primary/.style={result, draw=DeepBurgundy, fill=SoftIvory},
+  arrow/.style={-{Stealth[length=1.5mm]}, color=OxfordNavy, line width=0.55pt},
+]
+  \node[input] (short) at (-5.25,0)
+    {\hyperref[thm:short-forms]{\textbf{A(a)}}\\短形式范数};
+  \node[input] (index) at (-1.75,0)
+    {\hyperref[thm:index-bound]{\textbf{A(b)}}\\局部格指数};
+  \node[input] (span) at (1.75,0)
+    {\hyperref[thm:enough-forms]{\textbf{B}}\\有限平移张成};
+  \node[input] (volume) at (5.25,0)
+    {\hyperref[thm:long-forms]{\textbf{C}}\\余体积下界};
+  \node[primary] (star) at (0,-1.07)
+    {主不等式 \eqref{eq:ch1-star}};
+  \node[result, below=2.4mm of star] (onesided)
+    {\hyperref[thm:one-sided]{\mbox{单侧界 $R_{d,q_0}(y)\le y^{-1/2+\varepsilon}$}}};
+  \node[result, below=2.4mm of onesided] (nonzeros)
+    {\hyperref[thm:half-plane]{右半平面无零点}};
+  \node[primary, below=2.4mm of nonzeros] (public)
+    {\hyperref[thm:rh]{\textbf{RH 成立，GRH 成立}}};
+  \draw[arrow] (short.south) -- ++(0,-0.12)
+    -| ([xshift=-29mm]star.north);
+  \draw[arrow] (index.south) -- (index.south |- star.north);
+  \draw[arrow] (span.south) -- (span.south |- star.north);
+  \draw[arrow] (volume.south) -- ++(0,-0.12)
+    -| ([xshift=29mm]star.north);
+  \draw[arrow] (star) -- (onesided);
+  \draw[arrow] (onesided) -- (nonzeros);
+  \draw[arrow] (nonzeros) -- (public);
+\end{tikzpicture}
+\caption{主不等式及其解析应用. 箭头从前置结果指向依赖它的后续结论.}
+\label{fig:global-arch}
+\end{figure}
+
+\section*{全书结构与阅读建议}
+
+读者宜先阅读\chapref{chap:reduction}，将定理 A、B、C 暂作接口，先行把握主不等式 \eqref{eq:ch1-star} 如何通过双尺度余项恒等式、二次扭转零点密度与 Landau 判据导出 Dirichlet $L$ 函数的非零性与临界线结论. 其后全书自然分为上界与下界两大板块：
+\begin{itemize}
+\item \emph{上界与张成板块（\chapref{chap:derivatives}至\chapref{chap:spanning}）：}\chapref{chap:derivatives}建立复乘形式群上 Theta 核导数的 $p$-进赋值下界与系数可达性；\chapref{chap:upperbound}借助 Seesaw 恒等式、例外素数标记与边 Hecke 算子初等因子，完成定理 A(a) 与 A(b) 的证明；\chapref{chap:spanning}通过 Petersson 展开、局部相关积分与 Poisson 筛建立二阶矩界，证明定理 B.
+\item \emph{下界与解析支撑板块（\chapref{chap:determinant}至\chapref{chap:discrete-series}）：}\chapref{chap:determinant}将整条下链的 Gram 行列式之比分解为单步之积，并由全局乘积公式导出定理 C；\chapref{chap:onelift}构造比较算子并估计单步行列式比的高度；\chapref{chap:congruences}以结晶 Selmer 模、单位根特化与 Ribet 元素构造正则反分圆扭转族并控制同余分母；\chapref{chap:discrete-series}给出大间隙离散序列在实位上的定量 Laplace 周期下界，支撑定理 B 的 Bessel 测试与定理 C 的辅助形式张成.
+\end{itemize}
+\appref{app:lib-overview}梳理证明所依托的前置背景库入口，\appref{app:edition-comparison}对照可读版与精简版的记号和解析步骤差异.
+
+\section*{常用记号}
+
+表~\ref{tab:global-scales} 汇总阅读主线所需的全局参数与空间记号. 容许数据的完整约束及大尺度存在性构造见\chapref{chap:reduction}.
+
+\begin{table}[htbp]
+\centering
+\caption{容许数据与空间记号}
+\label{tab:global-scales}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+                  >{\raggedright\arraybackslash}p{0.69\textwidth}@{}}
+\toprule
+记号 & 意义与约定\\
+\midrule
+$q_0,d$ & 固定参数：$18480\mid q_0$，$d$ 为满足 $d\equiv q_0/2-1\pmod{q_0}$ 的素数. \\
+$K,E$ & $K=\QQ(\sqrt{-d})$，$E=K(\zeta_{q_1})$，其中 $q_1$ 为分圆模数. \\
+$\Phi,\Phi_a,\Phi_b$ & $E$ 的无穷位集及其两个选定子集，$f=|\Phi|$. \\
+$x,x_1,b,a$ & 主尺度、第二尺度、权尺度与长阶数，其中 $a=xb$. \\
+$m,k,r_0,t$ & 提升步数与空间秩参数：$\sqrt{x}\le m\le2\sqrt{x}$，$k=r_0+1-m$，$t=5r_0$. \\
+$U,W,r$ & 分歧源形式空间、好目标形式空间及其复维数 $r=\dim_{\CC}W$. \\
+$M,N$ & 主同余层素数之积 $M=p_0p_1$ 与分歧层素数 $N$. \\
+$H,S,B,L$ & 主量、双尺度总余项及误差预算 $B=fa(\log b)^3$、$L=B\log b$. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+在几何空间的配置上，上链 $X_0,\ldots,X_m$ 由标准正定 Hermite 空间组成，其 $E$-秩满足 $\operatorname{rk}_E X_j=k+j(t+1)$；下链 $Y_0,\ldots,Y_m$ 满足 $\operatorname{rk}_E Y_j=r_0+jt$，末项 $Y_m$ 嵌入为 $X_m$ 的余一维正定子空间. 第 $j$ 步单独比较所用的下降对空间 $W_j,V_j$ 的 $E$-秩分别为 $r_0$ 与 $r_0+t$（其中 $V_j$ 正定，$W_j$ 在各无穷位带有 $m-j$ 个负号）. 读者须注意区分两个易混记号：$r_0$ 表示目标 Hermite 空间的 $E$-秩，而 $r=\dim_{\CC}W$ 表示好目标形式空间的复维数.

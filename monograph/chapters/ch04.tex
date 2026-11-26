@@ -1,0 +1,2689 @@
+\chapter{二阶矩与定理 B}
+\label{chap:spanning}
+
+\begin{chapterguide}
+本章从缩放 Poincaré 映射的 Petersson 展开出发，分别估计振幅的主项与余项；将两项合并即得式~\eqref{eq:b-second-moment} 的二阶矩界，再结合有限群上的平移选取推出式~\eqref{eq:b-spanning} 的维数估计.
+\end{chapterguide}
+
+\section{Petersson 展开与坏类型}
+\label{sec:b-amplitude}
+
+本章的二阶矩由各平移振幅矩阵的 Hilbert--Schmidt 范数给出. 展开所用的 Bessel 测试函数在无穷位需要归一化的周期下界，其用法见\chapref{chap:discrete-series}，具体周期估计见式~\eqref{eq:ch8-laplace-lower}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{158}.}
+\begin{lemma}[缩放 Poincaré 映射的 Petersson 展开]
+\label{lem:b-amplitude-blocks}
+\emitthmsource
+固定容许数据 $D$，令 $\mathcal P$ 为缩放的
+Poincaré 映射，$\rho$ 为剩余线性群 $G$ 在主层形式空间上的酉作用.
+记 $e_{c,i}$ 为全源欧氏坐标中由双陪集 $c$ 与 Bessel 坐标 $i$ 标记的标准基向量.
+令 $h_c$ 为双陪集代表，$\beta_c$ 为对应的截断函数，$W_i$ 为未截断
+Bessel 函数的第 $i$ 个坐标. 对 $s\in G$，记 $\mathcal T(c,s,c')$ 为使
+$h_c^{-1}\gamma_f h_{c'}$ 属于有限位格稳定子且约化为 $s$ 的有理群元素 $\gamma$ 之集.
+定义振幅和（\emph{amplitude sum}）的矩阵元
+\[
+ A(c,s,c')_{i,i'}
+ =\sum_{\gamma\in\mathcal T(c,s,c')}\!
+   \int \beta_c(y)\beta_{c'}(\gamma_\infty^{-1}y)
+     W_i(y)\overline{W_{i'}(\gamma_\infty^{-1}y)}\,dy .
+\]
+其中积分在源空间的无穷位酉群上取. 若 $\nu>0$ 为各类有理幂幺子群共同的余体积（\emph{unipotent covolume}），则
+\[
+ \langle \rho(s)\mathcal P e_{c',i'},\mathcal P e_{c,i}\rangle
+ =\nu^{-1} A(c,s,c')_{i,i'} .
+\]
+这里 Petersson 内积（\emph{Petersson inner product}）对第一变量共轭线性，故上式亦给出
+$\mathcal P^*\rho(s)\mathcal P$ 的 $(c,c')$ 块
+$\overline{A(c,s,c')}/\nu$.
+\end{lemma}
+\begin{proof}
+记 $V$ 为 $Y_0$ 上的 Hermite 空间，$\mathcal G$ 为其阿代尔酉群，$\Gamma$ 为有理点群，
+$J$ 为所选位的主层. 令 $x_c$ 为 $h_c$ 在 $V$ 的有限阿代尔模型中对应的类点，
+其中包含为填充数据（\emph{filling datum}）所取的中心平移；无穷位模型间的保测同胚记为
+$x\mapsto y(x)$. 记 $F_{c,i}=P_0e_{c,i}$，其中 $P_0$ 为全源坐标中的未缩放 Poincaré 映射.
+Bessel 周期对偶式将映射 $P_0$ 表为级数
+\[
+ F_{c,i}(g)=\sum_{\gamma\in\Gamma} f_{c,i}(\gamma g),\qquad
+ f_{c,i}(g)
+ =\beta_c(y(g_\infty))W_i(y(g_\infty))\,
+       \mathbf 1_{x_cJ}(g_f).
+\]
+这里对偶式将原 Poincaré 映射表为源坐标变换与振幅展开映射的复合；
+在坐标空间中定义 $P_0$ 时，先作用源坐标变换的逆.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SeriesPeriod.lean\#L692}{Bessel 周期和源坐标}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L588}{类点与截断函数}.}
+
+取有限位处为整的提升 $\widetilde s$，使其在所选位处的约化为 $s$，并置 $z(g)=F_{c',i'}(g\widetilde s)$.
+因 $J$ 是约化映射的核，右移后的 $z$ 仍保持左 $\Gamma$ 不变与右 $J$ 不变.
+由于截断函数的绝对值轨道和具有一致上界且 $\Gamma\backslash\mathcal G$ 体积有限，
+故 $f_{c,i}$ 在 $\mathcal G$ 上绝对可积，乘上有界形式 $\overline z$ 后依然可积.
+利用轨道积分公式展开 $F_{c,i}$，得到
+\[
+ \langle z,F_{c,i}\rangle
+ =\int_{\Gamma\backslash\mathcal G}
+     \sum_{\gamma\in\Gamma}\overline{z(\gamma g)}f_{c,i}(\gamma g)\,dg
+ =\int_{\mathcal G}\overline{z(g)}f_{c,i}(g)\,dg .
+\]
+有限位积分仅在 $x_cJ$ 上有贡献，且 $z(x,g_f)$ 在该陪集内恒等于
+$z(x,x_c)$. 由乘积测度与 Haar 测度的左不变性，上式化为\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L349}{绝对可积性与轨道积分}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L619}{主层陪集上的积分}.}
+\[
+ \operatorname{vol}(J)\int
+    \beta_c(y(x))W_i(y(x))\,\overline{z(x,x_c)}\,dx.
+\]
+
+接着将 $z(x,x_c)$ 展开为有理和式，并以 $\gamma^{-1}$ 为求和指标.
+经有限位模型转换后仍记其像为 $\widetilde s$，该求和项的有限位指示函数取值为 $1$ 当且仅当
+$h_{c'}^{-1}\gamma_f^{-1}h_c\widetilde s\in J$，即 $(h_c^{-1}\gamma_f h_{c'})^{-1}\widetilde s\in J$.
+因 $\widetilde s$ 为整且约化为 $s$，此条件等价于
+$h_c^{-1}\gamma_f h_{c'}$ 为整且具有相同的约化.
+因此 $z(x,x_c)$ 仅保留 $\gamma\in\mathcal T(c,s,c')$ 的项，每项的
+无穷位因子为 $\beta_{c'}(\gamma_\infty^{-1}y(x))
+W_{i'}(\gamma_\infty^{-1}y(x))$.
+作换元 $x\mapsto y(x)$，并借助振幅可积优函数所给的绝对可和性
+交换有理求和与积分，即得
+$\langle \rho(s)P_0e_{c',i'},P_0e_{c,i}\rangle=\operatorname{vol}(J)A(c,s,c')_{i,i'}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L677}{有理项的约化条件与 Petersson 公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/AmplitudeSums.lean\#L578}{振幅的可积优函数}.}
+
+主层 $J$ 为紧开子群，故 $\operatorname{vol}(J)>0$.
+将 $\mathcal P=(\operatorname{vol}(J)\nu)^{-1/2}P_0$ 代入内积两侧，
+实缩放因子的平方与 $\operatorname{vol}(J)$ 相乘恰得 $\nu^{-1}$.
+最后由伴随的定义及内积的共轭对称性，即得所述矩阵块公式.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{239}.}
+\begin{lemma}[坏类型的比例上界]
+\label{lem:b-bad-types}
+\emitthmsource
+固定容许数据 $D$. 对 $i=0,1$，令 $G_i$ 为所选的 $p_i$ 上方各位剩余线性群之积，
+记 $g_i$ 为其中所有好标签元组对应的中心幂等元之和.
+则每个 $g_i$ 均为中心幂等元，且 $g_0\otimes g_1$ 在主层形式空间上作用为好形式投影 $e_0$.
+此外，坏类型在单位元处的系数满足
+\[
+ \operatorname{Re}\bigl((1-g_i)(1)\bigr)\le \frac{b^{-8}}2
+ \qquad(i=0,1),
+\]
+其中括号内的 $(1)$ 取群代数元素在单位元处的系数.
+\end{lemma}
+\begin{proof}
+记 $n_0=r_0$，并令 $M_0=(q_0d)^{s+6}$，其中 $s$ 为满足 $2^s=m^{22}$ 的塔指数.
+固定 $i$，设 $q=p_i$，则每个所选剩余域 $\mathbf k_w$ 的阶均为 $q$，所选位数为 $f$.
+在单个剩余域上，允许标签是次数为 $n_0$、常数项非零的首一无平方因子多项式，
+且在 $\mathbf k_w$ 的 $M_0$ 次单位根处无零点.
+好元组要求每个坐标标签均允许，且至少含有一个本原标签；
+这里本原标签指不可约且某个根的阶为 $q^{n_0}-1$ 的多项式.
+局部标签的 Green 幂等元（参见 Green 关于有限一般线性群特征标的经典理论~\cite{Green1955}）两两正交且位于中心，
+元组对应的幂等元为其张量积，故不同元组对应的幂等元乘积为零，
+从而好元组之和 $g_i$ 仍为中心幂等元.
+全局好元组恰为两个层素数上好元组的直积；将 $g_0\otimes g_1$
+展开后，其在每个群元素处的系数均等于全局好幂等元的系数，
+故其作用即为 $e_0$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/LocalGL/Green/LabelCharacters.lean\#L490}{局部标签的张量幂等元}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L184}{两个层素数的好投影}.}
+
+令每个次数为 $n_0$ 的首一多项式的计数权重为
+$\omega=(1-n_0/q)/q^{n_0}$. 容许数据保证 $1<n_0<q$.
+对任一允许标签 $c$，对应幂等元在单位元处的系数至少为 $\omega$.
+具体而言，若 $\Xi_c$ 为 Green 标签特征标，则该系数为
+$|\Xi_c(1)|^2/|\operatorname{GL}_{n_0}(\mathbf k_w)|$.
+局部次数公式给出
+\[
+ \Xi_c(1)=
+ \frac{|\operatorname{GL}_{n_0}(\mathbf k_w)|}
+      {q^{n_0(n_0-1)/2}\prod_{P\mid c}(q^{\deg P}-1)} ,
+\]
+其中乘积取遍首一不可约因子.
+该分母中的乘积部分至多为 $q^{n_0}$.
+代入有限一般线性群的阶数公式后，单位元处的系数至少为
+$q^{-n_0}\prod_{j=1}^{n_0}(1-q^{-j})\ge\omega$，
+末步利用了不等式 $\prod_j(1-a_j)\ge1-\sum_j a_j$ 以及 $q^{-j}\le q^{-1}$.
+由此可知，每个好元组在单位元处的系数至少为 $\omega^f$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/LocalGL/Green/TauFunctions.lean\#L727}{Green 标签次数的配对计算}.}
+
+次数为 $n_0$ 的首一多项式共有 $q^{n_0}$ 个.
+若某多项式在零或 $M_0$ 次单位根处有根，则可写成 $(X-a)B$ 的形式，
+此类多项式至多有 $(1+M_0)q^{n_0-1}$ 个.
+若含有重因子，则可写成 $P^2B$，其中 $P,B$ 首一且 $\deg B=d<n_0$.
+对给定的 $d$，此类因子对至多有
+$q^{\lfloor(n_0-d)/2\rfloor+d}\le q^{n_0-1}$ 个.
+对 $d$ 求和并计入前述根条件，可知不允许的多项式至多有
+$(1+M_0+n_0)q^{n_0-1}$ 个.
+因此按权重 $\omega$ 计，允许多项式的总权重至少为 $1-\varepsilon$，
+其中 $\varepsilon=(1+M_0+2n_0)/q\le1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L47}{不允许标签的计数}.}
+
+另一方面，$\mathbf F_{q^{n_0}}^\times$ 共有 $\varphi(q^{n_0}-1)$ 个生成元.
+每个生成元的最小多项式次数均为 $n_0$，否则该生成元落入某个真子域，
+其阶必小于 $q^{n_0}-1$. 又同一最小多项式至多有 $n_0$ 个此类根，
+故本原多项式至少有 $\varphi(q^{n_0}-1)/n_0$ 个.
+若正整数 $N$ 恰有 $j$ 个不同的素因子，则 $2^j\le N$，且第 $a$ 个素因子至少为 $a+1$，于是
+\[
+ \frac{\varphi(N)}{N}\ge
+   \prod_{a=1}^j\left(1-\frac1{a+1}\right)=\frac1{j+1}
+   \ge\frac1{2\log N+1}.
+\]
+取 $N=q^{n_0}-1$，结合 $q^{n_0}\le2N$ 与 $\log N\le n_0\log q$，
+记 $A=2n_0(2n_0\log q+1)$，即得本原多项式至少有 $q^{n_0}/A$ 个.
+因而非本原多项式的总权重至多为
+$(q^{n_0}-q^{n_0}/A)q^{-n_0}\le e^{-1/A}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L105}{本原标签与总权重}.}
+
+由此可见，所有坐标均允许的元组总权重至少为 $(1-\varepsilon)^f$，
+而不含本原坐标的元组总权重至多为 $e^{-f/A}$，
+故好元组在单位元处的系数之和至少为二者之差.
+由 Bernoulli 不等式 $(1-\varepsilon)^f\ge1-f\varepsilon$ 得
+\[
+ \operatorname{Re}\bigl((1-g_i)(1)\bigr)\le f\varepsilon+e^{-f/A}.
+\]
+容许数据的尺度界保证 $f\ge9A\log b$ 及
+$f\varepsilon+b^{-9}\le b^{-8}/2$，从而即得所需系数上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L228}{元组权重}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L221}{尺度代入}.}
+\end{proof}
+
+\section{余项的格分解与判别式求和}
+\label{sec:b-remainder}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Cut.lean}{528}.}
+\begin{lemma}[公共链接的正交分解]
+\label{lem:b-link-splitting}
+\emitthmsource
+设 $\gamma$ 为类对 $(c,c')$ 上胞腔秩为 $j$ 的项，其模 $M$ 约化 $s$ 与幂幺特征相容.
+设非负整数 $z$ 不超过 $s$ 的标架相交位范数乘积，且仅当 $j=\varrho+1$ 并两个链接相同时允许 $z\ne1$.
+则在 $\operatorname{link}(\gamma)$ 中可取 $\operatorname{link}(\gamma)\cap\operatorname{link}(\gamma')$ 的补空间，其秩等于两链接的余秩，且补空间上存在带整提升的格；同时公共格在 $\operatorname{commonLink}(\gamma,\gamma')$ 中满秩. 若记 $D$ 为补格在链接度量下的平方判别式，$d$ 为公共格的判别式，$t$ 为 $\gamma$ 在类格基下的挠指数，$g$ 为该项的层规范，则
+\[
+ (tdz)^2D\le g^2.
+\]
+\end{lemma}
+
+\begin{proof}
+在链接交中取两条末坐标线性形式公共核的一组基 $B_0$. 相对于正定链接度量，依次以 $B_1$ 将其补成链接交的一组基，再以 $B_2$ 补成整个链接的一组基. 选取带整提升的链接格，记其在这三块上逐次分解所得的平方判别式为 $D_0,D_1,D_2$. 由于格基变换呈分块上三角形式，三个对角块分别控制三个投影格的赋值，且各有理子空间两两正交，故原平方判别式等于 $D_0D_1D_2$. 其中 $B_2$ 的投影格保持整提升性质，即为所求补格，且 $D=D_2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L543}{三块基与分解后的判别式}.}
+
+注意到 $B_0$ 投影至第一侧 $X_0$ 的像恰为公共链接，比较公共格与该块的投影格即得满秩性及 $d^2\le D_0$. 两条末坐标线性形式在 $B_1$ 的像上联合单射，故该块的秩至多为 $1+(j-\varrho)_+$；当 $z\ne1$ 时，位于最高胞腔且两链接相同，秩恰等于 $2$. 由整提升的末坐标子式界即得
+\[
+ z^2\mathfrak m^2\le D_1G^2,\qquad
+ G=\max(\operatorname{termDiscNorm}(\gamma),N^f\mathfrak m),
+\]
+其中 $\mathfrak m$ 为秩 $j$ 的子式范数. 另一方面，链接格的原界给出
+\[
+ t^2D_0D_1D_2\le
+ \left(M^{2f\min(j,\varrho)}\operatorname{minorGauge}(\gamma)/N^f\right)^2 .
+\]
+将两式相乘并代入 $d^2\le D_0$，可得 $(tdz)^2D_2\mathfrak m^2\le g^2\mathfrak m^2$，此处 $g$ 按定义包含因子 $G/\mathfrak m$. 因 $\mathfrak m>0$，消去 $\mathfrak m^2$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L594}{末坐标块的秩与增益}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L623}{合并三块的估计}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Discriminants.lean}{509}.}
+\begin{lemma}[子格指数与判别式]
+\label{lem:b-discriminant-index}
+\emitthmsource
+设 $E$ 为含本原 $5040$ 次单位根的 CM 域. 令 $L$ 为由满列秩矩阵 $B=xa$ 的列生成的秩 $r$ 有限阿代尔格，其中 $x$ 为 $E$ 上的矩阵，$a$ 为可逆有限阿代尔矩阵. 若 $M\subseteq L$ 为有限指数子格，则
+\[
+ \operatorname{disc}M=\operatorname{disc}L\,[L:M].
+\]
+\end{lemma}
+\begin{proof}
+有限指数子模在各个赋值环上均可由初等因子表出，且几乎所有位处的变换可取为单位矩阵. 将这些局部变换拼成可逆有限阿代尔矩阵 $A$，使 $BA$ 的列生成 $M$，则原列基坐标下的指数恰为 $[\det A]_f$. 判别式定义为 Gram 行列式广义指数的平方根. 由 $(BA)^*(BA)=A^*(B^*B)A$ 可知，Gram 行列式的广义指数乘以因子 $[\det A]_f^2$，取正平方根即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L475}{有限指数下的子格基}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L514}{Gram 判别式的变换}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Discriminants.lean}{720}.}
+\begin{lemma}[子格指数的 Dirichlet 级数上界]
+\label{lem:b-sublattice-index-zeta}
+\emitthmsource
+沿用上述 CM 域 $E$，记 $R=\widehat{\mathcal O}_E$. 对秩 $r$ 的有限阿代尔格 $L$ 及 $\mu\in\mathbb N$，有
+\[
+ \sum_{\substack{M\subseteq L\\ \left[L:M\right]<\infty}} [L:M]^{-(r+\mu)}
+       \le \zeta_R(\mu)^r,\qquad
+ \zeta_R(\mu)=\sum_{[R:I]<\infty}[R:I]^{-\mu}.
+\]
+其中右端对有限指数理想 $I$ 求和，两侧均取值于广义非负实数.
+\end{lemma}
+\begin{proof}
+取一组列基定义从 $R^r$ 到 $L$ 的映射；在满秩情形下该映射为同构，从而将有限指数子模及其指数一一对应.
+每个有限指数理想 $I$ 均包含非零整数 $[R:I]$，故是由某个 $\mathcal O_E$ 理想扩张而成的有限生成理想，而 $R$ 的有限生成理想皆为主理想.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L695}{有限指数理想为主理想}.}
+
+对 $R\oplus R^h$ 的任一有限指数子模，其第一投影为有限指数理想 $I$，与第二直和项的交为有限指数子模 $M'$. 固定 $I$ 的生成元并取其在子模内的一个提升，该提升的第二坐标模 $M'$ 良定，且与 $(I,M')$ 共同唯一确定此子模. 其指数等于 $[R:I][R^h:M']$，故对该余类求和使 $[R^h:M']$ 的负幂次绝对值减小 $1$. 记 $Z_h(s)$ 为秩 $h$ 自由模的指数级数，上述计数给出递推 $Z_{h+1}(s+1)\le \zeta_R(s+1) Z_h(s)$. 令 $s=h+\mu$ 并利用 $\zeta_R(h+\mu+1)\le\zeta_R(\mu)$，由初值 $Z_0(\mu)=1$ 归纳即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L172}{子格指数 Dirichlet 级数的乘积递推}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Gain.lean}{814}.}
+\begin{lemma}[公共格判别式的同余增益]
+\label{lem:b-pair-discriminant-gain}
+\emitthmsource
+设底 CM 域含本原 $5040$ 次单位根. 取同一相容块（\emph{agreeing block}）$(c,s,c')$ 中的两项 $\gamma,\gamma'$，其胞腔秩（\emph{cell rank}）分别为 $j,j'$，层规范（\emph{level gauge}）分别为 $G,G'$.
+设两项链接（\emph{link}）之交在各自链接中的余维为 $i$，记 $d$ 为公共格（\emph{common lattice}）的判别式.
+令非负整数 $x$ 不超过约化 $s$ 的标架交位范数乘积（\emph{product of meeting-place norms}），并置
+\[
+ X=\begin{cases}
+ x,& j>\varrho\ \text{且}\ i=0,\\
+ 1,&\text{其余情形}.
+ \end{cases}
+\]
+则
+\[
+ (dX)^2\le (2/M)^{2if}GG'.
+\]
+\end{lemma}
+\begin{proof}
+记 $L_1,L_2$ 为两项格落在公共链接空间中的部分，置 $D_a=\operatorname{disc}L_a$.
+令 $T_1,T_2$ 为两项的各向同性行挠指数（\emph{isotropic torsion index}）；
+具体而言，若 $k$ 为第一项在类坐标中的矩阵，$A$ 为标准各向同性空间，
+则 $T_1$ 定义为 $(\Lambda\cap A)+k(\Lambda\cap A)$ 在格 $\Lambda\cap(A+kA)$ 中的指数，
+$T_2$ 由第二项同理定义.
+公共格 $L_{12}$ 即 $L_1$ 与第二项格之交.
+按第二项格的定义，从 $X_0$ 坐标到第二标架的配对来自 $M$ 倍标准各向同性行格；
+将该配对映射施于 $L_1$，其像落入 $M$ 倍的饱和各向同性行格，
+由此推出 $[L_1:L_{12}]$ 整除 $T_2$. 互换两项同理可得
+$[L_2:L_{12}]\mid T_1$. 由于各指数均有限，由引理~\ref{lem:b-discriminant-index} 得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L712}{公共格指数的整除}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L756}{判别式随指数变换}.}
+\[
+ d\le D_1T_2,\qquad d\le D_2T_1,\qquad d^2\le (T_1D_1)(T_2D_2).
+\]
+
+将两个链接分别沿交空间分解，记两个补格的平方判别式为
+$\Delta_1,\Delta_2$. 若 $X\ne1$，则两链接相同且第一项达到最高胞腔秩；
+此时非零判别式条件完全由链接决定，故第二项亦达到最高秩，
+从而两次链接分解中可共用同一个 $X$. 两次应用引理~\ref{lem:b-link-splitting}，得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L85}{同链接的判别式零点}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L543}{链接的格分解与层规范}.}
+\[
+ (T_1D_1X)^2\Delta_1\le G^2,\qquad
+ (T_2D_2X)^2\Delta_2\le (G')^2.
+\]
+
+两个补空间借助两坐标 Hermite 形式之差形成非退化配对.
+两项在同一块中具有相同约化，故补格的配对矩阵除以 $M$ 后为整，
+且分解中所附加的公共空间向量对此配对并无贡献.
+在两链接的源坐标下，该配对可表为 $a^*Q(1-v)b$，
+其中 $Q$ 为正定形式，$v$ 为两链接等距映射之比.
+对每个无穷位，$v$ 均为等距映射，故 $1-v$ 的算子范数至多为 $2$.
+对秩 $i$ 行列式施用 Cauchy--Schwarz 不等式并取整体范数，
+再结合有限位整性所给的行列式指数下界，可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L212}{整配对的行列式估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L316}{补格配对的整性}.}
+\[
+ 1\le (2/M)^{4if}\Delta_1\Delta_2.
+\]
+
+将以上三式合并，得
+\[
+ \bigl((T_1D_1)(T_2D_2)X^2\bigr)^2
+ \le (2/M)^{4if}G^2(G')^2.
+\]
+两边开平方并代入 $d^2\le (T_1D_1)(T_2D_2)$，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L373}{合并同余与链接的格分解}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L826}{公共格的平方判别式界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{86}.}
+\begin{lemma}[近代表对的判别式和余秩]
+\label{lem:b-pair-corank}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根且有 $f$ 个无穷位.
+令 $k_0=\dim_E X_0$，$n=\varrho+1$，$b$ 为大尺度，$M$ 为同余层.
+固定类 $c,c'$. 称 $(\gamma,\gamma')$ 为近代表对，若两项均为选定的幂幺双陪集近代表（\emph{near representative}），
+各自具有胞腔秩且具有同一相合约化 $s$；所谓相合，指对任意满足 $\bar u s=s\bar u'$
+的两侧整幂幺元 $u,u'$，幂幺特征的取值均相同.
+记 $L_{12}$ 为两项的公共格，即公共链接空间中同时落入两项格的向量构成的格，
+并置 $d=\operatorname{disc}L_{12}$，$l=k_0-\dim_E(\operatorname{span}L_{12})$.
+则
+\[
+  l\le n^3,\qquad 1\le d\le b^{n^3 f}.
+\]
+\end{lemma}
+\begin{proof}
+设 $j,j'$ 分别为两项的胞腔秩，$G,G'$ 分别为两项的层规范，
+令 $i$ 为两链接交空间在单个链接中的余维（每个链接的维数为 $k_0+1$）.
+在引理~\ref{lem:b-pair-discriminant-gain} 中将相交位范数下界取为 $1$，结合公共格包含于整格的事实，可得
+\[
+ 1\le d,\qquad
+ d^2\le (2/M)^{2if}GG'.
+\]
+由近代表的层规范界知 $G,G'\le b^{n^3 f}$；
+再由 $M\ge b^{19}$ 与 $b\ge2$ 得 $2/M\le b^{-18}$，从而
+\[
+  b^{18if}d\le b^{n^3 f}.
+\]
+因 $d\ge1$、$b>1$ 且 $f\ge1$，由此推出 $18i\le n^3$ 及 $d\le b^{n^3 f}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L793}{公共格判别式的下界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L867}{近代表的层规范}.}
+
+第一项的链接在 $X_0$ 内的定义空间维数为 $k_0-(j-\varrho)_+$；
+将链接限制至两链接的交，维数至多再损失 $i$，故
+$l\le i+(j-\varrho)_+\le i+1$.
+结合 $18i\le n^3$ 与 $\varrho\ge10^5$，即得 $l\le n^3$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L74}{公共链接的维数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L89}{近代表对的余秩范围}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/FramesOverLattice.lean}{573}.}
+\begin{lemma}[固定标签与公共格后的单项计数]
+\label{lem:b-frames-over-lattice}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+固定类 $c$、剩余 Bessel 标签 $t$ 以及秩为 $r$ 的格 $L\subseteq L_c$，
+其中 $r+l=k_0$ 且 $\operatorname{disc}L\le b^{n^3 f}$.
+考虑所有满足如下条件的 $(c',\gamma)$：$\gamma$ 是从 $c'$ 到 $c$ 的选定近代表，具有胞腔秩，
+其约化 $s$ 的选定分解 $s=s_0t$ 带有标签 $t$，且 $L\subseteq L_\gamma$.
+这样的 $(c',\gamma)$ 至多有 $b^{2000n^6(l+1)f}$ 个.
+\end{lemma}
+\begin{proof}
+首先说明在差一个容许幂幺平移的意义下，这些项由像标架唯一确定.
+记 $U_c^0$ 为在层 $M$ 上逐点固定标准标架的有理幂幺群.
+若存在 $u,u'\in U_c^0$ 使 $u\gamma$ 与 $u'\gamma'$ 的像标架相同，
+则两项的约化仍分别等于原约化 $s,s'$.
+由像标架相等可知 $s'^{-1}s$ 属于剩余 Bessel 子群，故 $s,s'$ 具有相同的陪集代表；
+又二者标签相同，从而 $s=s'$. 具有相同约化且像标架相等的两项
+必具同一右类，且 $(u\gamma)^{-1}(u'\gamma')\in U_{c'}^0$.
+于是 $\gamma,\gamma'$ 落入同一 $U_c^0$--$U_{c'}^0$ 双陪集，
+由选定代表的唯一性即知 $\gamma=\gamma'$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Terms.lean\#L586}{相同像标架的约化陪集}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Terms.lean\#L599}{右类及幂幺群}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FrameCount.lean\#L121}{按标签的标架单射}.}
+
+现按胞腔秩 $j$ 及标架配对矩阵 $Z$ 分组. 由近代表的有界性，
+两参数可能的取值数分别至多为 $b^{2f}$ 与 $b^{270n^3 f}$.
+固定一组，将 $L$ 的基矩阵写为 $ya$，其中 $y$ 有 $r$ 个线性无关的有理列，
+$a$ 为有限阿代尔上的可逆矩阵. 令 $\delta_j(Z)$ 为规定的非零顺序主子式，
+置 $d=M\delta_j(Z)$，$d'=M\det(YY^*)$，其中 $Y$ 是按胞腔秩 $j$ 用单位矩阵的行补全 $Z$ 所得的矩阵；
+记 $[d]$ 为 $d$ 的广义指数. 组内计数依次借助下列三个商格完成.
+
+第一，条件 $L\subseteq L_\gamma$ 为格的各列提供了与移动标架正交的提升.
+按提升矩阵的 $\varrho$ 行在 $L$ 的 Gram 矩阵行格中的余类分组，
+每行对应的指数为 $(\operatorname{disc}L)^2$，故至多分为 $(\operatorname{disc}L)^{2\varrho}$ 组.
+同一组内可借 $U_c^0$ 的平移将 $X_0$ 分量与 $y$ 的配对统一为同一值.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L435}{公共格提升的计数}.}
+
+第二，固定上述配对后，两标架 $X_0$ 分量之差的各列均落入
+$y$ 的正交补中的类格 $P$（其秩为 $l$）.
+按 $P/dP$ 中的余类继续分组，$n$ 列合计至多分为 $[d]^{ln}$ 组；
+在每组内，其差落入 $dP$，从而可再借幂幺平移统一 $X_0$ 分量.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L360}{各向异性分量的计数}.}
+
+第三，固定 $X_0$ 分量后，共有向量的矩阵取值至多有 $b^{366n^4 f}$ 种.
+进一步固定该矩阵，移动后标架在类坐标中的 $\varrho$ 个各向同性行可按模 $d'$ 记录，
+每行至多有 $[d']^n$ 种取值.
+若两项的这些行彼此同余，则可再作一次幂幺平移使其像标架重合，
+由第一段的唯一性知两项必为同一项.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L201}{共有向量的计数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L275}{同余行确定标架}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L337}{各向同性分量的计数}.}
+
+三轮分组的乘积上界为
+\[
+ (\operatorname{disc}L)^{2\varrho}[d]^{ln}\,
+       b^{366n^4 f}[d']^{n\varrho}.
+\]
+近代表界保证 $[d],[d']\le b^{2n^3 f}$ 且
+$(\operatorname{disc}L)^2\le b^{2n^3 f}$.
+乘以 $j,Z$ 的取值数后，总指数除以 $f$ 至多为
+\[
+  2+270n^3+366n^4+2n^3(\varrho+ln+n\varrho)
+  \le 2000n^6(l+1),
+\]
+其中 $\varrho=n-1$. 由此即得所求单项计数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L485}{三轮常数合并}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L528}{胞腔秩及配对矩阵求和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L585}{格上的带标签项计数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{408}.}
+\begin{lemma}[在给定子格上模 $\pi_N$ 为零的指定行]
+\label{lem:b-vanishing-rows}
+\emitthmsource
+设底 CM 域含本原 $5040$ 次单位根，记 $\widehat{\mathcal O}_E$ 为有限阿代尔整数环.
+取有限阿代尔酉元 $u$，令 $\mathcal A$ 为整酉群对格稳定子原像的陪集族，
+并对每个 $\phi\in\mathcal A$ 选取代表 $y_\phi$，记 $\ell_\phi$ 为 $y_\phi^{-1}u^{-1}$ 的指定行.
+设 $L\subseteq u\widehat{\mathcal O}_E^{\,k_0}$ 是秩为 $r$ 的格，满足 $r+l=k_0$.
+则存在维数为 $r$ 的有理子空间 $V$，使 $L$ 在
+\[
+ L_V=(V\otimes_E\mathbb A_{E,f})\cap u\widehat{\mathcal O}_E^{\,k_0}
+\]
+中的指数 $i$ 有限，且
+\[
+ \operatorname{disc}L=i\operatorname{disc}L_V,\qquad
+ \#\{\phi\in\mathcal A:\ell_\phi(L)\subseteq\pi_N\widehat{\mathcal O}_E\}
+ \le i(N^f)^l.
+\]
+\end{lemma}
+\begin{proof}
+取 $V$ 为 $L$ 的有理张成空间，即由 $L$ 的满秩表示中的有理列生成的子空间.
+取 $L_V$ 的基矩阵 $m$，则 $L$ 可表示为列格 $mA$，
+其中 $A$ 是在有限阿代尔上可逆的整矩阵，其广义行列式指数为 $i=[\det A]$.
+通过 $mA$ 的 Gram 行列式计算判别式，即得
+$\operatorname{disc}L=i\operatorname{disc}L_V$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L659}{饱和格基与判别式}.}
+
+记 $R=\widehat{\mathcal O}_E$，$d=\pi_N$，
+令 $v_\phi$ 为 $y_\phi^{-1}$ 的指定行. 若 $v_\phi\equiv v_{\phi'}\pmod{d}$，
+则两行之差作用于 $y_{\phi'}$ 的每一整列所得结果仍被 $d$ 整除，
+故 $y_\phi^{-1}y_{\phi'}$ 的指定行模 $d$ 与单位矩阵的指定行一致；
+由此可见 $y_\phi^{-1}y_{\phi'}$ 属于格稳定子的原像，从而 $\phi=\phi'$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L99}{逆矩阵行确定陪集}.}
+
+由于 $u^{-1}m$ 的列张成本原子格，可将其补全为 $R^{k_0}$ 的整基.
+对满足消失条件的 $\phi$，记录
+\[
+  w_\phi=d^{-1}v_\phi u^{-1}m A\in R^r
+\]
+在 $A$ 的行格中的余类，并记录 $v_\phi$ 在其余 $l$ 个基向量上的模 $d$ 取值.
+前一余类共有 $[\det A]=i$ 种可能；又 $[d]=N^f$，
+故后一记录共有 $(N^f)^l$ 种可能.
+若两个 $\phi$ 具有相同的记录，则 $w_\phi-w_{\phi'}$ 可表为某整行与 $A$ 之积，
+消去 $A$ 后即得 $v_\phi,v_{\phi'}$ 在 $u^{-1}m$ 各列上模 $d$ 同余，
+而在其余 $l$ 个基向量上的同余性则由第二项记录保证.
+因所取向量构成整基，故 $v_\phi\equiv v_{\phi'}\pmod d$，
+再由前段结论即得 $\phi=\phi'$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L319}{补基后记录两组余类}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L373}{代入指定剩余行}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L417}{饱和格上的行计数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/SiegelLemma.lean}{516}.}
+\begin{lemma}[正交饱和格的判别式与乘积型 Siegel 短向量]
+\label{lem:b-siegel-short-basis}
+\emitthmsource
+设 $E$ 为含本原 $5040$ 次单位根的 CM 域，$f$ 为无穷位数，$\mathrm{rd}_E$ 为根判别式.
+令 $u$ 为有限阿代尔酉矩阵，$T\subset E^{k_0}$ 为余秩 $s$ 的子空间，$d$ 为其饱和格
+$T_{\mathbb A_f}\cap u\widehat{\mathcal O}_E^{k_0}$ 的判别式. 则存在 $s$ 个非零有理格向量 $X_i\in E^{k_0}\cap u\widehat{\mathcal O}_E^{k_0}$ 张成 $T^\perp$，满足
+\[
+ \left(\prod_i\|X_i\|_\infty\right)^{2f}\le (8fs\,\mathrm{rd}_E)^{fs}d,
+\]
+其中 $\|\cdot\|_\infty$ 表示由各无穷位欧氏长度合成的欧氏范数.
+\end{lemma}
+
+\begin{proof}
+分别取 $T,T^\perp$ 的有理列基 $x,y$，并将对应的饱和格写成列基 $m=xb$ 与 $ya$.
+此时 $u^{-1}m$ 与 $u^{-1}ya$ 均为本原整矩阵，即各自拥有整左逆；Hermite 正交性给出 $m^*ya=0$. 在标准整格上应用 Jacobi 互补子式恒等式，可知正交两侧的 Gram 行列式具有相同的广义指数. 结合 $u^{-1}$ 的酉性以及有限广义指数 $[\ \cdot\ ]_f$ 在非零有理元上等于绝对域范数，可写为\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L357}{本原正交格的判别式恒等式}.}
+\[
+ d^2=[\det(m^*m)]_f=[\det a]_f^2\,|\operatorname{Nm}_{E/\mathbb Q}\det(y^*y)|.
+\]
+
+在每个无穷位选取 $r_v$，使 $\Phi_v(y)r_v$ 的各列标准正交. 将 $(r_v)_v$ 与 $a$ 合成阿代尔矩阵 $R$，由上式及逐位恒等式 $\det(r_v^*\Phi_v(y)^*\Phi_v(y)r_v)=1$ 可得其行列式的 idèle 绝对值满足 $|\det R|_{\mathbb A}d\ge 1$.
+由 Minkowski 第二定理（阿代尔与数域上的乘积型 Siegel 引理可参见 Bombieri--Vaaler~\cite{BombieriVaaler1983}），存在可逆有理矩阵 $B$ 使 $a^{-1}B^\top$ 为整，且各行 $B_i$ 在 $R$ 下的长度乘积的 $2f$ 次幂至多为 $(2fs\,\mathrm{rd}_E)^{fs}/|\det R|_{\mathbb A}$. 令 $X_i=yB_i$. 因 $u^{-1}ya$ 与 $a^{-1}B^\top$ 皆为整，故 $X_i$ 落入相应有理格；又 $y$ 有左逆且 $B$ 可逆，因而 $X_i$ 构成 $T^\perp$ 的一组基. 按 $r_v$ 的选取，$X_i$ 的欧氏长度恰等于 $B_i$ 在 $R$ 下的长度. 代入 $|\det R|_{\mathbb A}^{-1}\le d$ 并将常数 $2$ 放宽为 $8$，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L495}{Minkowski 第二定理在阿代尔基中的形式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/SiegelLemma.lean}{626}.}
+\begin{lemma}[余维固定的子空间判别式级数]
+\label{lem:b-subspace-height-zeta}
+\emitthmsource
+设底 CM 域含本原 $5040$ 次单位根，共有 $f$ 个无穷位，根判别式为 $\mathrm{rd}_E$.
+取有限阿代尔酉元 $u$，令 $T$ 遍历 $E^{k_0}$ 中余维为 $l$ 的有理子空间，
+并记 $L_T$ 为 $T$ 在幺模格 $u\widehat{\mathcal O}_E^{\,k_0}$ 中的饱和格. 则
+\[
+ \sum_{\operatorname{codim}T=l}
+        (\operatorname{disc}L_T)^{-(k_0+1)}
+ \le (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l}.
+\]
+\end{lemma}
+\begin{proof}
+令 $\mathcal L=E^{k_0}\cap u\widehat{\mathcal O}_E^{\,k_0}$，
+记 $\|\,\cdot\,\|_\infty$ 为其在全部无穷坐标上的欧氏范数，
+并置 $s=f(k_0+1)$. 由引理~\ref{lem:b-siegel-short-basis}，存在 $\mathcal L$ 中的 $l$ 个非零向量
+$x_1,\dots,x_l$，其 Hermite 正交补恰为 $T$，且满足
+\[
+ \left(\prod_{a=1}^l\|x_a\|_\infty\right)^{2f}
+     \le (8 f l\,\mathrm{rd}_E)^{fl}\operatorname{disc}L_T.
+\]
+用 $l\le k_0$ 放大常数，两边取 $k_0+1$ 次幂并整理，得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L520}{乘积型 Siegel 引理}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L590}{判别式的单项权重}.}
+\[
+ w(x)=(8 f k_0\,\mathrm{rd}_E)^s\|x\|_\infty^{-2s},
+ \qquad
+ (\operatorname{disc}L_T)^{-(k_0+1)}\le\prod_{a=1}^l w(x_a).
+\]
+
+非零格向量的范数至少为 $1$，故任意两个不同格向量的距离亦至少为 $1$.
+实坐标维数为 $2fk_0$，且 $2s\ge 2fk_0+2$. 由球堆积估计可得
+$\sum_{x\in\mathcal L\setminus\{0\}}\|x\|_\infty^{-2s}\le5^{2s}$；
+结合 $5^2\cdot8=200$，便有
+\[
+ \sum_{x\in\mathcal L\setminus\{0\}}w(x)\le (200 f k_0\,\mathrm{rd}_E)^s.
+\]
+为每个子空间 $T$ 选定一组这样的有序向量；因 $T$ 可由正交条件唯一恢复，故该对应为单射.
+因此关于 $T$ 的级数可由全部 $l$ 元组的权重和所控制.
+又元组权重为各分量权重之积，故其和至多为
+$\bigl(\sum_{x\in\mathcal L\setminus\{0\}}w(x)\bigr)^l$，
+代入前式即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L484}{整格的长度下界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Analysis/PackingAndSobolev.lean\#L88}{分离点的反幂和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L630}{子空间级数的求和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{587}.}
+\begin{lemma}[幺模格上的消失行与格的总权重]
+\label{lem:b-row-lattice-sum}
+\emitthmsource
+沿用引理~\ref{lem:b-vanishing-rows} 的记号，设陪集族 $\mathcal A$ 有限.
+设 $r+l=k_0$，令 $H=b^{n^3 f}$，记 $\mathrm{rd}_E$ 为底域的根判别式. 则
+\[
+ \sum_{\phi\in\mathcal A}\ \
+ \sum_{\substack{L\subseteq u\widehat{\mathcal O}_E^{\,k_0}\\
+          \operatorname{rk}L=r,\ \operatorname{disc}L\le H\\
+          \ell_\phi|_L\equiv0\bmod\pi_N}}(\operatorname{disc}L)^{-k_0}
+ \le
+ (N^f)^l H^{2\varrho+6}
+        (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l} 2^{k_0}.
+\]
+\end{lemma}
+\begin{proof}
+由于各项非负，可先固定 $L$ 对 $\phi$ 求和.
+令 $L_V$ 为引理~\ref{lem:b-vanishing-rows} 给出的饱和格，
+并记 $d=\operatorname{disc}L_V$、$i=[L_V:L]$.
+因 $u$ 为酉矩阵，$L_V$ 的 Gram 矩阵可在整坐标中计算，故 $d\ge1$；
+又 $i\ge1$，由引理~\ref{lem:b-discriminant-index} 可得 $di=\operatorname{disc}L\le H$.
+固定 $L$ 时的贡献至多为 $(N^f)^l i(di)^{-k_0}$.
+令 $\mu=2\varrho+4$，由 $r\le k_0$ 可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L452}{判别式截断的权重比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L469}{饱和格判别式下界}.}
+\[
+ i(di)^{-k_0}
+ =\frac{i(di)^{\mu+1}}{d^{k_0+\mu+1}i^{k_0+\mu+1}}
+ \le H^{\mu+2}d^{-(k_0+1)}i^{-(r+\mu)}.
+\]
+
+先按 $V$ 归并 $L$，再对 $L_V$ 的全部有限指数子格求和.
+由引理~\ref{lem:b-sublattice-index-zeta}，秩 $r$ 格的子格指数 Dirichlet 级数在 $r+\mu$ 处的值至多为
+整阿代尔理想级数在 $\mu$ 处的 $r$ 次幂；
+而该理想级数在 $\mu=2\varrho+4$ 处至多为 $2$，
+故子格指数权重总和至多为 $2^r\le 2^{k_0}$.
+最后对余维为 $l$ 的有理子空间 $V$ 求和，引理~\ref{lem:b-subspace-height-zeta} 给出
+\[
+ \sum_{\operatorname{codim}V=l}
+           (\operatorname{disc}L_V)^{-(k_0+1)}
+ \le (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l}.
+\]
+将两次求和的上界同乘以 $(N^f)^l H^{\mu+2}$，即为所求.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L570}{有限指数子格级数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L597}{行与格的联合求和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{765}.}
+\begin{lemma}[固定余秩的判别式负幂加权格计数]
+\label{lem:b-corank-lattices}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+令 $\tau=b^{k_0 f/4}$、$H=b^{n^3f}$，记 $N$ 为填充所取的辅助素数，$\mathcal C$ 为类集.
+对 $r+l=k_0$，记 $\mathcal L_r(c)$ 为类格 $L_c$ 中秩为 $r$、
+判别式不超过 $H$ 的子格之集. 则
+\[
+ \sum_c\ \sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}
+ \le \frac{|\mathcal C|}{N^{k_0f}}\tau^{l+1}.
+\]
+\end{lemma}
+\begin{proof}
+记 $F(c)=\sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}$，
+并令 $\mathcal A$ 为整酉群对格稳定子原像的陪集族.
+记 $\pi_N$ 为层素数 $N$ 的指定分解因子，其广义指数为 $N^f$.
+在整酉群中为每个陪集 $\phi$ 选取代表 $\dot\phi$.
+对任意有限阿代尔酉元 $u$，由双陪集定义及源层包含于格稳定子群可知，
+类 $[u\dot\phi]$ 的选定代表可表为
+$\eta u y_\phi$，其中 $\eta$ 为有理酉元，$y_\phi$ 为 $\phi$ 中的整酉元.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L251}{类代表的分解}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L269}{层因子的广义指数}.}
+
+用 $\eta^{-1}$ 平移类格不改变格的秩与判别式.
+类格条件要求 $(y_\phi^{-1}u^{-1})v$ 为整且其指定一行模 $\pi_N$ 为零，
+故 $F([u\dot\phi])$ 至多为
+\[
+ \sum_{\substack{L\subseteq u\widehat{\mathcal O}_E^{\,k_0}\\
+         \operatorname{rk}L=r,\ \operatorname{disc}L\le H\\
+         \ell_\phi|_L\equiv 0\bmod \pi_N}}(\operatorname{disc}L)^{-k_0},
+\]
+其中 $\ell_\phi$ 为 $y_\phi^{-1}u^{-1}$ 的指定行.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L174}{类格给出的行约束}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L210}{等距嵌入保持权重}.}
+
+记 $\mathrm{rd}_E$ 为根判别式. 由引理~\ref{lem:b-row-lattice-sum}，上式关于 $\phi$ 求和的上界为
+\[
+ (N^f)^l H^{2\varrho+6}
+     (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l} 2^{k_0}.
+\]
+
+该常数至多为 $\tau^{l+1}/b^f$. 事实上，
+\[
+ b^f H^{2\varrho+6}2^{k_0}\le \tau,
+ \qquad
+ N^f(200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)}\le\tau.
+\]
+其中第一式将 $H$ 展开并结合 $2^{k_0}\le b^f$ 比较 $b$ 的指数即得；
+第二式两边取 $1000$ 次幂后，利用
+$N\le b^{60n}$、$(200 f k_0\,\mathrm{rd}_E)^{1000}\le b$ 及
+$60000n+k_0+1\le250k_0$ 可得.
+又由容许填充的指数下界知 $|\mathcal A|\ge(N^{k_0}/b)^f$，
+故对每个 $u$ 均有\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L688}{判别式截断的常数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L708}{根判别式常数}.}
+\[
+ \sum_{\phi\in\mathcal A}F([u\dot\phi])
+ \le |\mathcal A|\,\frac{\tau^{l+1}}{N^{k_0f}}.
+\]
+
+在有理酉群的阿代尔商空间上对上述不等式积分.
+由于类函数在右平移下积分不变，且源层的类稳定子平凡，按源层归一化后的积分恰为类值之和.
+于是左端积分为 $|\mathcal A|\sum_c F(c)$，
+右端积分为 $|\mathcal A||\mathcal C|\tau^{l+1}/N^{k_0f}$，
+消去 $|\mathcal A|$ 即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L40}{从平移均值到类均值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L774}{固定余秩的格计数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Count.lean}{177}.}
+\begin{lemma}[固定余秩的判别式负幂加权近代表对计数]
+\label{lem:b-pair-disc-count}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+记 $\mathcal C$ 为类集，$\overline R$ 为 Bessel 子群的剩余像，
+$N$ 为填充所取的辅助素数，$\tau=b^{k_0 f/4}$，并置
+\[
+ n_{\mathrm p}=\frac{|\overline R|\cdot|\mathcal C|}{N^{k_0 f}},
+ \qquad H=b^{n^3 f}.
+\]
+对 $0\le l\le n^3$，令 $\mathcal P_l(c,c')$ 为所有公共格余秩为 $l$、
+判别式 $d$ 不超过 $H$ 的近代表对之集. 则
+\[
+  \sum_{c,c'}\sum_{(\gamma,\gamma')\in \mathcal P_l(c,c')}
+        d(\gamma,\gamma')^{-k_0}\le \tau^{l+2}n_{\mathrm p}.
+\]
+\end{lemma}
+\begin{proof}
+若 $l>k_0$，则左端为空和. 以下设 $r=k_0-l$.
+固定第一类 $c$，令 $\mathcal L_r(c)$ 为类格 $L_c$ 中秩为 $r$、判别式不超过 $H$ 的格之集.
+每一近代表对均有共同约化 $s$，将其写为 $s=s_0t$，
+其中 $s_0$ 为 $s\overline R$ 的选定代表且 $t\in\overline R$，
+则两项均带标签 $t$. 按公共格的构造，
+\[
+ L_{12}\subseteq L_\gamma\cap L_{\gamma'}\subseteq L_c,
+ \qquad L_{12}\in\mathcal L_r(c),
+\]
+其中 $L_\gamma$ 是 $L_c$ 中可加上层 $M$ 整标架向量而与 $\gamma$ 标架正交的格.
+因 $L_{12}$ 在公共链接空间中满秩，将配对映至 $(t,L_{12})$ 后，
+其权重恰为对应格的 $(\operatorname{disc}L_{12})^{-k_0}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L84}{公共标签和公共格}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L784}{公共格的秩}.}
+
+固定 $(t,L)$. 每一近代表对由两个有序项 $(c',\gamma),(c',\gamma')$ 唯一确定，
+两项均带标签 $t$ 且各自的项格包含 $L$.
+引理~\ref{lem:b-frames-over-lattice} 表明每项的选择数至多为
+$b^{2000n^6(l+1)f}$，故每个原像的基数至多为
+\[
+ b^{4000n^6(l+1)f}\le b^{10^5n^9f}\le \tau,
+\]
+其中第一步比较指数用到了 $l+1\le2n^3$，第二步用到了容许数据对 $k_0/4$ 的下界.
+按原像加总后，固定 $c$ 的贡献至多为
+$|\overline R|\tau\sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L125}{固定第一类的近代表对计数}.}
+
+最后，由引理~\ref{lem:b-corank-lattices} 得
+\[
+ \sum_{c\in\mathcal C}\sum_{L\in\mathcal L_r(c)}
+     (\operatorname{disc}L)^{-k_0}
+ \le \frac{|\mathcal C|}{N^{k_0 f}}\tau^{l+1}.
+\]
+乘以前一步的因子 $|\overline R|\tau$ 即为所求.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L187}{固定余秩的近代表对总权重}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{242}.}
+\begin{lemma}[近代表对的加权求和]
+\label{lem:b-weighted-near-pairs}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+沿用引理~\ref{lem:b-pair-disc-count} 的 $\tau,n_{\mathrm p},k_0$，
+令 $\mathcal P(c,c')$ 为任意近代表对的集合，$B\ge0$.
+记某对的公共格余秩与判别式分别为 $l,d$，两项的层规范分别为 $G,G'$.
+假设对每一对均存在 $\eta>0$ 与 $D$，使两胞腔的二阶矩常数皆不超过 $D$，且
+\[
+   (d\eta)^2\le GG',\qquad \tau^{l+6}D/\eta^{k_0}\le B.
+\]
+若 $a(\gamma),a(\gamma')$ 分别为该对两项的大小，则
+\[
+  \sum_{c,c'}\sum_{(\gamma,\gamma')\in\mathcal P(c,c')}
+        a(\gamma)a(\gamma')\le \tau B.
+\]
+\end{lemma}
+\begin{proof}
+由单项大小的定义，有
+\[
+   a(\gamma)^2\le \frac{\tau^4 D}{n_{\mathrm p}G^{k_0}},
+   \qquad
+   a(\gamma')^2\le \frac{\tau^4 D}{n_{\mathrm p}(G')^{k_0}} .
+\]
+分母均为正；将两式相乘并取平方根，再代入 $(d\eta)^2\le GG'$，得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L173}{单对的大小乘积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L208}{预算代入}.}
+\[
+  a(\gamma)a(\gamma')\le
+  \frac{\tau^4 D}{n_{\mathrm p}(d\eta)^{k_0}}
+  \le \frac{B}{\tau^{l+2}n_{\mathrm p}}d^{-k_0}.
+\]
+
+由引理~\ref{lem:b-pair-corank}，仅 $0\le l\le n^3$ 的余秩可能出现，
+且每对的判别式均满足引理~\ref{lem:b-pair-disc-count} 的阈值条件.
+将上式按余秩 $l$ 分组求和. 因各项非负，每组均可放大至 $\mathcal P_l(c,c')$，
+再应用逆判别式配对计数可知每组贡献至多为 $B$，
+从而总和至多为 $(n^3+1)B$.
+容许数据保证 $n\le b$、$2\le b$ 及 $b^4\le\tau$，
+故 $n^3+1\le 2b^3\le b^4\le\tau$，结论得证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L233}{余秩组数的上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{近代表对的加权求和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{744}.}
+\begin{lemma}[标架相交位控制同链接平方和]
+\label{lem:b-link-meet}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+取剩余元素集 $\Omega$，并设正整数 $z$ 满足：对每个 $s\in\Omega$，
+标架张成空间与其 $s$ 像具有非零模交的各有限位之范数乘积至少为 $z$.
+对每个块仅取非零判别式项，将同一链接内的截断振幅相加后取模平方，
+则所得各块与链接的平方和除以 $\nu^2$ 后至多为
+\[
+ \left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}},
+\]
+其中 $k_0$ 为 $X_0$ 的秩，$f$ 为无穷位数，$\nu$ 为幂幺余体积，
+$D_{\mathrm{main}}$ 为全源维数平方除以 Bessel 度数乘积与标准格质量之积.
+\end{lemma}
+\begin{proof}
+固定类 $c,c'$ 及 $s\in\Omega$. 对每个链接 $\Lambda$，
+令 $\mathcal T_\Lambda$ 为链接等于 $\Lambda$ 的非零判别式项之集.
+该集合在左右幂幺作用下稳定，且包含于余项集 $\Gamma_*$ 中.
+按近代表的块幅度上界，其截断振幅和的模平方除以 $\nu^2$，
+至多等于 $\mathcal T_\Lambda$ 中近代表有序对的大小乘积之和；
+这里近代表指块中选定的幂幺双陪集代表，其两侧约化区在无穷位相交.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L538}{同一块的近代表对}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L566}{近代表的乘积界}.}
+
+任一这样的代表对自动具有相同的链接、非零判别式及相合约化，
+且第一项已唯一确定剩余约化 $s$ 与链接 $\Lambda$，
+故对所有 $s$、$\Lambda$ 求和时，每一有序对至多出现一次.
+因而只需估计标架相交位范数乘积至少为 $z$ 的同链接近代表对之总权重.
+
+记 $\tau=b^{k_0 f/4}$. 对此类有序对，公共链接余秩至多为 $1$：
+事实上，两链接相同且非零判别式迫使两胞腔皆取最高秩，
+故公共链接余秩不超过最高秩与各向同性标架维数之差，即 $1$.
+此外，两项的胞腔常数均不超过 $D_{\mathrm{main}}$.
+令 $d$ 为配对判别式，$g,g'$ 为两项的层规范，
+则引理~\ref{lem:b-pair-discriminant-gain} 给出 $(zd)^2\le gg'$.
+于是可在引理~\ref{lem:b-weighted-near-pairs} 中取增益 $\eta=z$、
+胞腔常数上界 $D_{\mathrm{main}}$ 以及预算
+$B=\tau^7D_{\mathrm{main}}/z^{k_0}$（因公共余秩 $l$ 满足 $l+6\le7$）.
+由此近代表对的总权重至多为
+\[
+ \tau B=\frac{\tau^8}{z^{k_0}}D_{\mathrm{main}}
+       =\left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}}.
+\]
+将该界代入前述各块平方和即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{近代表对的加权求和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L454}{同链接近代表对的增益}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{676}.}
+\begin{lemma}[余项的平方和归并]
+\label{lem:b-off-link-square}
+\emitthmsource
+设 $S$ 为容许填充，底 CM 域含本原 $5040$ 次单位根.
+取任意剩余元素集 $\Omega$，记 $\Gamma_*$ 为以下两类有理项之并：
+判别式非零的项，以及判别式为零但两侧幂幺特征相合且改变各向同性标架张成空间的项.
+记 $A_*$ 为 $\Gamma_*$ 的截断振幅和. 若非零判别式项按链接分别求和后，
+其模平方在 $\Omega$ 各块上的总和不超过 $C\nu^2$（其中 $C\ge0$），则
+\[
+ \frac1{\nu^2}\sum_{c,c'}\sum_{s\in\Omega}
+       \|A_*(c,s,c')\|_{\mathrm{HS}}^2
+ \le C+b^{-k_0f} D_{\mathrm{id}},
+ \qquad D_{\mathrm{id}}=|\overline R|u_0 ,
+\]
+其中 $\nu$ 为幂幺余体积，$k_0$ 为 $X_0$ 的秩，$f$ 为无穷位数，
+$\overline R$ 为剩余 Bessel 子群，$u_0$ 为全源维数.
+\end{lemma}
+\begin{proof}
+固定块 $(c,s,c')$. 先将所有判别式为零的项归为一组，
+再将非零判别式项按链接分组. 因链接与判别式在左右幂幺作用下均保持不变，
+故各组对此作用稳定，且截断振幅的组和可绝对相加.
+由三角不等式，块的模平方不超过全部组对的范数乘积之和.
+当两项同属某一非零判别式组时，保留该组和的模平方；
+其余乘积由不同组间的交叉乘积及零判别式组的平方构成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L504}{按判别式及链接得到稳定分组}.}
+
+近代表是块中具有胞腔秩的选定幂幺双陪集代表，
+且满足某无穷位点及其逆像同时落入有界约化区的条件；
+仅在剩余约化使两侧特征相容的块中才存在近代表.
+对任意两组的振幅范数乘积，逐组近代表估计给出上界
+\[
+ \nu^2\sum_{\gamma,\gamma'}d_{c,c'}(\gamma)d_{c,c'}(\gamma'),
+\]
+其中 $d_{c,c'}(\gamma)$ 为单项大小，两指标分别遍历两组的近代表.
+每一有序代表对唯一决定所属组对；若该组对未计入保留的平方项，
+则或者两链接相异，或者至少一项的判别式为零.
+因此将各上界相加时，可直接对这一类近代表对求和.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L566}{两组振幅的乘积界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L606}{模平方的分组展开}.}
+
+再对 $s$ 求和时，任一代表 $\gamma$ 仅属于约化值为
+$h_c^{-1}\gamma_f h_{c'}$ 的那个块，故不同块的近代表对互不重复.
+下面证明此类代表对的总权重至多为 $b^{-k_0 f}D_{\mathrm{id}}$.
+记 $\tau=b^{k_0 f/4}$.
+引理~\ref{lem:b-weighted-near-pairs} 以每对的下列数据为输入：
+公共链接余秩 $l$、配对判别式 $d$、正增益 $\eta$，
+以及同时支配两胞腔常数的上界 $D$.
+只要 $(d\eta)^2$ 不超过两层规范之积且
+$\tau^{l+6}D/\eta^{k_0}\le B$，全体近代表对的总权重便至多为 $\tau B$
+（其证明系按公共链接余秩分组，再对每组施用逆判别式计数）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{近代表对的统一加权求和}.}
+
+此处可统一取 $B=D_{\mathrm{id}}/\tau^{10}$.
+若两链接相同而该对未计入保留平方项，
+则两项判别式必皆为零；此时公共链接余秩 $l=0$，
+两胞腔常数均为 $D_{\mathrm{id}}/\tau^{16}$，
+取 $\eta=1$ 即有 $\tau^6D=B$.
+若两链接不同，记链接余秩为 $i\ge1$；
+引理~\ref{lem:b-pair-discriminant-gain} 给出增益 $\eta=(M/2)^{if}$，引理~\ref{lem:b-pair-corank} 的证明给出 $l\le i+1$.
+取 $D=D_{\mathrm{main}}$ 并令 $u=\tau(2/M)^{k_0 f}$.
+由 $\tau^4=b^{k_0f}$、$\tau\ge1$ 及 $M\ge 2b$ 可知 $u\le1$.
+结合 $D_{\mathrm{main}}\le(M/b^6)^{k_0f}D_{\mathrm{id}}$，得
+\[
+ \frac{\tau^{l+6}D_{\mathrm{main}}}{(M/2)^{ik_0f}}
+ \le \tau^7 u^iD_{\mathrm{main}}
+ \le \tau^8(2/b^6)^{k_0f}D_{\mathrm{id}}
+ \le \tau^{-12}D_{\mathrm{id}}\le B.
+\]
+于是总权重至多为
+$\tau B=\tau^{-9}D_{\mathrm{id}}\le b^{-k_0f}D_{\mathrm{id}}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L384}{不同链接及零判别式的增益与常数}.}
+
+按假设，全部保留组的平方和至多为 $C\nu^2$.
+将其与近代表对总权重乘以 $\nu^2$ 后的上界相加，再同除以 $\nu^2$ 即证.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/SquareExpansion.lean}{635}.}
+\begin{lemma}[一侧约化固定时的 Bessel 余项]
+\label{lem:b-bessel-remainder}
+\emitthmsource
+设 $S$ 为容许填充数据，底 CM 域含本原 $5040$ 次单位根.
+记 $\overline R$ 为 Bessel 子群在剩余群 $G_0\times G_1$ 中的像.
+对 $i=0,1$，置
+\[
+ \Omega_i=\{s:\ s_i=t_i\ \text{对某个 }t\in\overline R\}.
+\]
+沿用引理~\ref{lem:b-amplitude-blocks} 的振幅记号，
+令 $A_{\mathrm{off}}$ 为仅对 Bessel 子群外有理项求和所得的振幅和，
+并置
+\[
+ E(s)=\frac{1}{\nu^2}\sum_{c,c'}\|A_{\mathrm{off}}(c,s,c')\|_{\mathrm{HS}}^2 .
+\]
+若 $u_0$ 为全源维数，则
+\[
+ \sum_{s\in\Omega_i}E(s)\le b^{-12}|\overline R|u_0.
+\]
+\end{lemma}
+\begin{proof}
+记 $M=p_0p_1$，$f$ 为底 CM 域的无穷位数，$k_0$ 为 Bessel 构造中
+定号空间 $X_0$ 的秩，$D_{\mathrm{id}}=|\overline R|u_0$，
+并置 $D_{\mathrm{main}}=u_0^2/(d_{\mathrm{Bes}}\mu)$，
+其中 $d_{\mathrm{Bes}}$ 为局部 Bessel 度数之积，$\mu$ 为标准格的类加权和.
+
+先验证两项剩余条件. 由于 Bessel 子群元素固定第一标架向量，
+故 $\Omega_i$ 中的元素也在 $p_i$ 上方每个所选位固定该向量.
+若某 $s\in\Omega_i$ 同时落入整且范数为一的标量
+$\zeta$ 所平移的 $\overline R$ 陪集，比较第一标架向量处的坐标可知，
+$\zeta$ 在上述各位的约化均为 $1$.
+将 $\zeta$ 视为秩一标准格的有理自同构，
+由该层的自由性必得 $\zeta=1$，从而 $\Omega_i$ 避开所有非平凡标量陪集.
+另一方面，$\overline R$ 的元素在 $p_i$ 上方每个所选位及其共轭位
+均存在非零标架交向量，而该条件仅依赖于 $s_i$，
+因此每个 $s\in\Omega_i$ 的标架相交位范数乘积至少为
+$z=p_i^{2f}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L599}{相交位的范数乘积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L612}{排除非平凡标量陪集}.}
+
+归并非零判别式项时，对每个块 $(c,s,c')$，
+先将同一链接的截断振幅相加再取模平方.
+令 $X$ 为前 $\varrho$ 个各向同性标架向量张成的空间，
+则有理元素 $\gamma$ 的链接是 $X^\perp/X$ 两份副本中由
+\[
+ \bigl([v],[\gamma^{-1}v]\bigr),\qquad v\in X^\perp\cap(\gamma X)^\perp,
+\]
+给出的子空间. 记 $\mathcal L(\Omega_i)$ 为该平方和对所有块与链接求和后再除以 $\nu^2$ 所得之值.
+以标架相交位范数下界 $z$ 代入引理~\ref{lem:b-link-meet}，得
+$\mathcal L(\Omega_i)\le C$，其中
+\[
+ C=\left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}} .
+\]
+容许尺度给出 $p_i^2\ge M/b$、
+$D_{\mathrm{main}}\le(M/b^6)^{k_0 f}D_{\mathrm{id}}$
+及 $k_0 f\ge40$，于是\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L759}{链接平方和估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L626}{层素数的尺度比较}.}
+\[
+ C\le\left(\frac{b^3}{M}\right)^{k_0 f}
+        \left(\frac{M}{b^6}\right)^{k_0 f}D_{\mathrm{id}}
+   =b^{-3k_0 f}D_{\mathrm{id}}
+   \le b^{-30}D_{\mathrm{id}} .
+\]
+
+在避开非平凡标量陪集的块中，子群外项的总振幅恰等于下列余项的总振幅：
+判别式非零的项，以及判别式为零但两侧特征相容且改变各向同性标架张成空间的项.
+事实上，删去的特征不相容项经幂幺平均后为零，
+而其余被删项若出现则必源自 Bessel 子群的标量平移，
+已由 $\Omega_i$ 的条件排除.
+分别记这些余项的未截断与截断振幅块为 $A_{\mathrm{rem}}$ 与 $A_{\mathrm{cut}}$，
+并在块族上采用归一化二范数（即对全部块模平方求和、除以 $\nu^2$ 后开平方）.
+由截断估计及引理~\ref{lem:b-off-link-square} 的交叉项估计分别可得
+\[
+ \|A_{\mathrm{rem}}-A_{\mathrm{cut}}\|^2
+ \le b^{-40}D_{\mathrm{id}},\qquad
+ \|A_{\mathrm{cut}}\|^2\le C+b^{-k_0f}D_{\mathrm{id}},
+\]
+其中第二式的同链接项受 $\mathcal L(\Omega_i)$ 控制，异链接项则贡献后一误差.
+由三角不等式结合 $k_0f\ge40$ 与 $b\ge1000$，得
+\[
+ \begin{aligned}
+ \left(\sum_{s\in\Omega_i}E(s)\right)^{1/2}
+ &=\|A_{\mathrm{rem}}\|\\
+ &\le \sqrt C+2b^{-20}\sqrt{D_{\mathrm{id}}}\\
+ &\le \sqrt C+b^{-15}\sqrt{D_{\mathrm{id}}}
+ \le 2b^{-15}\sqrt{D_{\mathrm{id}}}.
+ \end{aligned}
+\]
+两边平方并利用 $4b^{-30}\le b^{-12}$，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L519}{子群外项的归并}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Size.lean\#L184}{截断误差}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L682}{不同链接交叉项的平方和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{468}.}
+\begin{lemma}[单位元处的 Gram 算子估计]
+\label{lem:b-unit-moment}
+\emitthmsource
+设 $S$ 为容许填充数据，底 CM 域含本原 $5040$ 次单位根.
+设 $\mathcal P$ 为从全源欧氏空间 $U_0$ 映入有限维复内积空间的映射，$\rho$ 为其上的
+剩余群作用，且假设 $\mathcal P^*\rho(s)\mathcal P$ 满足
+引理~\ref{lem:b-amplitude-blocks} 所述的振幅块公式.
+记 $u_0=\dim_{\mathbb C}U_0$. 则
+\[
+ \|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2\le b^{-12}u_0 .
+\]
+\end{lemma}
+\begin{proof}
+记 $P_s=\mathcal P^*\rho(s)\mathcal P$，$R(s)$ 为仅取 Bessel 子群内
+有理项所得的归一化振幅算子，$\overline R$ 为该子群在剩余群中的像.
+由于振幅差恰来自子群之外，按全源标准正交基逐块取模平方即得
+$\|P_s-R(s)\|_{\mathrm{HS}}^2=E(s)$，
+其中 $E(s)$ 为引理~\ref{lem:b-bessel-remainder} 中的单点余项二阶矩.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L404}{振幅差的模平方}.}
+
+对任意 $t\in\overline R$，算子 $R(t)$ 为酉算子，且 $R(1)=I$.
+确切地说，对源空间的每个类 $d$，可选取 Bessel 子群中的 $\delta$
+及类 $d'$，使 $\delta$ 属于块 $(d,t^{-1},d')$ 的有理和.
+若 $W(\delta y)=MW(y)$，则对应的块公式给出
+\[
+ R(t)e_{d,j}=\sum_k M_{jk}e_{d',k},
+\]
+其中 $M$ 为酉矩阵，故 $R(t)$ 由类的置换与各类上的酉变换复合而成.
+右乘 $\delta$ 在块 $(c,st,d)$ 与 $(c,s,d')$ 的有理项之间建立双射；
+平移后的两截断函数在相应幂幺格上的轨道和仍恒为 $1$，
+因而可用于计算同一振幅和. 再结合 $W(\delta y)=MW(y)$，得
+\[
+ A(c,st,d)_{i,j}
+   =\sum_k \overline{M_{jk}}\, A(c,s,d')_{i,k}.
+\]
+取共轭并除以幂幺余体积，恰得 $P_{st}=P_s R(t)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L191}{Bessel 作用在源上的表示}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/AmplitudeSums.lean\#L806}{平移后的截断轨道和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L298}{全振幅的右等变性}.}
+
+令 $s=1$，则对每个 $t\in\overline R$ 均有
+$P_t-R(t)=(\mathcal P^*\mathcal P-I)R(t)$.
+右乘酉算子保持 Hilbert--Schmidt 范数不变，故所有 $E(t)$ 均相等，
+其公共值即为所求平方范数.
+又 $\overline R$ 包含于任一层侧的集合 $\Omega_i$ 中，
+由引理~\ref{lem:b-bessel-remainder} 及各项非负性可得
+\[
+ |\overline R|\|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2
+ =\sum_{t\in\overline R}E(t)
+ \le\sum_{s\in\Omega_i}E(s)
+ \le b^{-12}|\overline R|u_0 .
+\]
+最后同除以正整数 $|\overline R|$ 即证.
+\end{proof}
+
+\section{局部相关积分、壳层与投影}
+\label{sec:b-local-mass}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/Depth.lean}{883}.}
+\begin{lemma}[由稳定配对重构相对位置矩阵]
+\label{lem:b-frame-matrix-reconstruction}
+\emitthmsource
+设 $\Gamma$、$\Gamma'$ 为同一局部标架的两个规范，每个规范给出按尺度幂次分层的有界集，矩阵大小由全部矩阵元所处的层数控制. 令 $M$ 为层尺度单位.
+设 $x,xy$ 各自有幂幺代表落入标架盒中，且两代表之差除以 $M$ 在 $\Gamma$ 中的大小至多为 $2$.
+设 $0\le j\le\varrho$，存在适配于 $\Gamma'$、长度为 $j$ 的两个前坐标序列 $p,q$，使 $w_p^{-1}x$ 与 $w_q^{-1}xy$ 均位于第 $j$ 层近区.
+若 $j>0$，还假设 $M^{-1}$ 在 $\Gamma'$ 中大小至多为 $1$，且在 $\Gamma'$ 中大小至多为 $10n$ 的标量在 $\Gamma$ 中大小至多为 $1$.
+再设对每个 $a\ge j$，稳定配对集均含有逆元在 $\Gamma$ 中大小至多为 $1$ 的单位. 则
+\[
+  \operatorname{size}_{\Gamma}\bigl(M^{-1}(y-I)\bigr)\le 99n,
+  \qquad n=\varrho+1.
+\]
+\end{lemma}
+
+\begin{proof}
+对每个 $a<j$，适配前坐标保证标准对偶向量 $e_a^\ast$ 在两点处的坐标长度至多为 $8\varrho+7$：这是因为两点均可移入盒中，前坐标控制移动矩阵的对偶列，而盒中的逆矩阵再将该列拉回原点. 选取单位 $c$ 同时缩放两点的向量，使 $c e_a^\ast$ 落入近向量对的集合；它与此前各层正交，因而是稳定向量，且其第 $a$ 层配对恰为 $c$. 如此选取时，$c^{-1}$ 在 $\Gamma'$ 中大小至多为 $8\varrho+9\le10n$，从而在 $\Gamma$ 中大小至多为 $1$. 至此，每一层均存在逆元大小至多为 $1$ 的稳定配对.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L851}{前坐标控制低层稳定配对}.}
+
+将稳定向量除以配对单位，便得两点共有的短对偶向量，其长度预算为 $5$. 在最高商空间上，盒内两代表之差给出两点规范之差至多为 $9$. 自上而下逐层重建时，短对偶向量将该层的一维配对坐标与剩余商空间分离；每下降一层，源与目标的平衡标架及共同对偶向量给规范差增加至多 $4\cdot5+12$. 由此全空间的规范差预算为 $9+32\varrho$，将规范差转回矩阵元大小即得所求的 $99n$ 界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/TwoGauges.lean\#L162}{逐层重建规范}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L821}{全空间矩阵界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/OneFrame.lean}{661}.}
+\begin{lemma}[单标架的加权平方积分]
+\label{lem:b-one-frame-weighted-integral}
+\emitthmsource
+给定局部标架 $F$、规范 $\Gamma$ 以及在第 $j\le\varrho$ 层满足配对核条件的核函数 $K$.
+记 $B_\Gamma$ 为位置球，$\mathcal W_j(K;x)$ 为各层部分相关的模平方按深度加权求和所得之积分.
+令 $\mu$ 为群上的 Haar 测度，$\mu_0$ 为第零层的商积分测度，$C_a$ 为第 $a$ 层的积分代价. 则
+\[
+ \int_{B_\Gamma}\mathcal W_j(K;x)\,d\mu(x)
+ \le (\varrho+1)\left(\prod_{a<\varrho}C_a\right)
+      \iint |K(g,y)|^2\,d\mu_0(g)\,d\mu_0(y).
+\]
+\end{lemma}
+
+\begin{proof}
+固定层 $l$（$j\le l\le\varrho$）. 先以第 $l$ 层以下的 Heisenberg 卷积测度与一个 $s$-有限测度 $\rho_l$（即可数个有限测度之和）分解群测度，并将变量写为 $x=g^{-1}\nu y$，其中 $\nu$ 取自低层幂幺群. 由配对核的变换性质，相关的模长与 $\nu$ 无关. 若位置球在该纤维上的质量为零，则权重积分为零；在其余纤维上，借助各层深度权重积分估计可知，加权平方积分受截断平方积分与低层代价乘积之积控制，其中截断平方即将相关模平方乘以纤维正质量的指示函数（正质量取 $1$，零质量取 $0$）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L618}{换元和位置球的纤维积分}.}
+
+截断平方的估计自最高层向下递推：最高层的相关核即为 $K$，两变量均采用第零层商测度；每下降一层，将新增的 Heisenberg 测度卷入 $\rho_l$，并利用该层的 Cauchy--Schwarz 截断平方界引入该层的代价因子. 借助低层幂幺不变性与测度分解，可在同时移动的两变量中消去第二变量的平移. 由此，低层代价乘积与截断平方的积分始终不超过 $\prod_{a<\varrho}C_a$ 乘以 $\|K\|_{L^2(\mu_0\otimes\mu_0)}^2$. 每个 $l$ 均具同一上界，而加权平方积分中至多含 $\varrho+1$ 个 $l$，逐项相加即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L559}{Heisenberg 测度分解与递推}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L665}{单标架的层求和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{126}.}
+\begin{lemma}[分母理想与稳定配对的深度]
+\label{lem:b-ideal-depth}
+\emitthmsource
+设半局部代数 $A$ 的整数环为 $R$，带大格数据的酉群层元为 $g$，
+$Z$ 为中间群. 取尺度为 $\alpha\in R\cap A^\times$ 的局部规范（\emph{local gauge}）$\Gamma$，
+满足 $\bar\alpha=\alpha$，并记其损失为 $\Lambda=2/|\alpha|$.
+设 $0\le j\le\varrho$，$p,q$ 为 $\Gamma$ 下长度为 $j$ 的前坐标序列；
+当 $j>0$ 时，假设 $\alpha g^{-1}\in R$. 记 $n=\varrho+1$.
+令 $I_x$ 为位置 $x$ 的公共分母理想（\emph{common denominator ideal}），即使 $g^{-1}(x-I)$ 全部矩阵元均为整所需的乘子理想.
+若 $0\le\sigma<1$ 且
+\[
+  \Lambda^{990n^2}\le \sigma^{400n^2}[R:I_x],
+\]
+则在每个活跃点 $y$ 处，至少存在某个 $j\le a<\varrho$ 满足
+\[
+  \operatorname{vol}\bigl(\mathfrak d_a(y,x)\bigr)\le \sigma^2,
+\]
+其中 $\mathfrak d_a(y,x)$ 为稳定配对集合（\emph{set of stable products}），由同时在 $y$ 与 $yx$ 处稳定的向量在 $e_a$ 对偶坐标中的取值组成；
+所谓活跃点，指中间群 Bessel 向量在 $y,yx$ 处的相关非零，且
+$w_p^{-1}y$ 与 $w_q^{-1}(yx)$ 均落入第 $j$ 层近区.
+\end{lemma}
+\begin{proof}
+记 $I_x=cR$，其中 $c\in R\cap A^\times$ 且 $[R:I_x]=|c|^{-1}$，于是
+\[
+ |c|\Lambda^{990n^2}\le \sigma^{400n^2}.
+\]
+固定活跃点 $y$. 若对每个 $a\ge j$ 均有 $\operatorname{vol}(\mathfrak d_a(y,x))>\sigma^2$，
+则可从中取出整元 $d_a\in A^\times$，其模数至少等于该集合的体积.
+置
+\[
+ C=\prod_{j\le a<\varrho} d_a\overline{d_a}.
+\]
+则 $C\in R\cap A^\times$，$\bar C=C$，且每个 $C/d_a$ 均为整.
+由模数的乘法性与共轭不变性得
+\[
+ |C|=\prod_{j\le a<\varrho}|d_a|^2\ge \sigma^{4n},
+\]
+末步用到了 $0\le\sigma<1$ 及乘积至多含 $n$ 项.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L112}{公共分母理想的生成元}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L168}{稳定配对集合的生成元}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L445}{自共轭公倍数}.}
+
+选取新规范的尺度 $\alpha'=\alpha^{10n}C$.
+对每个 $a\ge j$，乘积 $\alpha'(d_a)^{-1}=\alpha^{10n}(C/d_a)$ 均为整；
+而旧规范下大小为 $10n$ 的元素 $z$ 满足 $\alpha^{10n}z\in R$，
+故 $z$ 在新规范下的大小至多为 $1$.
+又由活跃点的非零相关可得两个幂幺平移，将 $y$ 与 $yx$ 移入格盒，
+并使两点矩阵之差除以 $g$ 后为整，从而其在新规范下的大小至多为 $2$.
+将上述条件连同前坐标及近区假设代入引理~\ref{lem:b-frame-matrix-reconstruction}，即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L192}{非零相关产生格盒内的平移}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L890}{矩阵重构估计}.}
+\[
+  (\alpha')^{99n}g^{-1}(x-I)\in\operatorname{Mat}(R).
+\]
+
+由此 $(\alpha')^{99n}\in I_x$，等价于
+$c^{-1}(\alpha')^{99n}\in R$.
+展开 $\alpha'$ 可见 $c^{-1}C^{99n}$ 在旧规范下大小至多为 $990n^2$，
+从而 $\lvert c^{-1}C^{99n}\rvert\le\Lambda^{990n^2}$.
+令 $X=|C|^{99n}$，则 $0<X<\infty$. 由 $400n^2\ge 396n^2+1$ 得
+\[
+ X=|c|\,\lvert c^{-1}C^{99n}\rvert
+ \le |c|\Lambda^{990n^2}
+ \le \sigma^{400n^2}
+ \le \sigma(\sigma^{4n})^{99n}
+ \le \sigma X
+ < X.
+\]
+矛盾即证所需的体积上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L483}{模数比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L133}{分母理想的深度判据}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/OneFrame.lean}{697}.}
+\begin{lemma}[单个位置球上的相关积分]
+\label{lem:b-position-ball}
+\emitthmsource
+设 $W$ 为截断 Bessel 函数（\emph{truncated Bessel function}），$\mu$ 为群上的 Haar 测度.
+令 $0\le j\le\varrho$，$n=\varrho+1$. 在两个规范 $\Gamma,\Gamma'$ 下，
+损失分别记为 $\Lambda,\Lambda'$，并记 $B_{\Gamma'}$ 为 $\Gamma'$ 的位置球（\emph{position ball}）.
+取单位序列 $p,q$，其中 $q$ 为 $\Gamma$ 下长度为 $j$ 的前坐标序列.
+记 $\Delta_j$ 为相应的前坐标密度，$\mathcal W_j(x)$ 为 $\Gamma$ 下的加权二阶矩乘积，
+$\mathcal N(W)$ 为壳层归一化因子.
+设 $S\subseteq B_{\Gamma'}$，$f$ 为非负函数，且在 $S$ 上逐点满足
+$f(x)^2\le e^2\mathcal W_j(x)$（其中 $e\ge0$）. 则
+\[
+ \Delta_j\int_S f\,d\mu
+ \le e\,\Lambda^{1500000 n^3+1}(\Lambda')^{25000 n^2}\mathcal N(W).
+\]
+\end{lemma}
+\begin{proof}
+记 $\theta_a(u)$ 为第 $a$ 个幂幺层的模数，$\theta_a$ 为其在层元处的取值.
+令 $\nu$ 为 Bessel 商测度，并置
+\[
+ P_W=\iint \lvert\langle W(v),W(z)\rangle\rvert^2\,d\nu(v)\,d\nu(z),
+ \qquad
+ C=\Bigl(\prod_{a<\varrho}\theta_a\Bigr)c_{\mathrm{Pl}}^{h\varrho},
+\]
+其中 $c_{\mathrm{Pl}}$ 为 Plancherel 常数，$h$ 为自由坐标空间 $X'$ 的维数，
+且 $\mathcal N(W)=CP_W$. 令 $d$ 为在第 $a<j$ 个标架向量上按比例
+$p_a/q_a$ 作用的 Weyl 对角元，取相关核
+\[
+ k_1(v,z)=\langle W(v),W(z)\rangle,\qquad
+ k_2(v,z)=\langle W(v),W(dz)\rangle .
+\]
+记 $N_1(x),N_2(x)$ 为对应于核 $k_1,k_2$ 的第 $0$ 层与第 $j$ 层加权二阶矩
+（以各层深度权重为权，在相应层测度上积分）.
+按加权乘积的定义，有
+\[
+ \mathcal W_j(x)=D\Lambda^{3\cdot10^6 n^3}N_1(x)N_2(x),
+ \qquad
+ D=\Bigl(\prod_{a<j}\theta_a(p_a^{-1})\Bigr)^2 .
+\]
+由于 $N_1,N_2$ 可测，即使 $f$ 仅逐点给定，仍可先以右端平方根
+控制 $f$，再将积分域放大至 $B_{\Gamma'}$. 由 Cauchy--Schwarz 不等式可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Correlations.lean\#L98}{各层加权平方和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L130}{加权乘积}.}
+\[
+ \left(\int_S f\,d\mu\right)^2
+ \le e^2D\Lambda^{3\cdot10^6n^3}E_1E_2,\qquad
+ E_i=\int_{B_{\Gamma'}}N_i(x)\,d\mu(x).
+\]
+
+截断性质与 Bessel 等变性保证两相关核均满足单标架估计的条件.
+记 $V=C(\Lambda')^{4900n\varrho}$ 为各层估计常数之积，
+则引理~\ref{lem:b-one-frame-weighted-integral} 给出
+\[
+ E_1\le nVP_W,\qquad E_2\le nV JP_W,\qquad
+ J=\prod_{a<j}|p_a/q_a|^{k+2(\varrho-a)},
+\]
+其中 $k$ 为标架双曲对之外的维数，第二式利用了换元 $z\mapsto dz$ 对应的积分公式
+$\int \Phi(dz)\,d\nu(z)=J\int\Phi(z)\,d\nu(z)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L388}{相关核的等变性和截断}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L665}{单标架估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Levels.lean\#L547}{Weyl 对角元的换元公式}.}
+
+前坐标密度恰抵消绝大多数模数. 令 $r_a=k+1+2(\varrho-a-1)$，则
+$\Delta_j^2D J$ 的第 $a$ 个因子为
+\[
+ |p_aq_a|^{r_a}|p_a|^{-2r_a-1}|p_a/q_a|^{r_a+1}
+ = |q_a|^{-1}.
+\]
+因而 $\Delta_j^2D J=\lvert(\prod_{a<j}q_a)^{-1}\rvert\le \Lambda^2$，
+因为该逆元在 $\Gamma$ 下的大小至多为 $1$（从而亦至多为 $2$）.
+另一方面，$\Lambda'\ge2$ 给出
+\[
+ nV\le C(\Lambda')^{n+4900n\varrho}
+ \le C(\Lambda')^{25000n^2}.
+\]
+将上述各界代入 $\Delta_j^2(\int_S f\,d\mu)^2$ 并开平方，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L677}{密度恒等式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L705}{位置球上的相关积分}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/Shells.lean}{86}.}
+\begin{lemma}[单个壳层的位置球覆盖]
+\label{lem:b-shell-cover}
+\emitthmsource
+沿用引理~\ref{lem:b-position-ball} 的记号，仍取 $q$ 为规范 $\Gamma$ 下的前坐标序列.
+设 $S$ 为高度 $1\le H<\infty$ 的壳层，
+可被至多 $2H^{9n}$ 个位置球覆盖，且每个位置球的规范损失至多为 $\Lambda H^2$.
+若对每个 $x\in S$ 均有 $f(x)^2\le e^2\mathcal W_j(x)$，则
+\[
+ \Delta_j\int_S f\,d\mu\le
+ e\,\Lambda^{2\cdot10^6n^3}H^{10^5n^2}\mathcal N(W).
+\]
+\end{lemma}
+\begin{proof}
+将 $S$ 与每个覆盖位置球求交. 由引理~\ref{lem:b-position-ball}，每个交集上的积分
+乘以前坐标密度后至多为
+\[
+ e\,\Lambda^{1500000n^3+1+25000n^2}H^{50000n^2}\mathcal N(W).
+\]
+因被积函数非负，可直接将各交集上的积分相加.
+覆盖球数至多为 $2H^{9n}$，其中的因子 $2$ 可由 $\Lambda\ge2$ 吸收；
+又因为
+\[
+ 1500000n^3+25000n^2+2\le2\cdot10^6n^3,\qquad
+ 50000n^2+9n\le 10^5n^2,
+\]
+代回即得所求.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L92}{壳层覆盖的积分估计}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{264}.}
+\begin{lemma}[有限位二进壳层求和]
+\label{lem:b-dyadic-shells}
+\emitthmsource
+考虑带大格数据的半局部酉群，令 $J\subseteq Z\subseteq K$ 分别为主同余群、
+中间群与整群. 记 $W_Z$ 为中间群的截断 Bessel 向量，$\mu$ 为群测度.
+取尺度为自共轭整元 $\alpha$ 的规范 $\Gamma$（其中 $\alpha$ 在半局部代数中可逆），
+记规范损失为 $\Lambda$. 对 $j\le\varrho$，取该规范下长度为 $j$ 的两个前坐标序列；
+当 $j>0$ 时，假设层元 $g$ 的逆在该规范下大小为 $1$.
+记 $M_j(x)$ 为轨道形式的逐点积分优函数，$\Delta_j$ 为前坐标密度，
+$\mathcal W_j(x)$ 为规范下两项加权二阶矩之积及其归一化因子，
+并记深度的体积指数为 $s_0$.
+
+设 $0\le f(x)\le M_j(x)$，且当 $e<1$ 时对每个位置 $x$ 均有
+$f(x)^2\le e^{2s_0}\mathcal W_j(x)$.
+若非负整数 $r$ 满足 $r+10^8 n^4\le k_0$（其中 $n=\varrho+1$），则
+\[
+ \Delta_j\int f\,d\mu
+ \le \min(1,e^r)\,\mathcal R(Z)\,\Lambda^{10^9 n^4},
+ \qquad
+ \mathcal R(Z)=\frac{\mu(Z)\mu(J)}{\mathfrak m_U^2},
+\]
+其中 $\mathfrak m_U$ 为幂幺质量.
+\end{lemma}
+\begin{proof}
+对每个积分位置 $x$，矩阵 $g^{-1}(x-I)$ 均对应一个公共分母理想
+\[
+ I_x=\{c\in R:\ c\,g^{-1}(x-I)\text{ 的各矩阵元属于 }R\},
+\]
+其中 $R$ 为半局部代数的整数环.
+将 $1$ 与全部矩阵元排成向量并取其公因子，
+可见该理想由某个在半局部代数中可逆的整元 $c$ 生成，
+且 $[R:I_x]=|c|^{-1}$. 因此每个位置唯一归属于某一壳层：
+取 $H=2^i$ 为不小于 $[R:I_x]$ 的最小 $2$ 的幂.
+由于 $f$ 的支集包含于位置集合中，故被这些壳层完全覆盖.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L75}{公共分母理想}.}
+
+先验证高度为 $H$ 的壳层具有下列两条性质.
+第一，若 $I_x=cR$，则在尺度为 $\bar c c$ 的规范下，
+$\bar c c\,g^{-1}(x-I)$ 为整，故该壳层落入此规范的位置球内，
+其规范损失为 $2|c|^{-2}=2[R:I_x]^2\le\Lambda H^2$.
+又大格数据的理想级数在某 $m<9n$ 处至多为 $2$，
+而每个指数不超过 $H$ 的理想在该级数中至少贡献 $H^{-m}$，
+故此类理想至多有 $2H^{9n}$ 个，这便给出了位置球的覆盖数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L161}{分母理想给出位置球}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L203}{高度与理想数}.}
+
+第二，若 $\sigma<1$ 且
+$\Lambda^{1200n^2}\le \sigma^{400n^2}H$，
+则壳层上每个活跃点在第 $j$ 层及其后至少有一层标架向量的深度不小于 $\sigma^{-2}$.
+事实上，由 $H\le2[R:I_x]$ 与 $\Lambda\ge2$ 即得
+$\Lambda^{990n^2}\le \sigma^{400n^2}[R:I_x]$，
+从而引理~\ref{lem:b-ideal-depth} 保证至少一个稳定配对集合的体积不超过 $\sigma^2$.
+
+下面估计单个高度为 $H$ 的壳层上的积分.
+令 $V=2^{99\cdot 13 n}$ 表示尺度为 $1$ 时第 $j$ 层质量的上界.
+记 $\mathcal N(W_Z)$ 为壳层积分的归一化因子，即相关函数的模平方积分
+乘以各幂幺层模数及 Plancherel 常数的规定幂次；
+大格 Bessel 向量的范数估计给出 $\mathcal N(W_Z)\le\mathcal R(Z)$.
+置 $\eta=\min(1,e)$，结合假设与第 $j$ 层质量的加权二阶矩界，
+有 $f^2\le V^2\eta^{2s_0}\mathcal W_j$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/QuadricPlancherel.lean\#L113}{第 $j$ 层质量}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L44}{壳层的归一化}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/BesselVector.lean\#L632}{归一化因子的上界}.}
+
+由第一条壳层性质可施用引理~\ref{lem:b-shell-cover}：
+只要 $f^2\le V^2 u^{2s_0}\mathcal W_j$，乘以前坐标密度后的壳层积分便至多为
+\[
+ V u^{s_0}\Lambda^{2\cdot10^6n^3}H^{10^5n^2}\mathcal N(W_Z).
+\]
+
+当 $H\le\Lambda^{2400n^2}$ 时取 $u=\eta$；
+否则置 $\sigma=H^{-1/(800n^2)}$，并取 $u=\min(\eta,\sigma)$.
+后一情形下 $\sigma^{400n^2}H=H^{1/2}>\Lambda^{1200n^2}$，满足深度判据，
+由此获得的深度增益给出以 $\sigma$ 替换 $\eta$ 后的同一优函数积分界，
+故可取二者的较小值.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L143}{远壳层的额外衰减}.}
+
+由秩条件可知，大格体积指数满足 $s_0\ge r+9\cdot10^7n^4$.
+因 $u\le\eta$，可用 $\eta^r u^{9\cdot10^7n^4}$ 控制 $u^{s_0}$.
+在近壳层，由 $H\le\Lambda^{2400n^2}$ 直接比较指数即得 $u^{9\cdot10^7n^4}H^{1+10^5n^2}\le
+\Lambda^{29\cdot10^7n^4}$；
+在远壳层，因 $u^{9\cdot10^7n^4}\le H^{-112500n^2}$，同一左端至多为 $1$.
+由此每个壳层的积分上界均为
+\[
+ H^{-1}V\eta^r\Lambda^{3\cdot10^8n^4}\mathcal N(W_Z).
+\]
+对 $H=2^i$ 求和，利用 $\sum_i 2^{-i}=2$、$\Lambda\ge2$、$V\le\Lambda^{99\cdot13n}$ 以及
+$4\cdot10^8n^4+99\cdot13n\le10^9n^4$，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L174}{单个壳层的幂吸收}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L271}{二进壳层的总和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{660}.}
+\begin{lemma}[主同余群外的有限位壳层衰减]
+\label{lem:b-local-shell}
+\emitthmsource
+考虑带大格数据的半局部酉群，记 $R$ 为半局部代数的整数环，$K$ 为整群，
+$J=K(g)$ 为层元 $g$ 的主同余群，$\mu$ 为该数据的群测度.
+给定中间群 $J\subseteq Z\subseteq K$，令 $W_Z$ 为 $Z$ 的截断 Bessel 向量，
+$M_0(x)$ 为两侧无前坐标的底层轨道形式之逐点积分优函数，
+并记 $\mathcal R(Z)=\mu(Z)\mu(J)/\mathfrak m_U^2$（其中 $\mathfrak m_U$ 为幂幺质量）.
+设 $Q\ge2$，且每个在半局部代数中可逆、在 $R$ 中为整而其逆不整的元素 $c$，
+均满足乘法模数界 $|c|\le Q^{-1}$.
+若非负整数 $t$ 满足 $t+2\cdot10^9 n^4\le k_0$，
+其中 $n$ 为标架向量数、$k_0$ 为定号部分的秩，则
+\[
+ \int_{x\notin J} M_0(x)\,d\mu(x)\le Q^{-t}\mathcal R(Z).
+\]
+\end{lemma}
+\begin{proof}
+置 $e=Q^{-1}$. 在位置 $x$ 处，若 $y$ 与 $yx$ 的 Bessel 相关非零，
+则 $y$ 为底层的活跃点.
+对每个标架层 $a$，考虑同时在 $y,yx$ 处稳定的向量与第 $a$ 个标架向量的配对值集合 $\mathfrak d_a$，
+其深度为 $\operatorname{vol}(\mathfrak d_a)^{-1}$.
+稳定配对的整格描述给出 $\mathfrak d_a=c_aR$，
+其中 $c_a\in R$ 在半局部代数中可逆，且其模数等于该集合的体积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Levels.lean\#L213}{稳定配对与深度}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L168}{活跃点的配对理想}.}
+
+若每个 $\operatorname{vol}(\mathfrak d_a)>e$，则各 $c_a^{-1}$ 必均为整，
+否则假设中的模数界将与该体积不等式矛盾.
+同时，非零 Bessel 相关给出两端经幂幺平移后的整位置，
+且两端之差除以 $g$ 为整矩阵.
+将各 $c_a$ 的单位逆连同此两端条件代入逐层矩阵重建估计，
+在尺度为 $1$ 的规范下即可将 $g^{-1}(x-I)$ 的全部矩阵元控制在整数环内；
+再由整酉格的幺模性与层元的整性，便推出 $x\in J$.
+因此，只要 $x\notin J$，每个活跃点至少有一层的深度不小于 $e^{-1}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L192}{非零相关的整位置}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L890}{由稳定配对重建矩阵}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L596}{群外位置的深度}.}
+
+令 $f(x)=\mathbf 1_{J^{\mathrm c}}(x)M_0(x)$.
+深度估计控制底层相关积分：若每个活跃点均有至少一层的深度不小于 $e^{-1}$，
+则 $M_0(x)^2$ 不超过尺度为 $1$ 的规范下两项加权二阶矩之积
+再乘以 $e^{2s_0}$，其中 $s_0$ 为该数据的深度体积指数
+（因无前坐标时两个枢轴相关积分相同，各自的平方估计均可借用同一深度）.
+又在 $J$ 内 $f=0$，故 $f^2$ 处处满足壳层求和所需的逐点增益条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Gains.lean\#L435}{底层优函数的深度增益}.}
+
+置 $L=10^9 n^4$，在引理~\ref{lem:b-dyadic-shells} 中取指数 $t+L$.
+由 $t+L+10^8 n^4\le k_0$ 知尺度条件成立；
+且底层前坐标密度为 $1$，尺度为 $1$ 的规范损失为 $2$，于是
+\[
+ \int f\,d\mu
+ \le e^{t+L}\mathcal R(Z)2^L
+ =Q^{-t}\mathcal R(Z)(2/Q)^L
+ \le Q^{-t}\mathcal R(Z).
+\]
+当允许 $Q=+\infty$ 时，按广义非负实数的幂约定，
+同一不等式依然成立.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{685}.}
+\begin{lemma}[局部共轭质量的主项与壳层误差]
+\label{lem:b-local-mass}
+\emitthmsource
+沿用引理~\ref{lem:b-local-shell} 的大格数据、$J\subseteq Z\subseteq K$ 及 $Q,t$.
+令 $\widetilde\chi$ 为由整幂幺 Bessel 特征延拓至 $U J$、并在其外取零所得的函数，并记
+\[
+ a_Z(x)=\int_Z\widetilde\chi(yxy^{-1})\,d\mu(y),
+ \qquad
+ \mathcal M(Z)=\int |a_Z(x)|^2\,d\mu(x).
+\]
+则
+\[
+ \mathcal M(Z)\le\mu(Z)\mu(J)\bigl(\mu(Z)+Q^{-t}\bigr).
+\]
+\end{lemma}
+\begin{proof}
+若 $x\in J$，因 $J$ 在 $K$ 中正规，所有 $yxy^{-1}$ 均落入 $J$，
+延拓特征在 $J$ 上恒等于 $1$，故 $a_Z(x)=\mu(Z)$，从而 $J$ 内的质量为 $\mu(Z)^2\mu(J)$.
+
+在 $J$ 外，利用共轭积分与底层部分相关的对应关系：
+具体而言，底层部分相关取在两端 $1,x$ 处，其模乘以幂幺质量 $\mathfrak m_U$
+恰等于 $|a_Z(x)|$. 将底层部分相关写成再降一层的积分，
+其模不超过该层相关的绝对值积分；
+而在无前坐标情形下，两个相同绝对值积分的乘积恰为 $M_0(x)$，
+由此得 $|a_Z(x)|^2\le\mathfrak m_U^2M_0(x)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/BesselVector.lean\#L663}{共轭积分的部分相关式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Gains.lean\#L423}{无前坐标的优函数}.}
+
+由引理~\ref{lem:b-local-shell}，上述 $J$ 外质量至多为
+$\mathfrak m_U^2 Q^{-t}\mathcal R(Z)$.
+按质量比的定义 $\mathfrak m_U^2\mathcal R(Z)=\mu(Z)\mu(J)$，
+将其与 $J$ 内贡献相加，即得所需不等式.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{984}.}
+\begin{lemma}[幂幺特征的共轭平均]
+\label{lem:b-conjugation-l2}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充. 记 $G$ 为所选位的剩余线性群之积，
+$\chi_U$ 为整幂幺子群的 Bessel 特征在其剩余像上的函数（在像外取零）.
+令 $\chi_U^\natural(s)=|G|^{-1}\sum_{g\in G}\chi_U(gsg^{-1})$.
+则
+\[
+ \sum_{s\in G}|\chi_U^\natural(s)|^2\le2.
+\]
+\end{lemma}
+\begin{proof}
+取 $T$ 为两层素数上方的全部所选位及其共轭位，置 $M=p_0p_1$.
+在 $T$ 的局部乘积上，记 $K$ 为标准格的整酉群，$J=K(M)$ 为模 $M$ 的主同余群.
+因 $T$ 包含所有使 $M^{-1}$ 不整的位并在共轭下稳定，
+故容许填充在此局部乘积上诱导出层参数为 $M$ 的大格数据.
+记所用局部 Haar 测度为 $dx$，其对 $K$ 与 $J$ 均赋予有限正体积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L968}{层的逆在其余位整}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FillingLevel.lean\#L532}{局部填充数据}.}
+
+约化映射 $K\to G$ 为满射且核为 $J$：
+由于每个局部整元均可延拓为格稳定子中的元素，此断言可借助整体约化验证；
+又在所选位与其共轭位上，整酉群的两分量互为由 Hermite 配对决定的逆转置，
+故仅需检验所选位处的约化. 记 $\widetilde\chi$ 为局部延拓的 Bessel 特征，
+它在 $K$ 上恰为 $\chi_U$ 经约化的拉回. 事实上，在
+$uJ$ 上其取值为 $\psi(\sigma(u)/M)$，其中 $\sigma(u)$ 为幂幺元素的单根坐标和，
+$\psi$ 为由 Weil 数据归一化的局部加法特征，
+这与整幂幺元素约化前的特征完全一致. 反之，若局部延拓特征在某整陪集上非零，
+则该陪集存在幂幺代表；将此代表在 $T$ 外延拓为单位元便得整幂幺提升，
+从而该约化落入整幂幺子群的像内.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L791}{局部特征与剩余特征的相容性}.}
+
+在局部群上定义函数
+\[
+ a(x)=\int_K\widetilde\chi(yxy^{-1})\,dy.
+\]
+若 $k_s\in K$ 为 $s$ 的提升，因每个 $K/J$ 陪集体积相同，
+按 $K/J$ 剖分内层积分即得
+$a(k_s)=\operatorname{vol}(K)\chi_U^\natural(s)$.
+又因 $J$ 被 $K$ 正规化且 $\widetilde\chi$ 右 $J$ 不变，故 $a$ 在 $k_sJ$ 上恒定.
+由各陪集互不相交，有
+\[
+ \operatorname{vol}(J)\operatorname{vol}(K)^2
+       \sum_{s\in G}|\chi_U^\natural(s)|^2
+ =\int_K |a(x)|^2\,dx
+ \le\int |a(x)|^2\,dx ,
+\]
+其中末项在完整局部酉群上积分.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L840}{局部共轭平均的积分式}.}
+
+为估计末项积分，记 $n$ 为标架向量数，$k_0$ 为 $X_0$ 的秩，
+并对 $Z=K$ 应用引理~\ref{lem:b-local-mass}. 在局部整数环中，整而其逆不整的元素的乘法模数
+至多为 $1/2$，且容许尺度满足 $n+2\cdot10^9 n^4\le k_0$，
+故可取衰减指数 $n$，得
+\[
+ \int |a(x)|^2\,dx\le
+ \operatorname{vol}(K)\operatorname{vol}(J)
+             \bigl(\operatorname{vol}(K)+2^{-n}\bigr).
+\]
+
+在 $T$ 的整数环中，任一非单位至少有一个分量落入相应极大理想，
+故非单位集合的体积至多为 $\sum_{w\in T}|\mathbf k_w|^{-1}\le b^{-9}$
+（其中 $|T|\le b$，各所选剩余域阶至少为 $b^{10}$）.
+整数环体积为 $1$，因而单位所占体积至少为 $1/2$；
+由此大格的整群盒体积下界给出 $\operatorname{vol}(K)\ge2^{-n}$.
+从而完整群上的积分至多为
+$2\operatorname{vol}(K)^2\operatorname{vol}(J)$，
+同除以共同的正体积因子即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L105}{非单位的体积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L63}{整酉群的体积下界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{1091}.}
+\begin{lemma}[单个层素数处的投影估计]
+\label{lem:b-one-level-moment}
+\emitthmsource
+设 $S$ 为容许填充数据，底 CM 域带 Weil 数据.
+记 $\mathcal P$ 与 $\rho$ 为引理~\ref{lem:b-unit-moment} 中的映射及剩余群作用，
+并假设 $\rho$ 为酉表示，剩余群记为 $G_0\times G_1$.
+设 $x\in\mathbb C[G_i]$ 为中心幂等元，$x(t)$ 为其在 $t$ 处的系数，
+满足 $\operatorname{Re} x(1)\le b^{-8}/2$.
+令 $\rho(x)$ 为将 $G_i$ 嵌入乘积群后诱导的群代数作用. 则
+\[
+ \|\rho(x)\mathcal P\|_{\mathrm{HS}}^2\le 2b^{-4}u_0.
+\]
+\end{lemma}
+\begin{proof}
+沿用 $P_s=\mathcal P^*\rho(s)\mathcal P$、$R(s)$ 与 $\overline R$ 的记号，
+置 $D_s=P_s-R(s)$，并以 $\widehat t$ 表示 $t\in G_i$ 在乘积群中的像.
+中心幂等元在复群代数中自伴（因其在每个不可约表示块上作用为 $0$ 或 $I$），
+故 $\rho(x)$ 为正交投影，且
+\[
+ \|\rho(x)\mathcal P\|_{\mathrm{HS}}^2
+ =\operatorname{Re}\operatorname{tr}
+       \left(\sum_{t\in G_i}x(t)R(\widehat t)\right)
+  +\operatorname{Re}\operatorname{tr}
+       \left(\sum_{t\in G_i}x(t)D_{\widehat t}\right).
+\]
+下面分别估计这两项.
+
+\emph{Bessel 子群项.}
+记 $\chi_U$ 为整幂幺子群的 Bessel 特征在其剩余像上的函数（在像外取零）.
+当 $s$ 在另一层素数处的分量为 $1$ 时，有
+$\operatorname{tr}R(s)=u_0\chi_U(s)$.
+事实上，任何非零对角类块均来自 $h_c^{-1}\gamma_f h_c$（其中 $\gamma$ 为有理 Bessel 子群元素）；
+将 $\gamma$ 分解为幂幺部分与定号
+$\Ugrp(X_0)$ 部分，后者的有限分量皆为整且在另一层素数的所选位上约化为 $1$，
+由层自由性条件迫使该有理 $\Ugrp(X_0)$ 部分等于 $1$，故对角块仅源自幂幺部分.
+而在幂幺像上，经幂幺特征平移后，对角块恰为 $\chi_U(s)$ 倍单位块.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L696}{整分解与层自由性条件}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L751}{Bessel 算子的迹}.}
+
+记 $\chi_U^\natural$ 为 $\chi_U$ 对全部共轭的平均.
+因 $x(t)$ 是类函数，重排 $t$ 后即得
+\[
+ \sum_{t\in G_i}x(t)\chi_U(\widehat t)
+ =\sum_{t\in G_i}x(t)\chi_U^\natural(\widehat t).
+\]
+由引理~\ref{lem:b-conjugation-l2} 知 $\sum_s|\chi_U^\natural(s)|^2\le 2$；
+另一方面，比较 $x^2=x$ 在单位元处的系数并利用自伴性，得
+$\sum_t|x(t)|^2=\operatorname{Re}x(1)\le b^{-8}/2$.
+于是 Cauchy--Schwarz 不等式给出上式的模至多为 $b^{-4}$，
+乘以 $u_0$ 即知第一迹项至多为 $b^{-4}u_0$.
+
+\emph{子群外余项.}
+结合酉性与引理~\ref{lem:b-unit-moment} 证明中的右等变性，
+对任意 $v\in\overline R$ 有 $P_{vs}=R(v)P_s$.
+具体而言，令 $w=\rho(v)\mathcal P a-\mathcal P R(v)a$；
+由右等变性，对每个 $s$ 均有
+$\mathcal P^*\rho(s^{-1})w=0$，故 $w$ 与所有 $\rho(s)\mathcal P U_0$ 正交，
+而 $w$ 本身落入这些子空间之和，必有 $w=0$.
+取伴随即得所需的左等变性. 再结合 $R(vs)=R(v)R(s)$，
+可得 $D_{vs}=R(v)D_s$；该式在 $s\notin\overline R$ 时亦然，
+因为 $R$ 在该子群外为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L220}{Bessel 算子的左作用}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L347}{振幅算子的左作用}.}
+
+将 Hilbert--Schmidt 算子空间视为内积空间，
+定义 $F(s)=\mathbf 1_{\Omega_{1-i}}(s)D_s$，
+并在取该空间值的平方可和函数上考虑右卷积
+\[
+ (C_xF)(s)=\sum_{t\in G_i}x(t)F(s\widehat t).
+\]
+右平移构成酉表示，自伴幂等元 $x$ 在此作用下诱导正交投影，
+故 $\sum_s\|(C_xF)(s)\|_{\mathrm{HS}}^2\le\sum_s\|F(s)\|_{\mathrm{HS}}^2$.
+若 $s\in\overline R$，则 $s\widehat t\in\Omega_{1-i}$，
+从而 $(C_xF)(s)=R(s)\sum_t x(t)D_{\widehat t}$.
+由 $R(s)$ 的酉性，各此类值的范数相同；
+仅对 $s\in\overline R$ 求和并应用引理~\ref{lem:b-bessel-remainder}，得
+\[
+ |\overline R|\left\|\sum_t x(t)D_{\widehat t}\right\|_{\mathrm{HS}}^2
+ \le \sum_s\|F(s)\|_{\mathrm{HS}}^2
+ \le b^{-12}|\overline R|u_0 .
+\]
+因 $\|I\|_{\mathrm{HS}}=\sqrt{u_0}$，
+余项迹的模至多为 $b^{-6}u_0\le b^{-4}u_0$.
+将两项估计相加即证.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{252}.}
+\begin{lemma}[好形式投影的近等距估计]
+\label{lem:b-near-isometry}
+\emitthmsource
+固定容许数据 $D$. 设 $U_0$ 为全源空间的欧氏坐标空间，
+$u_0=\dim_{\mathbb C}U_0$，$\mathcal P$ 为缩放的 Poincaré 映射，
+$e_0$ 为主层形式空间上向好形式空间的正交投影. 对任意子空间 $F\subseteq U_0$，
+其正交投影 $\pi_F$ 满足
+\[
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2\geq \dim F-5b^{-4}u_0.
+\]
+\end{lemma}
+\begin{proof}
+由引理~\ref{lem:b-amplitude-blocks}，
+$\mathcal P^*\rho(g)\mathcal P$ 的 $(c,c')$ 块为振幅和 $\overline{A(c,g,c')}/\nu$；
+引理~\ref{lem:b-unit-moment} 进而给出
+\[
+ \|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2\le b^{-12}u_0 .
+\]
+于是
+\begin{align*}
+ \|\mathcal P\pi_F\|_{\mathrm{HS}}^2-\dim F
+ &=\operatorname{Re}\operatorname{tr}\bigl(\pi_F(\mathcal P^*\mathcal P-I)\bigr)\\
+ &\ge -b^{-6}\sqrt{u_0\dim F}\ge -b^{-4}u_0 ,
+\end{align*}
+其中第一不等式由 Hilbert--Schmidt 内积的 Cauchy--Schwarz 不等式得出，
+第二不等式利用了 $\dim F\le u_0$ 与 $b\ge 1$.
+
+对 $i=0,1$，记 $g_i$ 为层素数 $p_i$ 对应的有限群代数中的好类型中心幂等元，
+$E_i$ 为其在主层形式空间上的作用.
+由引理~\ref{lem:b-bad-types}，
+$e_0=E_0E_1$，且 $1-g_i$ 在单位元处的系数实部不超过 $b^{-8}/2$.
+各 $g_i$ 均自伴，故酉作用将 $E_i$ 实现为正交投影.
+对中心投影 $1-g_i$ 应用引理~\ref{lem:b-one-level-moment}，
+得 $\|(I-E_i)\mathcal P\|_{\mathrm{HS}}^2\le 2b^{-4}u_0$.
+由
+\[
+ (I-E_0E_1)\mathcal P=(I-E_0)\mathcal P+E_0(I-E_1)\mathcal P
+\]
+且右端两项的像彼此正交，可得
+\[
+ \|(I-e_0)\mathcal P\|_{\mathrm{HS}}^2
+ \le \|(I-E_0)\mathcal P\|_{\mathrm{HS}}^2
+     +\|(I-E_1)\mathcal P\|_{\mathrm{HS}}^2
+ \le 4b^{-4}u_0 .
+\]
+在定义域一侧右乘 $\pi_F$ 不会增大 Hilbert--Schmidt 范数，
+故按 $e_0$ 将 $\mathcal P\pi_F$ 正交分解即得
+\[
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ =\|\mathcal P\pi_F\|_{\mathrm{HS}}^2
+   -\|(I-e_0)\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ \ge \dim F-5b^{-4}u_0 .
+\]
+\end{proof}
+
+\section{有限位筛法与固定坐标平方和}
+\label{sec:b-finite-sieve}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/PositiveType.lean}{147}.}
+\begin{lemma}[正型权重下的奇异矩阵估计]
+\label{lem:b-positive-type-determinant}
+\emitthmsource
+设 $k$ 为含 $q$ 个元素的有限域，$\pi:G\to\mathrm{GL}_n(k)$ 为有限群 $G$ 的表示，
+$\pi^\vee(s)=\pi(s)^{-{\mathsf T}}$，且 $A_0,A_1\in\operatorname{Mat}_{n\times m}(k)$.
+设 $\Theta:G\to\mathbb R_{\ge0}$ 为正型函数（\emph{function of positive type}），即存在复内积空间中的向量族 $(u_a)_{a\in G}$，使
+$\Theta(a^{-1}b)=\langle u_a,u_b\rangle$.
+记 $\Theta(E)=\sum_{s\in E}\Theta(s)$. 若对每个 $v\in k^m\setminus\{0\}$，
+$\pi$ 对 $A_0v$ 的稳定子与 $\pi^\vee$ 对 $A_1v$ 的稳定子所载 $\Theta$ 质量均至多为 $Y\ge0$，则
+\[
+ q\,\Theta\{s:\det(A_1^{\mathsf T}\pi(s)A_0)=0\}
+ \le 2\Theta(G)+q^{m+n/2}Y.
+\]
+\end{lemma}
+\begin{proof}
+取 $k$ 的非平凡加法特征 $\psi$. 在赋予计数测度的 $\ell^2(k^n)$ 中，
+对 $z,x\in k^n$ 分别记 $e_z$ 为 $z$ 处的单位点质量，
+$c_x(\xi)=q^{-n/2}\psi(-x^{\mathsf T}\xi)$.
+由特征正交性，两族向量皆构成标准正交基. 特别地，因内积对第一变量共轭线性，有
+\[
+ \langle c_{\pi^\vee(a)x},e_{\pi(b)z}\rangle
+ =q^{-n/2}\psi\bigl(x^{\mathsf T}\pi(a^{-1}b)z\bigr).
+\]
+取 $x=A_1y$、$z=A_0v$（其中 $y,v\ne0$），并置
+\[
+ X_1=\sum_{a\in G}c_{\pi^\vee(a)x}\otimes u_a,\qquad
+ X_0=\sum_{b\in G}e_{\pi(b)z}\otimes u_b .
+\]
+展开 $\|X_1\|^2$ 时，仅满足 $\pi^\vee(a)x=\pi^\vee(b)x$（即
+$\pi^\vee(a^{-1}b)x=x$）的项保留；固定 $a$ 后映射 $b\mapsto a^{-1}b$ 为双射，
+故 $\|X_1\|^2$ 等于 $|G|$ 乘以 $x$ 的稳定子的 $\Theta$ 质量.
+同理，$\|X_0\|^2$ 等于 $|G|$ 乘以 $z$ 的稳定子的 $\Theta$ 质量.
+由假设，二者均至多为 $|G|Y$. 再展开 $\langle X_1,X_0\rangle$，得
+\[
+ \sum_{s\in G}\psi\bigl(x^{\mathsf T}\pi(s)z\bigr)\Theta(s)
+    =q^{n/2}|G|^{-1}\langle X_1,X_0\rangle ,
+\]
+故左端绝对值至多为 $q^{n/2}Y$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/PositiveType.lean\#L105}{两组稳定子控制的特征和}.}
+
+令 $Z_s=A_1^{\mathsf T}\pi(s)A_0$. 对 $v$ 取均匀平均，由特征正交性可得
+$\mathbb E_{v\in k^m}\psi(y^{\mathsf T}Z_s v)=\mathbf 1_{y^{\mathsf T}Z_s=0}$.
+当 $Z_s$ 奇异时，其左核至少包含某个非零向量的全部标量倍，故至少有 $q$ 个元素.
+按 $\Theta$ 加权并交换求和次序，有
+\[
+ q\,\Theta\{s:\det Z_s=0\}
+ \le \sum_{y\in k^m}\mathbb E_{v\in k^m}
+              \operatorname{Re}\sum_{s\in G}\psi(y^{\mathsf T}Z_s v)\Theta(s).
+\]
+其中 $y=0$ 一行贡献 $\Theta(G)$，$v=0$ 一列贡献亦至多为 $\Theta(G)$；
+当 $y,v\ne0$ 时，由前述特征和界知每项至多为 $q^{n/2}Y$，
+而在外层求和与平均中此类项总权重至多为 $q^m$.
+三项相加即证.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/MomentBounds.lean}{322}.}
+\begin{lemma}[固定向量条件下顺序主子式为零的估计]
+\label{lem:b-leading-minor}
+\emitthmsource
+设 $S$ 为容许填充，$G$ 为其剩余群，$\Gamma\subseteq G$ 为子群，$w$ 为
+第一个层素数 $p_0$ 上方的所选位. 记 $k_0$ 为 $X_0$ 的秩，$n$ 为 Bessel 标架的向量数.
+设 $\beta:G\to[0,\infty)$ 为正型函数，即存在复内积空间中的向量 $u_s$，
+满足 $\beta(a^{-1}c)=\langle u_a,u_c\rangle$，并记 $Y=\sum_{s\in\Gamma}\beta(s)$.
+假设在 $w$ 或其共轭位的剩余域上，每个非零标架向量的固定子群在 $\Gamma$ 内
+承载的 $\beta$ 质量均至多为 $b^{-6k_0}Y$.
+则对标架配对矩阵的任意真顺序主子式 $\delta_j$（$0\le j<n$），有
+\[
+ \sum_{\substack{s\in\Gamma\\\delta_j(s)=0}}\beta(s)\le 3b^{-10}Y .
+\]
+\end{lemma}
+\begin{proof}
+设 $q=p_0$，$d_0=k_0+2n-1$ 为被约化 Hermite 空间的秩.
+令 $\pi$ 为 $\Gamma$ 在 $w$ 处的 $d_0$ 维剩余表示，$J_w$ 为格基下的配对矩阵.
+第 $j$ 阶顺序主子式仅涉及标架的前 $j$ 个向量；
+将这些向量排为列构成矩阵 $E_j$，则
+\[
+ \delta_j(s)=\det\bigl((J_w E_j)^{\mathsf T}\pi(s)E_j\bigr).
+\]
+这是因为 $(J_w E_j)^{\mathsf T}\pi(s)E_j$ 的第 $(a,c)$ 项
+恰为第 $a$ 个标架向量与第 $c$ 个标架向量在 $s$ 下之像的配对.
+空子式恒为 $1$，故不妨设 $j\ge1$.
+
+下面检验有限域正型计数估计对 $\pi$ 及矩阵
+$A_0=E_j$、$A_1=J_wE_j$ 所需的两项条件.
+对任意非零 $v\in\mathbf F_q^j$，$A_0v$ 是 $w$ 处的非零标架向量，
+故 $\pi(s)$ 固定 $A_0v$ 的元素所载质量至多为 $b^{-6k_0}Y$.
+同理，$\pi(s)^{-\mathsf T}$ 固定 $A_1v$ 的元素所载质量亦至多为 $b^{-6k_0}Y$：
+此处 Hermite 酉条件将共轭位上的作用识别为对偶作用，
+而 $J_wE_jv$ 恰为该共轭位标架向量诱导的线性形式.
+因两矩阵均满列秩，两种向量皆非零.
+应用引理~\ref{lem:b-positive-type-determinant}，得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/PositiveType.lean\#L153}{有限域上的正型子式计数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L330}{两种固定向量条件}.}
+\[
+ q\sum_{\substack{s\in\Gamma\\\delta_j(s)=0}}\beta(s)
+   \le 2Y+q^{j+d_0/2}b^{-6k_0}Y .
+\]
+
+容许尺度保证 $b^{10}\le q\le b^{11}$ 与 $2000n\le k_0$.
+由 $j<n$ 可得
+$11(2j+d_0)\le11(k_0+4n-3)\le12k_0$，
+从而 $q^{j+d_0/2}\le b^{6k_0}$.
+因此上式右端至多为 $3Y$，除以 $q\ge b^{10}$ 即得结论.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Frames/FixedLines.lean}{374}.}
+\begin{lemma}[单个所选位的固定向量增益]
+\label{lem:b-fixed-one-place}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充.
+设共轭稳定的局部位集 $T$ 上赋予填充数据，令 $J\subseteq K$ 分别为其主同余群与整群，
+并令 $T_0$ 包含所有使层参数之逆不整的位.
+在第一个层素数 $p_0$ 上方所选位的子集 $A$ 中，
+为每个 $w\in A$ 指定一个定义在 $w$ 或其共轭位剩余域上的非零标架向量.
+允许不指定其中的位，亦可指定某 $w\in A$ 并假设 $T=T_0\cap\{w,\bar w\}$.
+则存在中间群 $J\subseteq Z\subseteq K$，
+包含每个固定全部指定向量的整元在 $T$ 上的分量，
+且对引理~\ref{lem:b-local-mass} 中的质量 $\mathcal M$ 有
+\[
+  \mathcal M(Z)\mu(K)\,B_*
+     \le \mathcal M(K)\mu(Z),
+ \qquad B_*=
+ \begin{cases}
+  1,&\text{未指定其中的位},\\
+  b^{6k_0},&\text{指定 } w,
+ \end{cases}
+\]
+其中 $k_0$ 为 $X_0$ 的秩.
+\end{lemma}
+\begin{proof}
+若未指定其中的位，取 $Z=K$ 即可.
+否则，因层参数之逆在 $w$ 处不整而 $w\in T_0$，故 $w\in T$.
+整阿代尔格稳定子向 $T$ 上整群 $K$ 的投影是满射.
+记 $H$ 为整阿代尔格稳定子中约化后固定 $w$ 处指定向量的子群
+（若向量取自 $\bar w$，则采用共轭位作用），并取 $Z$ 为 $H$ 在 $K$ 中的像.
+在此局部投影下，$J$ 的原像在 $w$ 处约化为 $1$，
+在 $\bar w$ 处的作用亦为 $1$，故原像包含于 $H$，从而 $J\subseteq Z$.
+这也表明局部投影的核含于 $H$，
+因此 $[K:Z]$ 等于 $H$ 在整阿代尔格稳定子中的指数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L241}{主同余群的约化}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L383}{局部固定向量群的构造}.}
+
+记 $d_0=k_0+2n-1$ 为被约化 Hermite 空间的秩，$n$ 为标架向量数.
+约化映射满射到 $\operatorname{GL}_{d_0}(\mathbf F_{p_0})$，
+共轭位情形下的逆转置作用亦然.
+该线性群在全部非零向量上作用可迁，故固定单个非零向量的子群指数为
+$p_0^{d_0}-1$，从而\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L266}{固定向量群的指数}.}
+\[
+ [K:Z]=p_0^{d_0}-1,\qquad
+ \mu(Z)=\mu(K)/(p_0^{d_0}-1).
+\]
+
+置 $B=b^9$，取整数 $\tau=k_0-10^{10}n^4$.
+由 $10^{10}n^4\le n^6$ 与 $3n^6+12\le n^7\le k_0$ 可得
+\[
+ \tau+1+n+2\cdot10^9n^4\le k_0,\qquad
+ 6k_0\le9\tau,\qquad \tau+1<d_0 .
+\]
+又因 $B\le p_0$，有 $B^{\tau+1}\le p_0^{d_0}-1$；
+结合指数公式即得 $\mu(Z)\le B^{-(\tau+1)}\mu(K)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L286}{壳层指数的选取}.}
+
+在 $T$ 的局部整数环中，非单位集合的体积至多为 $B^{-1}$：
+若 $c$ 为整且在半局部代数中可逆而其逆不整，
+则 $cR$ 不含整数环单位，故 $|c|=\operatorname{vol}(cR)\le B^{-1}$.
+同时，整数环单位的体积至少为 $1/2$，大格整群的盒体积下界据此给出
+$\mu(K)\ge2^{-n}\ge B^{-n}$.
+取 $Q=B$、$t=\tau+1+n$ 应用引理~\ref{lem:b-local-mass}，得
+\[
+ \begin{aligned}
+ \mathcal M(Z)
+ &\le \mu(Z)\mu(J)
+       \bigl(\mu(Z)+B^{-(\tau+1+n)}\bigr)\\
+ &\le 2B^{-(\tau+1)}\mu(Z)\mu(J)\mu(K)
+ \le B^{-\tau}\mu(Z)\mu(J)\mu(K),
+ \end{aligned}
+\]
+末步用到了 $B\ge2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L105}{非单位的体积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L63}{整群盒体积下界}.}
+
+对整群 $K$，仅保留质量积分中 $x\in J$ 的部分即有
+$\mathcal M(K)\ge\mu(K)^2\mu(J)$.
+由 $B^\tau=b^{9\tau}\ge b^{6k_0}$，将上式乘以 $\mu(K)b^{6k_0}$
+即得所需比较；而 $Z$ 的包含性已由 $H$ 的定义直接保证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L309}{指数转化为质量增益}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/FiniteSieveSystem.lean}{262}.}
+\begin{lemma}[固定标架向量的有限位筛法数据]
+\label{lem:b-finite-sieve}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充，$T$ 为共轭稳定的有限位集，
+且层参数 $M$ 的逆在 $T$ 外整. 取 $T$ 上的局部填充数据，记 $K$ 为整酉群，
+$J$ 为层 $M$ 的主同余群.
+给定 $p_0$ 上方所选位的子集 $A$，并在每个位或其共轭位指定一个非零标架向量.
+则存在中间群 $J\subseteq Z\subseteq K$，包含所有固定这些向量的整元在 $T$ 上的分量.
+对 $Z$ 的 Bessel 向量取各层轨道形式（最高层取末坐标密度），
+并统一除以 $Z$ 的质量比，所得形式满足局部筛法公理，其底层质量界为
+\[
+ (1+b^{-6})b^{-6k_0|A|},
+\]
+其中 $k_0$ 为 $X_0$ 的秩，频率衰减与坐标权重如证明中所述.
+\end{lemma}
+\begin{proof}
+记 $\mathfrak m_U$ 为局部幂幺质量，对中间群 $Y$ 定义
+\[
+ \mathcal M(Y)=\int\left|\int_Y\widetilde\chi(yxy^{-1})\,dy\right|^2dx,
+ \qquad
+ \mathcal R(Y)=\frac{\operatorname{vol}(Y)\operatorname{vol}(J)}
+                       {\mathfrak m_U^2},
+\]
+其中 $\widetilde\chi$ 为局部延拓的 Bessel 特征.
+将 $T$ 按 $A$ 中每个所选位及其共轭位分组，其余位归并成一组.
+在每个所选位对上，引理~\ref{lem:b-fixed-one-place} 给出满足固定向量条件的中间群，
+使其 $\mathcal M(Y)/\operatorname{vol}(Y)$ 至多为整群相应比值的 $b^{-6k_0}$ 倍，
+并包含固定该向量之元素的局部分量；在其余位上则取整群.
+局部酉群为各组群之直积，延拓特征按组相乘.
+若原 Haar 测度与各组 Haar 测度之积相差正因子 $c$，
+则外层积分与内层积分模平方合计给 $\mathcal M$ 带来因子 $c^3$，体积带来因子 $c$，
+比较两群质量与体积之比时公共因子 $c^2$ 恰好消去.
+取这些中间群的直积为 $Z$，则 $Z$ 具所需包含性，且\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L827}{对所有所选位相乘}.}
+\[
+ \frac{\mathcal M(Z)}{\operatorname{vol}(Z)}
+ \le b^{-6k_0|A|}\frac{\mathcal M(K)}{\operatorname{vol}(K)} .
+\]
+
+记 $n=\varrho+1$ 为标架向量数. 主同余群外的壳层估计给出
+\[
+ \mathcal M(K)\le\operatorname{vol}(K)\operatorname{vol}(J)
+ \bigl(\operatorname{vol}(K)+2^{-n}\bigr).
+\]
+在该归一化下 $\operatorname{vol}(K)\le1+2^{-n}$，又
+$2^{-\varrho}\le b^{-6}$，故
+$\mathcal M(K)\le\operatorname{vol}(K)\operatorname{vol}(J)(1+b^{-6})$.
+底层轨道形式等于局部的部分相关模平方积分，
+其模至多为 $\mathcal M(Z)/\mathfrak m_U^2$；
+由前一估计，除以 $\mathcal R(Z)$ 后底层形式的模至多为
+$(1+b^{-6})b^{-6k_0|A|}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L64}{整群质量上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L147}{底层与共轭积分}.}
+
+记 $J_j(p,q)$ 为归一化的第 $j$ 层形式：当 $0\le j\le\varrho$ 时取轨道形式，
+当 $j=\varrho+1$ 时取末坐标密度，
+其中 $p,q$ 为各坐标在局部乘积代数中可逆的参数序列.
+记 $\psi$ 为局部加法特征（$\psi(0)=1$）.
+将位置 $j$ 的两坐标同时设为 $x$ 后对 $J_{j+1}$ 沿 $x$ 积分，
+当 $j<\varrho$ 时由轨道形式的下降恒等式得 $J_j$，
+当 $j=\varrho$ 时由末坐标密度的积分恒等式亦得 $J_j$.
+积分附带因子 $\psi(\xi x)$ 时同样可积，且恰等于相应的带权轨道形式
+（对落入局部代数非可逆零测集的参数以 $1$ 补值）.
+最高层在固定末坐标的族上是半正定的，
+因为它表为同一末坐标纤维上配对的积分，
+对该纤维上的加权向量作线性组合后，二次型恰等于其平方范数之积分；
+最高层的连续性则由末坐标密度的连续性直接给出.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L244}{末坐标纤维上的半正定性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L303}{下降与末坐标的递推}.}
+
+最后验证两项频率估计. 设 $\mathcal O_T$ 为局部乘积的整数环.
+对可逆元 $\xi$，记 $I(\xi)=[\mathcal O_T:\xi\mathcal O_T]$ 为广义指数，
+$D(\xi)=[\mathcal O_T:\mathcal O_T\cap\xi^{-1}\mathcal O_T]$ 为分母指数.
+令 $H_j(p)$ 为前 $j$ 个部分乘积的指数各取 $n^6/2$ 次幂之积，
+若任一部分乘积不整则置 $H_j(p)=0$.
+带因子 $\psi(\xi x)$ 的递推积分以
+\[
+ b^{n^9 f}\frac{I(\xi)^{(k_0-n^7)/2}}{D(\xi)^3}\,
+     H_j(p)H_j(q)
+\]
+为模长上界（其中 $f$ 为无穷位数）；
+对 $j<\varrho$，若 $\xi=M^{-1}(p_j^{-1}-q_j^{-1})$ 可逆，
+则 $J_{j+1}(p,q)$ 的模长亦受同一形式的上界控制，仅须将权重换为 $H_{j+1}$.
+二者皆源自带权轨道形式的估计，原有分母指数为 $D(\xi)^6$，
+因 $D(\xi)\ge1$ 可放宽至三次幂.
+其余层因子至多为
+$(2M^{2f})^{n^6}\le b^{n^9f}$（由 $M\le b^{23}$ 及 $46f+1\le n^3f$）.
+至此局部筛法公理已全部验证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L43}{层因子的尺度界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L110}{两类轨道形式的频率衰减}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/SiegelTopBound.lean}{829}.}
+\begin{lemma}[固定末坐标的 Siegel 平方和]
+\label{lem:b-siegel-last-entry}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充. 取共轭稳定的有限位集 $T$，
+使层参数的逆、辅助素数 $N$ 的逆以及格基矩阵及其逆在 $T$ 外均为整.
+取 $T$ 上的局部填充数据及中间群 $Z$，记其质量比为 $\mathcal R(Z)$.
+取有限非空、两两互异的四元组族 $(c_i,c_i',s_i,\sigma_i)$，
+满足：$\sigma_i$ 固定前 $\varrho$ 个双曲对，
+平移 $h_{c_i}^{-1}\sigma_i h_{c_i'}$ 在 $T$ 外为整，
+且 $s_i$ 具有 $T$ 分量落入 $Z$ 的整提升.
+设各 $\sigma_i$ 的末标架配对坐标均等于同一元素 $t\in E^\times$，
+且对所有无穷位 $v$ 有 $|t|_v^2>N^2$. 置
+\[
+ F_t=\left(\prod_v (|t|_v^2-N^2)\right)^{k_0-1},
+\]
+其中 $k_0$ 为 $X_0$ 的秩.
+
+取有限族序列 $p$，其前 $\varrho$ 个坐标及其逆在 $T$ 外皆为整，
+且位置 $\varrho$ 处的坐标为 $t$；记 $w_p$ 为由前坐标决定的 Weyl 元素.
+以 $V_i(p)$ 表示 Bessel 函数或其截断在 $w_p\sigma_i$ 处的无穷位轨道积分张量，
+以 $L_i(p)$ 表示同一有理元素在块 $(c_i,s_i,c_i')$ 上的幂幺双陪集振幅和.
+设 $\rho_p$ 为实标量，使得对每个 $i$，向量族 $\rho_pV_i(p)$ 的 Gram 矩阵
+均等于同一矩阵 $R$. 若每个 $\rho_p$ 与相应有限位前坐标密度之积
+均等于 $r_*\sqrt{F_t}$（其中 $r_*\in\mathbb R$），则
+\[
+ r_*^2\sum_i\left\|\sum_p L_i(p)\right\|^2
+ \le (1+b^{-6})C_{\mathrm S}
+       \operatorname{Re}\sum_{p,q}
+           R_{pq}\,\frac{\mathcal D_{Z,t}(p,q)}{\mathcal R(Z)},
+\]
+其中 $\mathcal D_{Z,t}$ 为有限位末坐标密度，$C_{\mathrm S}$ 为容许填充的缩放 Siegel 常数.
+\end{lemma}
+\begin{proof}
+置 $y_i=r_*^2\|\sum_p L_i(p)\|^2$，并令
+$Q_t=\operatorname{Re}\sum_{p,q}R_{pq}\mathcal D_{Z,t}(p,q)$.
+作为 Gram 矩阵，$R$ 是半正定的.
+记 $z_0$ 为最后一个标架向量，$x_i$ 为 $\sigma_i z_0$ 在 $X_0$ 上的分量，
+并按 $g_i=(c_i,x_i)$ 分组. 由酉条件及 $\sigma_i$ 固定前 $\varrho$ 个双曲对可知
+\[
+ N\langle x_i,x_i\rangle=t\bar t-N^2 ,
+\]
+右端在所有无穷位严格为正.
+又因格基与平移在 $T$ 外皆为整，
+$h_{c_i}^{-1}x_i$ 的有限分量在 $T$ 外亦为整.
+在有限位考察平移后的 $\sigma_i^{-1}$ 作用于最后标架向量所得的点；
+该点由 $g_i$ 与 $t$ 唯一确定，为末向量二次曲面上的点 $e(g_i)$，
+具体即按固定的 $\pi_N$ 与 $t$ 将
+$h_{c_i}^{-1}x_i$ 的 $T$ 分量补入末向量.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L707}{末向量点的坐标}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L818}{定号分量的整性}.}
+
+对末向量点 $e$，记 $\mathcal K_Z(p,q;e)$ 为有限位纤维配对，
+并在二次曲面上赋予 $e$ 权重
+\[
+ \operatorname{Re}\sum_{p,q}R_{pq}\mathcal K_Z(p,q;e).
+\]
+由 $R$ 的半正定性，此权重非负. 借助局部纤维配对的阶梯函数构造，可将其延拓为
+紧支非负函数 $\Psi$，在足够小的公共加法邻域平移下不变，
+且在定号因子的主同余群作用下不变.
+记 $J$ 为主同余群，$\mu$ 为局部酉群测度，$\mu_H$ 为其定号因子测度.
+对固定 $g$，应用同一末向量点上的纤维配对平方和估计
+（先按右类与有理元素分组，再利用不同组在主同余群中的陪集互不相交）；
+由组内四元组互异以及每个 $\rho_p$ 乘有限位前坐标密度均等于 $r_*\sqrt{F_t}$，可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L516}{紧支撑的纤维配对函数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L637}{一个末向量点上的平方和}.}
+\[
+ \Psi(e(g))\ge
+   \mu_H(J)\mu(J)^2[Z:J]\,F_t\!\sum_{i:g_i=g} y_i.
+\]
+
+设 $\mathcal C$ 为全源类集，$c_{\mathrm S}$ 为 Siegel 质量公式常数.
+质量归一化给出正数 $D$ 满足
+\[
+ \mathcal R(Z)\le D\,\mu_H(J)\mu(J)^2[Z:J],
+ \qquad C_{\mathrm S}=D\,|\mathcal C|\,c_{\mathrm S}.
+\]
+由此对全部 $g$ 求和得
+$F_t\mathcal R(Z)\sum_i y_i/D\le\sum_g\Psi(e(g))$.
+Siegel 质量公式~\cite{Siegel1935}的上界形式将右端控制为
+$(1+b^{-6})|\mathcal C|c_{\mathrm S}F_t$
+乘以 $\Psi$ 在范数球面上的积分并除以有限位 $\pi_N$ 的模数；
+前述正范数与 $T$ 外整性保证全部 $g$ 均计入该质量公式.
+而末坐标密度恰为这一归一化球面积分：
+将 $\Psi$ 在二次曲面上的表达式代入球面积分，
+每项化为 $\mathcal D_{Z,t}(p,q)$，总值恰为 $Q_t$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L249}{质量比的归一化}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L738}{范数球面上的 Siegel 公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L935}{球面积分与末坐标密度}.}
+
+综上所述，
+\[
+ F_t\,\mathcal R(Z)\sum_i y_i/D
+ \le (1+b^{-6})|\mathcal C|c_{\mathrm S}F_t Q_t .
+\]
+因 $F_t>0$ 且 $\mathcal R(Z)>0$，消去共同正因子即得所求.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/EnergyEstimate.lean}{462}.}
+\begin{lemma}[Siegel 平方和到带限配对的转换]
+\label{lem:b-siegel-modal-sum}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充，$T$ 为共轭稳定的有限位集，
+使层参数与 $N$ 的逆以及格基矩阵及其逆在 $T$ 外均为整.
+取 $T$ 上的局部填充及中间群 $Z$.
+取有限族两两互异的四元组 $(c_i,c_i',s_i,\sigma_i)$，
+满足：$\sigma_i$ 固定前 $\varrho$ 个双曲对，按类代表平移后在 $T$ 外整，
+其末标架配对坐标 $t_i\in E^\times$ 在所有无穷位均满足 $|t_i|_v^2>N^2$，
+且每个 $s_i$ 均有在 $T$ 上落入 $Z$ 的整提升.
+
+令 $\mathcal A\subset E^\times$ 为有限集，其中元素及其逆在 $T$ 外均为整.
+对 $p\in\mathcal A^\varrho$，记 $L_i(p)$ 为 $w_p\sigma_i$
+在块 $(c_i,s_i,c_i')$ 上的截断双陪集振幅和. 记 $\lambda_{v,a}$ 为平方尺度，
+$p^v_t$ 为前坐标 $p$、末坐标 $t$ 的序列经 $\lambda_{v,a}$ 缩放后的无穷位像.
+令 $J_{v,n}$ 为无穷位 $v$ 处的最高层 Bessel 带限配对（\emph{band-limited Bessel pairing}，其中 $n=\varrho+1$），
+以 $\mathcal D_{Z,t}(p,q)$ 表示将相同序列不缩放地读入 $T$ 后的末坐标密度，
+以 $\mathcal R(Z)$ 表示质量比. 置
+\[
+ r_{\mathrm{norm}}=\frac{\displaystyle\prod_v\left(
+     \sqrt{c_{\mathrm{cell}}}
+      \prod_{a=0}^{\varrho}\lambda_{v,a}^{k_0-1+2(\varrho-a)}\right)}
+                    {d_{\mathrm{coord}}},
+\]
+其中 $c_{\mathrm{cell}}$ 为开胞腔体积常数，$d_{\mathrm{coord}}$ 为 Bessel 坐标数，
+$k_0$ 为 $X_0$ 的秩. 则
+\[
+ \begin{aligned}
+ r_{\mathrm{norm}}^2\sum_i\left\|\sum_{p\in\mathcal A^\varrho}L_i(p)\right\|^2
+ &\le (1+b^{-6})C_{\mathrm S}
+       \operatorname{Re}\sum_{t\in\{t_i\}}
+            \sum_{p,q\in\mathcal A^\varrho}
+          \left(\prod_v J_{v,n}(p^v_t,q^v_t)\right)
+             \frac{\mathcal D_{Z,t}(p,q)}{\mathcal R(Z)} .
+ \end{aligned}
+\]
+\end{lemma}
+\begin{proof}
+按 $t_i=t$ 分组并固定一个非空组，置
+$R_{pq}(t)=\prod_v J_{v,n}(p^v_t,q^v_t)$.
+在无穷位 $v$ 处记 $x_a=(p^v_t)_a$.
+最高层带限配对的定义性质表明，它恰等于在 $w_p\sigma_i$ 与
+$w_q\sigma_i$ 处两个归一化轨道积分的内积，
+其中第一个积分的归一化标量为
+\[
+  \frac{\sqrt{c_{\mathrm{cell}}}}{d_{\mathrm{coord},v}}\,
+  (|x_\varrho|^2-1)^{(k_0-1)/2}
+  \prod_{a<\varrho}|x_a|^{k_0-1+2(\varrho-a)},
+\]
+这里 $d_{\mathrm{coord},v}$ 为该位的 Bessel 坐标数；
+此性质适用，是因为 $\sigma_i$ 固定前 $\varrho$ 个双曲对，且两序列的末坐标
+均等于该位的缩放配对值 $\Phi_v(t)/N$.
+对所有无穷位取乘积，由 Fubini 定理，乘积 Bessel 函数的轨道积分即各位
+积分张量的张量积. 记这些归一化标量之积为 $\rho_{t,p}$，
+则对组内每个 $i$，$R(t)$ 均为向量族
+$\rho_{t,p}$ 乘无穷位轨道积分张量所得的 Gram 矩阵.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Bessel/Basic.lean\#L924}{归一化轨道积分}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L422}{带限配对的 Gram 公式}.}
+
+再乘以有限位前坐标密度. 对每个 $a<\varrho$，
+因 $p_a$ 及其逆在 $T$ 外均为整，乘积公式给出
+$|p_a|_T^{1/2}\prod_v|\Phi_v(p_a)|=1$，
+其中 $|\cdot|_T$ 为局部乘积的乘法模数.
+而有限位前坐标密度的第 $a$ 项恰为
+$|p_a|_T^{(k_0-1+2(\varrho-a))/2}$，
+正好消去无穷位标量中的全部未缩放前坐标.
+在末坐标处 $\lambda_{v,\varrho}=1/N$，故
+\[
+ (|\Phi_v(t)/N|^2-1)^{(k_0-1)/2}
+ =N^{-(k_0-1)}(|\Phi_v(t)|^2-N^2)^{(k_0-1)/2}.
+\]
+将首项因子与前坐标尺度幂次归入 $r_{\mathrm{norm}}$ 后，
+$\rho_{t,p}$ 乘以有限位前坐标密度恰等于 $r_{\mathrm{norm}}\sqrt{F_t}$，
+其中 $F_t=(\prod_v(|t|_v^2-N^2))^{k_0-1}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L63}{前坐标密度}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L368}{尺度与乘积公式}.}
+
+至此，每组均满足引理~\ref{lem:b-siegel-last-entry} 的共同 Gram 矩阵与密度条件，
+其余条件则由族本身的整性、整提升以及四元组的互异性保证.
+对每组应用该引理后，再对全部出现的 $t$ 求和，即得所需估计.
+\end{proof}
+
+\section{Poisson 筛与二阶矩主项}
+\label{sec:b-poisson}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{409}.}
+\begin{lemma}[从局部乘积到阿代尔 Poisson 上界]
+\label{lem:b-poisson-transfer}
+\emitthmsource
+设 $T$ 为有限位集，$\lambda_v>0$ 为无穷位尺度，$\varpi$ 为填充数据中差积理想的生成元.
+记 $\mathcal X=(\prod_v\mathbb C)\times\prod_{w\in T}E_w$，并取非负可积函数 $F$.
+对 $t\in E$，记 $x(t)$ 为 $t$ 在 $\mathcal X$ 中的像（其无穷位分量乘以 $\lambda_v$）.
+取有限个在 $T$ 外整的非零有理元构成集合 $\mathcal V$，假设 $F$ 在每个 $x(t)$ 处下半连续.
+以 $\widehat F(\xi)$ 表示相对于局部乘积特征的 Fourier 积分，假设对每个可逆频率 $\xi$ 均有
+$|\widehat F(\xi)|\le H\beta(\xi)$（其中 $H\ge0$）.
+对 $y\in E$，令 $\xi(y)$ 在 $T$ 上取 $y$ 的像，
+在无穷位 $v$ 上取 $\frac{2\pi i}{\Phi_v(\varpi)\lambda_v}\Phi_v(y)$.
+若对任意有限个在 $T$ 外整的非零 $y$，相应 $\beta(\xi(y))$ 之和均不超过 $\epsilon$，则
+\[
+ \sum_{t\in\mathcal V} F(x(t))
+  \le \frac{\operatorname{vol}(\widehat{\mathcal O}_E)}
+              {\prod_v\lambda_v^2}\left(\int_{\mathcal X}F+H\epsilon\right).
+\]
+\end{lemma}
+\begin{proof}
+在阿代尔空间上定义 $\widetilde F(z)$：
+当 $z$ 在 $T$ 外的分量均为整时，取 $F$ 在 $z$ 的 $T$ 分量与
+$(\lambda_v z_v)_v$ 处的值；否则取零.
+因 $T$ 外整性为开闭条件，所得函数在每个选定有理点处仍保持下半连续.
+积去 $T$ 外的整数分量并在各复无穷位作缩放换元，便提取出公共正因子
+\[
+ P=\operatorname{vol}(\widehat{\mathcal O}_E)\left(\prod_v\lambda_v^2\right)^{-1}.
+\]
+特别地，$\widetilde F$ 可积且 $\int\widetilde F=P\int_{\mathcal X}F$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L344}{延拓的可积性与下半连续性}.}
+
+对 $\widetilde F$ 按标准阿代尔特征取 Fourier 变换.
+因 $\widetilde F$ 在 $T$ 外整数平移下不变，
+故在频率 $y/\varpi$ 处，若 $y$ 在 $T$ 外不整，则其变换为零：
+事实上，此时存在某个 $T$ 外整数平移使特征乘以非平凡标量，
+由积分的平移不变性必得变换为零.
+若 $y$ 在 $T$ 外整，则特征的 $T$ 外各因子在整数环上恒为 $1$；
+将剩余有限位特征与无穷位特征改写为 $\mathcal X$ 的约定，
+并作与上段相同的缩放换元，即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L369}{Fourier 积分及各位尺度}.}
+\[
+ \widehat{\widetilde F}(y/\varpi)=P\,\widehat F(\xi(y)).
+\]
+
+零频率处的模为 $P\int_{\mathcal X}F$.
+对非零 $T$ 整数 $y$，其在每个所取位的像均非零，
+故 $\xi(y)$ 可逆；由假设，任意有限个非零频率上的绝对值和至多为
+$PH\epsilon$. 乘以 $\varpi$ 恰好将全部有理对偶频率按 $y$ 重新编号，
+于是全部 Fourier 绝对值的有限部分和均至多为
+$P(\int_{\mathcal X}F+H\epsilon)$.
+现应用阿代尔对偶格上的单侧 Poisson 求和公式（\emph{one-sided Poisson summation formula}）：
+其所需的非负可积性、选定有理点处的下半连续性及对偶侧绝对值部分和的一致有界性均已逐一验证.
+因对 $t\in\mathcal V$ 有 $\widetilde F(t)=F(x(t))$，结论立得.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/StrongApproximation.lean\#L661}{阿代尔对偶格上的单侧 Poisson 求和公式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/Frequencies.lean}{250}.}
+\begin{lemma}[高度倒数三次方的总和]
+\label{lem:b-inverse-height-sum}
+\emitthmsource
+设 $E$ 为全虚数域，共有 $f$ 个无穷位，并在每对共轭嵌入中选取复嵌入 $\Phi_v$.
+对 $y\in E$，记 $\mathfrak d(y)=\{a\in\mathcal O_E:ay\in\mathcal O_E\}$.
+则对任意有限集 $Y\subset E$，有
+\[
+ \sum_{y\in Y}
+  \left(\prod_v\max(1,|\Phi_v(y)|)^{-6}\right)
+        (\mathrm N\mathfrak d(y))^{-3}
+ \le (64\cdot38e^4)^f .
+\]
+\end{lemma}
+\begin{proof}
+先考察模 $\mathcal O_E$ 的同一陪集中的频率.
+将每个复坐标平面剖分为边长 $1/2$ 的半开正方形网格.
+若两点在各无穷位均落入同一格，则二者之整差在每个复嵌入下的模皆小于 $1$；
+而非零整元的绝对域范数至少为 $1$，故两点必重合，从而每个正方形元组至多包含一个点.
+记 $q(z)$ 为 $z$ 所在网格的左下角，则 $|z-q(z)|<1$，于是\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L132}{同格中的距离}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L149}{格点权重的比较}.}
+\[
+ \max(1,|q(z)|)\le 2\max(1,|z|),\qquad
+ \max(1,|z|)^{-6}\le64\max(1,|q(z)|)^{-6}.
+\]
+
+这些角点两两相距至少为 $1/2$.
+对 $R\ge1$，半径 $R$ 的圆盘内至多有 $(1+4R)^2$ 个角点，
+因为以各角点为中心、半径 $1/4$ 的开圆盘互不相交且均落入半径 $R+1/4$ 的圆盘内.
+令 $u(q)=\max(1,|q|)$，利用恒等式
+$u(q)^{-6}=\int_{u(q)}^\infty 6R^{-7}\,dR$，得
+\[
+ \sum_q u(q)^{-6}\le
+ \int_1^\infty 6R^{-7}(1+4R)^2\,dR
+ \le \int_1^\infty 150R^{-5}\,dR=\frac{75}{2}<38.
+\]
+由于各复坐标可独立求和，每个整陪集的无穷位权重总和至多为 $(64\cdot38)^f$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L177}{角点的权重和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L198}{单一整陪集的权重和}.}
+
+现固定非零分母理想 $\mathfrak d$.
+满足 $\mathfrak d\subseteq\mathfrak d(y)$ 的数均属于 $\mathfrak d^{-1}$.
+取非零元 $a\in\mathfrak d$ 并写 $(a)=\mathfrak d\mathfrak c$，
+则乘以 $a$ 将 $\mathfrak d^{-1}/\mathcal O_E$ 识别为 $\mathfrak c/(a)$，
+其阶为 $\mathrm N(a)/\mathrm N\mathfrak c=\mathrm N\mathfrak d$.
+故分母理想恰为 $\mathfrak d$ 的频率至多分布在 $\mathrm N\mathfrak d$ 个整陪集中.
+将陪集估计乘以 $(\mathrm N\mathfrak d)^{-3}$ 并对分母理想求和，得上界
+\[
+ (64\cdot38)^f
+      \sum_{\mathfrak d\ne0}(\mathrm N\mathfrak d)^{-2}.
+\]
+该理想和即为 Dedekind zeta 函数在 $2$ 处的值 $\zeta_E(2)$.
+对每个有理素数，其上方素理想至多有 $[E:\mathbb Q]$ 个且各自范数至少为该素数，
+故对应局部因子不超过 $\zeta(2)^{[E:\mathbb Q]}$ 的相应因子.
+由此 $\zeta_E(2)\le\zeta(2)^{[E:\mathbb Q]}\le e^{2[E:\mathbb Q]}=e^{4f}$，
+即得所求.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L68}{分母理想的整陪集数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L102}{理想范数的平方倒数和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L253}{高度倒数三次方的总和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{174}.}
+\begin{lemma}[一般对偶尺度下的频率总和]
+\label{lem:b-frequency-sum}
+\emitthmsource
+设 $S$ 为填充数据，底 CM 域有 $f$ 个无穷位. 令 $T$ 为有限位集，$O_T$ 为该处半局部整数环.
+对非零 $T$ 整数 $y$，记 $y_T$ 为其在 $T$ 上的像，并置
+\[
+ I_T(y)=[O_T:y_TO_T],\qquad
+ D_T(y)=[O_T:O_T\cap y_T^{-1}O_T],
+\]
+其中前一指数取广义指数. 令
+$\mathcal D_m(r)=r^m\min(1,r)^6$（$m\ge0$ 为整数）.
+取 $B\ge1$，并对每个无穷位取 $s_v\in\mathbb C$ 与 $x_v\in\mathbb R$
+满足 $|s_v|^{-1}\le |x_v|\le B$（倒数采用 $0^{-1}=0$ 的约定）.
+则对任意非零 $T$ 整数组成的有限集 $Y$，有
+\[
+ \sum_{y\in Y}\frac{I_T(y)^{m/2}}{D_T(y)^3}
+      \prod_v\mathcal D_m\!\left(|s_v\Phi_v(y)|^{-1}\right)
+ \le \prod_v |x_v|^m(bB^2)^3 .
+\]
+\end{lemma}
+\begin{proof}
+记 $\mathfrak d(y)=\{a\in\mathcal O_E:ay\in\mathcal O_E\}$.
+因 $y$ 在 $T$ 外为整，$\mathfrak d(y)$ 恰为
+$O_T\cap y_T^{-1}O_T$ 在 $\mathcal O_E$ 中的原像，
+故 $\mathcal O_E/\mathfrak d(y)$ 嵌入 $O_T/(O_T\cap y_T^{-1}O_T)$，
+从而 $\mathrm N\mathfrak d(y)\le D_T(y)$.
+同样，由 $T$ 外整性与乘积公式可得
+\[
+ I_T(y)^{1/2}\le\prod_v|\Phi_v(y)|.
+\]
+确切地说，广义指数等于 $\prod_{w\in T}|y|_w^{-1}$，
+而 $T$ 外各有限位因子 $|y|_w^{-1}$ 均不小于 $1$，
+全部有限位因子之积则等于无穷位模长乘积的平方.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L112}{分母理想的指数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/SemilocalProducts.lean\#L351}{广义指数与乘积公式}.}
+
+置 $a_v=|\Phi_v(y)|>0$. 比较 $a_v$ 与 $1$ 可得
+\[
+ \min(1,|s_v|^{-1}/a_v)\le B\max(1,a_v)^{-1}.
+\]
+当 $a_v\ge1$ 时左端至多为 $|s_v|^{-1}/a_v\le B/a_v$，
+当 $a_v\le1$ 时左端至多为 $1\le B$. 结合 $m$ 次幂的抵消，即有
+\[
+ \mathcal D_m(|s_v\Phi_v(y)|^{-1})\,a_v^m
+ \le |x_v|^m B^6\max(1,a_v)^{-6},
+\]
+此式在 $s_v=0$ 时亦成立. 对所有无穷位相乘，再代入两项有限位指数界，
+便得单项上界\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L140}{衰减因子的高度界}.}
+\[
+  \left(\prod_v |x_v|^m B^6\right)
+  \left(\prod_v\max(1,|\Phi_v(y)|)^{-6}\right)
+  (\mathrm N\mathfrak d(y))^{-3}.
+\]
+
+由引理~\ref{lem:b-inverse-height-sum}，后两因子之积在 $Y$ 上的和至多为 $(64\cdot38e^4)^f$.
+容许参数 $b$ 满足 $b\ge1000$，故 $64\cdot38e^4\le b^3$.
+将各位的 $B^6$ 与 $b^3$ 合并即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L177}{一般尺度的频率估计}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{810}.}
+\begin{lemma}[Poisson 筛的非零频率衰减和]
+\label{lem:b-global-frequency-decay}
+\emitthmsource
+设 $S$ 为容许填充，取 $n=\varrho+1$、$m=k_0-n^7$，令 $\Theta$ 为缩放体积比.
+记 $\varpi$ 为差积理想的生成元，$\kappa_v=M\Phi_v(\varpi)/(2\pi i)$，
+$\lambda_{v,a}=\kappa_v^{2(\varrho-a)_+}/N$.
+在全部无穷位与 $T$ 的乘积上取衰减函数
+\[
+ \beta(\xi)=
+ \left(\prod_v\Theta b^{2000n^9}\mathcal D_m(|\xi_v|^{-1})\right)
+ \frac{[O_T:\xi_TO_T]^{m/2}}{[O_T:O_T\cap\xi_T^{-1}O_T]^3}\,b^{n^9 f},
+\]
+其中 $\mathcal D_m$ 如引理~\ref{lem:b-frequency-sum} 所示，有限位指数在可逆频率处计算.
+令 $a\ge0$，并取满足 $|c_v|^{-1}\le|\kappa_v|/M$ 的尺度 $c_v$.
+对任意由非零 $T$ 整数组成的有限集 $Y$，置
+$\xi(y)_v=(c_v/\lambda_{v,a})\Phi_v(y)$、$\xi(y)_T=y_T$. 则
+\[
+ \sum_{y\in Y}\beta(\xi(y))
+ \le C_{\mathrm{dec}}\,b^{2002n^9 f},\qquad
+ C_{\mathrm{dec}}=\prod_v\Theta
+          \left(\frac{|\kappa_v|^{2\varrho+1}}{MN}\right)^m .
+\]
+\end{lemma}
+\begin{proof}
+由 $1\le|\kappa_v|\le b^{23}$ 得
+\[
+ |c_v/\lambda_{v,a}|^{-1}
+ \le \frac{|\kappa_v|}{M}\lambda_{v,a}
+ \le \frac{|\kappa_v|^{2\varrho+1}}{MN}.
+\]
+在引理~\ref{lem:b-frequency-sum} 中取
+$x_v=\kappa_v^{2\varrho+1}/(MN)$ 与 $B=(b^{23})^{2\varrho+1}$.
+由 $|\kappa_v|\le b^{23}$ 及 $MN\ge1$ 可知 $|x_v|\le B$；此外
+\[
+ (bB^2)^3=b^{3+138(2\varrho+1)}\le b^{n^9},
+\]
+其中 $\varrho\ge10^5$ 保证指数不超过 $n^2$.
+于是略去 $\beta$ 中的常数因子后，频率总和至多为
+$\prod_v \bigl(|x_v|^m\,b^{n^9}\bigr)$.
+恢复各无穷位处的常数 $\Theta b^{2000n^9}$ 与有限位整体的
+$b^{n^9f}$，即得 $C_{\mathrm{dec}}b^{2002n^9f}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L773}{标架平方尺度的上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L818}{Poisson 的频率总和}.}
+
+特别地，Poisson 对偶尺度 $c_v=2\pi i/\Phi_v(\varpi)$ 恰好满足所需逆尺度界，
+而两末坐标之差所用的 $c_v=M$ 因 $|\kappa_v|\ge1$ 亦满足此界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L514}{两类对偶尺度的共同条件}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{1097}.}
+\begin{lemma}[Poisson 筛的序列权重平方和]
+\label{lem:b-poisson-head-weights}
+\emitthmsource
+设 $S$ 为容许填充，$\mathcal A\subset E^\times$ 有限且其中元素在 $T$ 外均为整.
+沿用局部平方尺度 $\lambda_{v,a}=\kappa_v^{2(\varrho-a)_+}/N$，取 $0\le i\le\varrho$.
+对 $p\in\mathcal A^i$，分别以
+$\delta_j=\prod_{a<j}p_a$、$c_{v,j}=\prod_{a<j}\lambda_{v,a}$ 表示前 $j$ 项之积及其尺度.
+定义 $p$ 的权重 $\Lambda_i(p)$ 为下列各因子对 $1\le j\le i$ 的乘积：
+在无穷位 $v$，因子为 $\max(1,|c_{v,j}\Phi_v(\delta_j)|^{-1})^{n^6}$，
+若 $|c_{v,j}\Phi_v(\delta_j)|>b^{60n^2}$ 则取零；
+在有限位，因子为 $[O_T:(\delta_j)_TO_T]^{n^6/2}$，
+若 $(\delta_j)_T\notin O_T$ 亦取零.
+令 $P_a=\operatorname{vol}(\widehat{\mathcal O}_E)/\prod_v\lambda_{v,a}^2$.
+则
+\[
+ \left(\sum_{p\in\mathcal A^i}\Lambda_i(p)\right)^2
+ \le b^{400n^9f}\prod_{a<i}P_a .
+\]
+\end{lemma}
+\begin{proof}
+若 $\Lambda_i(p)>0$，则每个 $\delta_j$ 在 $T$ 内外皆为整.
+由 $|\kappa_v|\ge1$ 与 $N\le b^{60n}$ 可得
+\[
+ |c_{v,j}|^{-1}
+ =\frac{N^j}{\prod_{a<j}|\kappa_v|^{2(\varrho-a)}}
+ \le b^{60n^2}.
+\]
+再结合无穷位权重的截断条件，即得 $|\Phi_v(\delta_j)|\le b^{120n^2}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L947}{权重的局部因子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L974}{非零权重的截断条件}.}
+
+对固定 $j$，乘积公式给出
+$[O_T:(\delta_j)_TO_T]^{1/2}\le\prod_v|\Phi_v(\delta_j)|$.
+将其逐位并入无穷位权重的底数，每处化为
+\[
+ |\Phi_v(\delta_j)|\max(1,|c_{v,j}\Phi_v(\delta_j)|^{-1})
+ =\max(|\Phi_v(\delta_j)|,|c_{v,j}|^{-1})
+ \le b^{120n^2}.
+\]
+故每个 $j$ 贡献至多 $b^{120n^8 f}$，从而单个序列的权重至多为
+$b^{120n^8fi}$（权重为零时该界显然亦成立）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L894}{局部权重结合乘积公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1006}{单个序列的权重}.}
+
+因 $p_a=\delta_{a+1}/\delta_a$，序列 $p$ 由元组 $(\delta_1,\dots,\delta_i)$ 唯一确定.
+令 $R=b^{120n^2}$，则非零权重对应的乘积元组均落入 $\mathbb C^{if}$ 中的最大值范数球
+$\|z\|_{\max}\le R$ 内. 任意两不同元组间距至少为 $1$，
+这是因为非零整差在全部无穷位的模长乘积至少为 $1$.
+以各元组为中心、半径 $1/2$ 的开球互不相交且全含于半径 $R+1/2$ 的球中；
+比较 $2if$ 维体积可知此类元组至多有 $(1+2R)^{2if}$ 个.
+由 $b\ge1000$ 与 $R\ge1$ 得 $1+2R\le b^{120n^2+1}$.
+乘以单个序列权重上界，再结合 $i\le n$ 与 $\varrho\ge10^5$ 比较指数，得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Box.lean\#L77}{有界整元组的计数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1043}{序列权重总和}.}
+\[
+ \sum_{p\in\mathcal A^i}\Lambda_i(p)
+ \le b^{(2(120n^2+1)+120n^8)if}
+ \le b^{130n^9 f}.
+\]
+
+最后，由 $\lambda_{v,a}\le b^{46\varrho}$ 与
+$\operatorname{vol}(\widehat{\mathcal O}_E)=(2/\mathrm{rd}_E)^f\ge b^{-f}$（其中 $\mathrm{rd}_E\le b$），有
+\[
+ \prod_{a<i}P_a\ge b^{-i(1+92\varrho)f}\ge b^{-100n^2f}.
+\]
+将序列权重总和平方后乘以不小于 $1$ 的因子
+$b^{100n^2f}\prod_{a<i}P_a$，再由 $260n^9+100n^2\le400n^9$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1076}{Poisson 常数乘积的下界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1103}{权重和的平方}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{1124}.}
+\begin{lemma}[逐坐标的 Poisson 筛法]
+\label{lem:b-poisson-sieve}
+\emitthmsource
+设 $S$ 为容许填充，$T$ 为局部有限位集，且 $M^{-1}$ 在 $T$ 外为整.
+令 $\mathcal A\subset E^\times$ 为有限集，其中元素及其逆在 $T$ 外均为整，
+并取 $\mathcal U\subseteq\mathcal A$.
+设 $T$ 上给定一族满足局部筛法公理的配对形式 $J_{T,j}$，其底层质量界为 $m_T$，
+坐标权重与频率衰减沿用引理~\ref{lem:b-finite-sieve} 中的约定.
+令 $n=\varrho+1$ 为标架向量数，$\lambda_{v,i}>0$ 为第 $i$ 个标架向量在无穷位 $v$
+处的平方尺度. 对前 $\varrho$ 项为 $p\in\mathcal A^\varrho$、末项为 $t\in\mathcal U$
+的序列，记 $p^v_t$ 为按 $\lambda_{v,i}$ 缩放后的无穷位序列，
+$p^T_t$ 为未缩放的有限位序列（未指定的序列项在缩放前均取 $1$）.
+记 $J_{v,n}$ 为无穷位 $v$ 处的 Bessel 带限配对，$d_v$ 为其度数.
+则
+\[
+ \begin{aligned}
+ &\operatorname{Re}\sum_{t\in\mathcal U}
+      \sum_{p,q\in\mathcal A^\varrho}
+      \left(\prod_v J_{v,n}(p^v_t,q^v_t)\right)J_{T,n}(p^T_t,q^T_t)\\
+ &\qquad\le
+ \left(\prod_{i=0}^{n-1} P_i\right)
+ \left(m_T\prod_v\frac{1+b^{-10}}{d_v}
+                 +b^{2403n^9f}C_{\mathrm{dec}}\right),
+ \end{aligned}
+\]
+其中 $f$ 为无穷位数，$P_i=\operatorname{vol}(\widehat{\mathcal O}_E)/\prod_v\lambda_{v,i}^2$
+为相应的 Poisson 常数，而
+\[
+ C_{\mathrm{dec}}=\prod_v \Theta\left(
+      \frac{|\kappa_v|^{2\varrho+1}}{MN}\right)^{k_0-n^7}.
+\]
+这里 $\Theta$ 为 Hermite 空间的缩放体积比，$k_0$ 为 $X_0$ 的秩，
+$\kappa_v=M\Phi_v(\varpi)/(2\pi i)$，$\varpi$ 为固定的差积理想生成元.
+\end{lemma}
+\begin{proof}
+对每个层次 $i$，令 $J_i$ 为有限位形式 $J_{T,i}$ 与全部无穷位形式 $J_{v,i}$ 之乘积.
+由 Fubini 定理，公共坐标积分递推与带特征模长界均按乘积保持；
+最高层半正定性亦保持，因为半正定矩阵的逐项乘积恰为张量积向量的 Gram 矩阵；
+连续性则直接由有限乘积给出. 因而 $J_i$ 满足乘积空间上的筛法公理，
+底层质量界为 $m_*=m_T\prod_v(1+b^{-10})/d_v$，
+相应的坐标权重 $\Lambda_i$ 与频率衰减 $\beta$ 亦取各处乘积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SieveSystem.lean\#L149}{筛法公理在有限乘积下保持}.}
+
+记 $S_i$ 为长度 $i$ 的有理序列中末坐标相同之序列对的 $J_i$ 实部和，
+置 $S_0$ 为两空序列的 $J_0$ 实部；记 $W_i$ 为所有长度 $i$ 序列的
+权重 $\Lambda_i$ 之和. 考察待加入的第 $i$ 个公共坐标：
+先将同一变量 $x$ 附于两侧，并对所有先前序列对的 $J_{i+1}$ 求和，得同末项密度函数 $F_i(x)$.
+由最高层半正定性逐层积分传递下来的半正定性可知，
+$F_i$ 为非负实值函数，且在所取有理点处下半连续.
+筛法的递推公理表明 $\int F_i$ 等于全部先前序列对的 $J_i$ 实部和，
+且其非零频率处的 Fourier 变换模至多为 $\beta(\xi)W_i^2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L580}{密度的非负性和下半连续性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L620}{一坐标的积分和 Fourier 上界}.}
+
+对 $F_i$ 应用引理~\ref{lem:b-poisson-transfer}.
+在 $T$ 外补以整数环的指示函数后，零频率因子为
+$\operatorname{vol}(\widehat{\mathcal O}_E)$，
+而无穷位缩放的 Jacobi 行列式除以 $\prod_v\lambda_{v,i}^2$，
+故公共乘子恰为 $P_i$. 只要非零频率的衰减总和至多为 $\epsilon$，
+便有
+\[
+ S_{i+1}\le P_i\left(\int F_i+\epsilon W_i^2\right),
+\]
+其中频率为非零 $T$ 整数在各处的像，并带有上述尺度及差积理想的对偶尺度.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L416}{阿代尔 Poisson 上界}.}
+
+接下来需从 $\int F_i$ 中分离出末坐标不同的序列对.
+若两末坐标 $t\ne s$，则差频率源自非零 $T$ 整数
+$M^{-1}(t^{-1}-s^{-1})$：
+在有限位取其自身像，在无穷位乘以 $M/\lambda_{v,i-1}$.
+筛法的非对角频率界给出每对实部至多为 $\epsilon$ 乘以两权重之积；
+相加并利用权重非负性得 $\int F_i\le S_i+\epsilon W_i^2$
+（当 $i=0$ 时无异末坐标项，该式显然成立）. 从而\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L653}{两个不同末坐标产生的频率}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L731}{一步递推}.}
+\[
+ S_{i+1}\le P_i(S_i+2\epsilon W_i^2).
+\]
+
+引理~\ref{lem:b-global-frequency-decay} 同时适用于上述对偶尺度与差频率尺度，
+给出 $\epsilon=C_{\mathrm{dec}}b^{2002n^9f}$；
+引理~\ref{lem:b-poisson-head-weights} 给出
+$W_i^2\le b^{400n^9f}\prod_{a<i}P_a$.
+记 $B=b^{400n^9 f}$，由 $S_0\le m_*$ 及递推式归纳得
+\[
+ S_i\le\left(\prod_{a<i}P_a\right)(m_*+2iB\epsilon),
+\]
+归纳步只需将前项误差与 $2\epsilon W_i^2$ 提取同一 Poisson 常数乘积.
+由 $2n\le k_0\le b\le b^{n^9f}$ 知
+$2nB\epsilon\le b^{2403n^9f}C_{\mathrm{dec}}$.
+在第 $n$ 层仅保留 $\mathcal U$ 中的末坐标只会减小非负密度和，
+故所求和式不超过 $S_n$，结论得证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L818}{非零频率的衰减总和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1103}{序列权重平方和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/MainTerm/EnergyEstimate.lean}{617}.}
+\begin{lemma}[开元上的同链接平方和]
+\label{lem:b-open-link}
+\emitthmsource
+设 $S$ 为底 CM 域带 Weil 数据的容许填充.
+取第一个层素数上方所选位的子集 $A$，并在每个 $w\in A$ 处指定一个定义于 $w$ 或其共轭位剩余域上的非零标架向量.
+称固定全部指定向量、且在至少一个所选位上使标架配对矩阵的全部非空真顺序主子式皆非零的剩余元素为开元（\emph{open element}）.
+对这些元素的每个块，仅取非零判别式项，将同一链接中的截断振幅相加后取模平方，
+则各块与链接的平方和除以 $\nu^2$ 后至多为
+\[
+ (1+b^{-4})b^{-6k_0|A|}D_{\mathrm{main}},
+\]
+其中 $k_0$ 为 $X_0$ 的秩，$\nu$ 为幂幺余体积，
+$D_{\mathrm{main}}$ 为全源维数平方除以 Bessel 度数乘积与标准格质量之积.
+\end{lemma}
+\begin{proof}
+记 $n=\varrho+1$ 为标架向量数，$f$ 为无穷位数，$a_0=|A|$.
+只需对任意有限个非零块的平方和证明同一上界，
+其中每个块由四元组 $(c,s,c',\Lambda)$ 标记（$\Lambda$ 为链接）.
+取 $\mathcal A$ 为填充数据所给的有限标架坐标集，
+并选共轭稳定的有限位集 $T$，使 $\mathcal A$ 中元素及其逆、层参数之逆、
+辅助素数 $N$ 之逆以及格基矩阵及其逆在 $T$ 外均为整.
+
+对任一非零块，所选位上的非零主子式保证了所有贡献有理项皆具备相应的大胞腔分解.
+任取其中一项，将其写为 $u w_p\sigma u'^{-1}$，
+其中 $u,u'$ 幂幺，$w_p$ 为由前 $\varrho$ 个标架坐标决定的 Weyl 元素，
+$\sigma$ 固定前 $\varrho$ 个双曲对. 链接由 $\sigma$ 唯一决定，
+而属于同一链接的其余有理项在分解中共用同一个 $\sigma$.
+记 $t$ 为 $\sigma$ 的末标架配对坐标；非零判别式条件保证 $t\bar t-N^2$
+在每个无穷位严格为正，非零截断振幅则迫使 $t$ 与各有效 $p$ 的坐标均落入
+$\mathcal A$. 由大胞腔分解的唯一性，先对 $u,u'$ 求和再对 $p\in\mathcal A^{\varrho}$ 求和，
+恰得该链接的块和.
+同一构造还给出 $s$ 的整提升以及平移后 $\sigma$ 在 $T$ 外的整性；
+而且若两块具有相同的 $(c,c',s,\sigma)$，则其链接必相同，故两块重合.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L90}{将非零子式从约化提升}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalToLocal.lean\#L383}{大胞腔与双陪集分解}.}
+
+记 $I$ 为所取有限个块的平方和，$r_{\mathrm{norm}}>0$ 为主项归一化常数，
+$C_{\mathrm{S}}>0$ 为 Siegel 估计的缩放常数.
+由引理~\ref{lem:b-finite-sieve}，在 $T$ 的局部乘积上，固定向量条件确定了一个介于主同余群与整群之间的中间群，
+它包含上述整提升在 $T$ 上的分量，且其归一化末坐标密度满足筛法公理，
+质量至多为 $(1+b^{-6})b^{-6k_0a_0}$.
+按共同末坐标 $t$ 分组并应用引理~\ref{lem:b-siegel-modal-sum}，得
+\[
+ r_{\mathrm{norm}}^2 I
+ \le (1+b^{-6}) C_{\mathrm{S}}\mathcal H ,
+\]
+其中 $\mathcal H$ 是遍历共同末坐标及两组前 $\varrho$ 坐标的实部和，
+每项为各无穷位 Bessel 带限配对之积乘以在 $T$ 上归一化的末坐标密度；
+双陪集分解的整性与前述块的单射性恰满足该平方和估计的全部前提.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L280}{固定向量子群上的局部筛法数据}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L479}{Siegel 平方和估计}.}
+
+记 $\Pi_{\mathrm P}$ 为逐坐标 Poisson 常数之积，$C_{\mathrm{dec}}$ 为衰减常数，
+$d_{\mathrm{Bes}}$ 为 Bessel 度数之积. 引理~\ref{lem:b-poisson-sieve} 给出
+\[
+ \mathcal H\le \Pi_{\mathrm P}
+ \left(\frac{(1+b^{-10})^f}{d_{\mathrm{Bes}}}(1+b^{-6})b^{-6k_0a_0}
+          +b^{2403n^9 f}C_{\mathrm{dec}}\right),
+\]
+其中各无穷位质量界为 $(1+b^{-10})$ 除以该位 Bessel 度数，
+而 $T$ 外整性恰好允许对所有共同末坐标与前坐标施用该筛法.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1145}{各坐标筛法的主项与误差}.}
+
+置 $P=\Pi_{\mathrm P}/r_{\mathrm{norm}}^2$，记 $d_{\mathrm{coord}}$ 为 Bessel 坐标数，
+$D_{\mathrm{id}}=|\overline R|u_0$. 由 Poisson 常数乘积恒等式及容许格质量界可得
+\[
+ C_{\mathrm S}P\le(1+b^{-9})D_{\mathrm{main}}d_{\mathrm{Bes}}\nu^2 ,
+\]
+而衰减常数估计给出
+$C_{\mathrm S}PC_{\mathrm{dec}}\le b^{n^9f}d_{\mathrm{coord}}D_{\mathrm{id}}\nu^2$.
+结合 $d_{\mathrm{coord}}\le b^{2k_0f}$、$k_0\ge512000n^9$ 与 $a_0\le f$，
+有 $2404n^9f+2k_0f+6k_0a_0+10\le11k_0f$；
+再由 $b^{11k_0f}D_{\mathrm{id}}\le D_{\mathrm{main}}$ 可知，筛法误差乘以
+$C_{\mathrm S}P$ 后至多为 $b^{-10}\cdot b^{-6k_0a_0}D_{\mathrm{main}}\nu^2$.
+又由 $f\le b/1000$ 得 $(1+b^{-10})^f\le1+b^{-9}$，
+因此 $I$ 至多为 $b^{-6k_0a_0}D_{\mathrm{main}}\nu^2$ 乘以
+\[
+ (1+b^{-6})\bigl((1+b^{-9})^2(1+b^{-6})+b^{-10}\bigr)\le1+b^{-4}.
+\]
+末一不等式可令 $x=b^{-1}$，将 $x^6,x^9,x^{10}$ 均放大至 $x^4/100$ 后直接展开验证.
+对全部有限块族取上确界即得总平方和估计.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L150}{Poisson 常数的乘积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L183}{衰减常数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L273}{主项及误差常数的化简}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/Unfolding/MomentBounds.lean}{437}.}
+\begin{lemma}[正型振幅的二阶矩总和]
+\label{lem:b-global-moment}
+\emitthmsource
+设 $S$ 为容许填充数据，底 CM 域带 Weil 数据.
+记 $\beta(s)$ 为剩余群 $G$ 上全部有理项的单点振幅二阶矩.
+假设存在复内积空间中的向量 $u_s$ 满足
+$\beta(a^{-1}c)=\langle u_a,u_c\rangle$，且 $\beta(1)\le 2u_0$
+（其中 $u_0$ 为全源维数）. 令
+$D_{\mathrm{main}}=u_0^2/(d_{\mathrm{Bes}}\mu)$，
+其中 $d_{\mathrm{Bes}}$ 为局部 Bessel 度数之积，$\mu$ 为标准格的类加权和.
+则
+\[
+ \sum_{s\in G}\beta(s)\le(1+9b^{-4})D_{\mathrm{main}}.
+\]
+\end{lemma}
+\begin{proof}
+记 $k_0$ 为 $X_0$ 的秩，$f$ 为无穷位数，$n$ 为 Bessel 标架向量数，
+$d_0$ 为被约化 Hermite 空间的秩；置 $B=b^{6k_0}$、$D_{\mathrm{id}}=|\overline R|u_0$.
+对 $p_0$ 上方所选位的子集 $A$，在每个 $w\in A$ 处指定一个定义于 $w$ 或其共轭位剩余域上的非零标架向量 $v_w$，
+记 $\Gamma(A,v)$ 为固定这些向量的剩余群子群，
+并置 $Y(A,v)=\sum_{s\in\Gamma(A,v)}\beta(s)$、$C_A=B^{-|A|}D_{\mathrm{main}}$.
+仍称在 $p_0$ 上方某所选位处使标架配对矩阵的全部非空真顺序主子式均非零的元素为开元.
+
+先在子群上建立两项估计. 由 $|A|\le f$，容许条件
+$b^{11k_0f}D_{\mathrm{id}}\le D_{\mathrm{main}}$
+蕴含 $b^{5k_0f}D_{\mathrm{id}}\le C_A$.
+开元不落入 $\overline R$ 的任何标量陪集，故其二阶矩完全来自 Bessel 子群之外.
+在 $\Gamma(A,v)$ 的开元上，引理~\ref{lem:b-open-link} 表明全部非零判别式项按链接
+分别求和取平方后，总和除以 $\nu^2$ 至多为 $(1+b^{-4})C_A$.
+又由截断与异链接项的估计，只要同链接归一化平方和不超过 $C$，
+全部子群外项的归一化二范数便至多为
+$\sqrt C+b^{-15}\sqrt{D_{\mathrm{id}}}$.
+取 $x=b^{-4}$，于是开元二范数至多为
+\[
+ \sqrt{(1+x)C_A}+b^{-15}\sqrt{D_{\mathrm{id}}}
+ \le (1+x)\sqrt{C_A},
+\]
+其中用到了 $\sqrt{1+x}\le1+x/2$ 与 $b^{-15}\le x/2$；
+平方即知开元总质量至多为 $(1+4x)C_A$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L559}{链接平方和到全部余项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L264}{开元总质量}.}
+
+当 $A$ 包含全部 $f$ 个所选位时，有更强的估计 $Y(A,v)\le C_A$.
+事实上，由正型假设 $\|u_s\|^2=\beta(1)$，故 $\beta(s)\le\beta(1)\le2u_0$.
+标量陪集中的元素由标量剩余值与 $\overline R$ 中元素共同确定，
+合计至多 $M^f|\overline R|$ 个（其中 $M=p_0p_1$），
+其总质量至多为 $2M^f D_{\mathrm{id}}\le C_A/4$
+（由 $M\le b^{23}$、$8\le b$、$23f+1\le5k_0f$ 及前述尺度条件得出）.
+对 $\Gamma(A,v)$ 中的其余元素，每个指定固定向量均贡献一个标架相交位，
+故相交位范数乘积至少为 $p_0^f$.
+由引理~\ref{lem:b-link-meet} 及 $p_0\ge b^{10}$，归一化链接平方和至多为
+\[
+ \left(\frac{b^{2f}}{p_0^f}\right)^{k_0}D_{\mathrm{main}}
+ \le b^{-2k_0f}C_A\le C_A/8.
+\]
+此外 $b^{-30}D_{\mathrm{id}}\le C_A/8$.
+结合前述余项二范数公式与 $(a+c)^2\le2(a^2+c^2)$，
+可知标量陪集之外的质量至多为 $C_A/2$，
+两部分相加即不超过 $C_A$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L89}{标量陪集计数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L759}{相交位与链接平方和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L202}{全部位固定时的估计}.}
+
+现选取 $(A,v)$ 使 $B^{|A|}Y(A,v)$ 达到最大，并记 $Y=Y(A,v)$
+（所有可能选择构成有限集，故最大值必达）. 与 $A=\varnothing$ 比较可见，
+只需证明 $Y\le(1+9x)C_A$. 若 $A$ 取遍所有所选位，上一段已证.
+否则任取 $w\notin A$；对 $w$ 或其共轭位上的任意非零标架向量 $d$，
+将 $d$ 加入固定条件并利用最大性，即得
+\[
+ \sum_{\substack{s\in\Gamma(A,v)\\s\ \text{固定 }d}}\beta(s)\le Y/B.
+\]
+
+对子群 $\Gamma(A,v)$ 与所选位 $w$ 应用引理~\ref{lem:b-leading-minor}：
+以新固定向量的质量上界 $Y/B$ 为输入，每个真顺序主子式消失的质量至多为 $3Y/b^{10}$.
+每个非开元在 $w$ 处至少有一个此类主子式为零，合并至多 $n$ 个条件
+并利用 $3n\le b^6$，即得非开元总质量至多为 $xY$.
+
+合并开元与非开元的质量，得 $Y\le(1+4x)C_A+xY$.
+因 $0\le x\le1/10$，有
+$(1+4x)/(1-x)\le1+9x$，再由最大值的定义即证.
+\end{proof}
+
+\section{二阶矩估计与少量平移}
+\label{sec:b-translate}
+
+我们首先在全源空间上选取平移. 将映射的定义域限制至分歧源空间时，每个像空间损失的维数至多等于源空间本身的余维，因而可用平移个数乘以该余维来控制总维数损失.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{283}.}
+\begin{lemma}[缩放 Poincaré 映射的二阶矩估计]
+\label{lem:b-second-moment}
+\emitthmsource
+固定容许数据 $D$. 设 $U_0$ 为全源空间的欧氏坐标空间，
+$u_0=\dim_{\mathbb C}U_0$，$W$ 为好形式空间，$r=\dim_{\mathbb C}W$，
+$\mathcal P$ 为缩放的 Poincaré 映射，$\rho$ 为有限群
+$G$ 在主层形式空间上的酉作用. 则
+\begin{equation}
+ r\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ \le |G|(1+9b^{-4})u_0^2 .
+\label{eq:b-second-moment}
+\end{equation}
+\end{lemma}
+\begin{proof}
+按两个层素数重排所选位，可将 $G$ 识别为振幅展开中的剩余线性群.
+令
+\[
+ \beta(g)=\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2,
+ \qquad
+ K_g=\rho(g)\mathcal P\mathcal P^*\rho(g)^* .
+\]
+引理~\ref{lem:b-amplitude-blocks}
+给出 $\mathcal P^*\rho(g)\mathcal P$ 的振幅块公式；
+逐块取模平方并求和，可见 $\beta(g)$ 恰为单点集 $\{g\}$ 上
+全振幅和的二阶矩.
+由 $\rho$ 的酉性及迹的循环性，有
+\[
+ \langle K_a,K_c\rangle_{\mathrm{HS}}
+ =\operatorname{tr}(K_a^*K_c)
+ =\|\mathcal P^*\rho(a^{-1}c)\mathcal P\|_{\mathrm{HS}}^2
+ =\beta(a^{-1}c),
+\]
+故 $\beta$ 为正型函数. 在单位元处，引理~\ref{lem:b-unit-moment} 给出
+\[
+ \sqrt{\beta(1)}
+ \le \|I\|_{\mathrm{HS}}+\|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}
+ \le (1+b^{-6})\sqrt{u_0}.
+\]
+结合 $b\ge1000$ 可知 $\beta(1)\le 2u_0$. 现对容许展开数据应用引理~\ref{lem:b-global-moment}
+（单点二阶矩已表为上述 Gram 矩阵，且单位元处不超过 $2u_0$），得
+\[
+ \sum_{g\in G}\beta(g)
+ \le (1+9b^{-4})\frac{u_0^2}{d_{\mathrm{Bes}}\mu},
+\]
+其中 $d_{\mathrm{Bes}}>0$ 为局部 Bessel 度数之积，
+$\mu>0$ 为标准格各类的稳定子阶数倒数之和.
+
+另一方面，由简单迹公式比较所得的内形式交换~\cite{HarrisLabesse2004,Labesse2011}可知，好形式空间 $W$ 的维数等于定号空间
+$W_m$ 上好形式空间的维数，而后者是 $W_m$ 上主层形式空间的子空间.
+该定号空间上的层作用自由，故主层形式空间的维数等于
+类数 $|G|\mu$ 乘以无穷位形式度数之积；
+Weyl 维数公式将该乘积识别为 $d_{\mathrm{Bes}}$，
+从而 $r\le |G|\mu d_{\mathrm{Bes}}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L65}{好形式空间维数界}.}
+将二阶矩总和估计与此维数上界相乘并消去正因子 $\mu d_{\mathrm{Bes}}$，即得所求.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{443}.}
+\begin{theorem}[B：少量平移张成目标空间的绝大部分]
+\label{thm:enough-forms}
+\emitthmsource
+有 $r>0$，且存在有限集 $T\subset G$ 使得
+\begin{equation}
+  |T|\dim_{\mathbb C}U\le 5r\log(1+2b^2),\qquad
+  \dim_{\mathbb C}\sum_{g\in T}\operatorname{im}P_g
+        \ge (1-4/b^2)r.
+\label{eq:b-spanning}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{全源映射的两项估计.}
+记全源空间为 $U_0$，置 $u_0=\dim_{\mathbb C}U_0>0$. 取全源的等距坐标，记 $\mathcal P$ 为缩放的 Poincaré 映射，$e_0$ 为向 $W$ 的正交投影，$\rho(g)$ 为平移诱导的酉作用，则 $e_0$ 与每个 $\rho(g)$ 交换. 记子空间 $F$ 的正交投影为 $\pi_F$，Hilbert--Schmidt 范数为 $\|\cdot\|_{\mathrm{HS}}$. 引理~\ref{lem:b-near-isometry} 与~\ref{lem:b-second-moment} 分别给出
+\begin{align*}
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ &\ge \dim F-5b^{-4}u_0 &&(F\subseteq U_0),\\
+ r\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ &\le |G|(1+9b^{-4})u_0^2.
+\end{align*}
+取 $\eta=(8b^2)^{-1}$. 容许尺度保证 $b\ge10$，故
+$5b^{-4},9b^{-4}\le\eta$ 且 $0<16\eta<1$. 在第一式中取 $F=U_0$，右端严格为正，从而 $e_0\mathcal P$ 非零，特别地 $r>0$.
+
+\emph{利用二阶矩选取带来充分维数增益的平移.}
+令 $Q_g=e_0\rho(g)\mathcal P:U_0\to W$.
+固定子空间 $F\subseteq W$，置 $\alpha=\dim F/r$，并令
+\[
+ M=\frac{1}{|G|}\sum_{g\in G}\rho(g)\mathcal P\mathcal P^*\rho(g)^* .
+\]
+在 $\|M\|_{\mathrm{HS}}^2=\operatorname{tr}(M^2)$ 的双重求和中，
+由迹的循环性，指标 $(g,h)$ 对应的迹项等于
+$\|\mathcal P^*\rho(g^{-1}h)\mathcal P\|_{\mathrm{HS}}^2$.
+每个 $g^{-1}h$ 恰出现 $|G|$ 次，故二阶矩估计给出
+\[
+ \|M\|_{\mathrm{HS}}^2
+ =\frac{1}{|G|}\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ \le \frac{(1+\eta)u_0^2}{r}.
+\]
+同样由迹的循环性，$\operatorname{tr}(\pi_F M)$ 恰为
+$\|\pi_F\rho(g)\mathcal P\|_{\mathrm{HS}}^2$ 关于 $g$ 的平均.
+对 Hilbert--Schmidt 内积施用 Cauchy--Schwarz 不等式，得
+\[
+ \operatorname{tr}(\pi_F M)
+ \le \sqrt{\dim F}\,\|M\|_{\mathrm{HS}}
+ \le u_0\sqrt{\alpha(1+\eta)}
+ \le \tfrac12(1+\alpha+\eta)u_0.
+\]
+于是存在某个 $g\in G$ 使该平方范数不超过此上界. 令 $F'=Q_g^{-1}F$；在 $F'$ 上，
+$e_0\rho(g)\mathcal P$ 与 $\pi_F\rho(g)\mathcal P$ 一致
+（因 $e_0\rho(g)\mathcal P$ 取值于 $F$ 而其余部分正交于 $W$）.
+交换 $e_0$ 与 $\rho(g)$ 并利用 $\rho(g)$ 的酉性，可得
+\[
+ \|e_0\mathcal P\pi_{F'}\|_{\mathrm{HS}}^2
+ =\|\pi_F\rho(g)\mathcal P\pi_{F'}\|_{\mathrm{HS}}^2
+ \le\|\pi_F\rho(g)\mathcal P\|_{\mathrm{HS}}^2.
+\]
+再将近等距估计用于 $F'$，即知
+\[
+ \dim F'\le \tfrac12(1+\alpha+3\eta)u_0 .
+\]
+
+\emph{贪心选取平移.}
+采用贪心覆盖论证（与次模集合覆盖的经典分析~\cite{Wolsey1982}同源），若当前和空间 $F$ 的余维 $c=r-\dim F$ 满足 $c>16\eta r$，
+则 $1-\alpha>16\eta$. 由商空间同构
+$(F+Q_g(U_0))/F\simeq U_0/Q_g^{-1}F$，前述所选平移带来的维数增益至少为
+\[
+ u_0-\dim F'\ge \tfrac12(1-\alpha-3\eta)u_0
+ \ge \tfrac{13}{32}(1-\alpha)u_0
+ \ge \tfrac25(1-\alpha)u_0.
+\]
+因此余维不超过 $(1-\tau)c$，其中 $\tau=2u_0/(5r)>0$.
+从 $F=0$ 作第一步时新余维非负，该上界同时说明 $\tau\le1$.
+若余维已不超过 $16\eta r$ 则停止增添平移；
+否则结合 $1-\tau\le e^{-\tau}$ 反复迭代，自 $F=0$ 出发至多经过
+\[
+ k=\Bigl\lceil\tau^{-1}\log\bigl((16\eta)^{-1}\bigr)\Bigr\rceil
+\]
+步即可使余维不超过 $16\eta r=2r/b^2$. 因 $k\tau\le1+\log((16\eta)^{-1})$，
+所得有限集 $T$ 满足
+\[
+ |T|u_0\le ku_0
+ \le \tfrac52\bigl(1+\log((16\eta)^{-1})\bigr)r
+ \le 5r\log(1+2b^2),
+\]
+末步利用了 $(16\eta)^{-1}=b^2/2\le1+2b^2$ 与 $1\le\log(1+2b^2)$.
+
+\emph{将平移限制至分歧源空间.}
+由引理~\ref{lem:a-ramified-dimension} 与~\ref{lem:a-ramified-loss-scale} 得
+\[
+ u_0-\dim U\le \frac{f}{N-1}u_0\le b^{-8}u_0.
+\]
+
+商空间 $\bigl(\sum_{g\in T}Q_g(U_0)\bigr)\big/\bigl(\sum_{g\in T}Q_g(U)\bigr)$ 是
+$\bigoplus_{g\in T}U_0/U$ 的商，故从全源像之和限制至分歧源像之和，
+维数至多再损失
+\[
+ |T|(u_0-\dim U)
+ \le 5r b^{-8}\log(1+2b^2)
+ \le 2r/b^2 ,
+\]
+末步由 $1+2b^2\le b^3$、$\log b\le b$ 及 $b\ge10$ 得出.
+在源空间等距坐标的识别下，$Q_g(U)$ 即为归一化映射 $P_g$ 的像
+（缩放 Poincaré 映射与归一化映射所乘标量均非零，不改变像空间）.
+合并两次维数损失，所得余维至多为 $4r/b^2$，且 $|T|\dim U\le |T|u_0$ 保持所需的平移数目界.
+\end{proof}
