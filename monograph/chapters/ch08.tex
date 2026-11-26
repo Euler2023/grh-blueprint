@@ -1,0 +1,217 @@
+\chapter{大间隙离散序列与实位周期}
+\label{chap:discrete-series}
+\label{chap:appendix-ds}
+
+\begin{chapterguide}
+本章建立实酉群上一个离散序列周期积分的定量模长下界. 证明结合 Flensted--Jensen 矩阵系数在单位元邻域的高斯逼近、远离单位元时关于算子范数的快速衰减，以及酉群算子范数球的体积覆盖比较. 最后一节说明该周期下界如何分别支撑定理 B 中的 Bessel 测试与定理 C 中的辅助形式张成.
+\end{chapterguide}
+
+\section{离散序列系数与陡峭参数}
+\label{sec:ch8-steep-params}
+
+设 $I$ 为非空有限指标集，$\varepsilon\colon I\to\{1,-1\}$ 为符号函数. 记 $D_\varepsilon=\operatorname{diag}(\varepsilon)$，并置
+\[
+\Ugrp(\varepsilon)=\bigl\{g\in\operatorname{GL}(\CC^I)\mid g^*D_\varepsilon g=D_\varepsilon\bigr\},
+\qquad
+K_\varepsilon=\Ugrp(\varepsilon)\cap \Ugrp(|I|).
+\]
+在极大紧子群 $K_\varepsilon$ 上取总质量为 $1$ 的归一化 Haar 测度. 本章中 $g^*$ 表示共轭转置，$\|\cdot\|_{\mathrm{op}}$ 表示相对于标准正定 Hermite 内积的算子范数，$\|\cdot\|_{\mathrm F}$ 表示 Frobenius 范数.
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/DiscreteSeries/FlenstedJensen/Defs.lean}{159}.}
+\begin{definition}[加倍参数与大间隙]
+\label{def:ch8-large-gap}
+\emitthmsource
+设 $n=|I|$，$l=2\lambda\in\ZZ^I$，$h$ 为非负整数. 若 $l$ 的各项互异，每项的奇偶性与 $n-1$ 一致，且满足
+\[
+ |\lambda_i-\lambda_j|\ge 500n^3+h
+ \qquad(\varepsilon_i\ne\varepsilon_j),
+\]
+则称 $l$ 具有余量为 $h$ 的大间隙. 记 $\rho_l$ 为由 $l_i>l_j$ 选定的正根 $e_i-e_j$ 之半和，$\rho_{\mathrm c,l}$ 为其中满足 $\varepsilon_i=\varepsilon_j$ 的紧正根之半和；相应的最低 $K_\varepsilon$-型的最高权为 $\mu_l=\lambda+\rho_l-2\rho_{\mathrm c,l}$.
+\end{definition}
+
+记 $c_l$ 为参数 $l$ 对应的归一化 Flensted--Jensen 矩阵系数（最初由 Flensted-Jensen~\cite{FlenstedJensen1980} 作为半单对称空间与离散序列最低 $K$-型的显式函数引入）. 对整权向量 $w$，定义 $M_w(A)$ 为所有正整数阈值 $t$ 对应主子式 $\det A_{\{i:w_i\ge t\},\{i:w_i\ge t\}}$ 之积，再乘以所有 $t\le0$ 对应主子式与 $\det A$ 之比的乘积（约定空指标集对应的主子式为 $1$；当 $A$ 可逆时仅有有限个因子可能异于 $1$）. 若记 $a$ 为 $g$ 保留同号对角块所得的块对角部分，并令 $z=a^{-1}g$，则由 $g^*D_\varepsilon g=D_\varepsilon$ 知每个同号方块 $a_{\pm\pm}$ 均满足 $a_{\pm\pm}^*a_{\pm\pm}=1+g_{\mp\pm}^*g_{\mp\pm}$，从而 $a$ 必然可逆. 矩阵系数的积分表达式为
+\begin{equation}
+\label{eq:ch8-dscoeff}
+c_l(g)=
+\frac{
+ \displaystyle\int_{K_\varepsilon}
+ \frac{M_{\mu_l}(au)\,\overline{M_{\mu_l}(u)}}
+ {M_{-\lambda-\rho_l}(u^*zu)}\,du
+}{
+ \displaystyle\int_{K_\varepsilon}|M_{\mu_l}(u)|^2\,du
+}.
+\end{equation}
+当 $g=1$ 时有 $a=z=1$，主子式积 $M_{-\lambda-\rho_l}(u^*zu)$ 恒等于 $1$；此时分子与分母相等，且分母在单位元附近的被积函数严格为正，故 $c_l(1)=1$. 下文调用的衰减与局部逼近估计均采用此归一化；其底层证明涉及对式~\eqref{eq:ch8-dscoeff} 中主子式的定量估计，本章在各调用处注明相应的源码输入.\leanfn{Lean 源码：\leansourcelink{src/Lib/DiscreteSeries/FlenstedJensen/Defs.lean}{180}.}
+
+设 $J$ 为另一非空有限指标集，$m=|J|$，$\eta\colon J\to\{1,-1\}$ 为符号函数，$k$ 为 $\Ugrp(\eta)$ 的加倍参数，并简记 $\mu=\mu_l$、$\mu'=\mu_k$. 设 $S$ 是配有拓扑与 Borel $\sigma$-代数、且乘法可测的群，考虑群同态
+\[
+j\colon S\longrightarrow \Ugrp(\varepsilon)\times \Ugrp(\eta),\qquad
+s\longmapsto (g_s,g'_s).
+\]
+下面的定义刻画了两个离散序列矩阵系数之间的相位匹配关系.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/SteepParameters.lean}{101}.}
+\begin{definition}[Laplace 数据]
+\label{def:ch8-laplace-datum}
+\emitthmsource
+设 $X$ 为有限集，$e\colon X\sqcup\{0,\ldots,M-1\}\xrightarrow{\sim} I$ 为双射，$\tau\colon X\to J$ 为映射，$B$ 为实数. 一组 Laplace 数据由下列四条条件给出：
+\begin{enumerate}
+\item $l$ 关于 $e$ 与 $B$ 陡峭：在 $X$ 对应的指标上，符号恒为 $+1$ 且 $\mu$ 取值为 $0$；在其余指标上，符号按 $(-1)^i$ 交替，且 $\mu$ 随 $i$ 严格递减并取值于区间 $[-3B,-B]$.
+\item 对每个 $x\in X$，均有 $\eta_{\tau(x)}=1$ 且 $\mu'_{\tau(x)}=0$；所有 $\mu'_i$ 均非负，且每当存在 $i'$ 使得 $\eta_i\ne\eta_{i'}$ 时，必有 $\mu'_i\le 3B$.
+\item $\operatorname{tr}(g_s-1)=\operatorname{tr}(g'_s-1)$，且相位函数
+\begin{equation}
+\label{eq:ch8-phase}
+\varphi(s)=\operatorname{tr}\bigl(\operatorname{diag}(\mu)(g_s-1)\bigr)
+           -\operatorname{tr}\bigl(\operatorname{diag}(\mu')(g'_s-1)\bigr)
+\end{equation}
+取值于纯虚轴 $i\RR$，并满足加性关系 $\varphi(st)=\varphi(s)+\varphi(t)$.
+\item 记 $I_e\colon\CC^X\to\CC^I$ 与 $I_\tau\colon\CC^X\to\CC^J$ 分别为将 $x$ 处标准基向量映至 $e(x)$ 与 $\tau(x)$ 处标准基向量的线性嵌入. 对每个 $u\in \Ugrp(|X|)$，均存在 $s\in S$ 使得
+\[
+ g_s-1=I_e(u-1)I_e^*,\qquad
+ g'_s-1=I_\tau(u-1)I_\tau^* .
+\]
+\end{enumerate}
+\end{definition}
+
+给定 Laplace 数据后，定义周期的被积函数为
+\begin{equation}
+\label{eq:ch8-integrand}
+  \theta(s)=c_l(g_s)\,\overline{c_k(g'_s)}\,\exp(-\varphi(s)).
+\end{equation}
+特别地，因 $\varphi(s)$ 为纯虚数，故 $|\theta(s)|=|c_l(g_s)|\,|c_k(g'_s)|$. 相位函数的加性亦将在下节的局部化与对数相位恒等式中发挥关键作用.
+
+\section{局部化与高斯逼近}
+\label{sec:ch8-gaussian}
+
+设 $l,k$ 均具有余量为 $h$ 的大间隙，且各项绝对值至多为整数 $L$. 取 $\beta\ge 3$ 满足 $n+m+L\le\beta$，记
+\[
+Q=(n+m)^2,\qquad T=Q\log\beta,\qquad
+r=10^{-13}/T,\qquad t_0=\exp(-100T).
+\]
+本节假定 $B\ge1$ 且 $h\ge10^{30}T^3$. 对 $g\in \Ugrp(\varepsilon)$，记 $g_{\mathrm{nc}}$ 为仅保留异号指标间矩阵元所得的非紧部分，$g'_{\mathrm{nc}}$ 类似定义.
+
+\begin{lemma}[被积函数的实部及衰减估计]
+\label{lem:ch8-pointwise}
+记 $J_s=g_s\oplus g'_s$ 以及 $G(s)=(2/\|J_s\|_{\mathrm{op}})^{9Q}$. 则对一切 $s\in S$，均有
+\begin{align}
+|\theta(s)|&\le 2\operatorname{Re}\theta(s)+12t_0,
+\label{eq:ch8-cone-bound}\\
+|\theta(s)|&\le G(s),&
+|\theta(s)|&\le 2\operatorname{Re}\theta(s)+6\beta^{-50Q}G(s).
+\label{eq:ch8-decay}
+\end{align}
+\end{lemma}
+\begin{proof}
+首先证明式~\eqref{eq:ch8-cone-bound}. 若 $\|(g_s)_{\mathrm{nc}}\|_{\mathrm F}^2+\|(g'_s)_{\mathrm{nc}}\|_{\mathrm F}^2\ge r^2$，则对两个矩阵系数分别应用 Flensted--Jensen 系数的四次幂估计，可得
+\[
+ |\theta(s)|^4
+ \le \bigl((1+\|(g_s)_{\mathrm{nc}}\|_{\mathrm F}^2)
+           (1+\|(g'_s)_{\mathrm{nc}}\|_{\mathrm F}^2)\bigr)^{-h}
+ \le (1+r^2)^{-h}.
+\]
+因 $T\ge1$，有 $r^2\le1$ 及 $\log(1+r^2)\ge r^2/2$，从而 $h\log(1+r^2)\ge 5000T$. 于是 $|\theta(s)|\le t_0$，立得 $|\theta(s)|-2\operatorname{Re}\theta(s)\le3t_0$.\leanfn{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{163}.}
+
+若上述非紧部分的平方和至多为 $r^2$，则由局部化引理可选取 $s_1\in S$，使得 $\theta(s)=\theta(s_1)$ 且 $g_{s_1}$、$g'_{s_1}$ 到单位元的 Frobenius 距离均至多为 $4r$. 在此邻域内，由 Laplace 数据的对数相位恒等式，可将式~\eqref{eq:ch8-phase} 中的矩阵差替换为矩阵对数而相位 $\varphi(s_1)$ 保持不变. 由于两个矩阵对数分别落入相应的酉 Lie 代数，其对角元皆为纯虚数，加权迹亦然. 在式~\eqref{eq:ch8-integrand} 中从两个矩阵系数各剥离其对数相位，记所得第一项为 $u$、第二项的共轭为 $v$，则相位恒等式给出 $\theta(s_1)=uv$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Periods.lean\#L293}{对数相位的消去}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Localization.lean\#L317}{对数相位恒等式}.}
+
+注意到在本应用中 $4rT\le10^{-12}$，且对 $d\in\{n,m\}$ 均有 $d^2\le T$ 与 $d^2\log(d+L+1)\le T$，故高斯逼近引理适用，从而存在 $a_1,a_2\in[0,1]$，使得 $|u-a_1|\le a_1/10+t_0$ 且 $|v-a_2|\le a_2/10+t_0$. 展开 $uv-a_1a_2$ 并利用 $t_0\le1$，得
+\[
+ |uv-a_1a_2|\le \frac{21}{100}a_1a_2+4t_0.
+\]
+因 $a_1a_2\ge0$，遂有
+\[
+ |uv|-2\operatorname{Re}(uv)
+ \le -a_1a_2+3|uv-a_1a_2|\le12t_0,
+\]
+这就完成了式~\eqref{eq:ch8-cone-bound} 的证明.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Localization.lean\#L664}{局部化引理}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/GaussianShape.lean\#L332}{高斯逼近引理}.}
+
+最后，由算子范数衰减估计可知，对任意整数 $0\le c\le h$ 均有 $|\theta(s)|\le (2/\|J_s\|_{\mathrm{op}})^c$. 因 $h\ge18Q$，分别取 $c=9Q$ 与 $c=18Q$，即得 $|\theta(s)|\le G(s)$ 与 $|\theta(s)|\le G(s)^2$. 令 $\Delta=\max\bigl(0,|\theta(s)|-2\operatorname{Re}\theta(s)\bigr)$. 结合式~\eqref{eq:ch8-cone-bound} 与 $|\operatorname{Re}\theta(s)|\le|\theta(s)|$，有
+\[
+ 0\le\Delta\le12t_0,\qquad \Delta\le3G(s)^2.
+\]
+将两式相乘后取平方根，便得 $\Delta\le6t_0^{1/2}G(s)=6\beta^{-50Q}G(s)$，即式~\eqref{eq:ch8-decay}.\leanfn{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{358}.}
+\end{proof}
+
+\section{周期的模长下界}
+\label{sec:ch8-laplace-theorem}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{493}.}
+\begin{theorem}[定量 Laplace 周期估计]
+\label{thm:ch8-laplace}
+\emitthmsource
+取定义~\ref{def:ch8-laplace-datum} 中的 Laplace 数据，设 $B\ge1$，$l,k$ 均具有余量为 $h$ 的大间隙，且各项绝对值至多为非负整数 $L$. 假定参数满足
+\[
+ \beta\ge10^{12},\qquad n+m+L\le\beta,\qquad
+ h\ge10^{30}\bigl((n+m)^2\log\beta\bigr)^3.
+\]
+设映射 $s\mapsto g_s$ 为真映射，$s\mapsto g'_s$ 连续，并设 $\nu$ 为 $S$ 上在紧集上有限的右不变 Borel 测度. 则被积函数~\eqref{eq:ch8-integrand} 在 $S$ 上关于 $\nu$ 可积，且对集合
+\[
+ \mathcal A=\bigl\{s\in S\mid \|g_s\|_{\mathrm{op}}\le\beta+1,\
+                           \|g'_s\|_{\mathrm{op}}\le\beta+1\bigr\}
+\]
+成立下界估计
+\begin{equation}
+\label{eq:ch8-laplace-lower}
+  \nu(\mathcal A)\le
+  \beta^{20(n+m)^2}\left|\int_S\theta(s)\,d\nu(s)\right|.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+沿用记号 $Q=(n+m)^2$ 与 $J_s=g_s\oplus g'_s$. 直和矩阵的算子范数等于两分块范数的较大者，故 $\mathcal A=\{s\in S:\|J_s\|_{\mathrm{op}}\le\beta+1\}$. 映射 $s\mapsto J_s$ 连续，且任意紧集的原像皆为第一分量投影所得紧集原像中的闭子集，因而它亦为真映射. 置
+\[
+ \mathcal N=\bigl\{s\in S:\|J_s-1\|_{\mathrm{op}}\le(200\beta^5)^{-1}\bigr\},
+ \qquad
+ \mathcal U=\bigl\{s\in S:\|J_s-1\|_{\mathrm{op}}\le1\bigr\}.
+\]
+因酉群在矩阵空间中闭，这三个集合均为紧集；由三角不等式显然有 $\mathcal U\subseteq\mathcal A$.
+
+将酉群算子范数球的体积覆盖估计及其分层积分推论施用于此处的真同态与右不变测度，分别得到
+\begin{equation}
+\label{eq:ch8-cover}
+ \nu(\mathcal A)\le\beta^{16Q}\nu(\mathcal N),\qquad
+ \int_S G(s)\,d\nu(s)\le16^{9Q}\nu(\mathcal U).
+\end{equation}
+第二式的衰减指数 $9Q$ 严格大于分层积分所需的阈值 $8Q$. 由式~\eqref{eq:ch8-decay}，被积函数 $\theta$ 受可积函数 $G$ 控制；又矩阵系数连续，且式~\eqref{eq:ch8-phase} 保证相位连续，故 $\theta$ 在 $S$ 上可积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Periods.lean\#L470}{大小球的覆盖比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Haar/TotalMass.lean\#L427}{衰减的分层积分}.}
+
+在小球 $\mathcal N$ 上，两个分块到单位元的算子范数距离均至多为 $(200\beta^5)^{-1}$. 由单位元小球上的系数下界可知，两个矩阵系数的模长各至少为 $1/2$，从而式~\eqref{eq:ch8-integrand} 给出 $|\theta(s)|\ge1/4$. 将式~\eqref{eq:ch8-decay} 的实部估计在整个 $S$ 上积分，并结合式~\eqref{eq:ch8-cover}，便得\leanfn{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{235}.}
+\[
+ \frac{\nu(\mathcal N)}4
+ \le 2\left|\int_S\theta\,d\nu\right|
+     +6\beta^{-50Q}16^{9Q}\nu(\mathcal A).
+\]
+记 $V=\nu(\mathcal A)$ 与 $P=\bigl|\int_S\theta\,d\nu\bigr|$. 联立上式与式~\eqref{eq:ch8-cover} 的第一式，得到
+\[
+ V\le 8\beta^{16Q}P
+    +24\beta^{-34Q}16^{9Q}V.
+\]
+由 $\beta\ge16$ 及 $Q\ge1$ 可知，右端第二项的系数满足 $24\beta^{-34Q}16^{9Q}\le 24\beta^{-25Q}\le 1/2$. 移项整理并利用 $16\beta^{16Q}\le\beta^{20Q}$，即证得式~\eqref{eq:ch8-laplace-lower}.
+\end{proof}
+
+\begin{remark}
+由式~\eqref{eq:ch8-laplace-lower} 立即可见，只要 $\nu(\mathcal A)>0$，必有 $\int_S\theta\,d\nu\ne0$. 在对位置群取非零 Haar 测度的实际应用中，$\mathcal A$ 包含单位元的开邻域，因而自动满足该正体积条件. 鉴于一般右不变测度允许退化为零测度，定理仍保留了定量形式~\eqref{eq:ch8-laplace-lower}.
+\end{remark}
+
+\section{驻相位置群及其应用}
+\label{sec:ch8-stationary-position}
+
+考虑两个酉群秩差为 $2d+1$ 的情形：取线性无关向量 $v_1,\ldots,v_{d+1}\in\CC^I$，使得关于符号型 $D_\varepsilon$ 所有两两配对均为零，唯独 $v_{d+1}$ 的自配对为 $\pm1$；另取等距嵌入 $i_0\colon(\CC^J,D_\eta)\to(\CC^I,D_\varepsilon)$，其像正交于这些向量. 记 $A_j=\operatorname{span}(v_1,\ldots,v_j)$（$A_0=0$），定义位置群为
+\[
+ R=\bigl\{g\in \Ugrp(\varepsilon)\mid (g-1)A_j\subseteq A_{j-1},\
+                   1\le j\le d+1\bigr\}.
+\]
+令 $\sigma(g)$ 为 $(g-1)v_{a+1}$ 展开式中 $v_a$ 的系数在 $1\le a\le d$ 上的总和. 由于 $v_1,\ldots,v_{d+1}$ 线性无关，这些系数唯一确定；而在展开 $g_1g_2-1$ 时，交叉项 $(g_1-1)(g_2-1)$ 至少降低两级旗标，故 $\sigma$ 为加性同态.\leanfn{Lean 源码：\leansourcelink{src/New/Appendix/DiscreteSeries/PositionGroup.lean}{91}.}
+
+驻相条件进一步要求 $\operatorname{diag}(\mu)v_a=v_{a+1}$（$1\le a\le d$）、$i_0^\dagger\operatorname{diag}(\mu)i_0=\operatorname{diag}(\mu')$，且 $i_0$ 在公共指标集 $X$ 对应的坐标上是恒等嵌入，其中 $i_0^\dagger=D_\eta^{-1}i_0^*D_\varepsilon$ 表示相对于两种符号型的伴随映射. 群 $R$ 在商空间 $A_d^\perp/A_d$ 上诱导自然作用，且 $i_0$ 所对应的子空间在此作用下稳定；在 $i_0$ 坐标下所得同态记为 $g\mapsto g'=i_0^\dagger g i_0\in \Ugrp(\eta)$. 驻相数据引理表明，在定义~\ref{def:ch8-laplace-datum} 的权条件下，同态 $j(g)=(g,g')$ 所对应的相位函数恰为
+\begin{equation}
+\label{eq:ch8-stationary-phase}
+ \varphi(g)=\sigma(g)-\overline{\sigma(g)},
+\end{equation}
+并且同时验证迹条件与公共紧酉群的对角嵌入条件；其中加权迹恒等式的证明利用了 $g-1$ 与 $g^{-1}-1$ 对旗标的作用以及最低型权的移位关系.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Positions.lean\#L76}{驻相位置的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L309}{驻相数据引理}.}
+
+在位置群 $R$ 上，将式~\eqref{eq:ch8-stationary-phase} 代入式~\eqref{eq:ch8-integrand} 即得驻相周期的被积函数. 闭子群 $R$ 到 $\Ugrp(\varepsilon)$ 的包含是真映射，第二分量的诱导同态连续，故满足定理~\ref{thm:ch8-laplace} 的映射假设. 另一常用情形是群 $S$ 经第一分量真满射至 $R$，且第二分量与系数和均由该像点诱导：此时可将测度 $\nu$ 沿满射推前——对任意 $r\in R$ 取原像 $s\in S$，右平移 $r$ 的不变性直接来自右平移 $s$ 的不变性，而真性保证推前测度在紧集上有限；被积函数与范数约束均由 $R$ 拉回，因此式~\eqref{eq:ch8-laplace-lower} 同样适用于原周期积分.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L373}{位置群上的周期}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L426}{真满射下的周期估计}.}
+
+上述周期估计在全书主线中有两处直接应用：
+\begin{itemize}
+\item \emph{定理 B 中的 Bessel 测试.} 选取尺寸受控的实位标架，将 Bessel 图群经由第一分量映入相应的位置群. 此时第二分量落入紧酉群内，第一分量距单位元至多为 $1$ 的集合遂包含于式~\eqref{eq:ch8-laplace-lower} 所用的大球约束之中，从而真满射形式的周期估计直接给出该测试的局部下界.\leanfn{Lean 源码：\leansourcelink{src/New/Spanning/Bessel/LargeFunction.lean}{427}.}
+\item \emph{定理 C 中的辅助形式张成.} 此处用到秩差为 $1$ 的限制周期. 当 $d=0$ 时，位置群固定 $v_1$，在其正交补上的作用与小酉群同构，且相位~\eqref{eq:ch8-stationary-phase} 恒为零. 在每个无穷位，源码利用该特例选取一点以从下方控制实位矩阵系数的配对，再将各无穷位所选之点合成为实阿代尔平移 $g$，结合深层 Poincaré 周期的恒等陪集近似，最终得出如下张成判据：若 $Y_0$ 主同余层上的形式与所有限制 $x\mapsto\phi((x\oplus1)g)$（其中 $\phi$ 遍历 $Y_0\oplus\langle1\rangle$ 上具有规定型与深层的形式）皆 Petersson 正交，则该形式必为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L678}{秩差为一的限制周期}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/DeepLevelVanishing.lean\#L694}{辅助形式的限制}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/DeepLevelPoincarePeriod.lean\#L634}{恒等陪集近似}.}
+\end{itemize}

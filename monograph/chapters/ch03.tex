@@ -1,0 +1,2217 @@
+\chapter{复合 Theta 提升与定理 A}
+\label{chap:upperbound}
+
+\begin{chapterguide}
+定理 A(a) 以短整形式张成分歧源空间，并控制其归一化像在各复共轭下的范数. 定理 A(b) 控制这些映射在整源形式上的局部格指数. 两个估计均依赖式~\eqref{eq:a-local-gain} 定义的局部增益，以及式~\eqref{eq:normalized-poincare} 中的有理归一化因子 $c_B$. \secref{sec:a-seesaw}的 Seesaw 恒等式将上链的复合提升估计转移至下链.
+\end{chapterguide}
+
+\section{短整形式与无穷位范数}
+\label{sec:a-short-basis}
+
+记 $U$ 为分歧源形式（\emph{ramified source forms}）空间，$W$ 为好目标形式（\emph{good target forms}）空间，并置 $r=\dim_{\mathbb C}W$. 令 $G$ 为 $p_0,p_1$ 上方所选有限位 $w\mid\pi_M$ 处的一般线性群 $\mathrm{GL}_{r_0}(\mathbf k_w)$ 的直积.
+
+对 $g\in G$，记 $P_g\colon U\to W$ 为式~\eqref{eq:normalized-poincare} 中的归一化 Poincaré 映射（\emph{Poincaré map}）. 其构造依次使用 Poincaré 级数、由 $g$ 给出的右平移和好目标空间上的投影. 记 $\Theta_1$ 为平凡扭转下的下链 Theta 提升，$\|z\|^2_\sigma$ 为 $z$ 在复自同构 $\sigma$ 下的平方范数. 以 $I\subseteq U$ 表示在所有 $p$-进素位处皆整的源形式集合.
+
+虚二次域 $K=\mathbb Q(\sqrt{-d})$ 的二次特征记为 $\chi_K=\chi_d$. 令 $I_p$ 在 $\chi_d(p)=-1$ 时为正奇数集，在 $p=d$ 时为正整数集，在 $\chi_d(p)=1$ 时为空集；取 $v_p^*=1$（$p\ne d$）或 $1/2$（$p=d$）. 素数 $p$ 处的局部增益（\emph{local gain}）定义为
+\begin{equation}\label{eq:a-local-gain}
+\begin{aligned}
+ s_p(y,\tau)&=v_p^*\sum_{e\in I_p}\bigl(y/p^e-\kappa_{\nu_{p^e}\tau}\bigr)_+,\\
+ \mu_p&=\sum_{\tau\in\Phi}s_p(\kappa_\tau,\tau),\qquad
+ \gamma_p=m\left(\sum_{\tau\in\Phi_a}s_p(a,\tau)+k\mu_p\right).
+\end{aligned}
+\end{equation}
+对 $S'\subseteq\Phi$，以 $C_p(S')$ 记未标记素位间的碰撞和（\emph{collision sum}），按有序指标对 $(\tau,j)$ 定义为
+\[
+ C_p(S')=\sum_{\substack{\tau\in\Phi_a\setminus S',\ j\in I_p\\
+                         \nu_{p^j}\tau\in\Phi_a\setminus S'}}\frac a{p^j}.
+\]
+
+沿用定义~\ref{def:twisted-lattice} 的记号. 对有限族 $y$，$\mathcal I_\delta(y)$ 要求存在一族非负局部损失 $j_p$，使得对任意有限素数集 $J$ 均有 $\sum_{p\in J}j_p\log p\le\delta$. 在 $p$ 上方的每个 $p$-进素位处，须有一个行列式赋值至多为 $j_p$ 的整矩阵，将 $y$ 映入同时满足所有允许扭转条件的整格. 此处按 $v_p(p)=1$ 归一化. 余体积上界 $\mathcal V_V(y)$ 则要求在每个复自同构下，$\Theta_1(y)$ 的共轭坐标相对于原有理内积矩阵所构成的 Gram 行列式绝对值至多为 $e^V$.
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean}{887}.}
+\begin{lemma}[正定酉格中的短基]
+\label{lem:a-unitary-lattice-basis}
+\emitthmsource
+设 $E$ 为 CM 域，$f_E$ 为其无穷位数，$g$ 为秩 $n\ge1$ 的标准正定酉群的有限阿代尔点，又设正整数 $\Delta_0$ 属于 $E/\mathbb Q$ 的差积理想. 则存在 $Y\in\mathrm{GL}_n(E)$，使得 $g^{-1}Y$ 为有限阿代尔整矩阵，且在每个复嵌入下 $Y$ 的每个矩阵元绝对值至多为 $6\Delta_0(f_E n)^2$.
+\end{lemma}
+\begin{proof}
+记 $L=E^n\cap g\widehat{\mathcal O}_E^{\,n}$，并以 $\iota_\infty$ 表示在各无穷位各取一个复嵌入所得的实坐标映射，则 $\Lambda=\iota_\infty(L)$ 是实维数为 $d_{\mathbb R}=2f_E n$ 的满秩格. 记 $h$ 为标准 Hermite 形式（\emph{Hermitian form}）. 由 $g$ 的酉性可知，$g\widehat{\mathcal O}_E^{\,n}$ 关于有限阿代尔的 $h$-配对自对偶，即其整对偶要求与整个格的配对取值于 $\widehat{\mathcal O}_E$. 结合 $L$ 在其有限完备化中的稠密性，这一自对偶性亦可改写为
+\[
+ \{v\in E^n:h(v,L)\subseteq\mathcal O_E\}=L.
+\]
+对任意非零向量 $v\in L$，$h(v,v)$ 均为 $E$ 的最大实子域中的全正代数整数. 若 $\|\iota_\infty(v)\|<1$，则 $h(v,v)$ 在该实子域每个实嵌入下的像均小于 $1$，而这些像的乘积是正整数，矛盾. 由此可见，$\Lambda$ 中非零向量的长度至少为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L504}{格上的整 Hermite 配对}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L560}{非零格向量的长度下界}.}
+
+令 $L^\vee=\{v\in E^n:\operatorname{Tr}_{E/\mathbb Q}h(v,L)\subseteq\mathbb Z\}$. 由于 $L$ 是 $\mathcal O_E$-模，与 $L$ 的迹配对取整数值蕴含 $h(v,L)$ 落入逆差积理想 $\mathfrak D_{E/\mathbb Q}^{-1}$ 中. 乘以 $\Delta_0$ 后配对全部取整，由上式即得 $\Delta_0 L^\vee\subseteq L$. 在无穷位处，$\operatorname{Tr}_{E/\mathbb Q}h(v,l)=2\langle\iota_\infty(v),\iota_\infty(l)\rangle_{\mathbb R}$. 该迹配对在 $\mathbb Q$ 上非退化，故 $L$ 的任一 $\mathbb Z$-基的迹对偶基仍在 $E^n$ 中. 从而缩放格 $\Lambda'=(2/\Delta_0)\Lambda$ 的欧氏对偶格为
+\[
+ (\Lambda')^*=\iota_\infty(\Delta_0 L^\vee)\subseteq \Lambda.
+\]
+于是其最短非零向量的长度亦至少为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L674}{迹对偶与缩放格}.}
+
+由覆盖半径与对偶格第一极小值之间的格转移界~\cite{LLS1990}，$\Lambda'$ 的覆盖半径至多为 $r=d_{\mathbb R}^2$. 进而，$\Lambda'$ 中长度至多为 $3r$ 的向量张成整个实坐标空间. 事实上，若它们仅张成某个真子空间，则可取与该子空间正交且长度为 $2r$ 的向量 $u$. 由覆盖半径上界，存在 $\lambda\in\Lambda'$ 使 $\|\lambda-u\|\le r$，从而 $\|\lambda\|\le3r$，故 $\lambda$ 必属于该子空间；但这与 $u$ 到该子空间的距离为 $2r$ 相矛盾. 将上述短向量乘以 $\Delta_0/2$，即得 $L$ 中一族长度至多为 $3r\Delta_0/2=6\Delta_0(f_E n)^2$ 的向量. 由于其无穷位坐标张成整个实空间，这些向量必张成 $E^n$. 从中选取一组 $E$-基作为矩阵 $Y$ 的各列，便有 $g^{-1}Y$ 整，且每个复嵌入下的各矩阵元绝对值至多为对应列的长度.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L150}{弱格转移定理}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L809}{由覆盖半径构造短基}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Shimura/HeckeTower/HeckeData.lean}{979}.}
+\begin{lemma}[主同余层的稳定子判据]
+\label{lem:a-free-congruence-level}
+\emitthmsource
+设 $E$ 为至少有两个无穷位的 CM 域，$n\ge1$，记 $\Gamma$ 为秩 $n$ 的标准正定酉群的有理点群. 设 $K$ 是该酉群的有限阿代尔整点子群，且在互异的有限位集合 $\mathcal W$ 上均约化为单位矩阵. 若
+\[
+ \prod_{w\in\mathcal W}\operatorname{Nm}(w)>(2n)^{[E:\mathbb Q]},
+\]
+则对每个有限阿代尔点 $g$ 均有 $\Gamma\cap gKg^{-1}=\{1\}$.
+\end{lemma}
+\begin{proof}
+若 $\gamma\in\Gamma\cap gKg^{-1}$，则 $k=g^{-1}\gamma g\in K$. 置 $t=\operatorname{tr}(\gamma)-n\in E$. 因迹在共轭下不变，$t$ 在每个有限位处皆整，且在 $w\in\mathcal W$ 处约化为零，从而 $t\in\mathcal O_E$ 且属于 $\prod_{w\in\mathcal W} w$. 若 $t\ne0$，由主理想的整除关系即得
+\[
+ |\operatorname{Nm}_{E/\mathbb Q}(t)|
+ \ge \prod_{w\in\mathcal W}\operatorname{Nm}(w).
+\]
+另一方面，$\gamma$ 在每个复嵌入下皆为酉矩阵，其特征值的模均为 $1$，故 $|\tau(t)|\le2n$，从而 $|\operatorname{Nm}_{E/\mathbb Q}(t)|\le(2n)^{[E:\mathbb Q]}$. 这与假设矛盾，故必有 $t=0$. 于是，在任一复嵌入下，$\gamma$ 的特征值实部之和为 $n$，而每个实部均不超过 $1$，因此所有特征值皆为 $1$. 由于酉矩阵可对角化，便得 $\gamma=1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Shimura/HeckeTower/HeckeData.lean\#L923}{主同余层稳定子的迹论证}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{362}.}
+\begin{lemma}[无挠层上的短整形式]
+\label{lem:a-free-level-short-forms}
+\emitthmsource
+设 $E$ 为 CM 域，$f_E$ 为其无穷位数，$G_f$ 为秩 $n\ge1$ 的标准正定酉群的有限阿代尔点群，$\Gamma$ 为其有理点群，$K$ 为整层，且对每个 $g\in G_f$ 皆有 $\Gamma\cap gKg^{-1}=\{1\}$. 固定 Weyl 权 $(\kappa,e)$，记 $s$ 为所有无穷位上高度小于 $n$ 的列中所含方格总数. 若正整数 $\Delta_0$ 属于 $E/\mathbb Q$ 的差积理想，置 $C=6\Delta_0(f_E n)^2$. 则 $K$ 层的代数形式空间由 $C^{6(nf_E+s)}$-短形式张成. 此处称一个形式为 $M$-短的，是指其在每个 $p$-进素位处皆整，且每个 $\operatorname{Aut}(\mathbb C)$-共轭点值的平方 Weyl 范数（\emph{Weyl norm}）至多为 $M$.
+\end{lemma}
+\begin{proof}
+固定双陪集空间 $\Gamma\backslash G_f/K$ 的一组代表元. 对代表元 $g$ 及 Weyl 坐标向量 $v$，定义单类支撑形式 $\delta_{g,v}$，使其在 $\Gamma gK$ 之外取零，在 $g$ 处取值 $v$，再依左侧有理点作用与右侧 $K$-不变性延拓. 稳定子平凡保证了该延拓良定义，且任一形式皆可表为以其在各代表元处取值构造的此类单类支撑形式之和. 若 $v$ 在代表元 $g$ 处的 Weyl 规范（\emph{Weyl gauge}）至多为 $1$，则将 $\delta_{g,v}(\gamma gk)$ 移回单位点时，左侧 $\gamma$ 的作用与 $\gamma^{-1}$ 抵消，剩下的 $k^{-1}$ 保持整格. 因而该单类支撑形式在同一素位处为整. 至于无穷位估计，由于有理点作用在任意复嵌入下均保持 Weyl 范数，点值界同样由 $v$ 在代表元处的范数界给出.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/HeckeEigenforms.lean\#L221}{无挠层的取值同构}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L330}{单类支撑形式的整性与范数}.}
+
+对每个 $h\in G_f$，由引理~\ref{lem:a-unitary-lattice-basis} 可取 $Y(h)\in\mathrm{GL}_n(E)$，使得 $h^{-1}Y(h)$ 为有限阿代尔整矩阵，且 $Y(h)$ 的全部矩阵元在每个复嵌入下的绝对值至多为 $C$. 固定代表元 $g$，简记 $Y_0=Y(g)$、$Y_\tau=Y(g^{e_\tau})$. 设 $\rho_{\kappa,0}$ 为不带行列式幂的 Weyl 表示，$\tau$ 同时表示所选复嵌入. 令
+\[
+ A_g=\left(\prod_\tau\det\tau(Y_\tau)\right)
+      \rho_{\kappa,0}\bigl((\tau(Y_0))_\tau\bigr).
+\]
+显然 $A_g$ 为可逆线性算子. 取数组 $y$ 的各坐标为单位根，记 $\operatorname{ev}_\kappa(y)$ 为整系数 Weyl 基多项式在 $y$ 处的取值向量，并置 $v_y=A_g\operatorname{ev}_\kappa(y)$. 下证这些向量 $v_y$ 张成整个 Weyl 坐标空间. 事实上，若某一线性泛函在所有 $\operatorname{ev}_\kappa(y)$ 上取零，则相应的有限个基多项式的线性组合在各变量均取单位根时恒为零. 由于单位根有无穷多个，逐变量应用一元多项式的零点个数界，即知该多项式恒为零；再由基多项式的线性无关性，可知该泛函为零. 结合 $A_g$ 可逆，即得张成结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L888}{有限阿代尔格短基}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GLn/SchurModule/WeylKernel.lean\#L188}{取值向量的张成性}.}
+
+对任意 $p$-进素位，将 $v_y$ 按权 $(\kappa,e)$ 以 $g^{-1}$ 移回单位点. 其 Weyl 部分化为由 $g^{-1}Y_0$ 在各嵌入下的像所决定的 Schur 矩阵，行列式部分则为各 $(g^{e_\tau})^{-1}Y_\tau$ 在相应嵌入下的行列式之积. 这两类矩阵均为整矩阵，而 Schur 矩阵的矩阵元又是整系数多项式. 又单位根在任一素位处的绝对值皆为 $1$，故 $\operatorname{ev}_\kappa(y)$ 的每个坐标均整. 从而移回后的向量全体坐标均整，即 $v_y$ 在 $g$ 处的规范至多为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L186}{局部 Weyl 整性}.}
+
+现固定 $\sigma\in\operatorname{Aut}(\mathbb C)$. 此时所有 $\sigma\tau(Y_0)$ 与 $\sigma\tau(Y_\tau)$ 的矩阵元绝对值仍至多为 $C$，而 $\sigma(y)$ 各元素的绝对值仍为 $1$. 记 $T_\tau$ 为 $\sigma(y)$ 在 $\tau$ 处的前 $n$ 列组成的方阵. 借助标准排列数组的取值向量 $u$，有
+\[
+ \rho_{\kappa,0}\bigl((\sigma\tau(Y_0))_\tau\bigr)
+       \operatorname{ev}_\kappa(\sigma(y))
+ =\operatorname{Schur}_\kappa\bigl((\sigma\tau(Y_0)T_\tau)_\tau\bigr)u,
+ \qquad \|u\|_{\mathrm{Weyl}}^2=1.
+\]
+每个乘积矩阵的矩阵元绝对值至多为 $nC$，故其平方奇异值均不超过 $n^4C^2\le C^6$. 平方 Weyl 范数的 Schur 算子界以这些平方奇异值为底数、以 Young 图各行长度为指数，而指数总和恰为 $s$，因而上式的平方范数至多为 $C^{6s}$. 另一方面，由 Hadamard 不等式有
+$|\det(\sigma\tau(Y_\tau))|\le(\sqrt n\,C)^n\le C^{3n}$，故 $f_E$ 个行列式之积的平方至多为 $C^{6nf_E}$. 合并两项即得 $\|\sigma(v_y)\|^2_{\mathrm{Weyl}}\le C^{6(nf_E+s)}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L275}{Weyl 向量的无穷位估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GLn/SchurModule/SchurNorm.lean\#L197}{Schur 算子的平方奇异值界}.}
+
+因此每个 $\delta_{g,v_y}$ 均满足要求. 又因在每个代表元处，向量族 $v_y$ 皆张成全部坐标空间，故这些短整形式张成该层的代数形式空间.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{976}.}
+\begin{lemma}[全源空间的短整形式]
+\label{lem:a-short-source-basis}
+\emitthmsource
+对容许数据 $D$，全源空间 $U_0$ 由 $e^B/4^f$-短形式张成.
+\end{lemma}
+\begin{proof}
+初始源空间的秩为 $k$，其源层包含于所选的主同余层中. 该主同余层在所选素数 $p_0$ 上方的 $f$ 个剩余次数为 $1$ 的有限位上均约化为单位矩阵，这些位的范数之积为 $p_0^f$. 容许尺度给出 $p_0>(2k)^2$，故 $p_0^f>(2k)^{[E:\mathbb Q]}$. 由此，引理~\ref{lem:a-free-congruence-level} 保证源层在每一点的稳定子皆平凡.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftChains.lean\#L514}{主同余层的稳定子界}.}
+
+取 $\Delta_0=q_1d$. 相对差积理想 $\mathfrak D_{E/K}$ 的生成元整除 $q_1$，而 $\mathfrak D_{K/\mathbb Q}$ 的生成元 $\sqrt{-d}$ 整除 $d$；由差积理想的传递性可知 $\Delta_0\in\mathfrak D_{E/\mathbb Q}$. 另一方面，在源空间的 Young 图中，高度小于 $k$ 的非空列高度必为 $1$，且在每个无穷位处至多有 $a$ 列，故总方格数 $s$ 至多为 $fa$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/PrimeDecomposition.lean\#L253}{差积理想与导子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L806}{源权的方格数}.}
+
+置 $C=6(q_1d)(fk)^2$. 引理~\ref{lem:a-free-level-short-forms} 给出平方范数阈值 $C^{6(kf+s)}$，而容许数据的尺度估计给出
+\[
+ f\log 4+6(kf+fa)\log C\le B .
+\]
+由于 $C\ge1$ 且 $s\le fa$，便有
+$C^{6(kf+s)}\le C^{6(kf+fa)}\le e^B/4^f$，从而所得张成族满足所需上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L977}{全源空间的具体常数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{942}.}
+\begin{lemma}[分歧源空间的维数]
+\label{lem:a-ramified-dimension}
+\emitthmsource
+设 $U_0$ 为全源空间，$U$ 为分歧源空间，$N$ 为层素数. 则
+\[
+ \dim_{\mathbb C}U\ge
+ \left(1-\frac{f}{N-1}\right)\dim_{\mathbb C}U_0 .
+\]
+\end{lemma}
+\begin{proof}
+记 $K_0$ 为 $X_0$ 的层，$\pi=\pi_N$ 为满足 $\pi\bar\pi=N$ 的层整数. 对 $w\mid\pi$，以 $z_w$ 同时记选定的标量阿代尔点及其平移算子：它在 $w$ 处的剩余类生成阶为 $N-1$ 的乘法群，在其余整除 $\pi$ 的位处为 $1$. 对正整数 $i$，标量矩阵 $z_w^i$ 属于 $K_0$ 当且仅当它在每个整除 $\pi$ 的位处的末行满足层同余条件，这恰要求其在 $w$ 处的剩余类为 $1$，即 $N-1\mid i$. 由此可知，$1,z_w,\dots,z_w^{N-2}$ 在 $K_w=\langle K_0,z_w\rangle$ 中代表两两不同的 $K_0$-陪集.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L632}{标量平移的局部阶}.}
+
+$K_0$ 与 $z_w$ 均落于所选主同余层内，故 $K_w$ 与 $K_0$ 的有理点稳定子皆平凡. 固定大层 $K_w$ 的某一双陪集 $\Gamma gK_w$，则小层双陪集 $\Gamma gkK_0$ 与陪集 $kK_0\in K_w/K_0$ 一一对应. 事实上，若 $\Gamma gk_1K_0=\Gamma gk_2K_0$，则存在 $\gamma\in\Gamma$、$t\in K_0$ 使 $\gamma gk_1=gk_2t$，于是 $\gamma\in\Gamma\cap gK_wg^{-1}=\{1\}$，从而 $k_1K_0=k_2K_0$. 无挠层的形式空间由各双陪集处任意取定的同一 Weyl 模决定，因而其维数等于双陪集数与 Weyl 模维数之积. 被 $z_w$ 固定的 $K_0$ 层形式恰为 $K_w$ 层的形式，于是\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L514}{无挠层的维数与层指数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L819}{固定子空间的维数界}.}
+\[
+ \dim_{\mathbb C}\ker(1-z_w)
+ =\frac{\dim_{\mathbb C}U_0}{[K_w:K_0]}
+ \le \frac{\dim_{\mathbb C}U_0}{N-1}.
+\]
+
+每个 $z_w$ 的 $(N-1)$ 次幂在 $U_0$ 上均为恒等算子. 各 $z_w$ 两两可交换，且 $X^{N-1}-1$ 在 $\mathbb C$ 上无重根，故 $U_0$ 可分解为它们的共同特征空间之和. 分歧条件要求对每个 $w$，算子 $\sum_{i=0}^{N-2}z_w^i$ 零化该向量. 在共同特征空间上，当 $z_w$ 的特征值为 $1$ 时该和作用为乘以 $N-1$，其余情形则为零. 由此可见，分歧空间恰为所有 $z_w$ 的特征值均不为 $1$ 的共同特征空间之和，亦即 $\prod_{w\mid\pi}(1-z_w)$ 的像. 被剔除的每个共同特征空间至少含于某个 $\ker(1-z_w)$ 中. 又因 $N$ 在 $E$ 中完全分裂，$N$ 上方的 $2f$ 个有限位按复共轭两两配对，每对恰有一位整除 $\pi$，从而\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L712}{分歧条件与算子乘积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L601}{层素数上方的位计数}.}
+\[
+ \dim_{\mathbb C}U_0-\dim_{\mathbb C}U
+ \le \sum_{w\mid\pi}\dim_{\mathbb C}\ker(1-z_w)
+ \le \frac{f}{N-1}\dim_{\mathbb C}U_0 .
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{954}.}
+\begin{lemma}[分歧子空间余维数的尺度界]
+\label{lem:a-ramified-loss-scale}
+\emitthmsource
+对容许数据 $D$，有 $f/(N-1)\le b^{-8}$.
+\end{lemma}
+\begin{proof}
+由尺度条件知 $0<b$、$f\le b$ 且 $b^9+1\le N$. 于是 $N-1\ge b^9>0$，从而\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L954}{层素数与尺度条件}.}
+\[
+ \frac{f}{N-1}\le\frac{b}{b^9}=b^{-8}.
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Size/ArchimedeanSize.lean}{426}.}
+\begin{lemma}[复合提升的无穷位大小]
+\label{lem:a-composite-size}
+\emitthmsource
+设 $\Psi$ 为平凡扭转的链数据（\emph{chain datum}），$\sigma\in\operatorname{Aut}(\mathbb C)$，$u\in\mathbb R$. 若全源形式 $\phi$ 的所有 $\sigma$-共轭点值平方 Weyl 范数皆至多为 $e^u$，则对每个有限阿代尔点 $v$ 有
+\[
+ \bigl\|\sigma\bigl((\operatorname{Comp}_{1,\Psi}\phi)(v)\bigr)
+ \bigr\|^2_{\mathrm{Weyl}}
+ \le \exp\bigl(u+H-mS+2G_0+B\bigr),
+ \qquad
+ G_0=\sum_{p\in Q}\gamma_p\log p .
+\]
+其中 $Q$ 为小于 $x_1$ 且在 $\mathbb Q(\sqrt{-d})$ 中不分裂的素数集.
+\end{lemma}
+\begin{proof}
+依引理~\ref{lem:a-weak-chain-replacement}，可将复合提升表为由某个弱链数据（\emph{weak chain datum}）$\Psi'$ 给出的限制提升，且该数据满足 $\sum_w|\sigma(\Psi'(w))|\le\exp(x^{60})$. 记 $S_j$ 为第 $j$ 步上链的 Young 图在各无穷位前 $n_j$ 行的 $s_\infty$ 之和. 在单步提升中，核的 Weyl 范数界为 $\exp(x^{50}+S_j/2)$. 逐次应用算子范数估计可知，在任意一组有限阿代尔点与任意平移参数下，$m$ 个核依次作用于源值所得乘积项的范数（即平方范数的平方根）至多为
+\[
+ R=\exp(u/2)\prod_{j=0}^{m-1}\exp(x^{50}+S_j/2).
+\]
+限制前的点值是这类乘积项之和. 每级的类数至多为 $\exp(x^{30})$，故类指标组的总数不超过 $\exp(mx^{30})$. 对类指标与平移参数应用三角不等式，再乘以系数和的上界，即得限制前点值的范数不超过 $R\exp(mx^{30}+x^{60})$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L359}{核的乘积与类和估计}.}
+
+记 $h_*=r_0^8$，即相邻提升权差的一半. 限制至 $Y_m$ 的平方范数估计将上界再乘以
+\[
+ \exp\bigl(x^{70}-(|\Phi_a|a-fmh_*)\log N\bigr).
+\]
+此处用到了分支指数之和恰为 $|\Phi_a|a-fmh_*$ 的恒等式. 合并本步估计与前一段的平方，即得所求平方范数的指数上界\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L402}{限制与误差项汇总}.}
+\[
+ u+\sum_{j=0}^{m-1} S_j- |\Phi_a|a\log N+E_0,
+ \qquad
+ E_0=x^{70}+fmh_*\log N+2(mx^{30}+x^{60}+mx^{50}).
+\]
+
+令 $A_0=m\bigl(|\Phi_a|s_\infty(a)+k\sum_{\tau\in\Phi}s_\infty(\kappa_\tau)\bigr)$ 为 $m$ 步大小估计的主项. 行大小之和以及层素数提供的补偿满足
+\[
+ \begin{aligned}
+ \sum_{j=0}^{m-1} S_j&\le A_0+B/2,\\
+ A_0-|\Phi_a|a\log N&\le H-mS+2G_0+32fa\ell .
+ \end{aligned}
+\]
+前式可由逐行估计证得：设某行的主长度为 $r$、额外方格数至多为 $h$，因 $r+h\le2a$，该行与主长度对应导数大小之差至多为
+$h[\log(2a+1)+\log(M/\Omega)]\le25h\ell$. 每一级主长度的贡献为 $|\Phi_a|s_\infty(a)+(k-1)\sum_\tau s_\infty(\kappa_\tau)$，将所有额外方格数累加后，总误差至多为
+\[
+ 25mf\ell\bigl(b+a/x_1+n_mh_*^2\bigr)\le B/2 .
+\]
+因 $s_\infty(\kappa_\tau)\ge0$，将 $k-1$ 放宽至 $k$ 后，各级主长度之和不超过 $A_0$. 后式则借助恒等式
+\[
+ H-mS+2G_0
+ =m|\Phi_a|s_{\rm main}
+   +mk\sum_{\tau}s_\infty(\kappa_\tau),
+\]
+结合 $A_0=m|\Phi_a|s_\infty(a)+mk\sum_\tau s_\infty(\kappa_\tau)$，可见等式右端第二项在作差时恰好抵消. 层素数的大小估计给出
+\[
+ |\Phi_a|\bigl(m(s_\infty(a)-s_{\rm main})-a\log N\bigr)\le32fa\ell .
+\]
+容许尺度同时保证 $E_0+32fa\ell\le B/2$. 将上述三式代入指数上界，恰得 $u+H-mS+2G_0+B$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L126}{层的补偿与增益恒等式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L284}{行大小与整链大小界}.}
+\end{proof}
+
+\section{例外素数与边 Hecke 初等因子}
+\label{sec:a-hecke}
+
+本节先利用例外素数的分圆阶构造完整标记，再估计边限制配对的余长. 近似逆将问题化为控制额外生成元的个数，而深形式滤过给出所需的维数界.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/MarkedPrimes.lean}{146}.}
+\begin{lemma}[例外素数的分圆阶]
+\label{lem:a-exceptional-order}
+\emitthmsource
+设素数 $p$ 为例外素数（\emph{exceptional prime}），即满足 $\chi_K(p)=-1$、$p\not\equiv\pm1\pmod m$，且 $-p$ 模 $q_0$ 的阶 $o_0$ 为不超过 $r_p=\lceil\log_p m\rceil$ 的奇数. 记 $\rho_p$ 为 $-p$ 在 $(\mathbb Z/q_1)^\times$ 中的剩余类，$o=\operatorname{ord}(\rho_p)$. 则 $m\mid o$.
+\end{lemma}
+\begin{proof}
+$q_1$ 的素因子均在 $K$ 中分裂，而 $\chi_K(d)=0$；由 $\chi_K(p)=-1$ 可知 $p\nmid q_1d$. 特别地，因 $2\mid q_1$，故 $p$ 为奇数. 写 $m=2^e$，容许数据给出塔指数 $s=22e$ 及 $2^{s+1}\mid q_1$，于是 $u=-p$ 满足 $u^o\equiv1\pmod{2^{s+1}}$. 将 $o$ 写为 $o=2^\nu v$，其中 $v$ 为奇数. 分解 $u^o-1$ 可见，奇数次幂 $v$ 不改变 $u^{2^\nu}-1$ 的 $2$-进赋值.
+
+当 $\nu=0$ 时，因 $p\not\equiv-1\pmod m$，该赋值为 $v_2(p+1)\le e-1$，不可能满足上述同余. 故必有 $\nu\ge1$，进一步分解可得
+\[
+ v_2(u^o-1)=v_2(u-1)+v_2(u+1)+(\nu-1).
+\]
+此处对每个 $j\ge1$，$u^{2^j}+1$ 皆恰含一个因子 $2$. 又 $p-1$ 与 $p+1$ 之一具有 $2$-进赋值 $1$，另一者因 $p\not\equiv\pm1\pmod m$ 赋值至多为 $e-1$，因而
+\[
+ s+1\le v_2(u^o-1)\le e+\nu-1.
+\]
+结合 $s=22e$ 推得 $\nu\ge e$，即 $m\mid o$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkedPrimes.lean\#L136}{例外素数的阶与 $2$-进赋值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/PrimeDecomposition.lean\#L723}{惰性素数与导子}.}
+\end{proof}
+
+固定例外素数 $p<x_1$ 及 $p$-进嵌入 $\iota$. 对每个 $\tau\in\Phi$，取在 $K$ 上与固定嵌入一致的复嵌入代表，记 $w_\tau$ 为 $\iota\circ\tau$ 在 $E$ 上诱导的素位. 若素位集 $\Lambda$ 仅由 $\Phi_a$ 诱导的素位组成且满足 $\Lambda\cap\bar\Lambda=\varnothing$，则称其为 $p$ 处的标记；若进一步对每个 $\tau\in\Phi_a$ 皆有 $w_\tau\in\Lambda$ 或 $\bar w_\tau\in\Lambda$，则称其为完整标记（\emph{full mark}）.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/MarkedPrimes.lean}{225}.}
+\begin{lemma}[例外素数处的完整标记]
+\label{lem:a-full-mark}
+\emitthmsource
+对任意例外素数 $p<x_1$ 和 $p$-进嵌入 $\iota\colon\mathbb C\hookrightarrow\mathbb C_p$，存在完整标记.
+\end{lemma}
+\begin{proof}
+沿用引理~\ref{lem:a-exceptional-order} 的记号，设 $c$ 为 $E$ 上的复共轭. 因 $p$ 在 $K$ 中惰性，$E/\mathbb Q$ 的 Frobenius 自同构在 $K$ 上作用为复共轭，在分圆部分作用为 $p$ 次幂；而 $\rho_p$ 作为 $\operatorname{Gal}(E/K)$ 的元素，在分圆部分作用为 $-p$ 次幂，故该 Frobenius 即为 $c\rho_p$. 对 $p$ 上方的任一素位 $w$，Frobenius 固定 $w$，从而 $\rho_p$ 将 $w$ 映为 $\bar w$. 这一关系对素位的拉回作用同样成立.
+
+由 $m\mid o$ 及 $m$ 为偶数可知 $o$ 为偶数. 若 $w=\bar w$，则 $c$ 属于分解群. 因 $p\nmid q_1d$，该分解群由 Frobenius 生成，故可写为 $c=(c\rho_p)^j$；限制到 $K$ 上得 $j$ 为奇数，进而 $\rho_p^j=1$，与 $o$ 为偶数矛盾. 因此 $p$ 上方的素位按复共轭两两配对，每对均由两个不同素位组成. 由于 $o$ 为偶数，$c\rho_p$ 的阶也是 $o$，故各素位的剩余域均有 $p^o$ 个元素.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/PrimeDecomposition.lean\#L733}{惰性素数上方的 Frobenius 作用}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkedPrimes.lean\#L171}{剩余域与共轭配对}.}
+
+若 $\tau\in\Phi_a$，则 $\tau$ 模 $q_0$ 的剩余类为 $1$. 因 $\rho_p^{o_0}$ 模 $q_0$ 亦为 $1$，故 $\rho_p^{o_0}\tau$ 仍属于 $\Phi_a$. 另一方面，由诱导素位的拉回定义及 $o_0$ 为奇数，有
+\[
+ w_{\rho_p^{o_0}\tau}=\overline{w_\tau}.
+\]
+由此可知有限集 $\{w_\tau:\tau\in\Phi_a\}$ 在复共轭下稳定. 从每一共轭对 $\{w,\bar w\}$ 中任取一位，所得有限集 $\Lambda$ 即同时满足三项要求. 又 $\chi_K(p)=-1$ 且 $p<x_1$，故 $p$ 为小非分裂素数，满足标记定义中的数值条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkedPrimes.lean\#L205}{诱导素位与完整标记的构造}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/MarkedPrimes.lean}{486}.}
+\begin{lemma}[完整标记排除碰撞]
+\label{lem:a-full-mark-collision}
+\emitthmsource
+设 $\Lambda$ 是 $p$ 处的完整标记，$S_\Lambda=\{\tau\in\Phi:w_\tau\in\Lambda\}$. 则
+\[
+ C_p(S_\Lambda)=0.
+\]
+\end{lemma}
+\begin{proof}
+碰撞和中的每个指标对 $(\tau,j)$ 都须满足 $j$ 为奇数，且 $\tau,\rho_p^j\tau$ 同属 $\Phi_a\setminus S_\Lambda$. 由标记的完整性，$w_\tau\notin\Lambda$ 蕴含 $\bar w_\tau\in\Lambda$；但因 $j$ 为奇数，有 $w_{\rho_p^j\tau}=\bar w_\tau$，从而 $\rho_p^j\tau\in S_\Lambda$，矛盾. 故该和式不含任何非零项.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkedPrimes.lean\#L481}{完整标记与碰撞和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{156}.}
+\begin{lemma}[近似逆与额外生成元的秩界]
+\label{lem:a-near-inverse-few-generators}
+\emitthmsource
+令 $O$ 为赋值环，$\mathfrak m$ 为其极大理想，$\mathbf k=O/\mathfrak m$. 取有限指标集 $J,F,I$ 及线性映射
+\[
+ Q,B:O^J\longrightarrow O^{F\times I},
+ \qquad R,A:O^{F\times I}\longrightarrow O^J .
+\]
+设 $RQ=1$. 令 $C\subseteq O^I$ 为子模，$S\subseteq\mathbf k^I$ 为子空间，且 $Q$ 与 $B$ 的像在每个 $F$-分量上皆属于 $C$. 给定标量 $a,z,w\in O$，假设 $w\in\mathfrak m$、$aw\mid z$，且满足
+\[
+ AB\equiv a\operatorname{Id}\pmod z,\qquad
+ zh\in C\ \Longrightarrow\ \overline h\in S .
+\]
+则存在有限集 $\mathcal S\subseteq O^J$，使得
+\[
+ |J|+|\mathcal S|\le |F|\dim_\mathbf kS,\qquad
+ aO^J\subseteq \operatorname{im}(AQ)+\langle\mathcal S\rangle_O .
+\]
+\end{lemma}
+\begin{proof}
+由 $RQ=1$ 可知，$1-QR$ 为投影至 $\ker R$ 的算子. 对方阵 $((1-QR)B)R$ 作 Smith 分解；因 $R$ 满射，其像恰等于 $(1-QR)B$ 的像. 故存在可逆矩阵 $U$ 与对角元 $t_i$，使得
+\[
+ \operatorname{im}Q+\operatorname{im}B
+   =\operatorname{im}Q+\big\langle t_iU_i:i\in F\times I\big\rangle_O ,
+\]
+其中 $U_i$ 为 $U$ 的第 $i$ 列. 结合 $t_iU_i\in\ker R$ 与环的整性，可知只要 $t_i\ne0$ 即有 $RU_i=0$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L64}{在直和因子之外作 Smith 分解}.}
+
+取 $J_0=\{i:t_i\ne0,\ t_i\mid z\}$. 对每个 $i\in J_0$，由于 $t_iU_i$ 属于上式左端，$zU_i$ 逐分量落入 $C$ 中；同理，$Q$ 的每列乘以 $z$ 后亦逐分量落入 $C$ 中. 因此 $Q$ 的各列以及 $J_0$ 中的各列 $U_i$ 均约化至 $S^F$. 进一步地，这些列在剩余域 $\mathbf k$ 上线性无关：事实上，对任一线性关系左乘 $\overline R$，即得 $\overline Q$ 各列的系数皆为零；再由 $\overline U$ 可逆，推知其余系数亦全为零. 从而 $|J|+|J_0|\le |F|\dim_\mathbf kS$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L117}{两族列在剩余域上的线性无关性}.}
+
+置 $\mathcal S=\{AU_i:i\in J_0\}$，并令 $G=\operatorname{im}(AQ)+\langle\mathcal S\rangle_O$. 由于赋值环中的整除关系可比较，若 $i\notin J_0$ 则必有 $z\mid t_i$. 因而以 $A$ 作用于 $\operatorname{im}Q+\operatorname{im}B$ 后，所有 $t_iU_i$ 的像或落入 $G$ 中，或落入 $zO^J$ 中. 结合 $AB\equiv a\operatorname{Id}\pmod z$，即得
+\[
+ aO^J\subseteq G+zO^J\subseteq G+\mathfrak m\,aO^J .
+\]
+对有限生成模 $(G+aO^J)/G$ 应用 Nakayama 引理，便有 $aO^J\subseteq G$. 再由 $|\mathcal S|\le|J_0|$，生成元个数亦满足要求.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L144}{除去精度误差的 Nakayama 论证}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L162}{近似逆的生成元界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/Depth.lean}{752}.}
+\begin{lemma}[深形式滤过的总维数]
+\label{lem:a-edge-deep-form-count}
+\emitthmsource
+设 $T$ 为素数 $p$ 处的 Frobenius 循环（\emph{Frobenius cycle}），系数域 $\mathbf k$ 的特征为 $p$，记周期长度为 $\nu$、Frobenius 幂为 $P$. 取 $0<2r\le k$ 及次数 $n$，令 $\mathcal B$ 为 $\nu$ 份各含 $k$ 个变量、每份次数均为 $n$ 的单项式指数集. 变量 $(b,i)$ 的行号 $b$ 从零起计，份号 $i$ 的奇偶按周期交替标记；若 $i$ 为偶数且 $b\ge r$，或 $i$ 为奇数且 $b<r$，则称该变量为深变量. 单项式的深度定义为其所含深变量的总次数. 令 $\mathcal D_\delta$ 表示如下系数向量组成的空间：其每个 $\rho(g)$-平移（$g\in\mathrm{GL}_k(W)$）皆仅含深度至少为 $\delta$ 的单项式，其中 $\rho(g)$ 为各份 $n$ 次对称幂的张量积，在偶数份取该份嵌入下的 $g$，在奇数份取 $(g^{-1})^\top$. 则对每个整数 $x\ge0$，有
+\[
+ \sum_{\delta=1}^x\dim_{\mathbf k}\mathcal D_\delta
+ \le c_{\rm div}|\mathcal B|,
+ \qquad
+ c_{\rm div}=\nu n\left(\frac1{P^{2r}}+\frac{r^2}{kP}\right).
+\]
+\end{lemma}
+\begin{proof}
+赋予每个变量 $(b,i)$ 一个实权：非深变量的权取为 $0$；深变量在 $b<2r$ 时取权 $P^{-1}$，在 $b\ge2r$ 时取权 $P^{-2r}$. 将单项式 $\beta$ 的各指数按上述实权加权求和，记为 $\operatorname{wt}(\beta)$. 深形式的加权次数引理表明，每个非零 $F\in\mathcal D_\delta$ 必含某个非零系数，其对应单项式 $\beta$ 满足 $\operatorname{wt}(\beta)\ge\delta$. 因此将 $F$ 投影至这些单项式对应的系数是单射，从而
+\[
+ \dim\mathcal D_\delta
+ \le \#\{\beta\in\mathcal B:\operatorname{wt}(\beta)\ge\delta\}.
+\]
+对 $\delta=1,\ldots,x$ 求和，每个固定 $\beta$ 被计数至多 $\lfloor\operatorname{wt}(\beta)\rfloor$ 次，故左端至多为 $\sum_\beta\operatorname{wt}(\beta)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Depth.lean\#L612}{深形式的加权次数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Depth.lean\#L755}{维数求和}.}
+
+在固定的一份变量内，置换任意两行不改变 $\mathcal B$，且每个单项式在该份中的总次数恒为 $n$，故每个变量的平均指数均为 $n/k$. 又因周期的奇偶标记交替，每个行号恰在一半的份中为深变量，从而
+\[
+ \begin{aligned}
+ \frac1{|\mathcal B|}\sum_\beta\operatorname{wt}(\beta)
+   &=\frac nk\cdot\frac{\nu}{2}
+       \left(\frac{2r}{P}+\frac{k-2r}{P^{2r}}\right)\\
+   &\le \nu n\left(\frac1{P^{2r}}+\frac{r^2}{kP}\right),
+ \end{aligned}
+\]
+此处用到了由 $r\ge1$ 推出的 $r\le r^2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Depth.lean\#L62}{每个行号上深变量的份数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Depth.lean\#L690}{单个变量的平均指数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{876}.}
+\begin{lemma}[起点函数的基与端点余长]
+\label{lem:a-edge-origin-basis}
+\emitthmsource
+沿用上述 Frobenius 循环的记号，现设系数环 $O$ 为特征零的赋值环，$p$ 在 $O$ 中非单位，且周期提供满足 $w^2=p$ 的元素 $w\in O$. 假定 $0<2r\le k$、$0<\theta\le1$、$n^4\le q=P^\nu$ 及 $(\nu k\log q/\theta)^5P^{3r}\le n$. 取起点集 $V$ 与边集 $E_0$，记边 $e$ 的起点为 $a(e)$、基变换为 $g(e)\in\mathrm{GL}_k(W)$. 设映射 $e\mapsto(a(e),[g(e)^{-1}])$ 满射至 $V\times\mathcal P$，其中 $\mathcal P$ 是两块大小为 $r,k-r$ 的拟抛物子群的陪集集. 令 $\Delta=\operatorname{diag}(w^{\operatorname{dep}(\beta)})$，并定义边限制
+\[
+ JF(e)=\Delta\rho(g(e))F(a(e)).
+\]
+起点函数模定义为 $J$ 的像关于 $w$ 的饱和，即
+\[
+ \mathcal F_{\mathrm{orig}}
+   =\{\psi\in O^{E_0\times\mathcal B}:
+                          w^a\psi\in\operatorname{im}J
+                          \text{ 对某个 }a\ge0\}.
+\]
+以行列式的整除关系刻画余长（\emph{colength}），则存在矩阵 $Q,R,d$，满足 $\operatorname{im}Q=\mathcal F_{\mathrm{orig}}$、$RQ=1$、$J=Qd$，且
+\[
+ \det d\mid w^{|V|\lfloor c_{\rm div}|\mathcal B|\rfloor}.
+\]
+\end{lemma}
+\begin{proof}
+边到起点的满射表明 $J$ 的行数不少于列数. 在赋值环上对 $J$ 作 Smith 分解，写为
+\[
+ JU^{-1}=Q\operatorname{diag}(t_i),\qquad RQ=1,
+ \qquad d=\operatorname{diag}(t_i)U ,
+\]
+其中 $U$ 可逆，$i$ 遍历 $V\times\mathcal B$. 于是每个 $t_i$ 均整除 $JU^{-1}$ 第 $i$ 列的全部坐标. 对任一起点 $v$ 与任意 $\gamma\in\mathrm{GL}_k(W)$，存在边 $e$ 使 $a(e)=v$ 且 $\gamma g(e)^{-1}$ 落入所定拟抛物子群. 对该子群中任一元素 $u$，深度缩放满足 $\Delta\rho(u)=A_u\Delta$，其中 $A_u$ 为整矩阵. 因此对该列在 $v$ 处的分量 $F_i(v)$，每个系数皆满足
+\[
+ t_i\mid w^{\operatorname{dep}(\beta)}
+               \bigl(\rho(\gamma)F_i(v)\bigr)_\beta .
+\]
+设 $x$ 为所有深度的一个上界. 取 $\gamma=1$ 后，可知 $t_i$ 整除 $w^x$ 乘以 $U^{-1}$ 第 $i$ 列的全部坐标；与 $U$ 的第 $i$ 行配对，即得 $t_i\mid w^x$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L323}{拟抛物子群保持中途深度格}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L612}{边限制的 Smith 分解}.}
+
+由各 $t_i\mid w^x$ 可知，任一 $QF$ 乘以 $w^x$ 后均落入 $\operatorname{im}J$，故 $\operatorname{im}Q\subseteq\mathcal F_{\mathrm{orig}}$. 反之，若 $w^a\psi\in\operatorname{im}J$，则 $QR$ 固定 $w^a\psi$；消去非零标量 $w^a$，便得 $QR\psi=\psi$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L676}{起点函数模上的投影}.}
+
+若 $t_i\nmid w^\delta$，上述整除关系表明对每个起点 $v$ 与每个 $\gamma$，$F_i(v)$ 的 $\gamma$-平移在所有深度至多为 $\delta$ 的单项式上的系数均为非单位（否则消去该单位即可推出 $t_i\mid w^\delta$）. 故第 $i$ 列的约化逐点落入剩余域上的深形式空间 $\mathcal D_{\delta+1}$ 中. 由于 $U^{-1}$ 可逆，这些列在剩余域中仍线性无关，从而
+\[
+ \#\{i:t_i\nmid w^\delta\}\le |V|\dim\mathcal D_{\delta+1}.
+\]
+令 $s_i=\min\{s\ge0:t_i\mid w^s\}\le x$，则 $\sum_i s_i=\sum_{\delta=0}^{x-1}\#\{i:t_i\nmid w^\delta\}$，且 $\det d$ 在相差单位的意义下等于 $\prod_i t_i$，因而
+\[
+ \det d\mid w^{\,|V|\sum_{\delta=1}^x\dim\mathcal D_\delta}.
+\]
+剩余域的特征为 $p$，且约化保持 $T$ 的 Frobenius 幂 $P$，故应用引理~\ref{lem:a-edge-deep-form-count} 并对整数维数和取整即得所需幂次.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L654}{从 Smith 标准形的对角元计数深形式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L886}{端点基分解的行列式界}.}
+\end{proof}
+
+在 Frobenius 循环中，系数表示 $\rho(g)$ 在偶数份上作用为嵌入后的 $g$，在奇数份上作用为嵌入后的 $(g^{-1})^{\mathsf T}$. 对相邻行 $r-1,r$，记 $u_i=(r,i)$、$\bar u_i=(r-1,i)$，并在奇数份交换这对变量. 若周期长为 $\nu$、$q=P^\nu$，则定义指数 $\beta$ 在第 $i$ 份沿该根的亏量（\emph{defect}）为
+\[
+ \operatorname{def}_i(\beta)
+   =\beta_{u_i}+\frac1{q-1}\sum_{j\in\mathbb Z/\nu}
+        P^{[j-i]_\nu}\bigl(\beta_{u_j}-\beta_{\bar u_j}\bigr),
+\]
+其中 $[j-i]_\nu$ 为 $0,\ldots,\nu-1$ 中的代表.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/TwistingData.lean\#L166}{根的亏量权重与系数条件}.}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/AveragingMap.lean}{566}.}
+\begin{lemma}[坏行权消去与 Frobenius 平均矩阵]
+\label{lem:a-edge-average}
+\emitthmsource
+设 $W$ 到特征零赋值环 $O$ 的 Frobenius 循环共有 $\nu=2h$ 份，$w^2=p$，$p$ 在 $O$ 中非单位，$q=P^\nu$ 为 $W$ 的剩余域基数.
+令 $\mathcal B$ 为 $\nu$ 份、每份在 $k$ 个变量中次数为 $n$ 的单项式指数集.
+取块大小 $r,k-r$（$1\le r<k$），沿相邻行 $r-1,r$ 计算亏量.
+设 $\nu k(h+2)n+n+k<P^h$. 对任意 $c\ge0$，记 $c_\ast=3kc$、$c_0=k^2\log_p q$.
+则对满足边伴随关系的权配对 $\langle\ ,\ \rangle_b$，存在整矩阵 $\mathrm{Av}$，使得
+\[
+ \begin{aligned}
+ w^c&\mid (\rho(g)\mathrm{Av} F)_\beta
+     &&\text{若 $g$ 属于块对角群且某份的 $\operatorname{def}_i(\beta)>3c_\ast$},\\
+ \langle\mathrm{Av} F,G\rangle_b
+   &\equiv p^{\nu c_0}\langle F,G\rangle_b \pmod{w^c}
+     &&\text{若 $G$ 属于所有出边的中途格}.
+ \end{aligned}
+\]
+\end{lemma}
+
+\begin{proof}
+令 $D=\nu nk(h+2)P^h$，则 $D+k<P^{2h}=q$. 将一般矩阵分别置入各份变量并作 Frobenius 代换，得到系数矩阵中的多项式. 应用一般矩阵的有限域平均构造，在各份 $j$ 上选取线性形式 $I_j$，使其在块对角群共轭下不变，消去行权大于 $2c_\ast P^h$ 的单项式，且在次数至多为 $D$、各共轭坏行权系数模 $w^c$ 为零的多项式上与 $e=p^{c_0}\operatorname{ev}_{1}$ 模 $w^c$ 一致. 此处行权指第 $r$ 行次数与第 $r-1$ 行次数之差.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/AveragingMap.lean\#L579}{次数预算与各份平均的选取}.}
+
+对 $J\subseteq\mathbb Z/\nu$，令 $\mathrm{Av}_J$ 表示在第 $j\in J$ 份施加 $I_j$、在 $j\notin J$ 份施加 $e$ 所得的系数算子，并取 $\mathrm{Av}=\mathrm{Av}_{\mathbb Z/\nu}$. 考虑任一坏指数 $\beta$，设其在第 $i$ 份的亏量超过 $3c_\ast$；保留第 $j=i-h$ 份而先对其余各份作收缩. 所得一般矩阵多项式中，凡不被 $w^c$ 整除的系数，其行权除以 $P^h$ 后与 $\operatorname{def}_i(\beta)$ 相差至多 $c_\ast$. 这些系数均落在 $I_j$ 所消去的行权范围内，故再施加 $I_j$ 所得之值必被 $w^c$ 整除. 借助块对角共轭不变性，该计算对每个 $\rho(g)\mathrm{Av}F$ 皆适用.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/AveragingMap.lean\#L426}{行权与亏量的比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/AveragingMap.lean\#L477}{消去大亏量系数}.}
+
+若 $j\notin J$，两次配对之差为 $(I_j-e)\Psi$，其中 $\Psi$ 是保留第 $j$ 份后与 $G$ 配对所得的次数至多为 $D$ 的多项式. 对 $\Psi$ 的任一块对角共轭，行权超过 $2c_\ast P^h$ 的系数可写成和式，其中每一项或收缩系数被 $w^c$ 整除，或对应指数 $\beta$ 在第 $j+h$ 份的亏量大于 $c_\ast$. 在后一情形下，中途格的大亏量配对界保证其与 $G$ 的配对被 $w^c$ 整除. 由此可见 $(I_j-e)\Psi\equiv0\pmod{w^c}$. 将各份依次并入 $J$ 并累加上述同余，结合 $\mathrm{Av}_{\varnothing}=p^{\nu c_0}I$，即得第二式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/AveragingMap.lean\#L512}{加一份时的配对同余}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/DefectCount.lean}{921}.}
+\begin{lemma}[拟抛物层指数与有界亏量空间的维数界]
+\label{lem:a-edge-defect-count}
+\emitthmsource
+在特征 $p$ 的系数域 $\mathbf k$ 上，取周期长为 $\nu$、剩余域基数为 $q=P^\nu$ 的 Frobenius 数据. 令 $C_t$ 为每份次数为 $n$ 的有界亏量空间，其定义为：在块大小 $r,k-r$ 的 Levi 群任意平移下，沿根 $(r-1,r)$ 在任一份的亏量超过 $3t$ 的系数皆为零. 设 $n>0$、$t\ge2(k+1)$、$\theta\le1$ 且 $8\nu kt P^{2r}\le\theta n$. 若 $\mathcal P$ 为相应拟抛物子群的陪集集，则
+\[
+ |\mathcal P|\dim_{\mathbf k} C_t
+ \le (1+\theta)\binom{n+k-1}{k-1}^{\nu}.
+\]
+\end{lemma}
+
+\begin{proof}
+记 $E=4tP^{2r}$，$\mathcal L$ 为 Levi 群，$\mathcal I$ 为下 Iwahori 群（即约化后为下三角的矩阵群）. 亏量锥格点估计给出各份上界 $D_i\in[1,n+E]$，使得
+\[
+ \dim_{\mathbf k} C_t
+ \le [\mathcal L:\mathcal L\cap\mathcal I]\,
+       \operatorname{vol}(\mathcal D_0\cap S_D).
+\]
+其中 $S_D$ 是非负指数向量在每份中次数位于 $[D_i-1,D_i]$ 的区域，$\mathcal D_0$ 要求所有相邻根的亏量皆不超过零. 该估计将次数 $n$ 的指数与分母 $q^j$ 的网格指数组合成平移，并加上把有界亏量推入零亏量锥的固定向量；对每个 Levi 旗与网格指数记录相应系数后，将格点维数界除以 $q^{j k\nu}$ 并取极限. 由于锥与次数区域的交有界且边界测度为零，格点密度趋于其体积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L752}{旗、网格指数与维数估计}.}
+
+周期差分将零亏量条件化为 Pieri 不等式，而 Pieri 锥在 $S_D$ 中所占体积比例为 $\prod_{i=1}^k(q-1)/(q^i-1)$. 另一方面，拟抛物层指数与 Levi 旗数之积至多为 $\prod_{i=1}^k(q^i-1)/(q-1)$，因为相应完整旗由块旗与抛物陪集唯一确定. 因此乘以 $|\mathcal P|$ 后恰好仅余 $\operatorname{vol}(S_D)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L872}{旗指数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L909}{锥在次数区域中的体积比例}.}
+
+每份区间宽为 $1$，在非负卦限中对最后一个坐标积分可知，每份体积至多为 $D_i^{k-1}/(k-1)!$. 结合 $D_i\le ne^{E/n}$，相乘即得
+\[
+ \operatorname{vol}(S_D)\le e^{\nu(k-1) E/n}
+           \bigl(n^{k-1}/(k-1)!\bigr)^{\nu}.
+\]
+由 $2\nu k E\le\theta n$ 可知，指数 $z=\nu(k-1)E/n$ 满足 $0\le z\le\theta/2\le 1/2$，从而 $e^z\le1+2z\le1+\theta$. 最后由 $n^{k-1}/(k-1)!\le\binom{n+k-1}{k-1}$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L939}{次数膨胀的预算}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{672}.}
+\begin{lemma}[边同余条件与约化空间]
+\label{lem:a-edge-condition}
+\emitthmsource
+设 $T$ 为从局部环 $W$ 到特征零赋值环 $O$ 的 Frobenius 循环，周期长为 $\nu$，$w^2=p$，素数 $p$ 在 $O$ 中非单位. 该周期给出 $\nu$ 个环映射 $\iota_i:W\to O$，满足 $\iota_{i+1}(x)\equiv\iota_i(x)^P\pmod p$，其中 $P$ 为 $p$ 的幂且 $P\ge5$，$W$ 的剩余域基数为 $q=P^\nu$. 令 $\mathcal B$ 为 $\nu$ 份各含 $k$ 个变量、每份次数为 $n$ 的单项式指数集. 假定
+\[
+ 0<2r\le k,\quad 0<\theta\le1,\quad n^4\le q,\quad
+ (\nu k\log q/\theta)^5 P^{3r}\le n .
+\]
+置 $c_0=k^2\log_p q$、$c=5\nu c_0$，以 $\mathcal P$ 记块大小 $r,k-r$ 的拟抛物子群的陪集集. 设权 $b,b'$ 给出伴随配对
+\(\langle F,G\rangle_b=G^\top\operatorname{diag}(b)F\)，满足 $b_\beta b'_\beta=p^{\nu c_0}$. 在标准中途格坐标下，令
+\[
+ \mathcal D=\{F\in O^{\mathcal B}:
+       \Delta\rho(g)\Delta^{-1}F\in O^{\mathcal B}
+            \text{ 对所有 }g\in\mathrm{GL}_k(W)\},
+ \qquad
+ \Delta=\operatorname{diag}(w^{\operatorname{dep}(\beta)}).
+\]
+其中 $\Delta^{-1}$ 在分式域上定义，该条件表示 $F$ 属于所有出边的中途格. 则存在子模 $C\subseteq O^{\mathcal B}$、平均矩阵 $\mathrm{Av}$ 以及剩余域 $\mathbf k$ 上的子空间 $S\subseteq\mathbf k^{\mathcal B}$，满足
+\[
+ \begin{gathered}
+ \mathcal D+w^cO^{\mathcal B}\subseteq C,\qquad
+ \mathrm{Av}\bigl(O^{\mathcal B}\bigr)\subseteq C,\\
+ \langle \mathrm{Av}F,G\rangle_b
+     \equiv p^{\nu c_0}\langle F,G\rangle_b \pmod{w^c}
+          \quad (G\in\mathcal D),\\
+ w^{c-1}F\in C\ \Longrightarrow\ \overline F\in S,\qquad
+ |\mathcal P|\dim_\mathbf k S\le (1+\theta)|\mathcal B|.
+ \end{gathered}
+\]
+\end{lemma}
+\begin{proof}
+取 $c_\ast=3kc$. 定义子模 $C$ 如下：要求在块对角群 $\mathrm{GL}_r(W)\times\mathrm{GL}_{k-r}(W)$ 的每个平移下，凡在某一份的亏量超过 $3c_\ast$ 的系数皆属于 $(w^c)$. 在约化周期上施加同样条件并要求这些系数为零，便得子空间 $S$，其中约化周期由 $T$ 的各嵌入逐一与 $O\to\mathbf k$ 复合而成，$\mathbf k$ 的特征为 $p$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L667}{剩余域的特征}.}
+
+大亏量的配对消失估计给出 $\mathcal D\subseteq C$；又因 $\rho(g)$ 为整矩阵，亦有 $w^cO^{\mathcal B}\subseteq C$. 若 $w^{c-1}F\in C$，则对每个相应平移与单项式均有 $w^c\mid w^{c-1}(\rho(g)F)_\beta$，消去 $w^{c-1}$ 得 $w\mid(\rho(g)F)_\beta$. 因 $p$ 非单位，故 $w$ 落于极大理想中，从而这些系数均约化为零，即 $\overline F\in S$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L773}{中途格的系数条件}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L647}{除去一层精度后的约化}.}
+
+因周期的奇偶标记交替，令 $h=\nu/2$ 为整数. 由大小条件可得
+\[
+ \nu k(h+2)n+n+k<P^h.
+\]
+事实上，$n^4\le P^{2h}$ 给出 $n^2\le P^h$；另一方面，由 $n\ge(\nu k)^5$ 及 $\nu,k\ge2$ 可知 $h+2\le\nu k$、$k<n$ 且 $(\nu k)^2+2\le n$，故左端严格小于 $((\nu k)^2+2)n\le n^2$. 这恰好满足构造平均矩阵的参数条件，从而由引理~\ref{lem:a-edge-average} 可知 $\mathrm{Av}$ 的像落入 $C$ 中，且在与 $\mathcal D$ 配对时满足模 $w^c$ 的上述同余.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L495}{平均矩阵所需的次数不等式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/AveragingMap.lean\#L579}{平均矩阵及其配对同余}.}
+
+最后，次数条件亦蕴含 $8\nu k c_\ast P^{2r}\le\theta n$；同时 $c>0$ 且 $k\ge2$，故 $c_\ast\ge 2(k+1)$. 由此，引理~\ref{lem:a-edge-defect-count} 给出 $|\mathcal P|\dim_\mathbf kS\le(1+\theta)|\mathcal B|$. 综合以上各项即得所需数据.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L577}{亏量阈值的次数界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L939}{约化条件的维数与拟抛物层指数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L688}{边同余条件的构造}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{944}.}
+\begin{lemma}[边配对的近似逆]
+\label{lem:a-edge-pairing-near-inverse}
+\emitthmsource
+设 $C,S,\mathrm{Av}$ 满足引理~\ref{lem:a-edge-condition} 的条件，$J$ 为有限坐标指标集. 令 $Q':O^J\to O^{(H\times\mathcal E)\times\mathcal B}$ 具有左逆 $R'$，且 $Q'$ 的每个局部分量皆落于 $\mathcal D$ 中. 对每条边 $e\in\mathcal E$，给定整可逆辅助变换 $u_e$. 记 $P_b$ 为逐边作用 $u_e\otimes\operatorname{diag}(b)$ 的算子，并定义
+\[
+ \mathrm{Add}=Q'^\top P_b,\qquad
+ \mathrm{Inv}=\Bigl(\bigoplus_e
+          u_e^{-1}\otimes\bigl(\mathrm{Av}\operatorname{diag}(b')\bigr)\Bigr)R'^\top ,
+\]
+其中局部张量坐标取同一排列. 则 $\mathrm{Inv}$ 的像逐分量落于 $C$ 中，且有
+\[
+ \mathrm{Add}\,\mathrm{Inv}\equiv p^{2\nu c_0}\operatorname{Id}
+         \pmod{w^c}.
+\]
+\end{lemma}
+\begin{proof}
+乘积中的 $u_e$ 与 $u_e^{-1}$ 相互抵消，故 $\mathrm{Add}\,\mathrm{Inv}$ 的 $(i,j)$ 元等于对 $x\in H\times\mathcal E$ 求和的
+\[
+ \left\langle\mathrm{Av}\bigl(\operatorname{diag}(b')R'_j(x)\bigr),
+                      Q'_i(x)\right\rangle_b ,
+\]
+其中 $Q'_i(x)$ 与 $R'_j(x)$ 分别为 $Q'$ 第 $i$ 列与 $R'$ 第 $j$ 行在 $x$ 处的系数向量. 由于 $Q'_i(x)\in\mathcal D$，在模 $w^c$ 意义下可将每项中的 $\mathrm{Av}$ 换为 $p^{\nu c_0}$ 倍的恒等映射；再结合 $b_\beta b'_\beta=p^{\nu c_0}$，又带出同一标量因子. 由此，该和模 $w^c$ 同余于
+\[
+ p^{2\nu c_0}\sum_x Q'_i(x)^\top R'_j(x)
+    =p^{2\nu c_0}(R'Q')_{ji}
+    =p^{2\nu c_0}\delta_{ij}.
+\]
+至于近似逆本身，先逐边在辅助坐标上以 $u_e^{-1}$ 取整线性组合，再于系数坐标上作用平均矩阵，其结果逐分量落于 $C$ 中.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L312}{配对与近似逆矩阵的逐项乘积}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L958}{边条件给出的近似逆同余}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{990}.}
+\begin{lemma}[边配对的额外生成元界]
+\label{lem:a-edge-few-generators}
+\emitthmsource
+沿用引理~\ref{lem:a-edge-condition} 的设定. 令 $V,H,\mathcal E$ 为有限集，满足 $|H\times\mathcal E|=|V|\,|\mathcal P|$，并置 $\mathcal L=O^{V\times\mathcal B}$. 设 $Q,Q'$ 均为从 $\mathcal L$ 到 $O^{(H\times\mathcal E)\times\mathcal B}$ 的映射，各有左逆，且其像逐局部分量皆落于 $\mathcal D$ 中. 仍记 $P_b$ 为逐边作用 $u_e\otimes\operatorname{diag}(b)$ 的算子，令 $A_0=Q'^\top P_bQ$. 则存在有限集 $\mathcal S\subseteq\mathcal L$，使得
+\[
+ |\mathcal S|\le\theta\,|V|\,|\mathcal B|,\qquad
+ p^{2\nu c_0}\mathcal L\ \subseteq\ A_0\mathcal L+\langle\mathcal S\rangle_O .
+\]
+\end{lemma}
+\begin{proof}
+利用 $Q'$ 的左逆构造引理~\ref{lem:a-edge-pairing-near-inverse} 中的 $\mathrm{Inv}$，并置 $a=p^{2\nu c_0}$、$z=w^{c-1}$. 由 $\nu c_0\ge2$ 与 $c=5\nu c_0$ 即得
+\[
+ aw=w^{4\nu c_0+1}\mid w^{5\nu c_0-1}=z .
+\]
+注意到 $w$ 属于极大理想，且 $\mathrm{Add}\,\mathrm{Inv}\equiv a\operatorname{Id}\pmod{w^c}$，从而模 $z$ 亦同余. 此外，$Q$ 的像逐分量落于 $\mathcal D\subseteq C$，$\mathrm{Inv}$ 的像同样逐分量落于 $C$，且 $zh\in C$ 蕴含 $\overline h\in S$. 这恰好满足近似逆的线性代数引理，所得 $\mathcal S$ 满足所需包含式，同时有
+\[
+ |V|\,|\mathcal B|+|\mathcal S|
+   \le |H\times\mathcal E|\dim_\mathbf k S
+   \le (1+\theta)|V|\,|\mathcal B|.
+\]
+末一步用到了 $|H\times\mathcal E|=|V|\,|\mathcal P|$ 及边条件中的维数界；移项即得 $|\mathcal S|$ 的上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L413}{配对指数至少为二}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1011}{近似逆的精度与额外生成元}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{1066}.}
+\begin{lemma}[边限制的配对与余长]
+\label{lem:a-edge-pairing-colength}
+\emitthmsource
+设 $T$ 为从局部环 $W$ 到特征零赋值环 $O$ 的 Frobenius 循环，周期长为 $\nu$，素数 $p$ 在 $O$ 中非单位，记 $w=\sqrt p\in O$. 令 $P$ 为周期的 Frobenius 幂，$q=P^\nu$ 为 $W$ 的剩余域基数. 取秩 $k$、每份次数 $n$、第一块大小 $r$ 及实数 $\theta$，满足
+\[
+ 0<2r\le k,\qquad 0<\theta\le1,\qquad n^4\le q,
+ \qquad \left(\frac{\nu k\log q}{\theta}\right)^5 P^{3r}\le n .
+\]
+记 $\mathcal B$ 为 $\nu$ 份各含 $k$ 个变量、每份次数为 $n$ 的单项式指数集，并置
+\[
+  c_0=k^2\log_p q,\qquad
+  c_{\rm div}=\nu n\left(\frac1{P^{2r}}+\frac{r^2}{kP}\right).
+\]
+令 $\mathcal P$ 为两块大小 $r,k-r$ 的拟抛物子群的陪集集，即 $\mathrm{GL}_k(W)$ 中约化后右上块为零的子群的陪集集. 取有限集 $V,H,\mathcal E$. 对 $e\in H\times\mathcal E$，给定原边与对偶边的起点 $a(e),a'(e)\in V$ 及相应基变换 $g(e),g'(e)\in\mathrm{GL}_k(W)$. 设映射
+\[
+ e\longmapsto\bigl(a(e),[g(e)^{-1}]\bigr),\qquad
+ e\longmapsto\bigl(a'(e),[g'(e)^{-1}]\bigr)
+\]
+均满射至 $V\times\mathcal P$，且 $|H\times\mathcal E|=|V|\,|\mathcal P|$. 记 $\rho$ 为 $T$ 的次数 $n$ 表示，$D_T$ 为以 $w^{\operatorname{dep}(\beta)}$ 为对角元的深度矩阵. 定义边限制 $E,E'$ 为
+\[
+ (EF)(e)=D_T\rho(g(e))F(a(e)),\qquad
+ (E'F)(e)=D_T\rho(g'(e))F(a'(e)).
+\]
+设权 $b,b'$ 满足 $b_\beta b'_\beta=p^{\nu c_0}$，且 $\rho(g)$ 与 $\rho(g^\top)$ 关于权 $b$ 的配对互为伴随. 对各原边 $e\in\mathcal E$ 取整可逆辅助变换 $u_e$，以 $P_b$ 记在各边上作用 $u_e$ 与 $\operatorname{diag}(b)$ 的分块算子. 令 $\mathcal L=O^{V\times\mathcal B}$ 及 $A=E'^\top P_bE$. 则对每个整数 $s\ge0$，存在 $\lambda\in\mathbb N$，使得
+\[
+ \lambda\le(3c_{\rm div}+\theta s)\,|V|\,|\mathcal B|,
+ \qquad
+ \operatorname{ColengthDvd}\bigl(\mathcal L,A\mathcal L+p^s\mathcal L;p^\lambda\bigr).
+\]
+此处余长的整除性是指：对 $\mathcal L$ 中任一有限向量族，皆存在行列式整除 $p^\lambda$ 的整矩阵，将其映入所示子模.
+\end{lemma}
+\begin{proof}
+记 $d_{\mathcal L}=|V|\,|\mathcal B|$、$K=\lfloor c_{\rm div}|\mathcal B|\rfloor$. 对两边分别应用起点函数的基引理，可得 $E=Qd$、$E'=Q'd'$，其中 $Q,Q'$ 各有左逆，像分别为两边的起点函数模，且有
+\[
+ \det d\mid w^{|V|K},\qquad
+ \det d'\mid w^{|V|K},
+\]
+从而 $\det d'\det d\mid p^{|V|K}$. 若 $\psi$ 属于原边的起点函数模，则存在 $a,F$ 使 $w^a\psi=EF$. 固定边 $e$，令 $G=\rho(g(e))F(a(e))$. 由于原边遍历每个起点的全部抛物陪集，对每个 $\gamma,\beta$ 皆有 $w^a\mid(\Delta\rho(\gamma)G)_\beta$，从而 $\psi(e)=w^{-a}\Delta G$ 属于中途格交 $\mathcal D$；对偶边同理. 因此 $Q,Q'$ 的像可逐边适用同余条件. 配对矩阵随之分解为
+\[
+ A=d'^\top A_0d,\qquad A_0=Q'^\top P_bQ .
+\]
+在边数据上取精度为 $5\nu c_0$ 的同余条件及相应平均算子，边配对的额外生成元引理便给出有限族 $\mathcal S\subseteq\mathcal L$，满足\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L578}{起点函数的取值属于中途格交}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1095}{两端基变换与中段的生成元}.}
+\[
+ |\mathcal S|\le\theta d_{\mathcal L},\qquad
+ p^{2\nu c_0}\mathcal L\subseteq A_0\mathcal L+\langle\mathcal S\rangle_O .
+\]
+
+为合并上述各界，先由 $p^{2\nu c_0}\mathcal L\subseteq A_0\mathcal L+\langle\mathcal S\rangle_O$ 得到余长整除 $(p^{2\nu c_0})^{d_{\mathcal L}}$. 矩阵 $d$ 的像在 $\mathcal L$ 中的余长整除 $\det d$；将其经 $A_0$ 映射并加上 $\langle\mathcal S\rangle_O$，即可进一步进入 $A_0d\mathcal L+\langle\mathcal S\rangle_O$，余长再乘以 $\det d$. 随后将每个额外生成元乘以 $p^s$，即可将其替换为 $p^s\mathcal L$，代价为再乘以 $(p^s)^{|\mathcal S|}$. 最后经 $d'^\top$ 映射，并将 $p^sd'^\top\mathcal L$ 放宽为 $p^s\mathcal L$；在此之前进入 $d'^\top\mathcal L$ 的余长整除 $\det d'$. 综合各步，合并后的整除数为\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L232}{配对分解下的余长乘法}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/Colength.lean\#L199}{额外生成元的余长}.}
+\[
+ \det d'\det d\;p^{2\nu c_0 d_{\mathcal L}+s|\mathcal S|}.
+\]
+
+于是可取 $\lambda=|V|K+2\nu c_0 d_{\mathcal L}+s|\mathcal S|$. 次数的大小条件蕴含 $\nu c_0\le c_{\rm div}$，代入 $K\le c_{\rm div}|\mathcal B|$ 与 $|\mathcal S|\le\theta d_{\mathcal L}$ 即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L561}{多项式配对指数的上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1080}{边限制的余长公式}.}
+\[
+ \lambda\le c_{\rm div}d_{\mathcal L}
+        +2c_{\rm div}d_{\mathcal L}+\theta s\,d_{\mathcal L}.
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{1158}.}
+\begin{theorem}[边 Hecke 算子的初等因子界]
+\label{thm:a-edge-elementary-divisors}
+\emitthmsource
+沿用引理~\ref{lem:a-edge-pairing-colength} 的周期、大小条件及记号. 设 $X$ 为有限顶点集，$H$ 为每个顶点上自由辅助模的基指标集，$J:I\simeq\mathcal B\times H$. 边坐标由如下数据给定：进入 $x\in X$ 的边以 $c\in\mathcal P$ 编号，边 $e=(x,c)$ 的起点为 $a(e)$，其起点基变换为 $\gamma_e$，终点基变换为 $h_c$，辅助模的平移为 $u_e\in\mathrm{GL}_H(O)$. 假设 $[h_c^{-1}]=c$，且每条边均由 $a(e)$ 与 $[(\gamma_e^\top)^{-1}]$ 唯一确定. 定义边 Hecke 算子（\emph{edge Hecke operator}）$A_T$ 如下：在边 $e=(x,c)$ 上，将起点值经
+\[
+ \bigl(\rho(\gamma_e)D_T^2\rho(h_c)\bigr)^\top\otimes u_e
+\]
+映至终点，再对所有进入 $x$ 的边求和，并经 $J$ 重排坐标.
+
+设 $f:(X\to O^I)\to\mathcal M$ 与 $Y:\mathcal M\to\mathcal M$ 为 $O$-线性映射，满足 $Yf=fA_T$，记 $L=\operatorname{im}f$. 则 $YL\subseteq L$，且对每个整数 $s\ge0$ 皆存在 $\lambda\in\mathbb N$ 使得
+\[
+ \operatorname{ColengthDvd}(L,YL+p^sL;p^\lambda),
+ \qquad
+ \lambda\le (3c_{\rm div}+\theta s)\,|X|\,|I|.
+\]
+\end{theorem}
+\begin{proof}
+由大小条件推得 $1<n$，再结合 $n^4\le q$ 有 $n<q$. 选取次数 $n$ 的单项式配对权 $b,b'$，使其满足 $b_\beta b'_\beta=p^{\nu c_0}$ 及 $\operatorname{diag}(b)\rho(g^\top)=\rho(g)^\top\operatorname{diag}(b)$. 置 $V=H\times X$. 将边 $e=(x,c)$ 连同辅助基指标 $h\in H$ 视作一条边的坐标：原边起点取为 $(h,a(e))$，基变换为 $\gamma_e^\top$；对偶边起点取为 $(h,x)$，基变换为 $h_c$. 由唯一性假设，$(x,c)\mapsto (a(e),[(\gamma_e^\top)^{-1}])$ 是有限集 $X\times\mathcal P$ 的单射，因而亦为满射；对偶边的对应映射为 $(x,c)\mapsto(x,[h_c^{-1}])=(x,c)$. 引入 $H$ 后，两边仍满足引理所需的满射与基数条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/Edges.lean\#L458}{配对权及伴随关系}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1148}{原边的起点陪集遍历}.}
+
+记 $B_b=\operatorname{diag}(b)$. 因 $D_T$ 与 $B_b$ 均为对角矩阵，边上两个中途深度矩阵相乘给出
+\[
+  (D_T\rho(h_c))^\top B_b(D_T\rho(\gamma_e^\top))
+    =\bigl(\rho(\gamma_e)D_T^2\rho(h_c)\bigr)^\top B_b .
+\]
+辅助因子仍为 $u_e$. 逐边求和即知，引理~\ref{lem:a-edge-pairing-colength} 中的 $A=E'^\top P_bE$ 满足
+\[
+  \operatorname{regroup}(AF)
+     = A_T\bigl(\operatorname{regroup}(B_bF)\bigr)
+ \qquad\text{对每个 }F\in O^{V\times\mathcal B},
+\]
+其中 $\operatorname{regroup}:O^{V\times\mathcal B}\simeq X\to O^I$ 由 $J$ 诱导，$B_b$ 在每个顶点上按单项式指标作用.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L776}{单条边的深度矩阵恒等式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L807}{对所有边求和后的重排}.}
+
+取 $\pi=f\circ\operatorname{regroup}$. 由 $Yf=fA_T$ 可知，其像 $L$ 在 $Y$ 下稳定；上式亦表明 $\pi(AF)=Y\pi(B_bF)$，从而 $\pi(A\mathcal L)\subseteq YL$. 因 $\pi$ 满射至 $L$，对 $L$ 中任一有限族可选取其在 $\mathcal L$ 中的一族原像. 以引理~\ref{lem:a-edge-pairing-colength} 的矩阵校正原像后再施加 $\pi$，校正后的族即落入 $YL+p^sL$ 中，且行列式条件得以保持. 最后注意到
+\[
+ |V|\,|\mathcal B|=|H|\,|X|\,|\mathcal B|=|X|\,|I|,
+\]
+由此即得同一 $\lambda$ 满足所述上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1166}{边 Hecke 算子的初等因子定理}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/MarkOperator.lean}{336}.}
+\begin{lemma}[单个标记处 Hecke 算子的余长]
+\label{lem:a-mark-single-colength}
+\emitthmsource
+固定 $p$-进嵌入. 设 $\Lambda$ 为 $p$ 处的标记，$w\in\Lambda$，$T_w=p^{A_w}H_{w,r_p}$ 为缩放 Hecke 算子，其中 $r_p=\lceil\log_p m\rceil$，$A_w=a\,\#\{\tau\in\Phi_a:w_\tau=w\}$. 记 $M_0$ 为全源空间的局部整模，$u_0=\dim_{\mathbb C}U_0$. 则 $T_w$ 保持 $M_0$；且对每个 $j_0\in\mathbb N$，均存在 $i_0\in\mathbb N$，使得 $M_0$ 中任一有限族皆可经行列式整除 $p^{i_0}$ 的整矩阵映入 $T_wM_0+p^{j_0}M_0$，其中
+\[
+ i_0\le
+ \left(\frac{12A_w}{mp}+\frac{j_0}{m^2f}\right)u_0 .
+\]
+\end{lemma}
+\begin{proof}
+记 $o=\operatorname{ord}(\rho_p)$、$o_0=\operatorname{ord}(\rho_p\bmod q_0)$、$h=o/o_0$，其中 $\rho_p$ 如引理~\ref{lem:a-exceptional-order}. 取诱导 $w$ 的某位 $\tau_0\in\Phi_a$. $E/\mathbb Q$ 在 $w$ 处的分解群由 Frobenius $c\rho_p$ 生成（$c$ 为复共轭），故 $\tau$ 诱导 $w$ 或 $\bar w$ 当且仅当存在 $j$ 使 $\tau=\rho_p^j\tau_0$. 这些位落入 $\Phi_a$ 当且仅当 $\rho_p^j\equiv1\pmod{q_0}$，即 $o_0\mid j$. 由此可见，诱导 $w$ 或 $\bar w$ 的 $\Phi_a$ 中各位恰为
+\[
+ \tau_i=\rho_p^{o_0 i}\tau_0\qquad (i\in\mathbb Z/h\mathbb Z).
+\]
+这些位两两相异，故 $h\le f$. 因 $o_0$ 为奇数，偶数 $i$ 对应 $w$，奇数 $i$ 对应 $\bar w$；又因 $m\mid o$，故 $h$ 为偶数，从而 $A_w=ah/2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkOperator.lean\#L157}{诱导共轭对的分圆轨道}.}
+
+将每个 $\tau_i$ 视作复嵌入；若 $i$ 为奇数，则先将 $\tau_i$ 与 $c$ 复合，再复合以固定的 $p$-进嵌入. 所得各映射皆诱导同一素位 $w$，故都将 $w$ 的赋值环映入固定的 $p$-进赋值环，且后一映射是在前一映射的定义域上先施加 $w$ 处的第 $o_0$ 次 Frobenius 所得. 因 $p$ 在 $E$ 中不分歧，$p$ 本身即为 $w$ 处的素元，故相邻映射模 $p$ 相差 $P_*=p^{o_0}$ 次幂，剩余域基数为 $Q_*=p^o=P_*^h$. 这些映射连同交替的奇偶标记便构成 Hecke 初等因子定理所需的 Frobenius 循环.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkOperator.lean\#L196}{赋值环上的 Frobenius 循环}.}
+
+在系数赋值环中，$p$ 非单位而 $\sqrt p$ 为整元素. 令 $\theta=(m^2f)^{-1}$. 将该周期应用于初等因子定理，需验证 $0<r_p$、$2r_p\le k$、$0<\theta\le1$ 以及
+\[
+ a^4\le Q_*,
+ \qquad
+ \left(\frac{h k\log Q_*}{\theta}\right)^5P_*^{3r_p}\le a.
+\]
+前三项由容许尺度与 $1\le o_0\le r_p$ 保证. 又由 $m\mid o$ 及 $p\ge13$ 可得 $Q_*\ge p^m\ge e^m$，而 $a^4\le e^{5\ell}\le e^m$. 记 $l_0=3^{\lfloor\log_3 s\rfloor+4}$，由 $r_p\le l_0$ 得 $P_*^{3r_p}\le x_1^{3l_0^2}\le\sqrt b$. 再由 $p<x_1$ 有 $\log Q_*\le o_0h\log x_1$，结合容许数据的尺度估计
+\[
+ \left(\frac{h k(o_0h\log x_1)}{\theta}\right)^5\sqrt b\le a,
+\]
+可见上述两条大小条件皆成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkOperator.lean\#L43}{Frobenius 循环的大小条件}.}
+
+在源层的每个双陪集中各取一个在 $p$ 上方整的代表元. 由于有理稳定子平凡，这些代表元处的整 Weyl 坐标逐类刻画了 $M_0$. 在轨道 $\{\tau_i\}$ 上，源权的 Weyl 部分为 $h$ 个次数 $a$ 的对称幂表示之张量积，其余位的权表示则作为辅助因子. 在 Hecke 算子的右陪集展开中，每条边的有理矩阵在辅助因子上是整可逆的；而在轨道因子上，矩阵分解为起点与终点的整基变换以及中间的深度算子，其中奇偶嵌入分别对应两种互补的深度缩放. 乘以 $p^{A_w}$ 恰好将原 Hecke 算子化为此类整边算子. 于是适用定理~\ref{thm:a-edge-elementary-divisors}（次数取 $a$、第一块大小取 $r_p$、Frobenius 幂取 $P_*$），从而该算子保持 $M_0$，且余长指数可取为至多
+\[
+ (3c_T+\theta j_0)u_0,\qquad
+ c_T=h a\left(\frac{1}{P_*^{2r_p}}+\frac{r_p^2}{kP_*}\right),
+\]
+其中 $u_0$ 等于双陪集数与 Weyl 模维数之积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/HeckeEdges.lean\#L725}{源空间坐标和边 Hecke 算子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean\#L1166}{边算子的初等因子界}.}
+
+最后，由 $P_*\ge p$、$p^{r_p}\ge m$ 及 $r_p\ge1$ 得 $P_*^{2r_p}\ge mp$；尺度条件又给出 $mr_p^2\le k$，故 $r_p^2/(kP_*)\le1/(mp)$. 于是
+\[
+ 3c_T\le \frac{6ha}{mp}=\frac{12A_w}{mp}.
+\]
+代回初等因子界即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkOperator.lean\#L108}{初等因子常数的简化}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/LocalDivisibility.lean}{326}.}
+\begin{lemma}[标记处 Hecke 算子乘积的余长]
+\label{lem:a-exceptional-hecke-colength}
+\emitthmsource
+固定 $p$-进嵌入，令 $M_0$ 为全源空间 $U_0$ 的局部整模，$u_0=\dim_{\mathbb C}U_0$. 设 $\Lambda$ 为 $p$ 处的标记，$A_w=a\,\#\{\tau\in\Phi_a:w_\tau=w\}$，$r_p=\lceil\log_p m\rceil$. 对 $w\in\Lambda$，记 $T_w$ 为第 $r_p$ 个 Hecke 算子乘以 $p^{A_w}$ 所得的算子. 令 $Y_\Lambda$ 为这些算子的有序乘积，$j_p=\lceil2mfa/p\rceil$，$d_p=fa\ell^2/p$. 则 $Y_\Lambda^m$ 保持 $M_0$，且存在 $c\in\mathbb N$ 满足 $c\le d_pu_0$，使得 $M_0$ 的每个有限向量族皆可经一整矩阵映入
+\[
+ Y_\Lambda^m M_0+p^{j_p}M_0,
+ \qquad\text{该矩阵的行列式整除 }p^c.
+\]
+\end{lemma}
+\begin{proof}
+由引理~\ref{lem:a-mark-single-colength} 可知，$T_w$ 保持 $M_0$，且存在非负整数 $c_w$，使每个有限族皆可经行列式整除 $p^{c_w}$ 的整矩阵映入 $T_w M_0+p^{j_p}M_0$，且满足\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkOperator.lean\#L334}{单个标记的 Hecke 余长}.}
+\[
+ c_w\le
+  \left(\frac{12A_w}{mp}+\frac{j_p}{m^2f}\right)u_0 .
+\]
+
+先说明乘积情形下如何合并上界. 设保持 $M_0$ 的算子 $V_1,V_2$ 分别具有指数上界 $c_1,c_2$，允许误差项皆为 $p^{j_p}M_0$. 对有限族 $\boldsymbol v$，先取整矩阵 $A$ 使
+$A\boldsymbol v=V_1\boldsymbol x+p^{j_p}\boldsymbol e$，其中 $\boldsymbol x,\boldsymbol e$ 的各向量均属于 $M_0$；再对 $\boldsymbol x$ 取整矩阵 $B$，使 $B\boldsymbol x$ 的各向量落入 $V_2M_0+p^{j_p}M_0$. 因 $V_1$ 保持 $M_0$ 且与系数矩阵作用可交换，便有
+\[
+ BA\boldsymbol v=V_1(B\boldsymbol x)+p^{j_p}B\boldsymbol e
+    \ \in\ (V_1V_2M_0+p^{j_p}M_0)^{\#\boldsymbol v}.
+\]
+同时 $\det(BA)=(\det B)(\det A)\mid p^{c_1+c_2}$. 依乘积中各算子的次序反复应用此论证，所得指数至多为 $m\sum_{w\in\Lambda}c_w$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/Colength.lean\#L83}{余长指数在乘积下相加}.}
+
+每个 $w\in\Lambda$ 均由 $\Phi_a$ 中的某位诱导，故 $\#\Lambda\le f$；各 $w$ 对应的 $\Phi_a$ 子集两两不交，故 $\sum_{w\in\Lambda} A_w\le af$. 结合 $j_p\le 2mfa/p+1$，可得
+\[
+ \begin{aligned}
+ m\sum_{w\in\Lambda}
+       \left(\frac{12A_w}{mp}+\frac{j_p}{m^2f}\right)
+ &\le \frac{12af}{p}+\frac{1}{m}\left(\frac{2mfa}{p}+1\right)\\
+ &=\frac{14fa+p/m}{p}
+ \le \frac{fa\ell^2}{p}
+ =d_p .
+ \end{aligned}
+\]
+其中倒数第二个不等式由 $p<x_1\le a$、$f,m\ge1$ 及 $\ell=\log b\ge128$ 保证，末一等式则用到了例外素数的条件 $p\not\equiv\pm1\pmod m$. 将上式乘以 $u_0$ 并结合单个算子的指数界，即得所需的 $c$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L285}{乘积的代价计算}.}
+\end{proof}
+
+\section{粘合张量、传递算子与局部增益}
+\label{sec:a-local-divisibility}
+
+将粘合张量展开为各步平移真空的张量积后，便可沿提升链逐步估计 Weyl 规范. 对有标记的位，Hecke 传递将作用在源形式上的 Hecke 幂移到核数据上，再应用\chapref{chap:derivatives}的引理~\ref{lem:a-charged-schur-jet}估计核的导数.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ChainDatumExpansion.lean}{324}.}
+\begin{lemma}[粘合张量的平移展开]
+\label{lem:a-glued-translate-expansion}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的链数据，$\pi_N\bar\pi_N=N$，记 $q_\vartheta$ 为扭转的层范数. 对平移元组 $t=(t_j)_j$，以 $\mathcal U(t)$ 记各步平移真空的张量，以 $\mathcal G(t)$ 记在每对相邻两步间作粘合所得的张量. 令
+\[
+ \mathcal Y=\prod_{0\le i<m/2}\prod_{w\mid\pi_N}
+                \mathbb F_N^{\,n_{2i+1}}.
+\]
+每个 $y\in\mathcal Y$ 决定一个仅支撑在 $N$ 上方的平移元组 $g(y)$：其第 $2i$ 步的末列在 $w\mid\pi_N$ 处取 $-\widetilde y_{i,w}/N$（其中 $\widetilde y_{i,w}$ 为 $y_{i,w}$ 的选定整提升），第 $2i+1$ 步的末行取其共轭转置，其余矩阵元皆为零. 则
+\[
+ \sum_t\Psi(t)\mathcal G(t)
+  =\sum_{t\in\operatorname{supp}\Psi}\Psi(t)
+     \sum_{y\in\mathcal Y}\mathcal U\bigl(t+g(y)\bigr),
+ \qquad
+ \#\mathcal Y\le N^{fmn_m/2}.
+\]
+\end{lemma}
+\begin{proof}
+每个 $t\in\operatorname{supp}\Psi$ 仅支撑在 $Mq_\vartheta$ 上方，而 $N$ 与 $Mq_\vartheta$ 互素，故 $t_j$ 在 $N$ 上方的所有位处皆为零. 另一方面，粘合定义中的列平移仅支撑在 $\pi_N$ 上方，其共轭行平移则仅支撑在 $\bar\pi_N$ 上方. 记同一步的这项平移为 $z_j$. 在 Heisenberg 平移的乘积公式中，相位因子由 $\overline{t_j}\cdot z_j$ 给出；因共轭保持 $N$ 上方的位集，逐位考察可知该配对为零，从而先后两次平移等价于沿 $t_j+z_j$ 的单次平移.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L117}{支撑不交时的平移乘积}.}
+
+对第 $i$ 个双步，将粘合算子展为对 $(y_{i,w})_{w\mid\pi_N}$ 的有限和. 由前段可知，每项的两个因子恰分别为沿 $t_{2i}+g(y)_{2i}$ 与 $t_{2i+1}+g(y)_{2i+1}$ 平移的真空. 利用张量积对各因子的线性性，跨双步展开后的指标集正是 $\mathcal Y$，故 $\mathcal G(t)=\sum_y\mathcal U(t+g(y))$；再以 $\Psi(t)$ 加权求和即得所述等式. 此外，$\pi_N$ 上方共有 $f$ 个位，每个位的剩余域均为 $\mathbb F_N$，因而
+\[
+ \#\mathcal Y=N^{f\sum_{i<m/2}n_{2i+1}}
+       \le N^{fmn_m/2},
+\]
+其中用到了秩的单调性 $n_{2i+1}\le n_m$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L134}{单个双步的展开}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L198}{粘合类计数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L338}{完整张量的展开}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ChainDatumExpansion.lean}{352}.}
+\begin{lemma}[保持复合提升的弱链数据]
+\label{lem:a-weak-chain-replacement}
+\emitthmsource
+对扭转 $\vartheta$ 的任一链数据 $\Psi$，存在弱链数据 $\Psi'$，使得对每个源形式 $u\in U_0$，由 $\Psi$ 粘合而成的复合提升等于以 $\Psi'$ 线性组合各单步提升链后再限制至 $Y_m$ 所得的形式.
+\end{lemma}
+\begin{proof}
+沿用引理~\ref{lem:a-glued-translate-expansion} 的平移元组与粘合类，定义有限支撑系数
+\[
+  \Psi'(z)=
+    \sum_{\substack{t\in\operatorname{supp}\Psi,\ y\in\mathcal Y\\
+                    t+g(y)=z}}
+           \Psi(t).
+\]
+若 $z\in\operatorname{supp}\Psi'$，则在 $q_\vartheta N$ 以外的每个有限位处 $g(y)$ 均为零，故 $\bar\pi_M z_j=\bar\pi_M t_j$ 在该处为整，这恰好是弱链数据所要求的支撑条件. 对任一 $p\nmid q_\vartheta$ 及其任一 $p$-进素位，每项 $\Psi(t)$ 皆整，因而 $\Psi'(z)$ 亦整. 当扭转无有限分歧时，对任一复数域自同构 $\sigma$，由三角不等式及链数据的原有上界可得
+\[
+ \sum_z|\sigma(\Psi'(z))|
+ \le \#\mathcal Y\sum_t|\sigma(\Psi(t))|
+ \le M^{3fmn_m^2}N^{fmn_m}
+ \le e^{x^{60}} .
+\]
+末式即为容许数据关于 $M,N$ 与 $x$ 的对数大小条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L249}{平移相加后的容许支撑}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L357}{系数及其大小界}.}
+
+按 $z=t+g(y)$ 合并同类项，即得
+$\sum_z\Psi'(z)\mathcal U(z)=\sum_t\Psi(t)\mathcal G(t)$.
+依链数据的定义，右端张量在源级及各中间级的层联合作用下固定（末级取单位元）. 拆开每对相邻因子，张量积的结合同构将各层在双步上的作用送至各步 Weil 作用的张量积，因此左端的单步张量同样联合不变. 结合上述系数条件，便知 $\Psi'$ 为弱链数据.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L295}{双步张量与单步联合不变性}.}
+
+固定 $u$，将这两个相等的张量送入同一线性提升映射：对纯张量，该映射依次施加各步 Theta 核. 于是左端给出以 $\Psi'$ 加权的单步链之和，右端给出原粘合提升. 再同时施加从 $X_m$ 到 $Y_m$ 的限制映射，即得所述等式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L376}{张量等式给出的提升等式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ChainDatumExpansion.lean}{414}.}
+\begin{lemma}[原系数的真空投影与弱链条件]
+\label{lem:a-weak-chain-vacuum-projection}
+\emitthmsource
+对扭转 $\vartheta$ 的任一链数据 $\Psi$，以原系数组成的未粘合张量 $\sum_t\Psi(t)\mathcal U(t)$ 满足各层的联合不变性，且原系数 $\Psi$ 亦满足弱链数据条件.
+\end{lemma}
+\begin{proof}
+对每步的核数据，考虑 $N$ 上方的整真空投影，定义为关于归一化测度在这些位上的整 Heisenberg 平移平均. 对 $t\in\operatorname{supp}\Psi$，各 $t_j$ 在这些位处皆为零，故平移真空仍被该平均算子固定. 若再附加平移 $z_j$，则投影作用等价于乘以 $z_j$ 在这些位处为整的示性函数；这一事实源于整平移格上的加性特征平均与标准格的自对偶性.
+
+对第 $i$ 个双步的粘合类 $y_i$，若存在非零剩余类，则第 $2i$ 步的末列在相应位处必出现形如 $-\widetilde y/N$ 的非整矩阵元，从而该项被真空投影消去；而零类恰好给出原来的两个平移真空. 故双步投影将粘合数据映回原来的未粘合数据. 逐双步作张量积并按 $\Psi(t)$ 求和，即知整个粘合张量的投影正是 $\sum_t\Psi(t)\mathcal U(t)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L56}{平移真空的不变性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L86}{非零粘合类的消去}.}
+
+各层的 Weil 作用保持整平移格，对平均积分作相应换元可见，真空投影与每步的层作用可交换，因而投影后的张量仍具联合不变性. 原系数在所有 $p\nmid q_\vartheta$ 处的整性直接来自链数据条件，平移在 $q_\vartheta$ 以外容许亦蕴含其在 $q_\vartheta N$ 以外容许；而扭转无有限分歧时的原有上界 $M^{3fmn_m^2}$ 由同一对数大小条件可知至多为 $e^{x^{60}}$. 由此证得 $\Psi$ 满足弱链条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L390}{投影与层作用交换}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L421}{原系数的弱链条件}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ChainValuation.lean}{238}.}
+\begin{lemma}[各步规范沿提升链相乘]
+\label{lem:a-weak-chain-gauge}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，$p$ 为与 $q_\vartheta$ 互素的素数，第 $j$ 步的有限核数据记为 $\varphi_j(t)$（即真空沿 $t_j$ 的平移）. 取各级的规范基点 $d_j$ 及核数据上的线性算子 $A_j$，使得 $A_j$ 在支撑内数据 $\varphi_j(t)$ 上与前后两层的联合作用可交换. 若对每个 $t\in\operatorname{supp}\Psi$，以新数据 $A_j\varphi_j(t)$ 定义的第 $j$ 步核从 $d_j$ 到 $d_{j+1}$ 的规范乘子至多为 $p^{r_j}$，则这组新数据的 $\Psi$-加权提升将 $d_0$ 处规范至多为 $1$ 的源形式映至 $d_m$ 处规范至多为 $p^{\sum_{j<m}r_j}$ 的形式. 特别地，当 $d_j=1$ 且 $p\ne N$ 时，从 $X_m$ 到 $Y_m$ 的限制亦满足同一上界.
+\end{lemma}
+\begin{proof}
+此处在 $d_j$ 处的规范界是指：对每个有限点 $g$，在 $gd_j$ 确定的 Weyl 格中衡量 $u(g)$. 由交换条件可知，张量映射 $\bigotimes_{j<m}A_j$ 将原来的联合不变张量映为仍具联合不变性的张量，因而在类积分展开中可合并各步对紧层的平均. 取每级 $X_j$（$j<m$）的有理点与层的双陪集代表元 $c_j$. 每个这样的层均包含于选定的主同余层中，且 $n_j\le n_m$，故由主同余层稳定子判据知各类的自同构群皆平凡，从而类积分的权重均为 $1$. 由此，在 $X_m$ 的任一有限点 $g_m$ 处，加权提升链的值为
+\[
+ \sum_{(c_0,\ldots,c_{m-1})}\ \
+ \sum_{t\in\operatorname{supp}\Psi}
+ \Psi(t)\,K^{A,t}_{m-1}(g_m,c_{m-1})\cdots
+ K^{A,t}_0(c_1,c_0)\,u(c_0),
+\]
+其中 $K^{A,t}_j(g_{j+1},g_j)$ 表示以新数据 $A_j\varphi_j(t)$ 定义的单步核在两给定点处的线性作用.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L156}{逐级类展开与平凡稳定子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L248}{新数据的联合不变性}.}
+
+固定其中一项，从 $u(c_0)$ 的规范界 $1$ 出发，每施加一步核至多乘以因子 $p^{r_j}$，故核乘积在 $g_md_m$ 所定格中的规范至多为 $\prod_{j<m}p^{r_j}$. 又系数 $\Psi(t)$ 在给定 $p$-进素位处为整，乘以它不会增大该界. 有限和由超度量三角不等式满足同一上界，遍历 $g_m$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L214}{核乘积的局部规范}.}
+
+当 $p\ne N$ 时，限制映射在点 $h$ 处取 $X_m$ 在 $\operatorname{diag}(h,1)$ 处的值，再乘以整分支矩阵以及由 $\bar\pi_N$ 各嵌入幂次组成的标量. 整分支矩阵将 Weyl 格映入目标格，而由 $\pi_N\bar\pi_N=N$ 可知该标量在 $p$-进素位处为单位，故在基点为 $1$ 时限制亦不增大规范.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L349}{限制到 $Y_m$}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L146}{限制提升的逐步规范界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/LocalDivisibility.lean}{155}.}
+\begin{lemma}[层外的标准数据保持整性]
+\label{lem:a-weak-chain-integral-away}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，$p\nmid q_\vartheta$ 且 $p\notin\{N,d\}$. 则由 $\Psi$ 给出的限制提升将任一整源形式映至在每一点处 $p$-进规范皆至多为 $1$ 的形式.
+\end{lemma}
+\begin{proof}
+对任意 $t\in\operatorname{supp}\Psi$，弱链支撑条件保证 $\bar\pi_Mt_j$ 在 $q_\vartheta N$ 以外的所有有限位处皆整，特别在 $p$ 上方为整. 取 $\delta=\bar\pi_M$ 清除平移分母. 沿 $t_j$ 平移的真空于是属于 $\delta$-标准数据，也就是由平移参数在 $p$ 上方乘以 $\delta$ 后为整的真空平移在赋值环上生成的模.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L174}{弱链支撑给出标准数据}.}
+
+在标准数据的单步规范估计中，取 Taylor 展开所用的额外缩放量为 $\bar\delta$，可得乘子上界
+\[
+  \left(\frac{|\bar\delta|_p}{|d\bar\delta|_p}\right)^{b_{j+1}},
+\]
+其中 $b_{j+1}$ 为第 $j+1$ 级权 Young 图中高度小于 $n_{j+1}$ 的列所含方格数，绝对值按 $|p|_p=p^{-1}$ 归一化. 因 $\bar\delta\ne0$ 且 $p\ne d$，上述比值为 $1$，故每步皆可取 $r_j=0$. 整源形式在单位基点处的规范至多为 $1$，应用引理~\ref{lem:a-weak-chain-gauge} 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L161}{层外链整性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Kernels/ThetaLiftGauge.lean\#L298}{标准数据的单步规范}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/LocalDivisibility.lean}{183}.}
+\begin{lemma}[非分裂素数的无标记整除性]
+\label{lem:a-weak-chain-unmarked-valuation}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，记其限制提升为 $\mathcal L_\Psi$. 取 $p<x_1$、$\chi_K(p)\ne1$ 且 $p\nmid q_\vartheta$，并置
+\[
+ d_p=\frac{fa\ell^2}{p}
+  \begin{cases}
+   m,&p\equiv\pm1\pmod m,\\
+   1,&p\not\equiv\pm1\pmod m,
+  \end{cases}
+ \qquad j_p=\left\lceil\frac{2mfa}{p}\right\rceil .
+\]
+对任一整源形式 $u$，在任一点处有
+\[
+ \operatorname{Gauge}_p\bigl(\mathcal L_\Psi(u)\bigr)
+ \le p^{m C_p(\varnothing)+d_p-\gamma_p},
+ \qquad
+ \operatorname{Gauge}_p\bigl(\mathcal L_\Psi(p^{j_p}u)\bigr)
+ \le p^{d_p-\gamma_p}.
+\]
+\end{lemma}
+\begin{proof}
+因 $p<x_1$，故 $p\nmid MN$. 对支撑中的任一 $t$，$\bar\pi_M$ 在 $p$ 上方各位处均为单位，因此 $t_j$ 在这些位处本身即整，从而每步的核均为 $1$-标准数据. 记 $D_{p,j}(S')$ 为第 $j$ 步删去 $S'$ 上高度为 $1$ 的列后的预测整除性界（已计入删列补偿与对数误差）. 非分裂素数处的标准数据估计给出单步规范乘子至多为 $p^{-D_{p,j}(\varnothing)}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L174}{不需清除分母的标准数据}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L66}{非分裂素数的单步增益}.}
+
+将单步预测整除性与局部增益作比较，有
+\[
+ D_{p,j}(\varnothing)
+ \ge \frac{\gamma_p}{m}-C_p(\varnothing)-\frac{fa\ell^2}{mp}
+ \ge \frac{\gamma_p-d_p}{m}-C_p(\varnothing),
+\]
+其中第二个不等式源于 $d_p\ge fa\ell^2/p$. 引理~\ref{lem:a-weak-chain-gauge} 给出的指数为 $\sum_{j<m}-D_{p,j}(\varnothing)$，故至多为 $mC_p(\varnothing)+d_p-\gamma_p$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/JetExponent.lean\#L504}{单步预测整除性与碰撞项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L190}{无标记的链整除性}.}
+
+对每个固定的无穷位，碰撞项仅涉及指数 $e\ge1$，故其和不超过 $\sum_{e\ge1}a/p^e=a/(p-1)\le 2a/p$. 由于至多有 $f$ 个位，遂有 $mC_p(\varnothing)\le j_p$. 由提升的线性性可将 $p^{j_p}$ 移至输出端，从而使规范乘以 $p^{-j_p}$；代入第一式即得第二式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L222}{抵消全部碰撞的整数幂}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Unramified/HeckeTransfer.lean}{495}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean\#L413}{Weil 核的 Hecke 算子恒等式}.}
+\begin{lemma}[非分歧局部配对的 Hecke 多项式传递]
+\label{lem:a-unramified-pairing-hecke}
+\emitthmsource
+以下使用非分歧 Theta 对应的 Hecke 算子形式，其表示论背景见 Howe~\cite{Howe1979} 和 Kudla~\cite{Kudla1986}. 设 $w$ 为分裂有限位，剩余域基数为 $q$. 取秩分别为 $n$ 与 $n+\delta$ 的 Hermite 空间 $X,X'$，以及由在 $w$ 处非分歧的两个基变换特征所确定的 Weil 作用 $\omega$. 记两特征为 $a,b$，分裂特征为 $\upsilon$，其 Frobenius 标量分别为 $\alpha=q^{n/2}a^\flat_n(\varpi_w)$ 与 $\beta=q^{(n+\delta)/2}b^\flat_{n+\delta}(\varpi_w)$，其中 $a^\flat_N(y)=a(y/\bar y)\upsilon(y)^{-N}$，$b^\flat_N$ 类似定义. 设有限数据 $\psi$ 被 $w,\bar w$ 上的整真空投影固定，又设双线性提升 $L$ 定义在包含 $\psi$ 之 Weil 轨道的线性数据空间上，且对源表示 $\pi$ 与目标表示 $\rho$ 满足
+\[
+ \rho(h)L(\psi,v)=L\bigl(\omega(g,h)\psi,\pi(g)v\bigr),
+\]
+则只要 $v$ 在源的 $w$ 处极大紧群作用下不变，$L(\psi,v)$ 亦在目标的相应极大紧群作用下不变. 记源 Hecke 多项式为
+\[
+ P_{w,X}(U)=\sum_{i=0}^{n}(-U)^i q^{\binom i2}T_{w,i}^{X},
+\]
+目标 Hecke 多项式同理定义. 则对上述 $v$，有
+\[
+ P_{w,X'}(U)L(\psi,v)=
+ \prod_{j=0}^{\delta-1}(1-q^j\alpha U)\,
+ L\bigl(\psi,P_{w,X}(q^\delta\alpha\beta^{-1}U)v\bigr).
+\]
+\end{lemma}
+\begin{proof}
+先在局部 Weil 模型中计算 Hecke 多项式在 $\psi$ 上的作用. 指数为 $i$ 的双陪集和由剩余向量空间中 $i$ 维子空间编号. 对整矩阵 $x:X\to X'$，若以子空间 $U_0$ 的代表元 $\gamma_{U_0}$ 作逆平移，所得矩阵为整当且仅当 $U_0\subseteq\ker\bar x$；反之，由于 $\gamma_{U_0}$ 为整，逆平移后为整亦蕴含原矩阵为整. 目标群的计算则对应转置矩阵 $\bar x^\top$. 特征在素元处的取值与真空尺度分别给出权重 $\alpha^{\dim U_0}$ 与 $\beta^{\dim U_0}$. 由此，目标与源的多项式作用均可写成作用于局部矩阵变量的乘子.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean\#L305}{子空间陪集和与真空的平移}.}
+
+设 $\bar x$ 的秩为 $a_x$，并记 $(Y;q)_d=\prod_{j=0}^{d-1}(1-q^jY)$. 在整矩阵上，目标多项式与共轭位 $\bar w$ 处的源多项式对应的乘子分别为
+\[
+ (\alpha U;q)_{n+\delta-a_x},\qquad
+ (\beta U;q)_{n-a_x}.
+\]
+事实上，在核中按子空间维数求和时，每个 $i$ 维子空间贡献 $(-Y)^i q^{\binom i2}$；由有限域二项式恒等式，这些系数在全体子空间上的和恰等于 $(Y;q)_d$，其中 $d$ 为核的维数. 而在非整矩阵上，两乘子皆为零. 借助乘积分解
+\[
+ (Y;q)_{n+\delta-a_x}
+   =(Y;q)_\delta(q^\delta Y;q)_{n-a_x}
+\]
+即得局部 Weil 数据上的传递恒等式. 又因整真空上的行列式特征在局部单位上平凡，两端极大紧群均固定 $\psi$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean\#L413}{Frobenius 标量与乘积的分解}.}
+
+将 $L(\psi,\cdot)$ 视作从源空间到目标空间的线性映射. 已知等变性将 $(g,h)$ 在数据上的作用转化为该映射左乘 $\rho(h)$、右乘 $\pi(g)^{-1}$，因而目标 Hecke 多项式作用于映射的像，源多项式则作用于自变量. 后者的求逆同时将共轭位 $\bar w$ 换回 $w$：具体而言，在分裂酉群中，$\bar w$ 分量为 $w$ 分量的逆转置，双陪集代表的求逆恰好将两端的 Hecke 和配对起来. 对在 $w$ 处球形的 $v$，紧群因子不改变取值. 将局部数据恒等式作用于 $v$，即得所述传递式及球形性质.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/SplitHecke.lean\#L436}{源 Hecke 多项式的配对伴随}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Unramified/HeckeTransfer.lean\#L495}{经由双线性提升的传递}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{466}.}
+\begin{lemma}[单步 Theta 提升的整 Hecke 多项式]
+\label{lem:a-marked-hecke-polynomial}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，$p\nmid q_\vartheta$，$\Lambda$ 为 $p$ 处的标记，$w\in\Lambda$. 记 $q_w=z^2$ 为 $w$ 的剩余域基数（$z$ 为正整数）. 固定 $p$-进嵌入，令 $\mathcal O_p=\{u\in\mathbb C:|\iota_p(u)|_p\le1\}$. 第 $e$ 步由支撑内平移数据 $x$ 给出的提升记为 $\Theta_e^x$，设秩差 $\delta=t+1$. 则存在与 $x$ 无关的多项式 $R_e(U)\in\mathcal O_p[U]$，满足 $R_e(0)=1$，且对每个在 $w$ 处球形的输入 $\phi$，其提升仍为球形的，并满足
+\[
+ P_{w,X_{e+1}}(U)\Theta_e^x\phi
+   =R_e(U)\,\Theta_e^x\bigl(P_{w,X_e}(z^\delta U)\phi\bigr).
+\]
+\end{lemma}
+\begin{proof}
+标记位 $w$ 与其共轭位 $\bar w$ 相异. 在这两个位处，$Mq_\vartheta N$ 皆为单位，故弱链支撑条件保证 $x_e$ 本身为整，从而相应数据被两位上的真空投影固定. 又因附加驯数据仅出现在所选主层位及扭转层处，两端带秩扭转的特征在 $w$ 处亦非分歧. 由此可对 $\Theta_e^x$ 应用引理~\ref{lem:a-unramified-pairing-hecke}，其所需等变性即由该步 Theta 核的 Weil 等变性保证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L387}{带秩扭转特征的非分歧性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L402}{标记位处的有限真空}.}
+
+记 $\chi$ 为该步提升特征的基变换在 $w$ 处素元上的取值，它是一个 $p$-进单位. 事实上，按定义它是提升特征在 $a/\bar a$ 处的取值（其中有限 idèle $a$ 仅在 $w$ 处取素元）；由特征权公式，$p$-进绝对值的指数等于诱导 $w$ 与诱导 $\bar w$ 的无穷位权和之差，该差为零. 因相邻秩均为偶数，两端带秩扭转的 Frobenius 标量分别为 $z^{n_e}\chi$ 与 $z^{n_{e+1}}\chi$. 代入传递公式，源变量的缩放因子化简为
+\[
+ q_w^\delta\frac{z^{n_e}\chi}{z^{n_{e+1}}\chi}=z^\delta.
+\]
+多出的多项式因子为
+\[
+ R_e(U)=\prod_{j=0}^{\delta-1}\bigl(1-q_w^jz^{n_e}\chi\,U\bigr),
+\]
+其系数皆整、常数项为 $1$，且仅依赖于该步的特征与素位，故与 $x$ 无关.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L420}{素元特征值的规范}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L475}{单步整 Hecke 多项式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{623}.}
+\begin{lemma}[单步传递的系数与 $p$ 次幂代价]
+\label{lem:a-marked-hecke-one-step-cost}
+\emitthmsource
+沿用上一引理的设定，记 $r_p=\lceil\log_p m\rceil$、$b_p=fr_pt$，并以 $T_i^{(e)}$ 记 $w$ 处指数为 $i$ 的 Hecke 算子. 球形输入在 $\Theta_e^x$ 下的像仍为球形的. 对每一步 $e$，存在一族与 $x$ 无关的整系数 $d_e(i,i')\in\mathcal O_p$，使得对 $0\le i\le r_p$ 及每个在 $w$ 处球形的 $\phi$，均有
+\[
+ \sum_{i'=0}^{i}d_e(i,i')\,T_{i'}^{(e+1)}(\Theta_e^x\phi)
+      =p^{b_p}\Theta_e^x(T_i^{(e)}\phi).
+\]
+\end{lemma}
+\begin{proof}
+由 $R_e(0)=1$ 可知，$R_e(U)$ 在 $\mathcal O_p[[U]]$ 中可逆；记 $a_h=[U^h]R_e(U)^{-1}$. 将单步多项式恒等式两边同乘 $R_e(U)^{-1}$，提取 $U^i$ 的系数并乘以 $(-1)^i$，仅保留 $i'\le i$ 的项，即得
+\[
+ \sum_{i'=0}^{i}
+    (-1)^{i+i'}a_{i-i'}q_w^{\binom{i'}2}\,T_{i'}^{(e+1)}(\Theta_e^x\phi)
+  =z^{(t+1)i}q_w^{\binom i2}\,\Theta_e^x(T_i^{(e)}\phi)
+ \quad (i\le n_e).
+\]
+左端所有系数皆属于 $\mathcal O_p$ 且与 $x$ 无关. 此处对所有 $U$ 成立的多项式恒等式之所以能逐系数比较，是因为在目标空间上作用任意线性泛函后即得无限域 $\mathbb C$ 上的标量多项式恒等式；随后利用形式幂级数的逆即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L550}{取逆幂级数的系数}.}
+
+标记位的局部次数为偶数，可写作 $q_w=p^{2h}$；又因该局部次数等于 $-p$ 在无穷位群中的阶，故 $2h\le f$. 取 $z=p^h$，上式右端的缩放因子化为
+\[
+ z^{(t+1)i}q_w^{\binom i2}
+  =p^{h i(t+i)}.
+\]
+容许尺度保证 $r_p\le t$ 且 $r_p\le k\le n_e$，故当 $i\le r_p$ 时有
+\[
+ h i(t+i)\le2h\,r_pt\le fr_pt=b_p.
+\]
+将上式各项系数同乘整数 $p^{b_p-h i(t+i)}$，即得所需的整系数 $d_e(i,i')$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L457}{标记位的偶数局部次数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L608}{单步缩放的整数幂界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L634}{一致的单步传递代价}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{668}.}
+\begin{lemma}[Hecke 传递沿提升链迭代]
+\label{lem:a-marked-hecke-chain-transfer}
+\emitthmsource
+沿用同一标记位与弱链数据，以 $C_e^x$ 记利用数据 $x$ 作前 $e$ 步提升的算子. 对每个 $e$，存在与 $x$ 无关的系数 $c_e(i)\in\mathcal O_p$，使得对每个在 $w$ 处球形的源形式 $\phi$，$C_e^x\phi$ 仍为球形的，且
+\[
+ \sum_{i=0}^{r_p}c_e(i)\,T_i^{(e)}(C_e^x\phi)
+     =p^{e b_p}\,C_e^x(T_{r_p}^{(0)}\phi).
+\]
+\end{lemma}
+\begin{proof}
+当 $e=0$ 时取 $c_0(i)=\mathbf 1_{i=r_p}$ 即可. 假设结论对 $e$ 成立，则由单步球形性质知 $C_{e+1}^x\phi=\Theta_e^x(C_e^x\phi)$ 仍为球形的. 对第 $e$ 步等式作用 $\Theta_e^x$，两边同乘 $p^{b_p}$，再对每个 $i$ 应用引理~\ref{lem:a-marked-hecke-one-step-cost} 并交换两次有限求和次序，可得第 $i'$ 项系数为
+\[
+ c_{e+1}(i')=\sum_{i=i'}^{r_p}c_e(i)d_e(i,i').
+\]
+因各项皆整且与 $x$ 无关，新系数亦然；右端指数变为 $(e+1)b_p$，归纳完成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L679}{逐步保持球性并合并系数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{758}.}
+\begin{lemma}[单标记位的统一 Hecke 传递指数]
+\label{lem:a-single-mark-hecke-transfer}
+\emitthmsource
+沿用上述设定，并记 $E_p^{\rm tr}=r_pf(n_m+r_p)$. 每个原数据 $\varphi_j(x)$ 在 $w$ 处的目标极大紧群作用下固定；且对每个 $j$，存在一族与 $x$ 无关的系数 $c_i$（当 $j<m$ 时均属于 $\mathcal O_p$），使得每个在 $w$ 处球形的源形式 $\phi$ 皆满足
+\[
+ \sum_{i=0}^{r_p} c_i\,T_i^{(j+1)}(C_{j+1}^x\phi)
+    =p^{E_p^{\rm tr}} C_{j+1}^x(T_{r_p}^{(0)}\phi).
+\]
+\end{lemma}
+\begin{proof}
+原数据在 $w$ 处为真空，目标极大紧群作用于真空仅产生行列式特征，而该特征非分歧，故在局部单位上恒取 $1$，由此原数据为球形数据. 对升至第 $j+1$ 级的链，由上一引理可得系数 $c_{j+1}(i)$ 与传递指数 $(j+1)b_p$. 置
+\[
+ c_i=p^{E_p^{\rm tr}-(j+1)b_p}c_{j+1}(i)
+\]
+即得所述恒等式. 当 $j<m$ 时，因 $n_m=k+m(t+1)$，有 $(j+1)t\le mt\le n_m$，从而
+\[
+ (j+1)b_p\le fr_p n_m\le fr_p(n_m+r_p)=E_p^{\rm tr}.
+\]
+补乘的 $p$ 次幂非负，故 $c_i$ 仍为整.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L741}{标记位的真空是球数据}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L770}{单标记位的传递定理}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{251}.}
+\begin{lemma}[标记邻点上的方格计数]
+\label{lem:a-marked-neighbor-box-count}
+\emitthmsource
+设 $\Lambda$ 为标记，固定 $p$-进嵌入并记 $S_\Lambda=\{\tau:w_\tau\in\Lambda\}$、$S_\Lambda^-=\{\tau:\bar w_\tau\in\Lambda\}$. 对每个 $w\in\Lambda$，取 $X_{j+1}$ 的至多 $r$ 个基指标组成集合 $J_w$. 若 $\tau\in S_\Lambda$，令 $J_\tau=J_{w_\tau}$；若 $\tau\in S_\Lambda^-$，令 $J_\tau=J_{\bar w_\tau}$；其余情形置 $J_\tau=\varnothing$. 定义
+\[
+ \begin{aligned}
+ e(\tau,b)&=\mathbf 1_{\tau\in S_\Lambda,\ b\in J_\tau}
+              -\mathbf 1_{\tau\in S_\Lambda^-,\ b\in J_\tau},\\
+ c(\tau,h,b)&=\mathbf 1_{\tau\in S_\Lambda,\ h=1,\ b\notin J_\tau}
+              +\mathbf 1_{\tau\in S_\Lambda^-,\ b\in J_\tau}.
+ \end{aligned}
+\]
+则对任一目标杨表 $I'$，其所有方格上的 $e+c$ 之和至多为
+\[
+ \sum_{w\in\Lambda}s_w+r\sum_{\tau\in S_\Lambda}c_j(\tau),
+ \qquad s_w=a\,\#\{\tau\in\Phi_a:w_\tau=w\},
+\]
+其中 $c_j(\tau)$ 表示高度小于 $n_{j+1}$ 且不等于 $1$ 的列数.
+\end{lemma}
+\begin{proof}
+若 $\tau\in S_\Lambda^-$，则 $e=-1$ 恰出现在标记行，而这些行的补偿恰为 $1$，故合计为零；在两集合之外两项皆为零. 当 $\tau\in S_\Lambda$ 时，高度为 $1$ 的列无论所填行指标是否属于 $J_\tau$ 均贡献 $1$；这类列仅出现在 $\Phi_a$ 中，且每个位处恰有 $a$ 列. 其余低列仅在所填行属于 $J_\tau$ 时贡献 $1$；由于杨表每列中的行指标互不重复，单列至多贡献 $|J_\tau|\le r$. 对所有位求和，高度为 $1$ 的列按诱导位分组即得 $\sum_w s_w$，其余低列则给出第二项.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L115}{单列的方格数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L256}{邻点的指数与补偿总和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{292}.}
+\begin{lemma}[标记双陪集点处的单步规范]
+\label{lem:a-marked-neighbor-jet-gauge}
+\emitthmsource
+设 $\Lambda$ 为标记，$r_p=\lceil\log_p m\rceil$. 对每个 $w\in\Lambda$，选取属于 $\operatorname{diag}(\varpi_w1_{i_w},1)$ 双陪集的分量（其中 $i_w\le r_p$），按酉条件在共轭位取对应分量，在其余素位取单位元，从而构造出目标有限点 $g$. 若第 $j$ 步的有限数据 $\psi$ 为 $1$-标准数据，则以 $\omega(1,g)\psi$ 为数据的 Theta 核在单位基点间的规范乘子至多为
+\[
+ p^{\,\sum_{w\in\Lambda}s_w+
+      r_p\sum_{\tau\in S_\Lambda}c_j(\tau)-D_{p,j}(S_\Lambda)}.
+\]
+此处 $D_{p,j}(S_\Lambda)$ 是删去 $S_\Lambda$ 上高度为 $1$ 的列并计入删列补偿与对数误差后所得的预测下界.
+\end{lemma}
+\begin{proof}
+由于标记位不分歧，可取 $p$ 作为局部素元. 在每个 $w$ 处，可将 $g_w$ 写为两个整可逆矩阵夹一个对角矩阵之积，该对角矩阵在某个满足 $|J_w|=i_w$ 的指标集上取 $p$、其余取 $1$；由酉条件，共轭位处的对应对角元为 $p^{-1}$. 权嵌入读取的是 $w_\tau$ 的共轭位，故第 $\tau$ 位读到的对角元为 $p^{-e(\tau,b)}$（$e$ 如引理~\ref{lem:a-marked-neighbor-box-count}）. 在 Weyl 表示中，这些对角元的贡献分为两部分：一方面，对每个标记位，诱导该位与诱导其共轭位的无穷位具有相同的提升特征权重分布，故行列式权的总指数为零；另一方面，剩余的规范因子为 $p^{\sum_{I'} e(\tau,b)}$，其中求和遍及目标杨表的所有方格.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L179}{双陪集的整基变换}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L213}{对角元在权嵌入下的像}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L240}{行列式权的对消}.}
+
+取引理~\ref{lem:a-marked-neighbor-box-count} 中的 $c(\tau,h,b)$ 作为各方格的赋值补偿. 因标记素数在 $K$ 中惰性，每个容许配对指数皆为奇数，故配对位 $\tau'$ 诱导的有限位与 $w_\tau$ 共轭. 于是当 $\tau\in S_\Lambda$ 时，必有 $\tau'\in S_\Lambda^-$ 且 $J_\tau=J_{\tau'}$：若 $b\notin J_\tau$，则 $\tau$ 上高度为 $1$ 的列提供补偿；若 $b\in J_\tau$，则 $\tau'$ 上任意高度的列皆提供补偿. 若 $h=1$ 且 $\tau'\in S_\Lambda$，交换二者同理可证. 这便验证了带权 Schur 导数的配对条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L141}{配对位之间的赋值补偿条件}.}
+
+整基变换保持标准数据. 对整基间的导数矩阵应用引理~\ref{lem:a-charged-schur-jet}，可知其 $(I',I)$ 元的绝对值至多为 $p^{\sum_{I'}c(\tau,h,b)-D_{p,j}(S_\Lambda)}$. 乘以对角 Weyl 因子后，指数化为 $\sum_{I'}(e+c)-D_{p,j}(S_\Lambda)$；结合方格计数与 $|J_w|\le r_p$，即得所述指数. 最后，由有限位弱逼近与核的等变性，任意求值点处的规范均可化归为此类整基下的矩阵范数估计，故该统一上界对所有点均成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Kernels/ThetaLiftGauge.lean\#L186}{以对角加权的导数矩阵控制核规范}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L304}{标记邻点的单步规范}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{868}.}
+\begin{lemma}[标记 Hecke 算子向单步提升核的传递]
+\label{lem:a-marked-hecke-datum-transfer}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，$p\nmid q_\vartheta$，$\Lambda$ 为 $p$ 处的标记（即 $p<x_1$ 为例外非分裂素数，$\Lambda$ 与其共轭不交，且其中每个素位均由 $\Phi_a$ 中的无穷位诱导）. 令 $r_p=\lceil\log_p m\rceil$，$E_p^{\rm tr}=r_p f(n_m+r_p)$，并记 $s_w=a\#\{\tau\in\Phi_a:w_\tau=w\}$ 为 $w\in\Lambda$ 的 Hecke 缩放指数. 置 $Y_w=p^{s_w}T_{w,r_p}^{(0)}$，其中 $T_{w,i}^{(j)}$ 为 $X_j$ 在 $w$ 处由 $\operatorname{diag}(\varpi_w1_i,1)$ 定义的 Hecke 算子. 记 $S_\Lambda$ 为诱导 $\Lambda$ 中素位的无穷位集，令
+\[
+ H_{\Lambda,j}
+   =r_p\sum_{\tau\in S_\Lambda}c_j(\tau)-D_{p,j}(S_\Lambda),
+\]
+其中 $c_j(\tau)$ 计数高度小于 $n_{j+1}$ 且不等于 $1$ 的列. 对由 $\Lambda$ 中两两相异素位构成的有序表 $L$，记 $Y_L=\prod_{w\in L}Y_w$（乘积按表序取定）. 固定一步 $j$，令 $\varphi_j(t)$ 为第 $j$ 步的原有限数据，$C_j^t$ 为以原数据作前 $j$ 步提升的算子. 则存在核数据空间上的线性算子 $A_{j,L}$，对每个 $t\in\operatorname{supp}\Psi$ 均满足下列三条性质：
+\begin{enumerate}
+\item 在 $\varphi_j(t)$ 上，$A_{j,L}$ 与 $X_j$ 的整个有限酉群及 $X_{j+1}$ 的标准整层的 Weil 作用可交换.
+\item 对每个源形式 $u\in U_0$，以 $A_{j,L}\varphi_j(t)$ 提升 $C_j^t u$ 所得形式恰等于 $C_{j+1}^t(Y_Lu)$.
+\item 若 $j<m$，在 $w\in L$ 处取单位点，在每个 $w\in\Lambda\setminus L$ 处任取某个 $0\le i_w\le r_p$ 对应的上述双陪集中的点，并由这些分量及其酉共轭分量拼成有限目标点 $g$. 则以 $g$ 的 Weil 作用施于 $A_{j,L}\varphi_j(t)$ 后，所得核的规范乘子至多为 $p^{\beta_L}$，其中
+\[
+  \beta_L=\sum_{w\in L}(E_p^{\rm tr}-s_w)
+                +\sum_{w\in\Lambda}s_w+H_{\Lambda,j}.
+\]
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+对有序表 $L$ 施归纳. 当 $L$ 为空表时取 $A_{j,\varnothing}=1$，前两条由定义显然成立. 因小非分裂素数 $p$ 不整除 $MN$ 且 $p\nmid q_\vartheta$，原数据为 $1$-标准数据. 对所有标记位作上述双陪集平移，引理~\ref{lem:a-marked-neighbor-jet-gauge} 即给出规范乘子
+\[
+ p^{\sum_{w\in\Lambda}s_w+H_{\Lambda,j}} .
+\]
+该估计先将每个双陪集代表分解为左右整因子与对角因子之积，再利用相应方格的权指数及 Taylor 系数的赋值：两项代价合计至多为
+$\sum_{w\in\Lambda}s_w+r_p\sum_{\tau\in S_\Lambda}c_j(\tau)$，而 Taylor 系数贡献整除性 $D_{p,j}(S_\Lambda)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L304}{双陪集点处的单步估计}.}
+
+现设 $L=(w,L')$（其中 $w\notin L'$），并记 $\varphi'=A_{j,L'}\varphi_j(t)$. 原数据在 $w$ 处的目标极大紧群作用下固定，由归纳假设的第一条可知 $\varphi'$ 亦被该群固定. 引理~\ref{lem:a-single-mark-hecke-transfer} 给出与 $t$ 无关的系数 $c_i$（当 $j<m$ 时均 $p$-进整），使得对在 $w$ 处球形的源形式 $z$ 有
+\[
+ \sum_{i=0}^{r_p}c_iT_{w,i}^{(j+1)}(C_{j+1}^t z)
+   =p^{E_p^{\rm tr}}C_{j+1}^t(T_{w,r_p}^{(0)}z).
+\]
+沿目标 Weil 表示，核数据上亦有同一双陪集对应的 Hecke 算子，记为 $\mathsf T_{w,i}$. 定义
+\[
+ A_{j,L}
+   =\left(\sum_{i=0}^{r_p}
+       c_i p^{s_w-E_p^{\rm tr}}\mathsf T_{w,i}\right) A_{j,L'} .
+\]
+Hecke 求和与源作用可交换；在 $w$ 处球形的 $\varphi'$ 上，因目标整层作用仅置换用于求和的紧群陪集，该算子亦与目标整层作用可交换. 结合归纳假设第一条，即得 $A_{j,L}$ 所需的交换性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L770}{单标记的传递恒等式及系数整性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L812}{目标整层与 Hecke 和}.}
+
+由 Theta 核关于目标平移的等变性，可将 $\mathsf T_{w,i}$ 从核数据移至提升值上，化为 $T_{w,i}^{(j+1)}$. 依归纳假设第二条，以 $\varphi'$ 提升 $C_j^tu$ 即得 $C_{j+1}^t(Y_{L'}u)$. 又源形式 $Y_{L'}u$ 仍属源层，因而在 $w$ 处球形；应用传递恒等式并同乘 $p^{s_w-E_p^{\rm tr}}$，即得 $C_{j+1}^t(Y_wY_{L'}u)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L830}{等变性把 Hecke 和移至提升值}.}
+
+最后，给定第三条中的 $g$. 展开 $\mathsf T_{w,i}$ 时，每个陪集代表均可并入 $g$ 的 $w$ 分量. 因原 $w$ 分量为 $1$，所得新点在 $L'$ 处仍为单位点，且在 $w$ 处落入指数为 $i$ 的双陪集，故可应用归纳假设第三条. 每项乘以 $c_i p^{s_w-E_p^{\rm tr}}$ 后，规范因子至多再乘以 $p^{E_p^{\rm tr}-s_w}$. 对各项应用超度量三角不等式，即得
+$p^{\beta_{L'}+E_p^{\rm tr}-s_w}=p^{\beta_L}$，归纳完成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L844}{合并双陪集代表}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L888}{对标记素位表的归纳}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean}{975}.}
+\begin{lemma}[标记 Hecke 幂上的限制提升]
+\label{lem:a-marked-hecke-chain-gauge}
+\emitthmsource
+设 $\Psi$ 为扭转 $\vartheta$ 的弱链数据，$p\nmid q_\vartheta$，$\Lambda$ 为 $p$ 处的标记. 沿用上一引理的记号，取 $Y_\Lambda=\prod_{w\in\Lambda}Y_w$，记 $\mathcal L_\Psi$ 为 $\Psi$ 给出的限制提升. 则对任一整源形式 $u$，在每一点处皆有
+\[
+ \operatorname{Gauge}_p\bigl(\mathcal L_\Psi(Y_\Lambda^m u)\bigr)
+ \le p^{\sum_{j<m}(\#\Lambda\,E_p^{\rm tr}+H_{\Lambda,j})}.
+\]
+\end{lemma}
+\begin{proof}
+取列出全部 $\Lambda$ 的有序表，令 $A_j$ 为引理~\ref{lem:a-marked-hecke-datum-transfer} 给出的算子. 第三条在 $g=1$ 时的指数化简为
+\[
+ \sum_{w\in\Lambda}(E_p^{\rm tr}-s_w)+\sum_{w\in\Lambda}s_w+
+ H_{\Lambda,j}=\#\Lambda\,E_p^{\rm tr}+H_{\Lambda,j}.
+\]
+同时，因前后两层均包含于相应的标准整层，第一条保证了 $A_j$ 在原数据上满足前后层的交换条件.
+
+固定 $t\in\operatorname{supp}\Psi$，记 $\widehat C_j^t$ 为以新数据 $A_i\varphi_i(t)$ 作前 $j$ 步提升的算子. 对 $j$ 施归纳可得
+\[
+ \widehat C_j^t u=C_j^t(Y_\Lambda^j u).
+\]
+当 $j=0$ 时两边皆等于 $u$. 假设该式对 $j$ 成立，将右端代入下一步提升，并对源形式 $Y_\Lambda^ju$ 应用引理~\ref{lem:a-marked-hecke-datum-transfer} 的第二条，所得恰为 $C_{j+1}^t(Y_\Lambda^{j+1}u)$. 取 $j=m$，对 $t$ 加权求和并限制至 $Y_m$，即见 $\mathcal L_\Psi(Y_\Lambda^mu)$ 等于以新数据提升 $u$ 所得的限制形式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L1011}{逐步把 Hecke 幂移入数据}.}
+
+因 $u$ 为整，其在单位基点处的规范至多为 $1$. 应用引理~\ref{lem:a-weak-chain-gauge} 的链规范界，即得各步指数之和；又因标记素数满足 $p\ne N$，限制过程亦保持此上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L984}{标记 Hecke 幂的规范界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/LocalDivisibility.lean}{372}.}
+\begin{lemma}[完整标记子模上的复合提升整除性]
+\label{lem:a-full-mark-valuation}
+\emitthmsource
+设 $\Lambda$ 为 $p$ 处的完整标记，$Y_\Lambda$、$j_p$、$M_0$、$d_p$ 如引理~\ref{lem:a-exceptional-hecke-colength}，并沿用局部增益 $\gamma_p$. 对任一层范数与 $p$ 互素的扭转及其任一链数据，复合提升在
+\[
+ Y_\Lambda^m M_0+p^{j_p}M_0
+\]
+上的各点 $p$-进 Weyl 规范皆至多为 $p^{2d_p-\gamma_p}$.
+\end{lemma}
+\begin{proof}
+依引理~\ref{lem:a-weak-chain-replacement}，可将原链数据定义的复合提升改写为某弱链数据给出的限制提升，记该提升算子为 $\mathcal L$. 设 $S_\Lambda=\{\tau\in\Phi:w_\tau\in\Lambda\}$，$b_\Lambda=\#(\Phi_a\cap S_\Lambda)$. 在每一步 $j<m$，删去 $S_\Lambda$ 上高度为 $1$ 的列并计入删列补偿与对数误差后，预测整除性下界 $D_{p,j}(S_\Lambda)$ 满足
+\[
+ D_{p,j}(S_\Lambda)
+ \ge \frac{\gamma_p}{m}+b_\Lambda\frac{a}{x_1}-\frac{d_p}{m}.
+\]
+事实上，完整标记使碰撞和为零，且 $p$ 在 $K$ 中惰性，故局部素元的 $p$-进赋值为 $1$；将这两项代入预测整除性下界即得上述估计.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/JetExponent.lean\#L491}{单步预测整除性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L254}{完整标记下的下界}.}
+
+引理~\ref{lem:a-marked-hecke-chain-gauge} 表明，$\mathcal L(Y_\Lambda^m u)$ 的规范指数至多为 $m$ 个单步指数之和，其中第 $j$ 步指数为
+\[
+ \#\Lambda\,E_p^{\rm tr}
+ +r_p\sum_{\tau\in S_\Lambda}c_j(\tau)-D_{p,j}(S_\Lambda),
+\]
+这里 $E_p^{\rm tr}=r_p f(n_m+r_p)$ 为传递指数，$c_j(\tau)$ 为相应的低列数. 低列与传递代价的估计给出
+\[
+ \#\Lambda\,E_p^{\rm tr}+r_p\sum_{\tau\in S_\Lambda}c_j(\tau)
+     \le \frac{d_p}{m}+b_\Lambda\frac a{x_1}.
+\]
+两式相减，$b_\Lambda a/x_1$ 恰好抵消，单步指数至多为 $(2d_p-\gamma_p)/m$. 累加即得对 $u\in M_0$ 有\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean\#L969}{Hecke 传递与各步规范}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/MarkedPrimes.lean\#L513}{低列与传递的代价}.}
+\[
+ \operatorname{Gauge}_p\bigl(\mathcal L(Y_\Lambda^m u)\bigr)
+ \le p^{2d_p-\gamma_p}.
+\]
+
+再取 $v\in M_0$. 由引理~\ref{lem:a-weak-chain-unmarked-valuation}，在无标记情形下，每个源无穷位的碰撞代价至多为 $\sum_{j\ge1}a/p^j=a/(p-1)\le 2a/p$，故全部 $m$ 步的总碰撞代价至多为 $2mfa/p\le j_p$. 无标记规范界给出的指数上界为
+\[
+ m C_p(\varnothing)+d_p-\gamma_p.
+\]
+乘以 $p^{j_p}$ 后指数减少 $j_p$，从而
+\[
+ \operatorname{Gauge}_p\bigl(\mathcal L(p^{j_p}v)\bigr)\le p^{d_p-\gamma_p}.
+\]
+因 $d_p\ge0$，此界亦不超过 $p^{2d_p-\gamma_p}$. 由局部 Weyl 规范的超度量三角不等式，对 $\mathcal L(Y_\Lambda^m u+p^{j_p}v)$ 仍有同一上界；子模中每个向量皆可如此分解，证毕.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L183}{无标记的碰撞代价与幂次校正}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L371}{两部分合并及弱链替换}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/JetExponent.lean}{163}.}
+\begin{lemma}[非例外素数的碰撞损失]
+\label{lem:a-nonexceptional-collision}
+\emitthmsource
+设 $p<x_1$ 为小非分裂素数且非例外. 则
+\[
+ m\,C_p(\varnothing)\le d_p,\qquad
+ d_p=\frac{fa\ell^2}{p}
+ \begin{cases}
+  m,&p\equiv\pm1\pmod m,\\
+  1,&p\not\equiv\pm1\pmod m.
+ \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+碰撞项由无穷位 $\tau$ 与正整数 $j$ 索引，其大小为 $a/p^j$. 当 $p=d$ 时不存在碰撞：事实上，碰撞要求 $\tau$ 与 $-d^j\tau$ 模 $q_0$ 同属类 $1$；但 $d\equiv q_0/2-1\pmod{q_0}$ 且 $4\mid q_0$，故 $d^2\equiv1\pmod{q_0}$，从而 $d^j$ 模 $q_0$ 仅能取 $1$ 或 $q_0/2-1$，均不等于 $-1$，这便排除了碰撞所需的 $-d^j\equiv1\pmod{q_0}$.
+
+当 $p\ne d$ 且存在碰撞时，配对指数的定义表明 $\chi_K(p)=-1$ 且 $j$ 为奇数，故 $-p^j=(-p)^j$；两位均属于 $\Phi_a$ 迫使 $o_0\mid j$（其中 $o_0$ 为 $-p$ 模 $q_0$ 的阶）. 若所有碰撞指数皆至少为 $J$，则对 $\tau$ 求和并放宽几何级数求和范围，可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/NearPairs.lean\#L53}{分歧素数处的排除}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/JetExponent.lean\#L124}{碰撞指数与几何级数}.}
+\[
+ C_p(\varnothing)
+ \le f\sum_{j\ge J}\frac{a}{p^j}
+ =\frac{fa}{p^J}\frac{p}{p-1}
+ \le\frac{2fa}{p^J}.
+\]
+
+若 $p\equiv\pm1\pmod m$，取 $J=1$；此时 $d_p=mfa\ell^2/p$，由 $\ell^2\ge2$ 即得所需界. 若 $p\not\equiv\pm1\pmod m$，则任一碰撞的存在均迫使 $o_0$ 为奇数；因 $p$ 非例外，必有 $o_0>r_p$（其中 $r_p=\lceil\log_p m\rceil$），从而每个碰撞指数至少为 $r_p+1$. 取 $J=r_p+1$ 并利用 $p^{r_p}\ge m$，可得
+\[
+ m\,C_p(\varnothing)
+ \le \frac{2mfa}{p^{r_p+1}}
+ \le \frac{2fa}{p}
+ \le \frac{fa\ell^2}{p}=d_p.
+\]
+若无碰撞，左端为零，结论显然成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/JetExponent.lean\#L162}{非例外情形的总损失}.}
+\end{proof}
+
+\section{层素数与统一局部损失}
+\label{sec:a-level-prime}
+
+在层素数 $N$ 处，粘合会改变用于度量整性的格. 本节先估计将源形式校正到所需格的代价，再将它和其他素数处的损失合并.
+
+固定 $N$-进素位 $\iota$，以下记 $\mathcal O_\iota$ 为相应的赋值环，$|N|_\iota=N^{-1}$. 令 $\Sigma_N$ 为 $\iota$ 所诱导素位的共轭集，它在 $N$ 上方的每对共轭素位中各取一位，各成员的剩余域均为 $\mathbb F_N$. 记 $\pi_N\bar\pi_N=N$. 对第 $j$ 级上链空间 $X_j$，以 $\delta_j(S)$ 表示在 $\Sigma_N\cap S$ 处由 $\operatorname{diag}(1,\ldots,1,N)$ 给出、在 $\Sigma_N\setminus S$ 处取单位点的有限阿代尔酉点，并记
+\[
+ \delta_j^{\mathrm{all}}=\delta_j(\Sigma_N),\qquad
+ \delta_j=\delta_j(\{w:w\mid\pi_N\}),\qquad
+ \delta_j^\vee=\delta_j(\delta_j^{\mathrm{all}})^{-1}.
+\]
+在 $\Sigma_N$ 处，$\delta_j$ 与 $\delta_j^\vee$ 分别将标准格映至 $L_j$ 及其对偶格. 对第 $j$ 级形式 $\phi$，称其在点 $d$ 处整，是指对每个有限阿代尔点 $g$，将 $\phi(g)$ 按 Weyl 表示以 $(gd)^{-1}$ 移回单位点后，各坐标皆落于 $\mathcal O_\iota$ 中. 记 $\mathcal A_\iota,\mathcal A^L,\mathcal A^\vee$ 分别为在 $1,\delta_0,\delta_0^\vee$ 处整的全源形式模.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/SetupAtLevel.lean\#L32}{层素数处的格与阿代尔点}.}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ColengthAtLevel.lean}{98}.}
+\begin{lemma}[源空间的末坐标平均次数]
+\label{lem:a-level-mean-degree}
+\emitthmsource
+记 $\mathcal J$ 为 $X_0$ 的源层双陪集与 Weyl 基指标之直积. 对 $i\in\mathcal J$ 与源坐标变量 $v$，记 $d_i(v)$ 为该 Weyl 基向量在各无穷位杨表中含字母 $v$ 的总次数，并置 $s(v)=\sum_{i\in\mathcal J}d_i(v)$. 则
+\[
+ k\,s(v)\le u_0fa,\qquad u_0=\dim_{\mathbb C}U_0.
+\]
+\end{lemma}
+\begin{proof}
+固定两个坐标变量 $v,v'$. 在所有无穷位处同时对换这两个变量，可将仅在 $v$ 处取对角系数 $2$ 的对角矩阵化为仅在 $v'$ 处取 $2$ 的对角矩阵. 这两个矩阵彼此共轭，故在 Weyl 表示下行列式相同. 对角矩阵在杨表基上按字母次数作用，在各双陪集对应的 Weyl 模上的特征值为 $2^{d_i(v)}$. 因源层稳定子平凡，所有双陪集处的取值空间皆为同一 Weyl 模，将各双陪集的行列式相乘即得 $2^{s(v)}=2^{s(v')}$，故 $s(v)$ 与 $v$ 无关.
+
+杨表在单个无穷位处的总次数等于高度小于 $k$ 的列中所含方格数，而源权在每个无穷位至多含 $a$ 个此类方格，故 $\sum_v d_i(v)\le fa$. 对 $i$ 求和并结合 $|\mathcal J|=u_0$，即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L75}{杨表次数、对换与平均}.}
+\[
+ k\,s(v)=\sum_{i\in\mathcal J}\sum_v d_i(v)\le u_0fa .
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ColengthAtLevel.lean}{156}.}
+\begin{lemma}[对偶格与 $L_0$-格之间的余长]
+\label{lem:a-level-diagonal-colength}
+\emitthmsource
+记 $s_N=s(v_{\mathrm{last}})$ 为源空间末坐标的次数和. 对 $\mathcal A^\vee$ 中的任一有限向量族，存在行列式整除 $N^{s_N}$ 的 $\mathcal O_\iota$-矩阵，使校正后的全族均落入 $\mathcal A^L$ 中.
+\end{lemma}
+\begin{proof}
+给定源层的某一双陪集代表元 $c$，对 $c\delta_0^\vee$ 应用有限位弱逼近，同时要求其在 $(\delta_0^{\mathrm{all}})^{-1}$ 下的共轭在 $N$ 上方亦整. 由此可将 $c$ 替换为同一双陪集中的代表元 $r_c$，使得
+\[
+ r_c\delta_0^\vee\text{ 在 }N\text{ 上方整可逆},\qquad
+ (\delta_0^{\mathrm{all}})^{-1}r_c\delta_0\text{ 在 }N\text{ 上方整可逆},
+\]
+其中第二式用到了 $\delta_0^\vee \delta_0^{\mathrm{all}}=\delta_0$. Weyl 规范在左侧有理点作用下不变，在 $N$ 上方整可逆右乘下亦不变，故对每个 $\phi\in\mathcal A^\vee$，其在各代表元 $r_c$ 处的坐标均属于 $\mathcal O_\iota$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/PAdicGauge.lean\#L84}{有限位弱逼近}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L145}{适应两个格的代表元}.}
+
+再考察 $\delta_0$ 处的规范. 若 $k_0$ 属于源层，则 $\delta_0^{-1}k_0\delta_0$ 在 $N$ 上方整可逆. 事实上，在 $\Sigma_N$ 处以 $L_0$ 的基表示源层时，所得矩阵整可逆且末列模 $N$ 等于末基向量；在 $\Sigma_N$ 的共轭位处该性质由酉条件保证. 任一点均可写作 $\gamma r_ck_0$（$\gamma$ 为有理点）. 由分解
+\[
+ r_ck_0\delta_0
+   =\delta_0^{\mathrm{all}}\bigl((\delta_0^{\mathrm{all}})^{-1}r_c\delta_0\bigr)
+                  \bigl(\delta_0^{-1}k_0\delta_0\bigr)
+\]
+及上述两项规范不变性可知，只需在 $\delta_0^{\mathrm{all}}$ 处衡量 $\phi(r_c)$. 每个权嵌入皆读取 $\Sigma_N$ 中的一位，而 $\delta_0^{\mathrm{all}}$ 在该处将末坐标乘以 $N$；又因源权的行列式幂为零，$(\delta_0^{\mathrm{all}})^{-1}$ 的 Weyl 作用将指标 $i=(c,\alpha)$ 的坐标乘以 $N^{-d_i(v_{\mathrm{last}})}$. 由此可见，若在每个 $i$ 处的取值坐标皆被 $N^{d_i(v_{\mathrm{last}})}$ 整除，则必有 $\phi\in\mathcal A^L$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/SetupAtLevel.lean\#L191}{在 $L_0$ 的基下表示源层}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L182}{校正后的取值满足 Weyl 整性}.}
+
+对给定的有限族，按指标 $i$ 逐一校正其取值坐标：若当前坐标非全为零，则在族中选取该坐标赋值最小的向量（其该坐标整除其余向量的相应坐标），经减去整倍数的初等行变换将其余向量的该坐标清零，再将选中向量乘以 $N^{d_i(v_{\mathrm{last}})}$；若该坐标全为零，则无需操作. 每步操作均保持此前各坐标的整除条件，所得矩阵的行列式整除
+\[
+ \prod_{i\in\mathcal J} N^{d_i(v_{\mathrm{last}})}=N^{s_N}.
+\]
+由上述规范判据可知，最终所得向量族落入 $\mathcal A^L$ 中.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L159}{对角坐标格的余长}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/Colength.lean\#L134}{赋值环上的坐标校正}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ColengthAtLevel.lean}{243}.}
+\begin{lemma}[升算子迭代的余长]
+\label{lem:a-level-up-iterate}
+\emitthmsource
+令 $\mathsf U_N$ 为按 $L_0$ 的基读取的层处升算子，对 $i\ge0$ 置 $\mathcal A_i=(\mathsf U_N^i)^{-1}(\mathcal A^L)$. 则 $\mathcal A_\iota$ 中任一有限向量族皆可经行列式整除 $N^{s_N(i+1)}$ 的整矩阵映入 $\mathcal A_i$.
+\end{lemma}
+\begin{proof}
+首先有 $\mathcal A_\iota\subseteq\mathcal A^\vee$. 事实上，在所有用于衡量规范的权嵌入下，$(\delta_0^\vee)^{-1}=\delta_0^{-1}\delta_0^{\mathrm{all}}$ 为整对角矩阵；而源权的 Weyl 表示为多项式表示，故作用该矩阵保持坐标的整性.
+
+其次证明 $\mathsf U_N(\mathcal A^L)\subseteq\mathcal A^\vee$. 升算子保持源层不变性，这可分别在 $N$ 上方与其余有限位处验证：在 $N$ 上方，源层在 $L_0$ 基下即为末列模 $N$ 固定的子群，升算子的陪集和保持该子群的固定向量；在其余有限位处，源层平移与升算子各项均可交换. 对有限坐标 $y$，升算子中的平移元形如
+\[
+ g_y=\delta_0^\vee k_y\delta_0^{-1},
+\]
+其中 $k_y$ 在 $N$ 上方整可逆；其系数为有限加性特征的取值，故 $N$-进绝对值为 $1$. 对任一有限阿代尔点 $g$，均有
+$gg_y\delta_0=g\delta_0^\vee k_y$. 因而当 $\phi$ 在 $\delta_0$ 处整时，升算子的每一和项在 $g\delta_0^\vee$ 处的规范皆至多为 $1$；由超度量三角不等式即得所需的 $\delta_0^\vee$ 整性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L118}{标准整模与对偶整模}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/SetupAtLevel.lean\#L287}{升算子保持源层}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L217}{升算子从 $L_0$ 整模到对偶整模}.}
+
+当 $i=0$ 时，由 $\mathcal A_\iota\subseteq\mathcal A^\vee$ 及引理~\ref{lem:a-level-diagonal-colength} 直接得指数 $s_N$. 设已将某族校正至 $\mathcal A_i$，对其施加 $\mathsf U_N^{i+1}$，由 $\mathsf U_N(\mathcal A^L)\subseteq\mathcal A^\vee$ 知所得像族落入 $\mathcal A^\vee$；再由引理~\ref{lem:a-level-diagonal-colength} 将该像族映入 $\mathcal A^L$. 因算子与校正矩阵的系数作用可交换，第二个矩阵即将原先已在 $\mathcal A_i$ 中的族映入 $\mathcal A_{i+1}$. 两矩阵行列式相乘，指数由 $s_N(i+1)$ 增至 $s_N(i+2)$，归纳完成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L243}{升算子逆像的归纳}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ColengthAtLevel.lean}{265}.}
+\begin{lemma}[层素数处全源整模的余长]
+\label{lem:a-level-up-colength}
+\emitthmsource
+令 $\mathcal A'=(\mathsf U_N^{m/2})^{-1}(\mathcal A^L)$. 则存在 $c_N\in\mathbb N$，使得 $\mathcal A_\iota$ 中的每个有限向量族皆可经行列式整除 $N^{c_N}$ 的整矩阵映入 $\mathcal A'$，且
+\[
+ c_N\le m f b\,u_0.
+\]
+\end{lemma}
+\begin{proof}
+在引理~\ref{lem:a-level-up-iterate} 中取 $i=m/2$，可置 $c_N=s_N(m/2+1)$. 引理~\ref{lem:a-level-mean-degree} 给出 $ks_N\le u_0fa$，容许尺度则给出 $(m/2+1)a\le mbk$，从而
+\[
+ kc_N \le u_0fa(m/2+1)\le k\,mfb\,u_0.
+\]
+因源秩 $k>0$，约去 $k$ 即得所需上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/SetupAtLevel.lean\#L321}{升算子原像整模的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ColengthAtLevel.lean\#L265}{源整模的最终指数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtLevel.lean}{331}.}
+\begin{lemma}[粘合换基的行列式特征因子]
+\label{lem:a-level-glued-factor}
+\emitthmsource
+固定驯特征 $\vartheta$，记 $\chi_j$ 为第 $j$ 步上链提升所用特征到 $E$ 的基变换. 对 $\Sigma_N$ 处的矩阵 $A$，令
+\[
+ \chi_{j,r}(A)=\chi_j(\det A)|\det A|^{-r/2},
+\]
+其中 $|\det A|$ 为有限位的模. 第 $i$ 个双步的粘合因子 $\Delta_{\vartheta,i}$ 定义为如下两项特征取值之积：其一在 $X_{2i+2}$ 的矩阵 $\delta_{2i+2}(\Sigma_N\setminus\{w:w\mid\pi_N\})$ 处取 $\chi_{2i+2,n_{2i+1}}$，另一在 $X_{2i}$ 的矩阵 $\delta_{2i}(\{w:w\mid\pi_N\})$ 处取 $\chi_{2i+1,n_{2i+1}}$. 则对 $0\le i<m/2$，有
+\[
+ |\Delta_{\vartheta,i}|_\iota\le N^{2fb}.
+\]
+\end{lemma}
+\begin{proof}
+对任一 $\delta_j(S)$，其在 $\Sigma_N\cap S$ 处的行列式为 $N$，在其余位处为 $1$，故 $|\det|^{-r/2}$ 为 $\sqrt N$ 的非负次幂，其 $N$-进绝对值至多为 $1$. 对基变换特征本身，由酉条件可知，在与 $\tau$ 对应的 $N$-进素位处读取的有限行列式等于共轭位矩阵行列式的逆，故第 $\tau$ 个权因子仅在 $\bar w_\tau\in S$ 时方可能大于 $1$，且此时等于 $N$ 的权次幂. 因这里两个边指标皆至多为 $m$，而提升特征在每个无穷位处的权至多为 $2b$，故该因子至多为 $N^{2b}$.
+
+在粘合因子的两项中，$\Sigma_N$ 的两个取位子集互补，因而对每个 $\tau$，恰有一项包含该处可能大于 $1$ 的因子. 对全部 $f$ 个无穷位相乘即得 $N^{2fb}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L53}{行列式特征的逐位规范}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L323}{互补取位与双步粘合因子}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtLevel.lean}{403}.}
+\begin{lemma}[粘合链化为直接提升链]
+\label{lem:a-level-direct-chain}
+\emitthmsource
+设 $\vartheta$ 为驯特征. 给定上链各边的有限 Weil 数据 $v_j$，记 $\mathcal G_i$ 为将 $v_{2i},v_{2i+1}$ 在 $N$ 上方投影至真空并按双步粘合所得的提升，记 $\mathcal D_j$ 为在 $L_j,L_{j+1}$ 基下采用直接数据（即整矩阵上末列模 $N$ 等于末基向量的示性函数）所得的提升. 则存在仅依赖于 $D,\vartheta$ 及所选 $N$-进素位的常数 $c_\vartheta\in\mathbb C$，使得对每个分歧源形式 $\phi$ 与每组有限数据 $v_j$ 皆有
+\[
+ \mathcal G_{m/2-1}\cdots\mathcal G_0\phi
+ =c_\vartheta\,\mathcal D_{m-1}\cdots\mathcal D_0
+                (\mathsf U_N^{m/2}\phi),\qquad
+ |c_\vartheta|_\iota\le N^{mfb}.
+\]
+\end{lemma}
+\begin{proof}
+在 $L_j$ 的基下，以 $\rho_j$ 记 $\Sigma_N$ 处矩阵在第 $j$ 级形式上的平移作用，以 $\mathsf U_j$ 记相应升算子（故 $\mathsf U_0=\mathsf U_N$）；又以 $\mathcal L_j(F)$ 记在两级格基上附加矩阵函数 $F$ 所得的提升. 在矩阵函数中作代换 $T\mapsto B^{-1}TA$，可将 $A^{-1}$ 移至输入端、将 $B$ 移至输出端，并带出行列式特征比
+\[
+ \frac{\chi_{j+1,n_{j+1}}(A)}{\chi_{j+1,n_j}(B)} .
+\]
+这直接来自 Weil 作用在矩阵自变量上的公式以及提升的等变性. 对整可逆矩阵，因提升特征在 $N$ 上方不分歧，特征比为 $1$. 若在两级格基下以 $D_j^\sharp$ 记将末坐标乘以 $N^{-1}$ 的矩阵，则末行示性数据 $\mathbf 1_{\mathrm{row}}$ 与直接数据满足
+\[
+ \rho_{j+1}(D_{j+1}^\sharp)\,\mathcal L_j(\mathbf 1_{\mathrm{row}})
+   =\eta_j\,\mathcal D_j\,\rho_j(D_j^\sharp),
+\]
+其中 $\eta_j$ 是 $X_j$ 处的 $\chi_{j+1,n_{j+1}}(\delta_j^{\mathrm{all}})$ 与 $X_{j+1}$ 处的 $\chi_{j+1,n_j}(\delta_{j+1}^{\mathrm{all}})$ 之比. 两矩阵的各局部行列式相同，特征取值相互抵消；又因 $n_{j+1}\ge n_j$，余下的模之次幂在 $N$-进绝对值下至多为 $1$，从而 $|\eta_j|_\iota\le1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L231}{局部基变换与提升律}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L331}{行列式特征比的规范}.}
+
+对每个 $w\in\Sigma_N$，分歧向量均可表为 $\psi-\rho_j(x)\psi$，其中 $x$ 为局部整单位标量，且在其余位模 $N$ 同余于 $1$. 对源形式，这由 $w$ 或其共轭位上的分歧条件直接给出；对中间级，因在输入与输出同时施加相同标量不改变矩阵数据，直接提升保持该性质；升算子由局部平移构成，亦与这些标量可交换，故同样保持分歧性.
+
+在第 $i$ 个双步中，局部粘合展开由模 $N$ 向量 $y$ 索引：第一条边取末列为 $y$ 的示性函数，第二条边取末行与 $y$ 配对所得的有限加性特征. 将两端格基换至 $L_{2i},L_{2i+2}$ 时，中间级两个相反的基变换相消，留下因子 $\Delta_{\vartheta,i}$ 以及输出端上的 $\rho_{2i+2}(D_{2i+2}^\sharp)$. 若 $y$ 在某个 $w$ 处为零，则第一条边的数据在该处的整单位标量下不变，故对应项在分歧向量上为零；若 $y$ 在每个位处皆非零，则在各剩余域中取整可逆基变换将末基向量映为 $y$，该基变换在相邻两条边间抵消，使得所有此类项完全相等. 记 $h_i$ 为这些逐位非零向量的个数，则粘合双步化为 $\Delta_{\vartheta,i}h_i$ 乘以先作直接提升、再作镜像提升、最后施加上述输出平移.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/SetupAtLevel.lean\#L245}{分歧形式在局部表示中的刻画}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L349}{粘合数据在格基上的有限展开}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftLawsModuloN.lean\#L770}{逐位非零向量的贡献}.}
+
+镜像数据即整矩阵上右下角元的有限加性特征，其右下角在某位为零的部分同样在分歧向量上消失. 将其余部分按末列分组，可知附带输出平移的镜像提升等于 $\mathsf U_{j+1}\mathcal D_j$；改按末行分组并应用末行数据的换基等式，同一提升又等于 $\eta_j\mathcal D_j\mathsf U_j$. 由此可见，升算子越过第 $j$ 个直接提升仅产生因子 $\eta_j$，而第 $i$ 个粘合双步在分歧向量上的作用即为
+\[
+ \Delta_{\vartheta,i}h_i\,\eta_{2i+1}\eta_{2i}\,
+    \mathcal D_{2i+1}\mathcal D_{2i}\mathsf U_{2i}.
+\]
+将每个 $\mathsf U_{2i}$ 依次越过其前的 $2i$ 个直接提升，归纳即得所需等式，统一标量为
+\[
+ c_\vartheta
+ =\prod_{i=0}^{m/2-1}\left(
+   \Delta_{\vartheta,i}h_i\prod_{j=0}^{2i+1}\eta_j\right).
+\]
+因 $h_i$ 为整数且 $|\eta_j|_\iota\le1$，仅有各 $\Delta_{\vartheta,i}$ 可能放大规范；由引理~\ref{lem:a-level-glued-factor} 可知总放大因子至多为 $(N^{2fb})^{m/2}=N^{mfb}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftLawsModuloN.lean\#L687}{镜像数据与升算子的交换}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftLawsModuloN.lean\#L885}{升算子向源端移动的归纳}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L403}{直接链的统一系数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtLevel.lean}{488}.}
+\begin{lemma}[直接数据的单步规范]
+\label{lem:a-level-direct-gauge}
+\emitthmsource
+对 $j<m$，将直接数据施于上链第 $j$ 条边上的任一整真空平移，并按 $L_j,L_{j+1}$ 的基读取. 则对任一驯特征，该核将在 $g\delta_j$ 处规范至多为 $C$ 的源值映至在 $g'\delta_{j+1}$ 处规范至多为 $N^{fb}C$ 的目标值，其中 $g,g'$ 为两级的任意有限阿代尔点.
+\end{lemma}
+\begin{proof}
+先在两级标准基下估计. 取 $K$ 的整数 $\omega_K=(1+\sqrt{-d})/2$，设它在 $\iota$ 所诱导的 $K$ 素位处模 $N$ 化为 $\bar u\in\mathbb F_N$. 取整数代表 $u$，置 $\alpha=\omega_K-u$. 所有由 $\iota$ 诱导的 $E$ 素位限制到 $K$ 上皆给出同一素位，故 $\alpha$ 在这些素位处均为零；另一方面，$\bar\alpha$ 在该素位处化为 $1-2\bar u$，其平方为 $-d\ne0$，因此 $\bar\alpha$ 在 $\Sigma_N$ 上均为零，且 $|\bar\alpha d|_\iota=1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L96}{清除 Fourier 平移分母的整数}.}
+
+直接数据以模 $N$ 矩阵为自变量，取值于 $\{0,1\}$. 在 $\Sigma_N$ 上对其作有限 Fourier 展开（\emph{finite Fourier expansion}），并将 $n_{j+1}\times n_j$ 阶矩阵坐标的 Fourier 分母放宽至
+\[
+ F_j=\operatorname{Nm}_{E/\mathbb Q}((N))^{n_{j+1}n_j}
+     =N^{2f n_{j+1}n_j}.
+\]
+实际 Fourier 分母为相应模矩阵空间的基数，因所用模理想包含 $(N)$，该基数整除 $F_j$. 乘以 $F_j$ 后，所得数据为先在 $N$ 上方作真空投影、再加有限个 Heisenberg 平移的整线性组合. 因 Fourier 变换在 $\Sigma_N$ 上的分母可由 $\bar\alpha$ 清除，这些平移的局部分母可由 $\alpha$ 清除；而真空投影本身将真空平移映为零或在 $N$ 上方整的真空平移. 于是乘以 $F_j$ 后的数据属于由 $\alpha$ 清除平移分母的标准数据模. 由于核的额外缩放为 $N$-进整数且 $|\bar\alpha d|_\iota=1$，标准数据的核规范界给出放大因子至多为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L126}{真空投影与直接数据的 Fourier 展开}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Kernels/ThetaLiftGauge.lean\#L288}{标准数据的核规范}.}
+
+除以 $F_j$ 可得，标准基下的放大因子至多为 $N^{2fn_{j+1}n_j}$；结合 $n_j,n_{j+1}\le n_m$ 及容许尺度 $2n_m^2\le b$，此界不超过 $N^{fb}$. 最后对数据施加 $(\delta_j,\delta_{j+1})$ 的 Weil 平移，由核的等变性即把标准基下的规范估计移至 $g\delta_j$ 与 $g'\delta_{j+1}$，且常数不变.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L197}{单步损失的尺度界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L488}{换至 $L_j$ 的格基}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/ValuationAtLevel.lean}{504}.}
+\begin{lemma}[层素数处复合提升的规范]
+\label{lem:a-level-composite-gauge}
+\emitthmsource
+若分歧源形式 $\phi\in U$ 属于 $\mathcal A'$，则对任一扭转 $\vartheta$ 及其任一链数据 $\Psi$，复合提升 $\operatorname{Comp}_{\vartheta,\Psi}(\phi)$ 在标准格处的各点 $N$-进 Weyl 规范皆至多为 $N^{2mfb}$.
+\end{lemma}
+\begin{proof}
+置 $\psi=\mathsf U_N^{m/2}\phi$. 由 $\mathcal A'$ 的定义可知，$\psi$ 是在 $\delta_0$ 处整的源形式. 链数据的容许分母仅来自 $M$ 与扭转模，而两者皆与 $N$ 互素，故每个真空平移在 $N$ 上方均为整，从而已被 $N$ 处的真空投影固定. 对每个平移元应用引理~\ref{lem:a-level-direct-chain} 并按 $\Psi$ 的系数求和，即可将粘合链改写为施于 $\psi$ 的直接链之和乘以同一常数 $c_\vartheta$，其规范至多为 $N^{mfb}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L52}{容许真空平移在 $N$ 处的投影}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L516}{由粘合链换为直接链}.}
+
+在 $\Sigma_N$ 处以 $L_j$ 为基时，上链层的矩阵皆整可逆且末列模 $N$ 等于末基向量；以第 $j$、$j+1$ 级的层矩阵作用于直接数据的自变量时，整矩阵条件与末列条件均得以保持，故直接数据算子与两级层的 Weil 作用可交换. 依引理~\ref{lem:a-weak-chain-vacuum-projection}，原链数据对应的未粘合张量联合不变，因而逐级施加直接数据算子后所得张量亦联合不变. 据此，可将直接链之和在每一点的值展为有限类和，每一和项为整系数 $\Psi(x)$ 乘以 $m$ 个核依次作用于源值. 由引理~\ref{lem:a-level-direct-gauge}，每个核至多引入因子 $N^{fb}$，故每项在 $\delta_m$ 处的规范至多为 $N^{mfb}$；再由有限类和的超度量三角不等式保留此界，乘回 $c_\vartheta$ 即得上链结果在 $\delta_m$ 处的规范至多为 $N^{2mfb}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L449}{直接数据与层作用交换}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainDatumExpansion.lean\#L415}{未粘合张量的联合不变性}.}
+
+此处核乘积的规范界正由引理~\ref{lem:a-weak-chain-gauge} 给出.
+
+最后将 $X_m$ 上的形式限制至 $Y_m$. 其分支矩阵为整矩阵，不增大规范；限制映射另含标量 $\prod_\tau\tau(\bar\pi_N)^{-\beta_\tau}$（$\beta_\tau$ 为分支指数）. 在权嵌入下，$\delta_m^{-1}$ 的末坐标取 $N^{-1}$ 或 $1$，前者恰对应 $\bar w_\tau\mid\pi_N$，而分支矩阵将该坐标的作用转化为其 $\beta_\tau$ 次幂. 由于 $|\tau(\bar\pi_N)|_\iota$ 按同一条件取 $N^{-1}$ 或 $1$，该分支标量的绝对值与限制映射中的标量恰好抵消. 由此，$Y_m$ 标准格上的规范可直接由 $X_m$ 在 $\delta_m$ 处的规范界控制，仍至多为 $N^{2mfb}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L286}{限制时的分支矩阵与标量}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ValuationAtLevel.lean\#L541}{复合提升的最终规范}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Divisibility/LocalDivisibility.lean}{482}.}
+\begin{lemma}[复合提升的统一局部损失]
+\label{lem:a-uniform-divisibility}
+\emitthmsource
+存在一族非负实数 $e_p$，只要 $p\ne N$ 且满足 $\chi_K(p)=1$ 或 $x_1\le p$ 即有 $e_p=0$；对任意有限指标集 $J$，皆有 $\sum_{p\in J}e_p\log p\le B$. 固定素数 $p$ 及其上方的 $p$-进素位，令 $M$ 为该处的整分歧源形式模，$u_0=\dim_{\mathbb C}U_0$. 则存在 $j\in\mathbb N$ 及子模 $M'\subseteq M$，满足 $j\le e_pu_0$，使得 $M$ 中任一有限向量族皆可经行列式整除 $p^j$ 的整矩阵映入 $M'$；并且对 $M'$ 中的源形式，层与 $p$ 互素的每个扭转及其每个链数据所给出的复合提升，在任一有限阿代尔点处的 $p$-进 Weyl 规范皆至多为 $p^{e_p-\gamma_p}$.
+\end{lemma}
+\begin{proof}
+定义容许损失
+\[
+ e_p=
+ \begin{cases}
+ 2d_p, &p\in Q,\\
+ 2mfb,&p=N,\\
+ 0,&\text{其余情形},
+ \end{cases}
+ \qquad
+ d_p=f\ell^2\frac ap
+       \begin{cases}m,&p\equiv\pm1\pmod m,\\ 1,&\text{其余情形}.
+       \end{cases}
+\]
+其中 $d_p$ 仅在 $p\in Q$ 时使用，且由 $N\ge x_1$ 知 $Q$ 与 $\{N\}$ 不交. 非负性与支集条件由定义直接可见；记 $K=\mathbb Q(\sqrt{-d})$ 的特征为 $\chi_K$，则在 $Q$ 中要求 $\chi_K(p)\ne1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/Estimates.lean\#L314}{容许损失的定义}.}
+
+记 $\lambda=\log x_1$、$T_0=4fa\ell^2\lambda$. 若 $p\in Q$ 且 $p\not\equiv\pm1\pmod m$，取 $c=p$，即有 $e_p\log p\le T_0/c$；若 $p\in Q$ 且 $p\equiv\pm1\pmod m$，可写作 $p=mc\pm1$（其中 $1\le c\le p$ 且 $mc\le p+1\le2p$），仍有 $e_p\log p\le T_0/c$. 层素数 $N$ 对应 $c=1$：由 $\log N\le30m\ell$、$m^2\le4x$ 及 $a=xb$ 可得
+\[
+ e_N\log N\le60m^2fb\ell\le240fa\ell\le T_0 .
+\]
+末一步用到了容许尺度给出的 $\ell\lambda\ge60$. 对每个固定的 $c$，至多有 $N,mc-1,c,mc+1$ 四个指标受此界控制，从而对任意有限集 $J$ 有
+\[
+ \sum_{p\in J} e_p\log p\le
+ 4T_0\sum_{c=1}^{\lfloor x_1\rfloor}\frac1c
+ \le16fa\ell^2\lambda(1+\lambda)\le fa\ell^3=B.
+\]
+末一步利用了 $\ell\ge\lambda^6$ 与 $\lambda\ge3$（例如 $16(1+\lambda)\le(64/3)\lambda$，而 $\lambda^4\ge81$）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/Estimates.lean\#L326}{调和级数部分和的估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/LevelAndTwists.lean\#L228}{层素数的大小界}.}
+
+现固定素数 $p$ 及其上方的 $p$-进素位，记 $M_0$ 为该处的全源整模. 我们先选取子模 $S_0$，使 $M_0$ 的任一有限族均可经行列式整除 $p^j$ 的矩阵映入 $S_0$，再验证 $S_0$ 中分歧向量的局部提升界. 分以下四种情形构造 $S_0$：
+\begin{enumerate}
+\item 若 $p\notin Q\cup\{N\}$，因 $d<x_1$ 且 $\chi_K(d)=0$，必有 $p\ne d$，此时 $\gamma_p=0=e_p$. 由引理~\ref{lem:a-weak-chain-replacement} 取表示同一提升的弱链数据，再由引理~\ref{lem:a-weak-chain-integral-away} 得整性；取 $S_0=M_0$、$j=0$ 即可.
+\item 若 $p\in Q$ 且 $p$ 非例外，仍取 $S_0=M_0$、$j=0$. 引理~\ref{lem:a-weak-chain-unmarked-valuation} 给出弱链的局部界，指数为 $mC_p(\varnothing)+d_p-\gamma_p$；结合引理~\ref{lem:a-nonexceptional-collision} 的 $mC_p(\varnothing)\le d_p$，可知指数至多为 $e_p-\gamma_p$.
+\item 若 $p\in Q$ 且 $p$ 为例外素数，由引理~\ref{lem:a-full-mark} 选取完整标记 $\Lambda$. 令 $Y_\Lambda$ 为各标记位处缩放 Hecke 算子的乘积，$j_p=\lceil 2mfa/p\rceil$，并取 $S_0=Y_\Lambda^m M_0+p^{j_p}M_0$. 引理~\ref{lem:a-exceptional-hecke-colength} 给出 $j\le d_pu_0$，使校正矩阵行列式整除 $p^j$；又由引理~\ref{lem:a-full-mark-collision} 知未标记素位间无碰撞，从而引理~\ref{lem:a-full-mark-valuation} 给出界 $p^{2d_p-\gamma_p}=p^{e_p-\gamma_p}$.
+\item 若 $p=N$，取引理~\ref{lem:a-level-up-colength} 中升算子整模在源空间中的原像作为 $S_0$. 该引理给出 $j\le mfbu_0\le e_pu_0$，而引理~\ref{lem:a-level-composite-gauge} 给出提升界 $N^{2mfb}$；结合 $\gamma_N=0$，该界亦等于 $p^{e_p-\gamma_p}$.
+\end{enumerate}
+上述局部界对所指定的全部扭转与链数据同时成立. 最后置 $M'=M\cap S_0$. 从 $M$ 中任取有限族，它亦是 $M_0$ 中的有限族，故存在相应矩阵将其映入 $S_0$；由于矩阵系数皆整而 $M$ 为模，校正后的向量仍落于 $M$ 中，从而实际落于 $M'$ 中且行列式界不变. 对其中向量直接应用上述四种情形的局部提升界即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L402}{四种局部情形与统一结论}.}
+\end{proof}
+
+\section{Seesaw 恒等式}
+\label{sec:a-seesaw}
+
+经典 Seesaw 恒等式交换两条 Theta 提升路径上的配对~\cite{Kudla1984}，单步 Theta 提升下幂零轨道周期的展开可参见 Wang~\cite[定理~4.5]{Wang2025}. 为比较式~\eqref{eq:lift-comparison} 中的两条链，本节展开 Bessel 周期的常数项，以幂幺特征确定留下的有理弦类，再借助绝对可积性与格支集条件把展开式写成上链提升的限制.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean}{353}.}
+\begin{lemma}[Bessel 周期的带权截面积分]
+\label{lem:a-seesaw-cut-integral}
+\emitthmsource
+设 $G=G_\infty\times G_f$ 为一下链酉群，$R\subset G$ 为相应的 Bessel 群（\emph{Bessel subgroup}），$R_f$ 为其有限部分，$\Gamma_R$ 为其有理点群. 设 $A,J$ 为有限层，$J^\circ$ 为标准整层. 取 $G_f/J$ 中在 $R_f\cap A$ 下稳定的有限集 $\Omega$. 对 $\omega\in G_f/J$，记 $\mu(\omega)$ 为满足 $u^{-1}\omega\in\Omega$ 的 $u\in R_f$ 在 $R_f/(R_f\cap A)$ 中所成的类数（若该集合无限，则约定记为零）.
+
+设 $H$ 为左 $\Gamma_R$-不变的连续函数，在 $\Gamma_R\backslash G$ 上可积，且仅在满足 $\mu(\bar t_f)\ne0$ 的点 $t$ 处可能非零. 若当 $\bar t_f\in\Omega$ 时，其 Bessel 周期（\emph{Bessel period}）满足
+\[
+ \int_{\Gamma_R\backslash R}H(rt)\,d[r]
+     =[J^\circ:J]\, a(t_\infty)b(\bar t_f),
+\]
+则存在仅依赖于 $R,A,a$ 与测度的常数 $\kappa$，使得
+\[
+ \int_{\Gamma_R\backslash G} H(t)\,d[t]
+   =\kappa\sum_{\omega\in\Omega}\frac{b(\omega)}{\mu(\omega)} ,
+\]
+其中约定当重数为零时相应的倒数按零计.
+\end{lemma}
+\begin{proof}
+将 $R_f$ 的 Haar 测度 $\eta$ 归一化，使 $R_f\cap A$ 的体积为 $1$. 置 $\psi=\mathbf 1_\Omega/\mu$，视其为 $G_f/J$ 上的函数. 固定 $\omega$，因 $\Omega$ 在 $R_f\cap A$ 下稳定，满足 $u^{-1}\omega\in\Omega$ 的 $u$ 构成若干 $R_f\cap A$ 陪集之并. 又因 $R_f$ 的左平移诱导计数集合之间的双射，重数 $\mu$ 在每条 $R_f$-轨道上为常数. 由此，当 $\mu(\omega)>0$ 时有
+\[
+ \int_{R_f}\psi(u^{-1}\omega)\,d\eta(u)
+   =\frac{1}{\mu(\omega)}\eta\{u:u^{-1}\omega\in\Omega\}
+   =1.
+\]
+当 $\mu(\omega)=0$ 时，被积函数恒为零. 如此，有限截面权的轨道积分恰等于覆盖集的示性函数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean\#L200}{有限截面权的轨道积分}.}
+
+在 $G$ 上选取非负可测截断函数 $\beta$，使对每个 $t$ 皆有 $\int_R\beta(rt)\,dr=1$（其存在性由闭子群的左平移真作用保证）. 令
+\[
+ \alpha(v)=\int_{R_f}\beta(v,u)\,d\eta(u),\qquad
+ w(t)=\alpha(t_\infty)\psi(\bar t_f).
+\]
+为计算 $w$ 的轨道积分，先用 Tonelli 定理交换 $R$ 与 $R_f$ 上的积分次序；固定 $u$ 时在 $R$ 中作左平移 $r\mapsto(1,u^{-1})r$，随后再次交换积分次序并固定 $r$，在 $R_f$ 中作左平移 $u\mapsto r_fu$. 经此两次变量代换即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean\#L278}{从截断函数到乘积权}.}
+\[
+ \int_R w(rt)\,dr
+   =\int_{R_f}\psi(u^{-1}\bar t_f)
+                 \left(\int_R\beta(r(t_\infty,u))\,dr\right)d\eta(u)
+   =\mathbf 1_{\{\mu(\bar t_f)\ne0\}}.
+\]
+
+因 $H$ 在覆盖集之外为零，插入上述轨道归一化因子并沿 $\Gamma_R\subset R\subset G$ 逐级展开商积分，便得
+\[
+ \int_{\Gamma_R\backslash G}H(t)\,d[t]
+   =\int_G w(t)\left(\int_{\Gamma_R\backslash R}H(rt)\,d[r]\right)dt .
+\]
+具体而言，映射 $(t,r)\mapsto rt$ 将 $w(t)\,dt\,dr$ 推前为覆盖集上的 Haar 限制测度；左 $\Gamma_R$-不变性使该分解下降至有理点商上，而可积性保证了所得商积分等式成立. 右端仅在 $\bar t_f\in\Omega$ 处取样，故可代入已知的周期公式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean\#L318}{有理点商上的逐级展开}.}
+
+乘积权 $w$ 将无穷部分与有限部分分离. 由 $G_f$ 上 Haar 测度的归一化，$J^\circ$ 的体积为 $1$，故每个 $J$-陪集的体积为 $[J^\circ:J]^{-1}$，从而
+\[
+ \int_G w(t)[J^\circ:J]a(t_\infty)b(\bar t_f)\,dt
+   =\left(\int_{G_\infty}\alpha(v)a(v)\,dv\right)
+      \sum_{\omega\in\Omega}\frac{b(\omega)}{\mu(\omega)} .
+\]
+括号中的积分仅依赖于固定的 $R,A,a$ 与测度，取作 $\kappa$ 即可.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean\#L367}{层体积抵消与无穷位常数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/GoodDatum.lean}{526}.}
+\begin{lemma}[有限求值张量的真空展开]
+\label{lem:a-seesaw-vacuum-expansion}
+\emitthmsource
+记 $R=M^{f n_m^2}$. 存在统一常数 $C\in\mathbb C$，使得下列结论对每个驯特征 $\vartheta$ 皆成立：记 $q$ 为扭转 $\vartheta$ 的模范数，若下链有限变量 $y_j$ 在 $q$ 以外皆整，则由各双步求值所得的纯张量 $E_\vartheta(\bar y)$ 具有有限展开
+\[
+ E_\vartheta(\bar y)
+  =C\sum_x r(x)\operatorname{Vac}_{\rm gl}(x),
+\]
+其中 $x$ 为容许平移，$R^{2m}r(x)$ 在 $q$ 以外的每个素位处皆整；若驯特征的有限模支集为空，则对每个 $\sigma\in\operatorname{Aut}(\mathbb C)$ 均有 $\sum_x|\sigma(r(x))|\le1$.
+\end{lemma}
+\begin{proof}
+令 $\beta=\pi_M$ 为主层在 $E$ 中的模元，$A=\operatorname{Nm}((\beta))=M^f$. 固定第 $i$ 个双步 $Y_{2i}\to Y_{2i+1}\to Y_{2i+2}$. 对单条边 $Y_j\to Y_{j+1}$，在 $y_j,y_{j+1}$ 处移动后的有限 Schwartz 数据由初始真空平移展开经有限 Weil 作用得出，并附乘由平移点行列式决定的特征值. 该特征值在 $q$ 以外的素位处及各 $\operatorname{Aut}(\mathbb C)$-共轭下的绝对值均为 $1$. 因 $y_j,y_{j+1}$ 在 $q$ 以外为整，有限 Weil 作用将每个真空平移映为同一容许集合上系数在 $q$ 以外皆整的有限线性组合. 初始边数据的平均分母为 $A^{\dim Y_j\dim Y_{j+1}}$，故该分母同样适用于移动后的展开；在空模支集情形下，所有共轭下的系数绝对和皆至多为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L359}{边数据的有限 Weil 平移与系数}.}
+
+将两条边的数据作箭头乘积. 该乘积为双线性，且两真空平移的箭头乘积仍为一真空平移乘以单位根；新的平移位于
+\[
+ \operatorname{Hom}\bigl(Y_{2i+1},\,Y_{2i}^{-}\oplus Y_{2i+2}\bigr)
+\]
+的有限阿代尔坐标空间中，在 $q$ 以外按两块分别乘以 $\beta$、$\bar\beta$ 后变整. 由双线性展开与单位根的模长可知，乘积的分母可取为两边分母之积，且共轭绝对和上界仍为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L446}{箭头乘积的容许展开}.}
+
+对上述展开施加双步求值映射. 双步的局部求值定理适用于其中每个真空平移，将其表为带统一常数 $C_i$ 的双步粘合真空平移之有限展开，输出的两个平移在 $q$ 以外皆以 $\bar\beta$ 为容许分母. 求值本身的系数分母等于按模 $\beta$ 计数的一类矩阵个数，其中矩阵行数至多为 $2n_m$、列数至多为 $n_m$；设其分母为 $A^{d_i}$，则 $d_i\le2n_m^2$. 连同两条边的分母，合成分母整除
+\[
+ A^{n_m^2+n_m^2+2n_m^2}=R^4 .
+\]
+在空模支集情形下，将原展开系数的绝对值乘以各局部展开的绝对和并累加，所得合成共轭绝对和仍至多为 $1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L418}{模矩阵数与分母}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L481}{双步求值的局部展开}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L155}{局部求值定理}.}
+
+为由普通真空转至链数据中的整真空，设第 $j$ 条边的整真空等于普通真空的非零倍数 $\kappa_j$. 由平移算子与双步粘合的线性性，将第 $i$ 个双步由普通真空换为整真空仅需把统一常数 $C_i$ 改为 $c_i=C_i/(\kappa_{2i}\kappa_{2i+1})$. 现将全部 $m/2$ 个双步展开作张量积：每一乘积项的平移元组皆属容许集合，其系数为各双步系数之积；统一常数取为 $C=\prod_i c_i$，总分母整除 $(R^4)^{m/2}=R^{2m}$. 当有限模支集为空时，各 $\sigma$ 下的乘积系数绝对和不超过各绝对和之积，故仍至多为 $1$. 合并重复的平移元组保持上述各界，即得所求展开.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L531}{整真空归一化与双步张量积}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/BesselIntegral.lean}{200}.}
+\begin{lemma}[分级幂幺群中的 Eichler 变换]
+\label{lem:a-bessel-eichler}
+\emitthmsource
+设 $\mathcal Y$ 为 Hermite 空间 $V$ 的弦分级，记 $g(a)$ 为基指标 $a$ 的度数，$\sigma$ 为弦反转，$J$ 为有理基下的 Gram 矩阵（其系数视作阿代尔环中的元素）. 于是 $J$ 在指标 $a$ 处唯一的非零配对位置为 $\sigma(a)$，且 $g(\sigma(a))=-g(a)$. 给定整数 $k$，设向量 $v$ 支撑于度数严格大于 $\max(0,k)$ 的位置，向量 $x$ 支撑于度数 $-k$，并令 $c=x^\ast Jx/2$（其中 $^\ast$ 表共轭转置）. 则矩阵
+\[
+ U=1+v x^\ast J-(x+c v)v^\ast J
+\]
+即为 $\mathcal Y$ 的幂幺群中某元素在有理坐标下的矩阵.
+\end{lemma}
+\begin{proof}
+由度数配对关系可知 $v^\ast Jv=0$，且因 $x$ 仅可能与度数为 $k$ 的分量配对，故亦有 $x^\ast Jv=0$. 记 $B=U-1$. 由 $J^\ast=J$ 知 $c$ 在共轭下不变，直接相乘可得
+\[
+ B^\ast J+JB=-2c\,Jv v^\ast J,\qquad
+ B^\ast JB=(x^\ast Jx)\,Jv v^\ast J ,
+\]
+其中第二式里凡含 $v^\ast Jv$ 或 $x^\ast Jv$ 的项皆为零. 从而 $U^\ast JU=J$，故 $U$ 为酉群元素.
+
+再考察度数：$v x^\ast J$ 仅将度数为 $k$ 的源分量映至度数严格更高的分量；$x v^\ast J$ 的非零源分量度数严格小于 $-k$，而目标度数为 $-k$；最后，$v v^\ast J$ 将负度数映至正度数. 由此可见 $U-1$ 严格升度，这正是所给弦分级的幂幺群条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Witt/WittTheorem.lean\#L736}{Eichler 矩阵}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L204}{Eichler 变换属于幂幺群}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/BesselIntegral.lean}{541}.}
+\begin{lemma}[由幂幺相位相等推出 Gram 矩阵元相等]
+\label{lem:a-bessel-eichler-gram}
+\emitthmsource
+设 $\mathcal Y,\mathcal Y'$ 分别为 $V,V'$ 的弦分级，弦长依次为 $s,\max(s-1,0)$，记 $T$ 为其间的弦映射. 沿用 $J,g,\sigma$，以 $J'$ 记目标 Gram 矩阵，并以 $^\dagger$ 表示关于 Hermite 形式的伴随. 给定目标基上的整数权 $d'(b)$. 设矩阵 $w$ 满足如下相位检验：对每个源幂幺元 $U$，只要 $U-1$ 的度数至少为 $2$ 且 $w(U-1)$ 关于目标权 $d'$ 的度数至少为 $1$，便有
+\[
+ \mathfrak b(TU,T)=\mathfrak b(wU,w),
+\]
+其中 $\mathfrak b$ 为 Hom 空间的 Weil 双特征. 固定源指标 $k$ 与源向量 $v$，设满足
+\[
+ \begin{aligned}
+ g(a)<\max(1,2+g(k))&\ \Longrightarrow\ v_a=0,\\
+ d'(b)\le\max(-1,g(k))&\ \Longrightarrow\ (wv)_b=0,\\
+ d'(b)+g(a)\le0&\ \Longrightarrow\ 
+                        w_{b,\sigma(k)}=0\ \text{或}\ v_a=0 .
+ \end{aligned}
+\]
+则 $(T^\dagger T v)_k=(w^\dagger wv)_k$.
+\end{lemma}
+\begin{proof}
+任取阿代尔数 $t$，令 $x$ 仅在指标 $\sigma(k)$ 处可能非零，该坐标取为
+\[
+  \overline{\jmath{}^{-1}(J^{-1})_{k,\sigma(k)}\,t},
+\]
+其中 $\jmath{}$ 是 Weil 数据中的非零反共轭参数（即 $\bar{\jmath{}}=-\jmath{}$）. 第一条支撑条件允许对 $v,x$ 应用引理~\ref{lem:a-bessel-eichler}，且所得 $U-1$ 的度数至少为 $2$：事实上，$v x^\ast J$ 将度数 $g(k)$ 映至至少 $g(k)+2$，$x v^\ast J$ 将至多 $-g(k)-2$ 映至 $-g(k)$，而 $v v^\ast J$ 将至多 $-1$ 映至至少 $1$.
+
+为验证 $w(U-1)$ 的度数条件，逐项考察其三项：对 $wv x^\ast J$，源度数为 $g(k)$，第二条条件保证非零目标行的 $d'$ 至少为 $g(k)+1$；对 $wx v^\ast J$，若 $v_a$ 贡献非零，则源度数为 $-g(a)$，第三条条件保证非零目标行的 $d'$ 至少为 $1-g(a)$；最后对 $wv v^\ast J$，第二条条件给出非零目标行的 $d'$ 至少为 $0$，而非零源列的度数至多为 $-1$. 由此，相位检验适用.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L550}{可用于相位检验的 Eichler 变换}.}
+
+对任意矩阵 $y$ 置 $C_y=y^\ast J'y$. 将 $U$ 代入 Weil 双特征的迹公式展开，得
+\[
+ \operatorname{tr}(J^{-1}C_yU)
+ =\operatorname{tr}(J^{-1}C_y)
+      +x^\ast C_yv-v^\ast C_yx-c\,v^\ast C_yv .
+\]
+首末两项在共轭下固定，中间两项互为共轭且符号相反. 双特征即标准加性特征在该迹乘以 $\jmath{}/2$ 处的取值；因标准加性特征在将自变量替换为其与共轭之平均时保持不变，便有
+\[
+ \mathfrak b(yU,y)=\psi_E(\jmath{} x^\ast C_yv).
+\]
+源逆 Gram 矩阵 $J^{-1}$ 的第 $k$ 行仅在 $\sigma(k)$ 位置非零，依 $x$ 的取法有 $\jmath{} x^\ast C_yv=t(J^{-1}C_yv)_k=t(y^\dagger y v)_k$. 分别令 $y=T,w$，相位检验给出对每个 $t$ 皆有
+\[
+  \psi_E\!\left(t\bigl((T^\dagger Tv)_k-(w^\dagger wv)_k\bigr)\right)=1 .
+\]
+由标准加性配对的非退化性，即推知该差为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L572}{相位的迹计算和加性配对}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/BesselIntegral.lean}{765}.}
+\begin{lemma}[通过幂幺检验的有理映射弦代表]
+\label{lem:a-bessel-rational-chord-representative}
+\emitthmsource
+沿用引理~\ref{lem:a-bessel-eichler-gram} 的分级与记号. 设 $w$ 为从 $V$ 到 $V'$ 的有理映射，且通过该引理中目标权取 $d'=0$ 的相位检验. 则存在 $V'$ 上的有理酉变换 $\delta$，使得 $\delta w$ 在每个正度数源基向量上均与 $T$ 相等. 特别地，有
+\[
+ (\delta w)_{ba}=T_{ba}
+ \quad\text{只要}\quad
+        g(a)>0,\quad g'(b)<g(a),
+\]
+其中 $g'$ 为目标分级.
+\end{lemma}
+\begin{proof}
+记 $V_{>0}$ 为正度数基向量张成的子空间. 先证 $w|_{V_{>0}}$ 单射：若存在非零 $v\in V_{>0}$ 使 $wv=0$，取 $v$ 的非零坐标中度数最低的弦指标 $a$. 弦上正度数从高到低每次递减 $2$，故下一弦指标 $k=a+1$ 存在且满足 $g(k)=g(a)-2$，从而所有非零坐标的度数皆至少为 $\max(1,g(k)+2)$. 结合 $wv=0$ 及 $v$ 在非正度数处为零，引理~\ref{lem:a-bessel-eichler-gram} 的三条条件皆满足，故得 $(T^\dagger T v)_k=(w^\dagger wv)_k=0$.
+
+然而 $T^\dagger T$ 等于源弦的移位算子：它将每个非末端弦向量映为下一弦向量的非零倍数，并零化正定块及末弦向量. 在正度数各列上，该倍数在度数为 $1$ 时为 $-Nc_{\mathcal Y}^2$，其余情形为 $c_{\mathcal Y}$，其中 $N,c_{\mathcal Y}$ 皆非零. 因此 $(T^\dagger Tv)_k$ 是 $v_a$ 的非零倍数，导致矛盾，故 $w|_{V_{>0}}$ 单射. 同时，$T$ 将这些正度数弦向量分别映至同编号的非零目标弦向量，故 $T$ 在正度数部分亦单射.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Grading.lean\#L875}{弦映射的伴随积等于移位}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L722}{正度数的列的线性无关性}.}
+
+再比较两限制的 Gram 矩阵. 对任意正度数指标 $a,b$，在引理~\ref{lem:a-bessel-eichler-gram} 中取 $v=e_a$、$k=\sigma(b)$. 因 $g(a),g(b)\ge1$，第一条支撑条件成立；因 $g(k)=-g(b)\le-1$，目标权取零时第二条条件为空；第三条条件恰即 $e_a$ 在非正度数处为零. 于是 $(T^\dagger T e_a)_{\sigma(b)}=(w^\dagger w e_a)_{\sigma(b)}$. 两边同乘源 Gram 矩阵的 $(b,\sigma(b))$ 元，便得在 $(b,a)$ 处有
+\[
+ (T^\ast J'T)_{ba}=(w^\ast J'w)_{ba}.
+\]
+此处用到了 $y^\ast J'y=Jy^\dagger y$ 以及 $J$ 的第 $b$ 行仅在 $\sigma(b)$ 处非零. 因数域嵌入阿代尔环为单射，该式即有理系数矩阵之间的等式.
+
+由此可知，从 $w(V_{>0})$ 到 $T(V_{>0})$ 的映射 $w v\mapsto Tv$ 为两个有理子空间之间的等距同构. 由 Witt 延拓定理，可将其延拓为 $V'$ 上的有理酉变换 $\delta$. 依延拓的定义，$\delta w$ 与 $T$ 在每个正度数源列上皆相等，从而满足所需的弦一致条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Unitary/RationalPoints.lean\#L173}{有理酉空间的 Witt 延拓}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L774}{弦一致的有理代表}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/BesselIntegral.lean}{642}.}
+\begin{lemma}[保持弦一致条件的目标变换]
+\label{lem:a-bessel-chord-stabilizer}
+\emitthmsource
+设 $w$ 与弦映射 $T$ 在每个正度数源列的负度数矩阵元上相等，即当 $g(a)>0$、$g'(b)<g(a)$ 时有 $w_{ba}=T_{ba}$. 若 $\gamma$ 属于源 Bessel 群、$\delta$ 属于目标酉群，则 $\delta w\gamma$ 仍满足同一弦一致条件当且仅当 $\delta$ 属于目标 Bessel 群（矩阵均取有理坐标）.
+\end{lemma}
+\begin{proof}
+若 $\delta$ 属于目标 Bessel 群，则 $\delta,\gamma$ 皆不降低度数. 对正度数源列，$(w-T)\gamma$ 各分量的度数均至少为该列度数，左乘 $\delta$ 后依然如此. 另一方面，
+\[
+ \delta T\gamma-T=(\delta-1)T\gamma+T(\gamma-1)
+\]
+具有非负度数，因为 $T$ 仅连接弦上对应坐标且恰降一度，而在相关弦坐标上 $\delta-1$ 与 $\gamma-1$ 皆严格升度. 由此可见，$\delta w\gamma-T$ 在正度数源列的负度数矩阵元上全为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Grading.lean\#L817}{左右 Bessel 作用保持弦映射的负度数项}.}
+
+反之，设 $\delta w\gamma$ 满足弦一致条件. 取 $\delta=1$ 的前一步论证已表明 $w\gamma$ 亦满足该条件. 为证 $\delta$ 属于目标 Bessel 群，依 Bessel 群的列判据，只需证明当列 $k$ 为弦指标且 $g'(k)\ge0$、行 $b$ 满足 $g'(b)\le g'(k)$ 时，有 $(\delta-1)_{bk}=0$.
+
+固定 $b$，对上述各列按度数从高到低施归纳. 给定 $k$，取源弦上同编号指标 $a$，则 $g(a)=g'(k)+1>0$，$T_{ka}\ne0$，且 $T$ 的该列仅在 $k$ 处非零. 对满足 $g'(i)>g'(k)$ 的列 $i$，归纳假设给出 $(\delta-1)_{bi}=0$；对满足 $g'(i)\le g'(k)$ 的列 $i$，由 $g'(i)<g(a)$ 及弦一致条件可得 $(w\gamma)_{ia}=T_{ia}$. 从而
+\[
+ ((\delta-1)w\gamma)_{ba}=(\delta-1)_{bk}T_{ka}.
+\]
+由于 $\delta w\gamma$ 与 $w\gamma$ 在此处皆等于 $T$，左端为零；消去非零有理因子 $T_{ka}$，即得 $(\delta-1)_{bk}=0$. 归纳完成后，由列判据即证 $\delta$ 属于目标 Bessel 群.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L617}{匹配列的唯一非零系数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L645}{保持弦一致条件的群}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/BesselIntegral.lean}{672}.}
+\begin{lemma}[目标分级下通过幂幺检验的弦类]
+\label{lem:a-bessel-surviving-chord-class}
+\emitthmsource
+沿用两弦分级的记号. 设 $w$ 与 $T$ 在正度数源列的负度数矩阵元上相等. 若 $w$ 还通过引理~\ref{lem:a-bessel-eichler-gram} 中取目标分级 $d'=g'$ 时的相位检验，则 $w-T$ 具有非负度数，即对任意满足 $g'(b)<g(a)$ 的指标对均有 $w_{ba}=T_{ba}$.
+\end{lemma}
+\begin{proof}
+按目标行度数 $g'(b)$ 从低到高施归纳. 当 $g(a)>0$ 时，结论直接由弦一致条件给出，故仅需考虑 $g'(b)<g(a)\le0$ 的情形. 令 $b^\vee=\sigma'(b)$ 为目标对偶指标，其度数为 $-g'(b)>0$，故 $b^\vee$ 位于目标弦上. 取源弦上同编号指标 $i$，则有
+\[
+ g(i)=1-g'(b),\qquad T_{b^\vee i}\ne0,\qquad
+       T_{u i}=0\quad(u\ne b^\vee).
+\]
+置 $k=\sigma(a)$、$v=e_i$，下面检验引理~\ref{lem:a-bessel-eichler-gram} 的三条支撑条件.
+
+首先，$g(i)\ge2-g(a)=2+g(k)$ 且 $g(i)>0$. 其次，若 $g'(u)\le\max(-1,g(k))=-g(a)$，则 $g'(u)<-g'(b)=g'(b^\vee)$；结合 $g(i)>0$ 与弦一致条件即得 $w_{ui}=T_{ui}=0$. 至于第三条条件，仅需考虑源指标 $i$：若 $g'(u)+g(i)\le0$，则 $g'(u)\le g'(b)-1<g'(b)$，由行归纳假设有 $w_{ua}=T_{ua}$；再由 $g'(u)<g'(b)<g(a)$ 得 $g'(u)\le g(a)-2$，而 $T$ 仅降一度，从而 $w_{ua}=0$.
+
+由此推得
+\[
+ (w^\dagger w)_{ki}=(T^\dagger T)_{ki}.
+\]
+对满足 $g'(u)\le g'(b^\vee)$ 的 $u$，由 $g(i)=g'(b^\vee)+1$ 及弦一致条件知 $w_{ui}=T_{ui}$；对满足 $g'(u)>g'(b^\vee)$ 的 $u$，其对偶行 $\sigma'(u)$ 的度数严格小于 $g'(b)$，由归纳假设及 $T$ 仅降一度可得 $w_{\sigma'(u),a}=0$，依伴随矩阵的矩阵元公式即有 $(w^\dagger)_{k u}=0$. 于是上式左端仅余 $(w^\dagger)_{k b^\vee}T_{b^\vee i}$，右端相应仅余 $(T^\dagger)_{k b^\vee}T_{b^\vee i}$. 消去非零因子 $T_{b^\vee i}$ 并再次使用伴随矩阵元公式，即得 $w_{ba}=T_{ba}$，行归纳完成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Grading.lean\#L453}{伴随矩阵的对偶矩阵元}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L680}{第二次轨道筛选只留下弦类}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/Unfolding.lean}{432}.}
+\begin{lemma}[Bessel 周期的常数项轨道展开]
+\label{lem:a-bessel-orbit-unfold}
+\emitthmsource
+设 $V,V'$ 为两级 Hermite 空间，分别配有分级 $\mathcal Y,\mathcal Y'$，其弦长依次为 $s,\max(s-1,0)$. 记 $R,R'$ 为相应的 Bessel 群，$\Gamma'\subset \Ugrp(V')(\mathbb A)$ 为有理点群，$R'_{\mathbb Q}=\Gamma'\cap R'$. 设 $W$ 为 $R$ 上连续、左有理不变且关于升度至少为 $2$ 的分级幂幺特征等变的函数. 记 $T$ 为 $\mathcal Y$ 到 $\mathcal Y'$ 的弦映射，$\Phi$ 为 $\operatorname{Hom}(V,V')$ 上的 Weil 数据，$\omega$ 为固定的扭转 Weil 作用. 对 $h\in \Ugrp(V')(\mathbb A)$ 定义
+\[
+ A(h)=\int_{R(\mathbb Q)\backslash R}W(r)
+        \operatorname{CT}_{T}\bigl(\omega(r,h)\Phi\bigr)\,dr ,
+\]
+其中常数项（\emph{constant term}）沿正度数映射取平均，由 $\mathcal Y,\mathcal Y'$ 的分级确定. 则对每个 $h\in \Ugrp(V')(\mathbb A)$，有
+\[
+ \int_{R(\mathbb Q)\backslash R}
+       W(r)\theta\bigl(\omega(r,h)\Phi\bigr)\,dr
+   =\sum_{\gamma\in R'_{\mathbb Q}\backslash\Gamma'} A(\gamma h)
+\]
+且右端绝对收敛.
+\end{lemma}
+\begin{proof}
+令 $\deg_d(b,a)=d(b)-\deg_{\mathcal Y}(a)$，先取目标权 $d=0$，将有理映射模去满足 $\deg_d\ge0$ 的有理子空间取商. Theta 函数等于按这些剩余类求和的常数项：具体而言，正度数坐标给出一个各向同性子空间，以其对偶标架参数化负度数坐标后，每类的常数项恰为混合模型中该有理参数处切片的 Theta 值. 切片范数之和受 Weil 数据范数控制，故该展开绝对收敛；又在 $R(\mathbb Q)\backslash R$ 的紧代表覆盖集上，$W(r)$ 乘以 $\omega(r,1)\Phi$ 的范数有界，从而允许逐项积分.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/ConstantTerm.lean\#L492}{有理类与混合模型的切片}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/ConstantTerm.lean\#L549}{常数项的绝对求和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L215}{逐项积分}.}
+
+称代表元 $w$ 通过幂幺特征检验，是指对每个源幂幺元 $u$，只要 $u-1$ 的度数至少为 $2$ 且 $w(u-1)$ 的度数至少为 $1$，则 $w$ 的常数项在 $u$ 下的相位便与源函数的幂幺相位相消. 若检验失败，则存在此类 $u$ 使加权类项 $F_w(r)$ 满足 $F_w(ur)=cF_w(r)$（$|c|=1$ 且 $c\ne1$）. 在任一关于有理 Bessel 作用稳定的类族上，先按有理轨道分组求和，每条轨道的贡献在其稳定子商上展开为单项积分；由于该单项连续且在离散稳定子下左不变，由商积分的非平凡相位消失定理可知每条此类轨道的积分皆为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L228}{不通过检验时的相位}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L250}{稳定子商上的轨道积分}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/QuotientMeasure/UnfoldingInStages.lean\#L365}{商积分的相位消失}.}
+
+记 $\mathcal C_d$ 为满足弦一致条件的类所成之集，其条件是 $w$ 与 $T$ 在满足 $\max(0,\deg_{\mathcal Y'}(b))<\deg_{\mathcal Y}(a)$ 的矩阵元 $(b,a)$ 上相等. 当 $d=0$ 时，由引理~\ref{lem:a-bessel-rational-chord-representative}，任何通过检验的 $w$ 皆可经某个目标有理点移入 $\mathcal C_0$，故上述积分中仅需保留目标有理点对 $\mathcal C_0$ 的全部平移. 源有理 Bessel 作用保持 $\mathcal C_0$，而引理~\ref{lem:a-bessel-chord-stabilizer} 表明，目标有理点将 $\mathcal C_0$ 中的类映回 $\mathcal C_0$ 当且仅当该点属于 $R'_{\mathbb Q}$. 由此，留存的类可由 $R'_{\mathbb Q}\backslash\Gamma'$ 与 $\mathcal C_0$ 的直积参数化；经有理点换元，每一块的贡献化为在 $\gamma h$ 处对 $\mathcal C_0$ 求和的积分.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L774}{留存类可移到弦一致类}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L346}{移去其余轨道}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L404}{有理陪集与弦一致类}.}
+
+最后将每一块中的目标权由 $0$ 改为 $\deg_{\mathcal Y'}$. 两种权下的弦一致类之和给出同一 Fourier 系数. 为说明此点，令 $v$ 遍历从 $V'$ 到 $V$ 的阿代尔映射模有理映射，取投影 $v_+$ 仅保留满足 $\max(0,\deg_{\mathcal Y'}(b))<\deg_{\mathcal Y}(a)$ 的矩阵元 $(a,b)$. 对每个 Weil 数据 $\Psi$，该系数可写作
+\[
+ \operatorname*{mean}_{v}\,
+   \frac{\bigl(H(v_+^\dagger)\Psi\bigr)(0)}
+        {\psi\bigl(\jmath{}\,\operatorname{tr}(v_+T)\bigr)} ,
+\]
+其中 $\psi$ 为标准加性特征，$\jmath{}$ 为 Weil 数据所用的非零虚参数，$H$ 为 Heisenberg 平移. 对上述两种目标权，$v_+^\dagger$ 均具有正度数；将分子按有理类展开并交换两次平移，类 $w$ 即获得特征 $\psi\bigl(\jmath{}\,\operatorname{tr}(v_+(w-T))\bigr)$，对 $v$ 取平均仅保留平凡特征，即恰好保留 $\mathcal C_d$. 故块积分不随这两种目标权的选取而改变. 改取 $\deg_{\mathcal Y'}$ 后，由引理~\ref{lem:a-bessel-surviving-chord-class}，弦一致类中任何通过检验的代表与 $T$ 之差的度数皆至少为零，因而必属于 $T$ 所在的类. 该类被源有理 Bessel 群固定，对其余类再次应用相位消失定理，块积分便仅余 $T$ 的常数项，即等于 $A(\gamma h)$. 各块范数之和受原可逐项积分的绝对和控制，故所得陪集和绝对收敛.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/ConstantTerm.lean\#L592}{弦一致类之和给出的 Fourier 系数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/BesselIntegral.lean\#L680}{弦一致且通过检验的类}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L370}{每个块留下的弦常数项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L435}{绝对收敛的周期展开}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/Weil/Periods/Unfolding.lean}{512}.}
+\begin{lemma}[单步 Bessel 展开与绝对可积性]
+\label{lem:a-bessel-unfold-integral}
+\emitthmsource
+沿用引理~\ref{lem:a-bessel-orbit-unfold} 的数据. 设 $z$ 为 $\Ugrp(V')(\mathbb A)$ 上的快速衰减自守函数，则 $A(h)z(h)$ 在 $R'_{\mathbb Q}\backslash \Ugrp(V')(\mathbb A)$ 上绝对可积，且
+\[
+ \int_{R(\mathbb Q)\backslash R} W(r)
+   \int_{\Gamma'\backslash \Ugrp(V')(\mathbb A)}
+     \theta\bigl(\omega(r,h)\Phi\bigr)z(h)\,dh\,dr
+  =
+ \int_{R'_{\mathbb Q}\backslash \Ugrp(V')(\mathbb A)}
+     A(h)z(h)\,dh .
+\]
+\end{lemma}
+\begin{proof}
+记 $a_w(r,h)$ 为以 $d=0$ 分解所得的加权类项. 则存在常数 $C$，使对任意 $r,h$ 皆有
+\[
+ \sum_w|a_w(r,h)z(h)|\le C.
+\]
+事实上，先以源有理 Bessel 群将 $r$ 移至紧代表覆盖集，取 $W(r)\omega(r,1)\Phi$ 的一致范数上界；再以 $\Gamma'$ 对 $h$ 作约化（有理作用仅置换 $w$），约化后 $\omega(1,h)$ 的算子范数受目标高度的某个幂控制，而 $z$ 的自守不变性与快速衰减保证了原处 $h$ 的乘积同样受控；最后应用常数项范数的求和估计即得 $C$. 因两原商测度皆有限，这便证得原乘积被积函数的绝对可积性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L459}{约化与快速衰减的联合上界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L562}{乘积空间的可积性}.}
+
+由引理~\ref{lem:a-bessel-orbit-unfold} 及其分块证明可得
+\[
+ \sum_{\gamma\in R'_{\mathbb Q}\backslash\Gamma'}
+      |A(\gamma h)z(h)|\le C\,\operatorname{vol}\bigl(R(\mathbb Q)\backslash R\bigr).
+\]
+为证此界，对每块贡献取绝对值并按有理类展开，所得各块指标互不重叠，故由上式的全类和控制. 由此可见，该绝对陪集和在 $\Gamma'\backslash \Ugrp(V')(\mathbb A)$ 上可积. 又因 $A$ 左 $R'_{\mathbb Q}$-不变、$z$ 左 $\Gamma'$-不变，对该陪集和应用商积分展开公式即得
+\[
+ \int_{\Gamma'\backslash \Ugrp(V')(\mathbb A)}
+      \sum_{\gamma\in R'_{\mathbb Q}\backslash\Gamma'}A(\gamma h)z(h)\,dh
+ = \int_{R'_{\mathbb Q}\backslash \Ugrp(V')(\mathbb A)}A(h)z(h)\,dh .
+\]
+将同一公式施于绝对值即证右端绝对可积. 最后对原二重积分应用 Fubini 定理，并以引理~\ref{lem:a-bessel-orbit-unfold} 替换内层 Bessel 周期，便得所需等式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L483}{陪集绝对和的界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Unfolding.lean\#L518}{商积分展开与 Fubini}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/UnfoldingStages.lean}{678}.}
+\begin{lemma}[下链的单步展开]
+\label{lem:a-seesaw-single-stage}
+\emitthmsource
+固定扭转 $\vartheta$、源形式 $\phi$、源 Weyl 模上的线性泛函 $t$ 及下链各点 $g_k=(\xi_k,y_k)$. 设 $k\le m-1$，$\mathcal Y'$ 为 $Y_{k+1}$ 上弦长为 $(m-2-k)_+$ 的任一分级（其中 $(j)_+=\max(j,0)$）. 记 $R_k$ 为 $Y_k$ 标准分级的 Bessel 群，$R'_{\mathbb Q}$ 为 $\mathcal Y'$ 对应 Bessel 群的有理点群. 令 $W_k$ 为 $R_k$ 上进入第 $k+1$ 步的函数，$\mathcal W_{k+1}$ 为以 $\mathcal Y'$ 展开后所得的函数. 则对 $Y_{k+1}$ 上任一快速衰减自守函数 $z$，有
+\[
+ \int_{R_k(\mathbb Q)\backslash R_k} W_k(r)
+ \int_{[\Ugrp(Y_{k+1})]}
+  \theta\bigl(\omega_k(rg_k,h)\Phi_k\bigr)z(h)\,dh\,dr
+ =
+ \int_{R'_{\mathbb Q}\backslash \Ugrp(Y_{k+1})(\mathbb A)}
+    \mathcal W_{k+1}(h)z(h)\,dh ,
+\]
+且右端绝对可积，其中 $\Phi_k$ 为下链第 $k+1$ 步的核数据，$\omega_k$ 采用该步的固定权与扭转.
+\end{lemma}
+\begin{proof}
+记 $\Phi_k'=\omega_k(g_k,1)\Phi_k$. 由 Weil 作用的表示性质有
+\[
+ \omega_k(r,h)\Phi_k'=\omega_k(rg_k,h)\Phi_k .
+\]
+按定义，$W_0$ 为由 $t,\phi$ 给出的源 Bessel 函数；对标准的下一分级，递推关系为
+\[
+ W_{k+1}(r')=\mathcal W_{k+1}(r'g_{k+1}),
+ \qquad
+ \mathcal W_{k+1}(h)=
+ \int_{R_k(\mathbb Q)\backslash R_k}
+    W_k(r)\operatorname{CT}_{T_k}\bigl(\omega_k(r,h)\Phi_k'\bigr)\,dr ,
+\]
+其中 $T_k$ 为相应两级之间的弦映射. 首项 $W_0$ 满足源分级的等变性，而相邻标准分级的一般特征由同一常数定义. 一次常数项展开中的目标幂幺换元将弦映射 $T_k$ 映为 $uT_k$；因 $u-1$ 升度至少为 $2$ 而 $T_k$ 降度为 $1$，两弦映射之差具正度数，常数项在该变换下的相位由 $T_kT_k^\dagger$ 决定，而它恰为目标特征所用的移位. 结合左有理不变性与连续性，递推即得每个 $W_k$ 的等变性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L589}{把 $g_k$ 移入核数据}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L610}{各级展开函数的递推}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/ConstantTerm.lean\#L887}{一次展开保留等变性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L657}{各级的等变性}.}
+
+对 $W_k$、$\Phi_k'$、$\mathcal Y'$ 与 $z$ 应用引理~\ref{lem:a-bessel-unfold-integral}，其常数项积分依定义即 $\mathcal W_{k+1}$；再将 Weil 作用改写回原数据在 $(rg_k,h)$ 处的作用，即得所需等式与绝对可积性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L688}{下链的第 $k+1$ 次展开}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/UnfoldingStages.lean}{828}.}
+\begin{lemma}[双步展开的矩阵系数]
+\label{lem:a-seesaw-double-coefficient}
+\emitthmsource
+固定线性泛函 $t$、前序无穷变量 $\xi$ 及当前末端的无穷变量 $v_\infty$. 对 $0\le i<m/2$，考虑由 $Y_{2i},Y_{2i+1},Y_{2i+2}$ 的分级构成的双步，其末端定号群嵌入由两条边的求值数据确定. 对末端点 $k$，将 $\mathcal W_{2i+2}$ 取值于 $k$ 的嵌入与 $(v_\infty,y_{2i+2})$ 之乘积处，所得结果等于前 $i+1$ 个上链双步提升在 $k$ 的 $X_{2i+2}$ 侧嵌入处的某个矩阵系数，且给出该系数的线性泛函与 $\vartheta,\phi,y$ 无关.
+\end{lemma}
+\begin{proof}
+从 $\mathcal W_0$ 起步：它在第零级 Bessel 群上是由 $\phi$ 与 $t$ 给出的源函数，完全由其在正定部分 $\Ugrp(X_0)$ 上的矩阵系数及幂幺特征等变性确定. 假设偶数级 $2i$ 的相应函数仍具此形式，其正定侧形式为 $\psi$、泛函为 $\lambda$；下面求双步之后的泛函.
+
+将随后的两次展开写作两个 Bessel 群上的积分，每条边贡献一个沿弦映射平移的 Theta 常数项. 记 $\Phi_i,\Phi'_i$ 为这两条边经外层变量移动后的 Schwartz 数据，则两步常数项之积可借助 $\Phi_i,\Phi'_i$ 的箭头乘积来计算，该数据位于
+\[
+ \operatorname{Hom}\bigl(Y_{2i+1},Y_{2i}^{-}\oplus Y_{2i+2}\bigr).
+\]
+在第一步的幂幺群上，源函数与第一条边核的特征相互抵消；在第二步的幂幺群上，积分将箭头乘积限制至分级零项（具体数据即将箭头乘积沿合并后的弦映射作 Heisenberg 平移后再取分级零项）. 两次幂幺平均产生仅由分级与测度确定的常数 $z_i$，以及 $\Ugrp(X_{2i})$、$\Ugrp(X_{2i+1})$ 上以该数据为核的双 Theta 积分，其中末端变量取在 $k$ 的相应正定嵌入处.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L428}{双步的常数项与幂幺平均}.}
+
+该零项数据可分解为一个无穷位 Fock 向量与求值后有限张量的乘积. 事实上，先将两条边的 Schwartz 数据分解为无穷与有限两部分；Weil 移动、箭头乘积、Heisenberg 平移与取零项均保持此类因子分解. 无穷位的 Weil 作用仅依赖于特征权，而在容许扭转中该权固定，故无穷位向量 $u_i$ 仅依赖于固定弦映射及无穷变量，与 $\vartheta,y$ 无关；有限因子则恰为对两条移动后数据施以双步求值映射所得. 由此可将 $z_i$ 并入固定无穷向量，取 $z_i u_i$ 作为无穷位数据.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L705}{实与有限数据的分离}.}
+
+在正定空间上，任取固定无穷位 Fock 向量作上述双 Theta 积分，皆可得到统一的末级线性泛函. 先设无穷向量为边多项式之积、有限数据为两份边数据的纯张量：此时箭头乘积的 Theta 核等于两边 Theta 核之积乘以一固定常数；先对 $\Ugrp(X_{2i})$ 应用代数 Theta 提升的矩阵系数公式，由输入泛函 $\lambda$ 得中间泛函，再对 $\Ugrp(X_{2i+1})$ 应用同一公式即得末级泛函，故双积分与两次提升的矩阵系数一致. 借有限数据的线性性，结论对任意有限张量成立；又因多项式皆为两组变量中边多项式乘积的有限线性组合，结论延及所有多项式向量. 最后，所有末级泛函生成的系数族构成一有限维线性空间，它在以扭转、有限数据、输入形式与末端点为指标的逐点拓扑下为闭集；因双积分族连续依赖于无穷向量且多项式向量在 Fock 空间中稠密，结论对任意无穷向量成立，从而得到对整族变量一致的末级泛函.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L116}{正定双 theta 积分与系数空间闭性}.}
+
+取无穷向量为 $z_i u_i$，由前段即把双积分转化为以上链求值张量作双步提升后的一个矩阵系数. 在末端 Bessel 群上，幂幺特征的等变性在展开中得以保持，故该系数完全决定相应源函数. 归纳始于 $\lambda=t$、$\psi=\phi$，依次得出各偶数级的统一泛函；在所选末端嵌入处取值即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L749}{双步归纳与末级取值}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/EdgePairEvaluation.lean}{199}.}
+\begin{lemma}[有限零项的格支集]
+\label{lem:a-finite-zero-term-support}
+\emitthmsource
+在有限 Weil 模型中，记 $H(z)$ 为对应位移 $z\in\mathbb A_{E,f}^{n}$ 的 Heisenberg 算子，令 $C$ 为某 Witt 分解在标准格坐标中的各向同性标架，$Z$ 为沿该标架取有限零项的线性映射. 记 $\widehat{\mathcal O}$ 为有限阿代尔整数环，$^\ast$ 为共轭转置. 设 $M,M'$ 满足 $MM'^\ast=1$，且对所有 $x\in\widehat{\mathcal O}^{n}$ 皆有 $H(Mx)F=F$. 若 $Z(H(y)F)\ne0$，则存在 $l\in\widehat{\mathcal O}^{n}$ 使得
+\[
+ C^\ast(y-M'l)=0.
+\]
+\end{lemma}
+\begin{proof}
+因 $C$ 为分解的标架且 $MM'^\ast=1$，矩阵 $A=M'^\ast C$ 具有有限阿代尔左逆. 进而可取可逆方阵 $B$，使 $AB$ 为整且具有整左逆 $L$. 事实上，在每个有限位 $w$ 处，$\operatorname{im}(A_w)\cap\mathcal O_w^n$ 为饱和子模，因而在离散赋值环上是直和因子；该交格的一组基可写作 $A_wB_w$，并给出整左逆 $L_w$. 在几乎所有位处，$A_w$ 与原左逆皆整，取 $B_w=1$ 即可；汇总这些局部矩阵便得所需的 $B,L$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/EdgePairEvaluation.lean\#L204}{由整标架求有限零项的支集}.}
+
+对任一整向量 $a$，置 $z=CBa$. 由 $z=M(ABa)$ 可知 $H(z)F=F$；又因 $z$ 落于各向同性标架的像中，对任意数据 $F'$ 皆有 $Z(H(z)F')=Z(F')$（此为零项沿标架方向取平均的直接结果）. 代入 Heisenberg 交换关系即得
+\[
+ \psi_{\mathrm{sd}}(z^\ast y)\,Z(H(y)F)=Z(H(y)F),
+\]
+其中 $\psi_{\mathrm{sd}}$ 为标准格自对偶的加性特征. 由非零假设知该特征恒取 $1$，故 $v=B^\ast C^\ast y$ 与每个整向量 $a$ 的配对均落入该特征的核中；由标准格的自对偶性即推得 $v$ 为整.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/EdgePairEvaluation.lean\#L186}{各向同性平移与零项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/EdgePairEvaluation.lean\#L217}{交换关系与对偶格条件}.}
+
+取整向量 $l=L^\ast v$. 对 $LAB=1$ 取共轭转置得 $B^\ast C^\ast M' L^\ast=1$，从而 $B^\ast C^\ast(y-M'l)=0$；消去可逆矩阵 $B^\ast$ 即证.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/Frequency.lean}{222}.}
+\begin{lemma}[非零弦常数项的格映射]
+\label{lem:a-frequency-negative-degree}
+\emitthmsource
+沿用两级分级 $\mathcal Y,\mathcal Y'$，令 $T$ 为其弦映射，$T_f$ 为其有限部分，记 $\alpha$ 为 Weil 数据中给出标准格自对偶配对的有限 idèle. 设 $\Phi$ 由一个无穷位 Fock 向量与有限因子 $F$ 构成，且 $F$ 在由 $b\widehat{\mathcal O}^{\,\dim\operatorname{Hom}(V,V')}$ 给出的 Heisenberg 平移下不变（其中 $b$ 为有限 idèle）. 若 $\Phi$ 在阿代尔点 $(x,x')$ 处的扭转 Weil 平移在 $T$ 处的常数项非零，则存在有限阿代尔矩阵 $W$，使得
+\[
+  W\Lambda(x_f)\subseteq\Lambda'(x_f'),
+  \qquad
+  W-\frac{\bar b}{\alpha}T_f\ \text{的度数至少为 }0 ,
+\]
+其中格与矩阵均在 $V,V'$ 的有理坐标下写出.
+\end{lemma}
+\begin{proof}
+在 $\operatorname{Hom}(V,V')$ 的有理坐标中，取正度数坐标的各向同性标架 $C_0$. 目标分级与源分级的反转均反转权，故该空间的 Gram 矩阵 $J$ 将每个度数与其相反数配对，从而
+\[
+ P_{<0}=J^{-1}C_0C_0^\ast J
+\]
+是投影至负度数坐标的对角矩阵. 沿 $C_0$ 取零项再于补空间上作 Theta 求值，等价于沿正度数坐标取常数项. 将 Weil 平移与 $T$ 的 Heisenberg 平移拆分为无穷与有限两部分，取零项作用于此类纯张量时亦按两部分分解；又扭转特征仅引入标量因子，故原常数项非零蕴含经移动并沿 $T_f$ 平移后数据的有限零项非零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/ConstantTerm.lean\#L403}{分级 Witt 分解与常数项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L172}{有限零项的非零性}.}
+
+令 $g$ 为 $(x_f,x_f')$ 在 $\operatorname{Hom}(V,V')$ 的格坐标中诱导的酉矩阵，$F_g$ 为 $F$ 经有限 Weil 移动所得数据. 由 Weil 作用与 Heisenberg 作用的交换关系，$F_g$ 被 $bg\widehat{\mathcal O}^{\,\dim\operatorname{Hom}(V,V')}$ 中的平移固定. 设 $z$ 为 $T$ 在该模型中的有限位移坐标. 在引理~\ref{lem:a-finite-zero-term-support} 中取 $M=bg$、$M'=\bar b^{-1}g$（满足 $MM'^\ast=1$），由有限零项非零可知存在整矩阵的向量化 $l$，使得
+\[
+ C^\ast\bigl(z-\bar b^{-1} g l\bigr)=0,
+\]
+其中 $C$ 为 $C_0$ 在有限 Weil 格坐标中的标架.
+
+设 $A_x,A_{x'}$ 分别为两级从所定标准格到 $\Lambda(x_f),\Lambda'(x_f')$ 的坐标矩阵. 记 $L_0$ 为 $l$ 对应的整矩阵，置 $W=A_{x'}L_0A_x^{-1}$，则有 $W\Lambda(x_f)\subseteq\Lambda'(x_f')$. 若 $A_H$ 为 $\operatorname{Hom}(V,V')$ 从有限 Weil 格坐标到有理坐标的变换矩阵，则
+\[
+ A_H\bigl(z-\bar b^{-1}g l\bigr)
+     =\operatorname{vec}\bigl(\alpha^{-1}T_f-\bar b^{-1}W\bigr).
+\]
+这是因为 $T$ 的位移坐标含自对偶缩放 $\alpha^{-1}$，而 Hom 上的酉作用在矩阵坐标下表现为目标矩阵左乘、源矩阵逆右乘. 另一方面，$C^\ast=C_0^\ast J A_H$；将上述标架等式左乘 $J^{-1}C_0$，即得
+\[
+ P_{<0}\operatorname{vec}
+     \bigl(\alpha^{-1}T_f-\bar b^{-1}W\bigr)=0.
+\]
+这正表明 $W-(\bar b/\alpha)T_f$ 的负度数矩阵元全为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L55}{标架的共轭转置}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L207}{有限位移坐标的换基}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L229}{负度数的格映射}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/Frequency.lean}{289}.}
+\begin{lemma}[分级源格到分级目标格的弦包含]
+\label{lem:a-frequency-graded-lattices}
+\emitthmsource
+在引理~\ref{lem:a-frequency-negative-degree} 的假设下，取两边的有限 Bessel 点 $r,r'$，使得 $\Lambda(rx_f)$ 与 $\Lambda'(r'x_f')$ 均为分级格（即包含其每个向量的各齐次分量）. 以 $\Lambda(\,\cdot\,)^+$ 记格向源弦空间的投影，以 $\Lambda'(\,\cdot\,)^-$ 记格与目标弦空间的交. 则
+\[
+  \frac{\bar b}{\alpha}\,
+     T_f\bigl(\Lambda(rx_f)^+\bigr)
+  \ \subseteq\ \Lambda'(r'x_f')^- .
+\]
+\end{lemma}
+\begin{proof}
+记 $R,R'$ 为 $r,r'$ 在有理坐标下的矩阵，置 $c=\bar b/\alpha$，并取引理~\ref{lem:a-frequency-negative-degree} 中的 $W$. 则
+\[
+ W_0=R'W R^{-1}
+\]
+将 $\Lambda(rx_f)$ 映入 $\Lambda'(r'x_f')$. Bessel 点的矩阵及其逆皆不降度，且
+\[
+ R'T_f R^{-1}-T_f
+   =(R'-1)T_f R^{-1}+T_f(R^{-1}-1)
+\]
+具有非负度数：事实上，$T_f$ 仅在对应的两个弦坐标间将度数 $d$ 映至 $d-1$，而在涉及弦坐标的矩阵元上，Bessel 条件保证 $R'-1$ 的相应列与 $R^{-1}-1$ 的相应行皆严格升度，因而上式两项皆具非负度数. 由恒等式
+\[
+ W_0-cT_f=R'(W-cT_f)R^{-1}+c(R'T_fR^{-1}-T_f)
+\]
+可知 $W_0-cT_f$ 亦具非负度数；又因 $T_f$ 为 $-1$ 次齐次映射，$W_0$ 的 $-1$ 次齐次部分恰为 $cT_f$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/Grading.lean\#L817}{Bessel 平移保持弦映射的负度数部分}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L136}{两边 Bessel 平移下的矩阵比较}.}
+
+对任一 $\lambda\in\Lambda(rx_f)$，其每个源齐次分量 $\operatorname{pr}_d\lambda$ 仍属源格，经 $W_0$ 映入目标格后再取 $\operatorname{pr}'_{d-1}$ 仍落于目标格中；对 $d$ 求和即得
+\[
+ cT_f\lambda=\sum_d\operatorname{pr}'_{d-1}
+                         W_0\operatorname{pr}_d\lambda
+            \in\Lambda'(r'x_f').
+\]
+最后，因 $T_f$ 零化源正定块且取值落于目标弦空间内，$cT_f$ 在源格上的像等于其在源弦投影格上的像，且所得向量均位于目标格与弦空间的交中.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L74}{齐次部分保持分级格}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L108}{弦投影与弦映射}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Frequency.lean\#L307}{非零常数项推出弦格包含}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/UnfoldingStages.lean}{1093}.}
+\begin{lemma}[展开函数的格支集]
+\label{lem:a-seesaw-lattice-support}
+\emitthmsource
+设 $\phi\in U$，且首个有限变量 $y_0$ 属于所选主层. 在中间级 $1\le j<m$，若展开函数 $\mathcal W_j$ 在某无穷点与有限点 $x$ 处非零，则任一将 $x$ 移至分级格的有限 Bessel 平移 $r'$ 皆满足
+\[
+ \bar{\mathfrak q}^{\,j}\Lambda_j^{-}\ \subseteq\ \Lambda_j'{}^{-},
+ \qquad
+ {\mathfrak q}^{\,j}\Lambda_j'{}^{-}\ \subseteq\ \Lambda_j^{-},
+\]
+其中 $\mathfrak q$ 为生成扭转模的有限 idèle，$\Lambda_j,\Lambda'_j$ 分别为单位点与 $r'x$ 对应的格，上标 $-$ 表示格与弦空间的交.
+\end{lemma}
+\begin{proof}
+对 $j=k+1$ 施归纳. $\mathcal W_{k+1}$ 是前级 Bessel 函数乘以单边 Theta 常数项后的积分；由积分非零知存在被积点使两因子同时非零，记该点处进入前级的有限变量为 $x_k$. 当 $k=0$ 时，$x_0$ 为 $y_0$ 的 Bessel 平移，可移回标准分级格；当 $k>0$ 时，前级 Bessel 函数的非零值来自 $\mathcal W_k$，由归纳假设及分级格代表的存在性，可得 $x_k$ 的分级格 $\Lambda'_k$，满足 $\mathfrak q^{\,k}\Lambda_k'{}^{-}\subseteq\Lambda_k^{-}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L1092}{从非零积分选择前一级格}.}
+
+以 $\Lambda_k^+$、$\Lambda_k'{}^+$ 记两格向弦空间的投影格. 由格配对对偶，前一包含式化为 $\bar{\mathfrak q}^{\,k}\Lambda_k^+\subseteq\Lambda_k'{}^+$. 记 $\mathrm{sh}_k$ 为该边的弦映射，$\mathfrak a$ 为数据中的固定有限 idèle. 由引理~\ref{lem:a-frequency-graded-lattices} 的非零常数项条件可得
+\[
+ \frac{\bar{\mathfrak q}}{\mathfrak a}\,
+       \mathrm{sh}_k(\Lambda_k'{}^+)\ \subseteq\ \Lambda'_{k+1}{}^{-}.
+\]
+另一方面，标准格满足 $\mathrm{sh}_k(\Lambda_k^+)=\mathfrak a\Lambda_{k+1}^{-}$. 将对偶后的包含式代入上述频率条件，便得
+\[
+ \bar{\mathfrak q}^{\,k+1}\Lambda_{k+1}^{-}
+   =\frac{\bar{\mathfrak q}}{\mathfrak a}\,
+           \mathrm{sh}_k(\bar{\mathfrak q}^{\,k}\Lambda_k^+)
+   \ \subseteq\ \Lambda'_{k+1}{}^{-}.
+\]
+此论证对末端轨道中的任意分级格均成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Sandwich.lean\#L136}{对偶格与下界传递}.}
+
+尚需证明另一方向的包含式. 以上述下界作为输入，应用标准弦格的比较引理，仅有如下两种可能：第一种直接给出 $\mathfrak q^{\,k+1}\Lambda'_{k+1}{}^{-}\subseteq\Lambda_{k+1}^{-}$；第二种仅可能在 $k+1$ 为偶数时发生，此时在某个 $w\mid\pi_N$ 处末端格沿正定部分分裂. 因扭转模与 $N$ 互素，$\mathfrak q$ 在 $w$ 及其共轭位处皆为单位. 在第二种情形下，格分裂导致该位的标量算子 $z_w$ 固定末端的有限求值数据；沿双步提升的等变性将该固定条件传回源形式，即得其 $z_w$-幂的平均. 然而源形式的分歧条件恰表明该平均为零，从而整个偶数级展开函数在该 Bessel 轨道上恒为零，与非零假设矛盾. 故只能出现第一种情形.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L1053}{分裂处由分歧条件推出消失}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L1141}{格上界与例外的排除}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/SeesawIdentity.lean}{535}.}
+\begin{lemma}[Seesaw 展开与截面张量]
+\label{lem:a-seesaw-unfolding}
+\emitthmsource
+固定 $X_0$ 的 Weyl 模上的复线性泛函 $t$ 以及 $Y_0$ 的无穷位阿代尔点 $g_\infty$，记 $\mathcal P=\mathcal P_{g_\infty,t}$ 为相应的 Poincaré 映射. 对驯特征 $\vartheta$ 与下链有限变量 $y=(y_j)_{j=0}^m$，以 $E_\vartheta(\bar y)$ 记各双步有限数据在 $y$ 处求值所得的纯张量（其中 $\bar y_j$ 为 $y_j$ 对相应层所取的类）. 令 $\Omega_j$ 为第 $j$ 步的有限截面类，$\mu_j(\omega)$ 为截面覆盖重数，并约定末端有限变量取单位点. 定义
+\[
+ F_\vartheta
+ =\sum_{\omega\in\Omega_0\times\cdots\times\Omega_{m-1}}
+  \left(\prod_{j=0}^{m-1}\mu_j(\omega_j)^{-1}\right)E_\vartheta(\omega).
+\]
+则存在仅依赖于 $D,t,g_\infty$ 的常数 $c_0\in\mathbb C$，使得对每个 $\vartheta$ 与每个 $\phi\in U$ 皆有
+\[
+ T_\vartheta(\mathcal P\phi)
+   = c_0\,\operatorname{Res}_{X_m\to Y_m}
+            \mathcal T_\vartheta(\phi;F_\vartheta),
+\]
+其中 $T_\vartheta$ 为下链的完整提升，$\mathcal T_\vartheta(\phi;F)$ 为以上链有限张量 $F$ 对 $\phi$ 作 $m$ 步提升所得的 $X_m$ 上的形式.
+\end{lemma}
+\begin{proof}
+记第 $j$ 级下链群为 $G_j=\Ugrp(Y_j)$，相应 Bessel 群为 $R_j$；记 $J_j$ 为扭转 $\vartheta$ 在 $G_j(\mathbb A_f)$ 上的层，$J_j^\circ$ 为标准格稳定子，$J_M$ 为第零级选定的主层，并以 $[\cdot]$ 表示相应的有理点左商. 记沿第 $j$ 条边的下链提升为 $L_j$（其中包含因子 $[J_j^\circ:J_j]$），交换双边 Theta 核的两个积分变量即得转置提升 $L_j^{\mathrm t}$（同样包含该因子）. 对第 $j$ 级形式 $v$ 与第 $j+1$ 级的共轭类型形式 $z$，有
+\[
+ \int_{[G_{j+1}]} z\,L_jv
+   =\int_{[G_j]}(L_j^{\mathrm t}z)\,v .
+\]
+由 Schwartz 数据定义的提升与转置提升具箭头性质，保证上述积分绝对收敛，从而允许交换积分次序；又因定义 $L_j^{\mathrm t}$ 的 Theta 数据在 $J_j$ 下固定，$L_j^{\mathrm t}z$ 亦在 $J_j$ 下不变.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L168}{转置提升与层不变性}.}
+
+\emph{有限截面和的递推.}
+记 $T_\vartheta^{[j]}$ 为下链的前 $j$ 步，令 $\xi=(\xi_i)$、$y=(y_i)$ 分别为外层变量的无穷与有限阿代尔坐标. 以 $\mathcal W_j(\xi,y;h)$ 记经 $j$ 次展开后在 $G_j$ 上余下的函数，并置
+\[
+ \Xi_j(z;\xi,y)=\int_{R_j(\mathbb Q)\backslash G_j(\mathbb A)}
+                    \mathcal W_j(\xi,y;h)z(h)\,dh ,
+\]
+其中 $R_j(\mathbb Q)$ 表示相应的有理 Bessel 子群. 单步展开将第 $j$ 级的剩余函数与转置提升的 Bessel 周期化为下一级周期：具体而言，固定 $(\xi,y)$ 后，置
+$H_j(h)=\mathcal W_j(\xi,y;h)(L_j^{\mathrm t}z)(h)$，将第 $j$ 个外层变量更新为 $h=(\alpha,v)$ 后，即有
+\[
+ \int_{[R_j]}H_j(rh)\,dr
+    =[J_j^\circ:J_j]\,
+      \Xi_{j+1}\bigl(z;\xi[j\leftarrow\alpha],y[j\leftarrow v]\bigr).
+\]
+引理~\ref{lem:a-seesaw-single-stage} 同时保证了 $\mathcal W_j$ 与共轭类型形式之积在所需商上的可积性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L267}{单步周期递推}.}
+
+设某末端 $\Xi_j$ 可分解为 $a(\xi)S(\bar y)$（仅要求该分解在 $y_0\in J_M$、$y_m=1$ 时成立）. 下面对 $j$ 施归纳，证明 $\int_{[G_j]}z\,T_\vartheta^{[j]}(\mathcal P\phi)$ 等于一与 $\vartheta,\phi,z,S$ 无关的常数乘以
+\[
+ \sum_{\omega\in\Omega_0\times\cdots\times\Omega_{j-1}}
+   \left(\prod_{i=0}^{j-1}\mu_i(\omega_i)^{-1}\right)S(\omega),
+\]
+其中未参与求和的坐标均取单位类.
+
+当 $j=1$ 时，先将 $L_0$ 转置至 $z$ 上. 展开 Poincaré 映射，即得在 $J_M/J_0$ 代表元上的 Bessel 周期平均；该商恰对应 $\Omega_0$，而转置提升的 $J_0$-不变性保证了平均与代表元选取无关. 对每个代表元作单步周期展开，分子出现因子 $[J_0^\circ:J_0]$，平均分母为 $[J_M:J_0]$，相约后剩余因子 $[J_0^\circ:J_M]$. 又 $\mu_0=1$ 且首个无穷变量固定为 $g_\infty$，故所求常数为 $[J_0^\circ:J_M]a(\xi^{(0)})$，其中 $\xi^{(0)}$ 首坐标为 $g_\infty$、其余为单位点.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L327}{首个周期与层指数}.}
+
+由第 $j+1$ 级回推至第 $j$ 级时，先将 $L_j$ 转置至 $z$ 上，再对 $H_j$ 的 Bessel 周期代入所假定的分解. 因 $1\le j<m$，更新第 $j$ 坐标仍保持 $y_0\in J_M$ 与 $y_m=1$. 引理~\ref{lem:a-seesaw-cut-integral} 将 $\Xi_j(L_j^{\mathrm t}z;\xi,y)$ 化为
+\[
+ a'(\xi)\sum_{\omega\in\Omega_j}
+    \mu_j(\omega)^{-1} S(\bar y[j\leftarrow\omega]).
+\]
+公式的有限部分恰好消去第 $j$ 级周期的因子 $[J_j^\circ:J_j]$；其中 $a'(\xi)$ 为 $a(\xi[j\leftarrow\alpha])$ 关于仅由 $R_j$ 与标准层 $J_j^\circ$ 决定的固定无穷位测度在 $\alpha$ 上的积分，故 $a'$ 与 $\vartheta$ 无关. 应用该公式的诸条件分别由展开函数的连续性与左有理 Bessel 不变性、前述可积性以及引理~\ref{lem:a-seesaw-lattice-support} 的格支集界保证（后者确保 $\mathcal W_j$ 非零时其有限变量的轨道被 $\Omega_j$ 覆盖）. 由此可对这一新分解应用第 $j$ 级的归纳假设，将新产生的第 $j$ 步和与已有的 $j$ 重有限和合并，即得第 $j+1$ 级结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean\#L352}{Bessel 周期的截面积分公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L413}{截面和归纳与轨道覆盖}.}
+
+\emph{末级周期的分解.}
+取 $j=m$，置 $\psi=\mathcal T_\vartheta(\phi;E_\vartheta(\bar y))$. 末级 $Y_m$ 为正定空间，其在 $X_m$ 中的嵌入为 $k\mapsto\operatorname{diag}(k,1)$. 当 $y_m=1$ 时，引理~\ref{lem:a-seesaw-double-coefficient} 给出泛函 $\lambda_\xi$，使 $\mathcal W_m(\xi,y;k)$ 等于 $\psi$ 在该嵌入处取泛函 $\lambda_\xi$ 所得的矩阵系数，且 $\lambda_\xi$ 仅依赖于 $t,\xi,D$，与 $\vartheta,\phi,y$ 无关.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean\#L828}{双步展开的矩阵系数公式}.}
+
+对 $Y_m$ 上的形式 $v$，取 $z=\overline v$. 记 $A(v,\psi)$ 为有限点上的类积分，其被积函数为在 $h$ 处将 $v$ 的代数取值与 $\psi(\operatorname{diag}(h,1))$ 经分支映射所得 Weyl 向量作 Gram 配对. 矩阵系数的无穷位积分给出 $\Xi_m(\overline v;\xi,y)=C(\lambda_\xi)A(v,\psi)$，其中系数 $C(\lambda_\xi)$ 仅依赖于 $\lambda_\xi$ 及固定的权与测度. 另一方面，记 $d_m$ 为 $Y_m$ 的 Weyl 模维数，$c_N=\prod_{\tau\in\Phi}\tau(\overline{\pi_N})^{|\mu_{X_m,\tau}|-|\mu_{Y_m,\tau}|}$（其中 $|\mu_{X_m,\tau}|$ 与 $|\mu_{Y_m,\tau}|$ 分别为源、目标 Young 图的方格数）. 限制算子自带常数 $c_N^{-1}$，而目标内积等于类积分除以 $d_m$，故有
+\[
+ \big\langle v,\operatorname{Res}_{X_m\to Y_m}\psi\big\rangle
+  =d_m^{-1}c_N^{-1}A(v,\psi),
+\]
+其中 $d_m,c_N$ 均非零. 联立两式可知 $\Xi_m(\overline v;\xi,y)$ 具有所需乘积分解，取\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L82}{末级矩阵系数与限制的内积}.}
+\[
+ a(\xi)=C(\lambda_\xi)d_mc_N,\qquad
+ S(\bar y)=
+ \big\langle v,\operatorname{Res}_{X_m\to Y_m}
+                 \mathcal T_\vartheta(\phi;E_\vartheta(\bar y))\big\rangle .
+\]
+
+代入归纳所得的截面和公式. 由于内积关于第二变量线性，上链提升与限制亦关于数据线性，故可将加权和移入张量变量中，化为 $F_\vartheta$. 于是对每个 $v$ 皆有
+\[
+ \big\langle v,T_\vartheta(\mathcal P\phi)\big\rangle
+ =c_0\big\langle v,\operatorname{Res}_{X_m\to Y_m}
+                          \mathcal T_\vartheta(\phi;F_\vartheta)\big\rangle.
+\]
+鉴于归纳所得的 $c_0$ 仅依赖于 $a,D,g_\infty$，而末级的 $a$ 仅依赖于 $t,D$ 及外层无穷变量，故 $c_0$ 对 $\vartheta$ 与 $\phi$ 一致. 由内积的非退化性即得所求形式等式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L535}{完整下链的截面张量公式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/SeesawIdentity.lean}{624}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L592}{截面张量的容许展开}.}
+\begin{theorem}[Seesaw 恒等式]
+\label{thm:a-seesaw}
+\emitthmsource
+Seesaw 恒等式（\emph{seesaw identity}）在此比较如下两种提升. 固定 $Y_0$ 的无穷位阿代尔点 $g_\infty$ 以及 $X_0$ 的 Weyl 模上的复线性泛函 $t$，记 $\mathcal P=\mathcal P_{g_\infty,t}\colon U\to\operatorname{Forms}(Y_0)$ 为相应的 Poincaré 映射. 则存在与扭转和源形式均无关的常数 $c_{\mathrm{ss}}\in\mathbb C^\times$，使得对每个扭转 $\vartheta$ 皆存在链数据 $\Psi_\vartheta$，满足
+\begin{equation}
+ T_\vartheta(\mathcal P\phi)
+   =c_{\mathrm{ss}}\operatorname{Comp}_{\vartheta,\Psi_\vartheta}(\phi)
+ \qquad(\phi\in U),
+\label{eq:a-seesaw}
+\end{equation}
+其中 $T_\vartheta$ 为下链 $Y_0\to\cdots\to Y_m$ 的提升，$\operatorname{Comp}_{\vartheta,\Psi_\vartheta}$ 为以粘合后数据沿上链 $X_0\to\cdots\to X_m$ 提升后再限制至 $Y_m$ 所得算子.
+\end{theorem}
+\begin{proof}
+令 $F_\vartheta$ 为引理~\ref{lem:a-seesaw-unfolding} 给出的有限张量；该引理同时给出常数 $c_0\in\mathbb C$，使 $T_\vartheta(\mathcal P\phi)$ 等于以上链数据 $c_0F_\vartheta$ 提升后再限制至 $Y_m$ 的结果. 以下构造链数据，以表出 $c_0F_\vartheta$ 的某个与 $\vartheta$ 无关的非零倍数.
+
+设 $Q_\vartheta$ 为扭转的有限模支集，$q_\vartheta=\operatorname{Nm}(Q_\vartheta)$ 为这些有限位的范数之积. 令 $R=M^{f n_m^2}$、$\Delta=R^{2m}$. 将有限张量的截面和写作
+\[
+ F_\vartheta=\sum_{\omega\in\Omega_0\times\cdots\times\Omega_{m-1}}
+             \left(\prod_{j=0}^{m-1}\mu_j(\omega_j)^{-1}\right)
+             E_\vartheta(\omega),
+\]
+其中各 $\Omega_j$ 为下链有限变量的截面类，$\mu_j$ 为相应覆盖重数，$E_\vartheta(\omega)$ 为在这些类处求值所得的纯张量. 各类的代表在 $q_\vartheta$ 以外皆整，且 $\mu_j(\omega_j)$ 整除 $q_\vartheta$ 的某个幂，故求和中的有理权 $\prod_j\mu_j(\omega_j)^{-1}$ 在 $q_\vartheta$ 以外各素位处皆整. 当 $Q_\vartheta=\varnothing$ 时，有 $\#\Omega_j\le R$，而每个权的实绝对值至多为 $1$，故权之和至多为 $R^m$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Cut.lean\#L201}{截面重数与类数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Cut.lean\#L321}{带权截面和的整数性}.}
+
+引理~\ref{lem:a-seesaw-vacuum-expansion} 给出统一常数 $C\in\mathbb C$，使得对每个 $\omega$ 有
+\[
+ E_\vartheta(\omega)=\sum_x r_{\vartheta,\omega}(x)\,
+                         C\,\operatorname{Vac}_{\rm gl}(x),
+\]
+其中 $x$ 为上链各级的阿代尔平移元组成的元组，$\operatorname{Vac}_{\rm gl}(x)$ 为先平移各级整真空、再按双步粘合所得的张量. 每个出现的 $x$ 皆为容许平移（即在 $q_\vartheta$ 以外乘以 $\overline{\pi_M}$ 后变整）；各 $\Delta r_{\vartheta,\omega}(x)$ 在 $q_\vartheta$ 以外各素位处皆整，且当 $Q_\vartheta=\varnothing$ 时，对每个 $\sigma\in\operatorname{Aut}(\mathbb C)$ 均有
+$\sum_x|\sigma(r_{\vartheta,\omega}(x))|\le1$.
+代入截面和并按 $x$ 合并系数，即得
+\[
+ F_\vartheta=C\sum_x r_\vartheta(x)\operatorname{Vac}_{\rm gl}(x).
+\]
+由赋值环对加、乘法的封闭性，$\Delta r_\vartheta(x)$ 在 $q_\vartheta$ 以外各素位处皆整；当 $Q_\vartheta=\varnothing$ 时，对任意 $\sigma\in\operatorname{Aut}(\mathbb C)$ 取绝对值之和并用三角不等式，便得 $\sum_x|\sigma(r_\vartheta(x))|\le R^m$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/GoodDatum.lean\#L526}{有限纯张量的求值定理}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L581}{截面和的有限展开}.}
+
+选取统一标量 $u\in\mathbb C^\times$：当 $c_0C\ne0$ 时取 $u=\Delta/(c_0C)$，当 $c_0C=0$ 时取 $u=1$. 在前一情形下，$u c_0F_\vartheta$ 上述真空展开的系数恰为 $\Delta r_\vartheta(x)$；在后一情形下 $u c_0F_\vartheta=0$，可取零系数. 由此，两种情形均得到在 $q_\vartheta$ 以外整的系数，且当 $Q_\vartheta=\varnothing$ 时，所有共轭下的系数绝对值之和皆至多为
+\[
+ \Delta R^m=R^{3m}=M^{3fm n_m^2}.
+\]
+
+接着将每个 $x$ 在不整除 $M q_\vartheta$ 的有限位处的坐标置零，记所得平移为 $x'$. 在被置零的位处，$\overline{\pi_M}$ 为单位，故删去的分量本身即整，作用于真空为恒等；又保留部分与删去部分的支集互不相交且在复共轭下稳定，故两部分的 Heisenberg 乘法不引入额外相位，从而 $\operatorname{Vac}_{\rm gl}(x')=\operatorname{Vac}_{\rm gl}(x)$. 将对应同一 $x'$ 的系数累加并除去零系数，即得有限支撑函数 $\Psi_\vartheta$：其支集仍为容许平移且集中于整除 $M q_\vartheta$ 的位处，整性与共轭绝对和界亦得以保持. 所得粘合张量为\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/ChainValuation.lean\#L107}{平移的支集约化}.}
+\[
+ \operatorname{Glue}(\Psi_\vartheta)
+ =\sum_{x'}\Psi_\vartheta(x')\operatorname{Vac}_{\rm gl}(x')
+ =u c_0F_\vartheta.
+\]
+
+最后验证联合不变性. 记 $K_j$ 为 $X_j$ 的层，任取 $b_j\in K_j$ 且令 $b_m=1$. 对 $j<m$，记 $h_j$ 为 $b_j$ 在下链群中的有限嵌入，并置 $h_m=1$. 各 $h_j$ 在截面类 $\Omega_j$ 上作用为置换且保持重数 $\mu_j$. 由有限数据求值的等变性可知，以 $h_j$ 同时左移所有下链变量后再对各双步求值，等价于对求值后的上链张量施加 $b_j$ 的联合 Weil 作用；最后双步的末端嵌入取单位点，条件 $b_m=1$ 恰保证此等变公式仍适用. 在截面和中作变量代换 $\omega_j\mapsto h_j\omega_j$，可见联合 Weil 作用固定 $F_\vartheta$，从而亦固定 $u c_0F_\vartheta$. 由此 $\Psi_\vartheta$ 满足链数据的全部条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/Cut.lean\#L184}{截面的平移与重数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L503}{截面张量的联合不变性}.}
+
+上链提升与限制均关于有限张量线性. 结合引理~\ref{lem:a-seesaw-unfolding} 与 $\operatorname{Glue}(\Psi_\vartheta)=u c_0F_\vartheta$，即得
+\[
+ u\,T_\vartheta(\mathcal P\phi)=\operatorname{Comp}_{\vartheta,\Psi_\vartheta}(\phi).
+\]
+该式在自守形式与相应代数形式的等同下表达同一等式；取 $c_{\mathrm{ss}}=u^{-1}$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L612}{链数据的统一归一化}.}
+\end{proof}
+
+\section{短形式范数界与局部格指数界}
+\label{sec:a-conclusions}
+
+式~\eqref{eq:a-short} 涉及全部平移及所有复自同构；式~\eqref{eq:a-index} 则涉及由有限多个平移像中选出的任意有限族，其局部校正须对同一素数处的所有允许扭转同时生效.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{254}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L231}{有理归一化与共轭平方范数}.}
+\begin{theorem}[A(a)：短整形式张成源空间]
+\label{thm:short-forms}
+\emitthmsource
+令 $h=H-mS+L$. 满足
+\begin{equation}
+  \phi\in I,\qquad
+  \|\Theta_1P_g\phi\|_\sigma^2\le e^h
+  \quad (g\in G,\ \sigma\in\operatorname{Aut}(\mathbb C))
+\label{eq:a-short}
+\end{equation}
+的 $\phi$ 张成 $U$.
+\end{theorem}
+\begin{proof}
+令 $U_0$ 为全源空间，$N$ 为层素数. 称源形式为 $M$-短的，是指其在每个 $p$-进素位处皆整，且对每个复数域自同构与每个有限阿代尔点，其共轭点值的平方 Weyl 范数至多为 $M$. 下文仍以 $\|\cdot\|_{\mathrm{Weyl}}$ 表示取值空间上的 Weyl 范数.
+
+\emph{选取张成分歧源空间的短整形式.}
+由引理~\ref{lem:a-short-source-basis}，$U_0$ 由 $e^B/4^f$-短形式张成.
+
+令 $z_w$ 为对应每个 $w\mid\pi_N$ 的有限位标量平移. 由引理~\ref{lem:a-ramified-dimension} 的证明可知，分歧化算子 $\prod_{w\mid\pi_N}(1-z_w)$ 的像恰为 $U$. 每个 $z_w$ 皆由标准整层中的元素给出，故右平移保持整性. 在任一共轭与任一点处，若原形式的平方范数至多为 $M$，则原形式与其平移之差的平方范数至多为 $(\sqrt M+\sqrt M)^2=4M$. 依次施加全部 $f$ 个因子后，整性依然成立，而平方范数上界变为 $4^f(e^B/4^f)=e^B$. 线性映射将张成族映为其像的张成族，故记这些像组成的集合为 $\mathcal S$，便有 $\operatorname{span}_{\mathbb C}\mathcal S=U$ 且 $\mathcal S\subseteq I$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L962}{分歧化与短形式张成}.}
+
+\emph{估计归一化之前的提升.}
+记 $\mathcal P$ 为 Poincaré 映射，$c_{\mathrm{ss}}\ne0$ 为 Seesaw 常数，$e_0$ 为取目标部分的投影. 对 $\phi\in\mathcal S$，置 $z=\mathcal P(c_{\mathrm{ss}}^{-1}\phi)$，并记 $T_\vartheta$ 为扭转 $\vartheta$ 下的下链提升. 固定扭转后，定理~\ref{thm:a-seesaw} 给出链数据 $\Psi$，使得
+\[
+ T_\vartheta(\mathcal P\phi)=
+ c_{\mathrm{ss}}\operatorname{Comp}_{\vartheta,\Psi}(\phi)
+ \qquad (\phi\in U),
+\]
+其中 $\operatorname{Comp}_{\vartheta,\Psi}$ 为上链复合提升在末级目标空间上的限制. 由 $T_\vartheta\circ\mathcal P$ 的线性性可得
+$T_\vartheta z=\operatorname{Comp}_{\vartheta,\Psi}(\phi)$. 投影平移定义为 $P_g^{\mathrm{proj}}\phi=|G|e_0gz$，归一化后即为 $P_g\phi=c_B P_g^{\mathrm{proj}}\phi$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L168}{归一化与 seesaw 恒等式}.}
+
+沿用引理~\ref{lem:a-composite-size} 中的素数集 $Q$ 与局部增益 $\gamma_p$，置
+\[
+ G_0=\sum_{p\in Q}\gamma_p\log p,\qquad
+ \beta=H-mS+2G_0+B .
+\]
+引理~\ref{lem:a-composite-size} 以平凡扭转的链数据及源形式的点值上界为输入：给定 $\sigma$，若源形式的所有共轭点值平方 Weyl 范数皆至多为 $e^u$，则复合提升的所有共轭点值平方 Weyl 范数皆至多为 $e^{u+\beta}$. 在此取 $u=B$，即得
+\[
+ \|\sigma((T_1 z)(v))\|_{\mathrm{Weyl}}^2\le e^{B+\beta}
+\]
+对每个有限阿代尔点 $v$ 成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L426}{复合提升大小定理}.}
+
+经投影与平移后，点值可写作如下和式：
+\[
+ \bigl(T_1(|G|e_0gz)\bigr)(v)
+   = \sum_{t\in G}|G| e_0(t)\,(T_1z)(v\,a_1(tg)),
+\]
+其中 $a_1(tg)$ 为群元素 $tg$ 的第一块提升，且系数满足 $|\sigma(e_0(t))|\le1$. 在 $\sigma$ 下应用三角不等式，可知每项的 Weyl 范数至多为 $|G|e^{(B+\beta)/2}$，从而整个和的范数至多为 $|G|^2e^{(B+\beta)/2}$. 目标平方范数为点值平方范数的类和，各稳定子权重皆至多为 $1$；结合类数界 $\exp(x^{30})$ 及尺度估计 $\exp(x^{30})|G|^4\le\exp(x^{99})$，便得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L475}{投影平移公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L519}{投影平移的大小估计}.}
+\[
+ \|\Theta_1 P_g^{\mathrm{proj}}\phi\|_\sigma^2
+ \le \exp(x^{30})|G|^4 e^{B+\beta}
+ \le \exp(x^{99}+B+\beta).
+\]
+
+\emph{归一化与消去局部增益.}
+固定归一化所用的见证族 $(e_p)_p$，它由引理~\ref{lem:a-uniform-divisibility} 的存在性结论取定，并通用于每个 $P_g$. 这些误差满足
+\[
+ \sum_{p\in J}e_p\log p\le B
+\]
+对任意有限素数集 $J$ 成立. 置 $Q'=Q\cup\{N\}$，并令
+\[
+ g_p=\lfloor\gamma_p-e_p\rfloor,\qquad c_B=\prod_{p\in Q'}p^{-g_p}.
+\]
+显然 $c_B$ 为正有理数. 因层素数满足 $N\ge x_1$，有 $\gamma_N=0$，故 $\sum_{p\in Q'}\gamma_p\log p=G_0$. 由取整不等式即得
+\[
+ \log c_B
+ =-\sum_{p\in Q'}g_p\log p
+ \le -G_0 +\sum_{p\in Q'}e_p\log p+\sum_{p\in Q'}\log p
+ \le -G_0+B+b .
+\]
+末一步的取整误差由
+$\sum_{p\in Q'}\log p\le\lceil x_1\rceil x_1+\log N\le b$ 控制，其中第一项来自 $|Q|\le\lceil x_1\rceil$ 及 $p<x_1$，最后一个不等式由层素数的尺度界给出.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L109}{取整误差与归一化界}.}
+
+所有自同构 $\sigma$ 皆固定有理数 $c_B$，故乘以 $c_B$ 使共轭平方范数乘以 $c_B^2$. 合并前述估计即得
+\[
+ \|\Theta_1P_g\phi\|_\sigma^2
+ \le \exp(x^{99}+B+\beta+2\log c_B)
+ \le \exp(H-mS+x^{99}+4B+2b).
+\]
+此处 $2G_0$ 恰好与 $2\log c_B$ 中的 $-2G_0$ 项抵消. 容许尺度给出 $\ell\ge128$、$x\ge1$ 与 $x^{99}\le b$；结合 $a=xb$ 及 $f\ge1$ 可知 $B=fa\ell^3\ge b$，从而
+\[
+ x^{99}+4B+2b\le7B\le\ell B=L .
+\]
+由此，对 $\mathcal S$ 中每个 $\phi$ 及任意 $g,\sigma$ 皆有 $\|\Theta_1P_g\phi\|_\sigma^2\le e^{H-mS+L}$. 因 $\mathcal S$ 张成 $U$，结论得证.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{373}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L342}{单个平移像的局部格指数}.}
+\begin{theorem}[A(b)：归一化像的局部格指数]
+\label{thm:index-bound}
+\emitthmsource
+设 $T\subset G$ 是有限集. 若有限族 $y$ 的每个成员都属于 $\bigcup_{g\in T}P_g(I)$，则 $y$ 满足
+\begin{equation}
+  \mathcal I_{2|T|\dim_{\mathbb C}(U)B}(y).
+\label{eq:a-index}
+\end{equation}
+\end{theorem}
+\begin{proof}
+令 $U_0$ 为全源空间，$u_0=\dim_{\mathbb C}U_0$，$u=\dim_{\mathbb C}U$，沿用定理 A(a) 中的 $Q'$、$\gamma_p$、$e_p$、$g_p$、$c_B$ 及 $P_g^{\mathrm{proj}}$. 对 $p$-进素位 $\iota$，记 $\mathcal O_\iota$ 为其在 $\mathbb C$ 上诱导的赋值环，$W_{\iota}^{\mathrm{int}}\subseteq W$ 为目标整格. 依定义，$y\in W_{\iota}^{\mathrm{int}}$ 等价于对所有层范数与 $p$ 互素的 $m$-重扭转 $\vartheta$，$\Theta_\vartheta y$ 均在 $\iota$ 处为整. 取 $m$-重扭转的底层扭转时其模范数不变，故可应用局部整除性引理.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/IntegralTargetForms.lean\#L65}{目标整格的定义}.}
+
+\emph{局部整除性提供统一校正矩阵.}
+先固定 $p$-进素位 $\iota$. 引理~\ref{lem:a-uniform-divisibility} 针对选定的损失族给出非负整数 $j_\iota\le e_pu_0$ 及整分歧源空间的局部子模 $M_\iota$，满足以下两条性质：
+\begin{enumerate}
+\item 对取自 $I$ 的任一有限族 $(\phi_i)_i$，存在矩阵 $A\in\operatorname{Mat}(\mathcal O_\iota)$，使
+$\det A\mid p^{j_\iota}$ 且每个 $\sum_i A_{ki}\phi_i$ 皆落于 $M_\iota$ 中.
+\item 对 $\phi\in M_\iota$、每个允许扭转及其任一链数据，所得复合提升在每个有限阿代尔点处的 $p$-进 Weyl 规范皆至多为 $p^{e_p-\gamma_p}$.
+\end{enumerate}
+这里同一个子模 $M_\iota$ 同时满足第二条中的全部扭转与链数据条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Divisibility/LocalDivisibility.lean\#L482}{对所选损失族的局部整除性结论}.}
+
+\emph{将校正后的源形式映入目标整格.}
+当 $p\in Q'$ 时，$c_B$ 的其余素数因子在 $\iota$ 处皆为单位，故 $|\iota(c_B)|_p=p^{g_p}$；当 $p\notin Q'$ 时，增益与误差皆为零，故 $g_p=0$，同一绝对值公式仍然成立. 结合 $g_p\le\gamma_p-e_p$ 可知，对 $\phi\in M_\iota$，归一化后复合提升的 $p$-进规范至多为
+\[
+ |\iota(c_B)|_p p^{e_p-\gamma_p}=p^{g_p+e_p-\gamma_p}\le1 .
+\]
+Seesaw 恒等式立即将此界转移至归一化的下链提升. 定理 A(a) 中的投影平移公式对任意扭转同样成立；公式中的系数 $|G|e_0(t)$ 为代数整数，各右平移皆由标准整层元素给出，故每一和项的局部规范均至多为 $1$，再由超度量三角不等式知整个和的规范亦至多为 $1$. 由此对所有允许的 $\vartheta$，$\Theta_\vartheta P_g\phi$ 皆在 $\iota$ 处为整，从而证得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L151}{归一化因子的局部绝对值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L490}{投影保持整性}.}
+\[
+ P_g(M_\iota)\subseteq W_\iota^{\mathrm{int}}
+ \qquad (g\in G).
+\]
+
+\emph{控制单个平移的对数指数.}
+固定 $g$，对族中每个 $y_i\in P_g(I)$ 选取 $\phi_i\in I$ 使 $P_g\phi_i=y_i$，并由局部整除性取矩阵 $A$. 由 $P_g$ 的线性性，对每个行指标 $k$ 均有
+\[
+ \sum_i A_{ki}y_i=P_g\Bigl(\sum_i A_{ki}\phi_i\Bigr)\in W_\iota^{\mathrm{int}}.
+\]
+行列式整除关系给出 $v_p(\det A)\le j_\iota\le e_pu_0$. 由此，$p$ 上方的全部素位可共用同一损失预算 $e_pu_0$（尽管校正矩阵本身可随素位而异）；而在每个固定素位处，该矩阵均将向量映入 $W_\iota^{\mathrm{int}}$，从而对该处全部允许扭转同时有效.
+
+由引理~\ref{lem:a-ramified-dimension} 与~\ref{lem:a-ramified-loss-scale} 可知，$u\ge(1-f/(N-1))u_0$ 且 $f/(N-1)\le b^{-8}\le1/2$，从而 $u_0\le2u$. 对任意有限素数集 $J$，便有
+\[
+ \sum_{p\in J}(u_0e_p)\log p
+ \le u_0B\le2uB.
+\]
+依格指数条件 $\mathcal I_\delta$ 的定义，单个平移像中任一有限族的指数预算皆为 $2uB$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L942}{分歧化的余维估计}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L338}{单个平移的指数估计}.}
+
+\emph{合并有限多个平移.}
+对每个 $y_i$ 选定一个满足 $y_i\in P_g(I)$ 的 $g\in T$，并按此选择将指标分组. 固定 $\iota$，将各组的校正矩阵拼成分块对角矩阵（必要时还原指标顺序），则校正后的每个向量均落入 $W_\iota^{\mathrm{int}}$. 分块矩阵的行列式等于各块行列式之积，故其赋值至多为各组预算之和；对同一有限素数集 $J$ 累加各组局部损失，得总预算至多为 $|T|(2uB)$. 对空族可取空矩阵（行列式为 $1$，损失为零）. 这正给出所需的 $\mathcal I_{2|T|\dim_{\mathbb C}(U)B}(y)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L205}{局部指数的分块合并}.}
+\end{proof}

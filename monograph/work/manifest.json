@@ -1,0 +1,26 @@
+{
+  "document": "从 Theta 提升到广义 Riemann 猜想",
+  "authoritative_source": "../grh/blueprint/src/content.tex",
+  "generated_tex": "GRH_Monograph.tex",
+  "output_pdf": "GRH_Monograph.pdf",
+  "summary": {
+    "main_chapters": 8,
+    "appendices": 2,
+    "numbered_sections": 56,
+    "numbered_subsections": 3,
+    "definitions": 36,
+    "theorems": 18,
+    "lemmas": 256,
+    "propositions": 1,
+    "corollaries": 0,
+    "proofs": 275,
+    "exercises": 0,
+    "worked_solutions": 0,
+    "tikz_figures": 1,
+    "labels": 427,
+    "citation_keys_used": 70,
+    "bib_database_entries": 75,
+    "cited_bibliography_entries": 70,
+    "pdf_pages": 240
+  }
+}

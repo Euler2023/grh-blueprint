@@ -1,0 +1,1362 @@
+\chapter{Selmer 扭转与同余分母}
+\label{chap:congruences}
+
+\begin{chapterguide}
+为了在定理 C 中逐步比较提升的 Gram 行列式，需要让同一个扭转的前 $m$ 次幂同时控制 Hecke 值的逆比及两类投影分母. 本章先用有限系数 Selmer 条件和单位根特化选取扭转，再用辅助位的 Hecke 迹关系和 Ribet 元素构造分母算子.
+\end{chapterguide}
+
+\section{结晶条件与正则性}
+\label{sec:c-regularity}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/FitTwists.lean}{229}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GaloisRep/Main/SelmerModules.lean\#L143}{Selmer 模的定义}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/LocalLoss/Basic.lean\#L518}{结晶线性关系}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Twist/FitTwists.lean\#L182}{两类投影的分母条件}.}
+\begin{definition}[结晶 Selmer 模与正则扭转族]
+\label{def:regular-twist-family}
+\emitthmsource
+给定 $\ell$-进 Galois 表示格和系数模，在局部常值的 Galois $1$-上闭链中，施加指定的非分歧条件、归零条件以及 $\ell$ 上方的结晶线性关系，所得子模称为结晶 Selmer 模（\emph{crystalline Selmer module}）. 这里的结晶关系取自相应分解群上整结晶上闭链所满足的线性关系. 其局部上同调背景见 Bloch--Kato~\cite[\S~3]{BlochKato1990}.
+若对每个素数 $\ell$ 及 $\ell$-进同构 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_\ell$ 均指定一个 $m$-重扭转 $\theta_\iota$，且满足下述条件，则称扭转族 $(\theta_\iota)$ 为正则扭转族（\emph{regular family of twists}）：
+\begin{itemize}
+\item 每个 $\theta_\iota$ 的扭转模范数与相应的 $\ell$ 互素. 固定 $1\le j\le m$、分歧临界对 $p$ 及符号 $s=\pm1$ 后，部分 $L$ 值的逆比 $\bigl(\operatorname{ratio}_p(\theta_\iota^j,s)^{-1}\bigr)_\iota$ 的高度至多为 $x_1$.
+\item 对每个 $1\le j\le m$，存在一族局部对数预算 $(\gamma_\ell)_\ell$，对任意有限素数集 $T$ 均满足 $\sum_{\ell\in T}\gamma_\ell\le B/(mk)$. 在每个 $\iota$ 处，以 $\gamma_\ell$ 为预算，$\theta_\iota^j$ 同时满足引理~\ref{lem:c-local-twist} 中的两项分母条件：单步好形式提升像上的清分母算子行列式界，以及主临界对的秩一提升直线上测试形式的投影配对界.
+\end{itemize}
+\end{definition}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/TwistingTheorem.lean}{185}.}
+\begin{lemma}[将抽象 Selmer 长度界传递至结晶条件]
+\label{lem:c-selmer-base-change}
+\emitthmsource
+固定容许数据 $D$、素数 $\ell$ 以及 $E$ 的绝对 Galois 群 $G_E$. 分别记 $S_\ell$、$S_M$ 与 $S_0$ 为 $\ell$、$M=p_0p_1$ 与 $\ell MN$ 上方的位集.
+设 $T$ 是关于 $S_0$ 的 Selmer 数据（\emph{Selmer datum}），其 $\mathcal O$-格给出表示 $R$ 的模型 $\rho_T$，非分歧条件的例外位集恰为 $S_\ell\cup S_M$，局部测试关系恰为 $\rho_T$ 在 $S_\ell$ 上的结晶关系. 记 $\gamma$ 为 $T$ 的归零条件所用的惯性元，满足 $\rho_T(\gamma)=\zeta I$ 且 $\zeta-1$ 为单位.
+令 $Q$ 为 $S_0$ 的辅助位集，即各位的范数均为素数、$Q$ 与 $\bar Q$ 不交且二者皆避开 $S_0$.
+设 $\psi$ 由模 $Q$ 的 idèle 类特征沿 $x\mapsto x/\bar x$ 诱导，且在 $S_\ell$ 中各位的分解群上平凡. 若对所有充分大的系数环 $\mathcal O'\supseteq\mathcal O$，抽象扭转 Selmer 模 $\mathrm{Sel}_Q(T,\psi;\mathcal O')$ 的归一化长度均至多为 $b$，则对所有充分大的 $\mathcal O'$，存在 $\psi R$ 的格，使得 $\gamma$ 在其上的作用仍为 $\zeta I$，且以 $\operatorname{Frac}(\mathcal O')/\mathcal O'$ 为系数的结晶 Selmer 模（\emph{crystalline Selmer module}）的归一化长度至多为 $b$. 此结晶 Selmer 模在 $S_\ell\cup S_M\cup Q\cup\bar Q$ 之外非分歧，满足 $S_\ell$ 上的结晶关系，并在 $\gamma$ 处取零. 此处长度按 $\mathcal O'/\ell$ 的长度为 $1$ 归一化.
+\end{lemma}
+\begin{proof}
+取满足假设的 $\mathcal O'$，将 $\rho_T$ 扩张系数环至 $\mathcal O'$ 后乘以 $\psi$，记所得格表示为 $\rho'$.
+由于 $\gamma$ 位于 $S_0$ 中某个位的惯性群内，而该位处于 $Q\cup\bar Q$ 之外，故 $\psi(\gamma)=1$，从而 $\rho'(\gamma)=\zeta I$，且 $\zeta-1$ 在系数扩张后仍为单位.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L170}{特殊惯性元素的作用}.}
+
+下面比较结晶关系. 固定 $w\mid\ell$. 因 $\psi$ 在 $w$ 的分解群上平凡，$\rho'$ 在该分解群上恰为 $\rho_T$ 的标量扩张，故对任意 $\mathcal O$-线性泛函 $L\colon\mathcal O'\to\mathcal O$，逐坐标作用的 $L$ 均为等变映射. 局部结晶上闭链在等变线性映射下仍保持结晶性. 于是，若 $z$ 为 $\rho'$ 的结晶上闭链，$R_0$ 为 $\rho_T$ 的结晶关系，则扩张后的关系 $R_0'$ 在 $z$ 处的取值满足
+\[
+ L\bigl(R_0'(z)\bigr)=R_0(L\circ z)=0
+\]
+逐坐标成立. 因为 $\mathcal O'$ 是离散赋值环 $\mathcal O$ 上的有限生成无挠模，故 $\mathcal O'$ 为有限自由 $\mathcal O$-模，从而上述线性泛函足以分离向量，得 $R_0'(z)=0$. 这表明原结晶关系经扩张后均包含于新的结晶关系集中；而归零关系 $z(\gamma)=0$ 在扩张后保持不变.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L73}{结晶关系的系数扩张}.}
+
+两个 Selmer 模使用相同的例外位集 $S_\ell\cup S_M\cup Q\cup\bar Q$ 和可除系数模. 结晶 Selmer 模满足的局部关系包含抽象扭转 Selmer 模施加的全部关系，故前者是后者的子模，其归一化长度也至多为 $b$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L153}{Selmer 模关系与长度的单调性}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/TwistingTheorem.lean}{239}.}
+\begin{lemma}[所选素数的比值赋值预算]
+\label{lem:c-selmer-level-prime-loss}
+\emitthmsource
+固定容许数据与素数 $\ell$. 记 $G_0$ 为各所选位 $w$ 处 $|\mathrm{GL}_{r_0t}(\mathbf k_w)|$ 之积，$f$ 为无穷位数. 令
+\[
+ c=(4f+3)r_0 v_\ell(G_0),\qquad e_\ell=c+2^{-\ell}.
+\]
+此处正整数上的赋值按 $v_\ell(\ell)=1$ 归一化. 则对两个主层素数 $p_i$ 中的每一个，皆有
+\[
+ 4v_\ell(p_i-1)+2^{-\ell}\le e_\ell .
+\]
+\end{lemma}
+\begin{proof}
+在 $p_i$ 上方任取一个所选位 $w$，其剩余域 $\mathbf k_w$ 恰有 $p_i$ 个元素. 将 $\mathbf k_w^\times$ 作为仅在第一坐标作乘法的对角矩阵嵌入 $\mathrm{GL}_{r_0t}(\mathbf k_w)$. 由 Lagrange 定理，$p_i-1$ 整除该群的阶，进而整除 $G_0$. 又由 $f,r_0\ge1$ 可得 $4\le(4f+3)r_0$. 取 $\ell$-进赋值、两边同乘 $4$ 并加上 $2^{-\ell}$，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/GaloisRepresentations/AttachedRepresentations.lean\#L217}{主层素数幂减一的赋值界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/TwistingTheorem.lean}{291}.}
+\begin{lemma}[同时选取 Selmer 格与挠系数层]
+\label{lem:c-selmer-torsion-level}
+\emitthmsource
+固定 $D,\ell,\iota\colon\mathbb C\simeq\overline{\mathbb Q}_\ell$ 以及一族有限个满足主分量条件的表示 $(R_i)_i$，记其秩为 $n_i\le r_0$. 分别记 $S_\ell,S_M,S_0$ 为 $\ell$、$M$、$\ell MN$ 上方的位集. 在 $S_M\setminus S_\ell$ 中任取一个所选位 $w_0$，令 $g_0$ 为其驯惯性生成元. 记
+\[
+ c=(4f+3)r_0v_\ell(G_0).
+\]
+则存在同一个系数环 $\mathcal O$，使得每个 $R_i$ 均具有关于 $(S_0,g_0)$ 的 Selmer 格，其非分歧例外集为 $S_\ell\cup S_M$，在 $S_\ell$ 上的局部关系为结晶关系，且归一化误差满足 $\beta_i\le c$. 此外，记 $a=\operatorname{length}_{\mathcal O}(\mathcal O/\ell)$，则有
+\[
+ \beta_i+1<c+2,\qquad
+ \#\mathbf k_{\mathcal O}>2n_i(c+2)a+1
+ \quad\hbox{对每个 }i.
+\]
+\end{lemma}
+\begin{proof}
+对每个固定的 $R_i$，主分量的格构造定理表明，对所有充分大的 $\mathcal O$ 均存在所需的 Selmer 数据；此处系数环取为 $\overline{\mathbb Q}_\ell$ 中有限 Galois 扩张的整数环，并按包含关系排序. 该定理给出的误差由全局项、$S_M\setminus S_\ell$ 中各位的局部项，以及对应于 $g_0$ 与其复共轭之逆的两个行列式项组成.
+其中全局项至多为 $n_i v_\ell(G_0)$；局部项至多有 $4f$ 项，每项亦至多为 $n_i v_\ell(G_0)$；两个行列式项也各自以同一量为上界. 由此可得
+\[
+ \beta_i\le (4f+3)n_i v_\ell(G_0)\le c .
+\]
+需要指出的是，该构造中的归零惯性元未必等同于作为首个辅助输入的 $g_0$；它在远离 $\ell$ 的主层惯性群上作用为标量，且该标量的平方与 $1$ 之差为单位.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/MainSummands.lean\#L155}{全局项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/MainSummands.lean\#L237}{局部项与首位的行列式项}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/MainSummands.lean\#L294}{格及结晶局部条件的构造}.}
+
+因指标集有限，可先选取共同的系数环下限，使全部格构造同时有效. 固定该下限后，再增大系数域的非分歧次数（例如与充分大次数的非分歧扩张作合成域），在保持绝对分歧指数 $a$ 不变的同时，使剩余域的阶大于 $2r_0(c+2)a+1$. 由 $n_i\le r_0$ 及
+$\operatorname{length}_{\mathcal O}(\mathcal O/\ell^{c+2})=(c+2)a$ 可知，所得 $\mathcal O$ 满足全部剩余域条件. 最后，由 $\beta_i\le c$ 直接得 $\beta_i+1<c+2$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/LargeResidueField.lean\#L125}{任意大的剩余域}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/LValueSystems.lean}{384}.}
+\begin{lemma}[由 Stickelberger 特化控制临界值之比]
+\label{lem:c-selmer-ratio-transfer}
+\emitthmsource
+固定容许数据、素数 $\ell$ 及 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_\ell$. 令 $w_0$ 为不在 $\ell$ 上方的所选位，$g_0$ 为其驯惯性生成元，$S_0$ 为 $\ell MN$ 上方的位集. 设 $p=(\nu,z)$ 为分歧临界对（\emph{ramified critical pair}），$s=\pm1$. 则存在关于 $(S_0,g_0)$ 的 Stickelberger 系统（\emph{Stickelberger system}），其各模群环元素记为 $\Theta_Q$，误差记为 $\beta_Y$，且具有如下性质：
+设 $Q$ 为 $S_0$ 的辅助位集，$\xi$ 为模 $Q$ 的扭转，且 $\xi^{-1}$ 对应的 Galois 特征 $\psi$ 由模 $Q$ 的 idèle 类特征沿 $x\mapsto x/\bar x$ 诱导，并在 $\ell$ 上方各位的分解群上平凡. 则对任意 $c\in[0,\infty]$，有
+\[
+ v_\ell^+(\psi(\Theta_Q))\le\beta_Y+c
+ \quad\Longrightarrow\quad
+ v_\ell^+\bigl(\iota(\operatorname{ratio}_{p}(\xi,s))\bigr)
+ \le4v_\ell(\mathrm Nw_0-1)+c .
+\]
+其中 $v_\ell^+(x)=\max\{0,v_\ell(x)\}$，并约定 $v_\ell^+(0)=+\infty$. 上述比值为 $|L(z,(\nu\xi^s)^{-1})|/|L(z,\nu^{-1})|$ 的部分 $L$-值版本，其中分子去掉所选位、$Q$ 及其共轭位的 Euler 因子，分母去掉所选位及其共轭位的 Euler 因子.
+\end{lemma}
+\begin{proof}
+取分歧临界对的整扭转测度. 当 $z=1$ 时，其 Euler 指数集为 $\{0,1\}$，记 $m_0=1$；否则 Euler 指数集为 $\{z\}$，记 $m_0=0$. 该测度在扭转 $\xi^s$ 处的取值等于它在平凡特征处的非零取值乘以 $\mathrm N(Q)^{m_0}\operatorname{ratio}_p(\xi,s)^{m_0+1}$.
+经 $\iota$ 转移后，对模 $Q$ 的有限类群作 Fourier 展开，便将各特征处的取值表示为群环元素 $\Theta_Q$ 的取值；测度的整性保证了 $\Theta_Q$ 具有整系数. 添入一个辅助位时的测度关系恰对应群环上的 Euler 范数关系，所用特征为 $\nu^{-s}$ 之基变换的 $\ell$-进 Galois 实现，记作 $\omega$. 由此即得所需的 Stickelberger 系统.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/ClassSums.lean\#L369}{分歧临界对的整扭转测度}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/LValueSystems.lean\#L185}{特征值的群环实现}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/LValueSystems.lean\#L255}{增加模位时的 Euler 关系}.}
+
+记 $x_0=1(\Theta_\varnothing)$，$x=\psi(\Theta_Q)$，$u=\iota(\operatorname{ratio}_p(\xi,s))$，则 $x_0$ 非零且为整元. 因辅助模避开 $\ell$ 上方的位，$\mathrm N(Q)$ 是 $\ell$-进单位，故
+\[
+ |x|_\ell=|x_0|_\ell |u|_\ell^{m_0+1}.
+\]
+又因 $\omega(g_0)$ 是非平凡的 $(\mathrm Nw_0-1)$ 次单位根，有 $v_\ell^+(\omega(g_0)-1)\le v_\ell(\mathrm Nw_0-1)$. 这一点亦可由多项式 $1+X+\cdots+X^{a-1}$（其中 $a=\mathrm Nw_0-1$）在 $X=\omega(g_0)$ 处取零而在 $X=1$ 处取 $a$ 看出，因两值之差被 $\omega(g_0)-1$ 整除. 系统误差等于 $v_\ell(x_0)$ 加上每个 Euler 指数所贡献的 $2v_\ell^+(\omega(g_0)-1)$；由于 Euler 指数至多有两个，故\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/LValueSystems.lean\#L236}{首位特征值的距离}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/LValueSystems.lean\#L312}{系统误差与特化的模长}.}
+\[
+ \beta_Y\le v_\ell(x_0)+4v_\ell(\mathrm Nw_0-1).
+\]
+
+若 $|u|_\ell\ge1$，则 $v_\ell^+(u)=0$，结论显然成立；否则 $u$ 为整元，上述模长等式给出 $v_\ell^+(x)=v_\ell(x_0)+(m_0+1)v_\ell^+(u)$（在 $u=0$ 时按广义实数理解）. 应用假设，消去有限量 $v_\ell(x_0)$，再结合 $m_0+1\ge1$，即得结论.
+\end{proof}
+
+\section{单位根特化与 Gauss 赋值}
+\label{sec:c-gauss-valuation}
+
+固定素数 $\ell$，记 $\mathcal O$ 为 $\overline{\mathbb Q}_\ell$ 的赋值环，按 $v(\ell)=1$ 归一化，并约定 $v(0)=+\infty$. 对多项式 $g(Y)=\sum_i b_iY^i$ 和有理半径 $\rho\ge0$，定义 Gauss 赋值（\emph{Gauss valuation}）~\cite{BGR1984}
+\[
+ w_\rho(g)=\min_i\bigl(v(b_i)+i\rho\bigr).
+\]
+对 $h\ge1$，令 $\rho_h=1/\varphi(\ell^h)$. 因特征 $\ell$ 中有 $X^{\ell^h}-1=(X-1)^{\ell^h}$，本原 $\ell^h$ 次单位根 $\zeta$ 在剩余域中的约化为 $1$.
+若 $a$ 与 $\ell$ 互素，则 $(1-\zeta^a)/(1-\zeta)$ 的约化等于 $a$，从而为单位；故各本原 $\ell^h$ 次单位根对应的 $v(\zeta-1)$ 均相等. 结合 $\Phi_{\ell^h}(1)=\ell$，便得 $v(\zeta-1)=\rho_h$. 由 $\varphi(\ell^h)=(\ell-1)\ell^{h-1}$ 可知，各 $\rho_h$ 互不相同且趋于零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/RootsOfUnity.lean\#L38}{本原根的赋值}.}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/General/NumberTheory/GaussValuation.lean}{358}.}
+\begin{lemma}[Gauss 赋值的按根分解]
+\label{lem:c-gauss-valuation-roots}
+\emitthmsource
+设 $g$ 为 $\mathcal O[Y]$ 中的非零多项式，记 $w_\rho$ 为 Gauss 赋值（\emph{Gauss valuation}）. 按重数对 $g$ 的全部整根 $\alpha$ 求和，则有
+\[
+ w_\rho(g)=w_0(g)+\sum_{\alpha\ \text{整}}\min\bigl(v(\alpha),\rho\bigr).
+\]
+若 $y$ 为整元，还满足
+\[
+ v(g(y))=w_0(g)+\sum_{\alpha\ \text{整}}v(y-\alpha).
+\]
+\end{lemma}
+\begin{proof}
+先取 $t\in\overline{\mathbb Q}_\ell$ 满足 $v(t)=\rho$，则 $w_\rho(g)$ 恰为 $g(tY)$ 各项系数的最小赋值.
+将任意两个非零多项式分别除以各自具有最小赋值的系数，即得两个在剩余域上约化非零的整系数多项式；其约化之积仍非零，故最小系数赋值对乘积具有可加性，从而 $w_\rho$ 对乘积亦具有可加性.
+在代数闭域中将 $g$ 分解为 $g=a\prod_\alpha(Y-\alpha)$，便得 $w_\rho(g)=v(a)+\sum_\alpha\min(v(\alpha),\rho)$.
+若 $v(\alpha)<0$，则该根对任意 $\rho\ge0$（包括 $\rho=0$）的贡献均为 $v(\alpha)$；其余整根对 $\rho=0$ 的贡献为零，由此即得第一式.
+对整元 $y$，每个非整根均满足 $v(y-\alpha)=v(\alpha)$，将其代入 $v(g(y))=v(a)+\sum_\alpha v(y-\alpha)$ 即得第二式（当 $g(y)=0$ 时两端同为 $+\infty$）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/GaussValuation.lean\#L361}{按整根分解的 Gauss 赋值}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/RootsOfUnity.lean}{201}.}
+\begin{lemma}[在分圆半径上控制同半径根的重数]
+\label{lem:c-root-radius-count}
+\emitthmsource
+设 $g\in\mathcal O[Y]$ 为非零多项式. 对有理数 $\rho>0$ 与整数 $h_0\ge1$，记 $\mathcal H=\{h:1\le h\le h_0,\ \rho_h\le\rho\}$.
+设 $\delta>0$、$B\ge0$，且满足 $B<\delta\sum_{h\in\mathcal H}(h+1)^{-1}$.
+若 $w_\rho(g)\le B$，则存在 $h\in\mathcal H$，使得 $g$ 的赋值为 $\rho_h$ 的根之重数和 $n_h$ 满足
+\[
+ n_h\rho_h\le\frac{\delta}{h+1}.
+\]
+\end{lemma}
+\begin{proof}
+每个整根的赋值至多与一个 $\rho_h$ 相等；若该赋值恰为某个 $h\in\mathcal H$ 对应的 $\rho_h$，则它在 Gauss 赋值分解中的贡献恰为 $\rho_h$.
+于是，由引理~\ref{lem:c-gauss-valuation-roots} 可得 $\sum_{h\in\mathcal H}n_h\rho_h\le w_\rho(g)\le B$.
+若每个 $h\in\mathcal H$ 皆满足 $n_h\rho_h>\delta/(h+1)$，则对 $h$ 求和即与假设矛盾.
+另一方面，由于 $\rho_h\to0$，对固定的 $\rho>0$，当 $h_0\to\infty$ 时 $\mathcal H$ 包含调和级数的一整个尾部；因此对任意给定的 $B$ 与 $\delta>0$，均存在满足上述起始条件的 $h_0$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/RootsOfUnity.lean\#L97}{与多项式无关选择阶数上界}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/RootsOfUnity.lean}{294}.}
+\begin{lemma}[一元多项式在单位根处的取值]
+\label{lem:c-root-one-variable}
+\emitthmsource
+沿用引理~\ref{lem:c-root-radius-count} 的假设，并设 $\delta<1$.
+则存在 $h\in\mathcal H$ 与本原 $\ell^h$ 次单位根 $\zeta$，使得
+\[
+ v(g(\zeta-1))\le w_{\rho_h}(g)+\delta.
+\]
+\end{lemma}
+\begin{proof}
+由引理~\ref{lem:c-root-radius-count} 选取 $h$，并设 $R_h$ 为 $g$ 中所有赋值为 $\rho_h$ 的根组成的多重集. 对任意 $\alpha\in R_h$，$1+\alpha$ 为单位；考察首一多项式
+\[
+ F_\alpha(Y)=(1+\alpha+Y)^{\ell^h}-1 .
+\]
+其一次项系数的赋值为 $h$，故 $w_1(F_\alpha)\le h+1$.
+由全部本原 $\ell^h$ 次单位根平移所得的数 $\zeta-1-\alpha$ 均为 $F_\alpha$ 互异的整根.
+由引理~\ref{lem:c-gauss-valuation-roots} 及各项非负性，有
+\[
+ \sum_{\zeta\ \text{本原}}\min\bigl(v(\zeta-1-\alpha),1\bigr)\le h+1.
+\]
+对 $\alpha\in R_h$ 求和，再除以本原单位根的个数 $\varphi(\ell^h)=\rho_h^{-1}$，可知存在本原根 $\zeta$ 满足
+\[
+ \sum_{\alpha\in R_h}\min\bigl(v(\zeta-1-\alpha),1\bigr)
+ \le n_h\rho_h(h+1)\le\delta.
+\]
+因 $\delta<1$，上述和式中每个截断项的实际赋值均小于 $1$，从而可以去掉截断.
+令 $y=\zeta-1$，则 $v(y)=\rho_h$.
+对任意满足 $v(\alpha)\ne\rho_h$ 的根 $\alpha$，超度量等式给出 $v(y-\alpha)=\min(v(\alpha),\rho_h)$，故其对 $v(g(y))$ 与 $w_{\rho_h}(g)$ 的贡献相同；其余根的贡献之差至多为上述和式，结合引理~\ref{lem:c-gauss-valuation-roots} 的整根分解式即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/RootsOfUnity.lean\#L222}{一次系数控制截断赋值和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/RootsOfUnity.lean\#L146}{只有同半径的根影响取值误差}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/RootsOfUnity.lean}{370}.}
+\begin{lemma}[使有限族多项式共用单个坐标]
+\label{lem:c-root-one-coordinate}
+\emitthmsource
+设 $P_i$ 为有限族整系数多项式，$x_i$ 为一组整点.
+给定坐标指标 $j$ 与 $\rho>0$，设对每个 $i$ 均有 $v(x_{ij})\ge\rho$.
+假定 $\sum_i v(P_i(x_i))\le B$，且 $\delta,h_0$ 满足引理~\ref{lem:c-root-one-variable} 的条件.
+则可将各 $x_i$ 的第 $j$ 个坐标统一替换为同一个 $\zeta-1$（其中 $\zeta^{\ell^{h_0}}=1$ 且 $v(\zeta-1)\le\rho$），使所得点 $y_i$ 满足
+\[
+ \begin{aligned}
+ v(P_i(y_i))&\le v(P_i(x_i))+\delta &&\text{对每个 }i,\\
+ \sum_i v(P_i(y_i))&\le\sum_i v(P_i(x_i))+\delta.
+ \end{aligned}
+\]
+\end{lemma}
+\begin{proof}
+将各 $x_i$ 除第 $j$ 个坐标外的其余分量代入 $P_i$，得到一元多项式 $g_i(Y)$.
+由 $v(x_{ij})\ge\rho$ 及超度量三角不等式，有 $w_\rho(g_i)\le v(P_i(x_i))$.
+Gauss 赋值对乘积可加，故 $w_\rho(\prod_i g_i)=\sum_i w_\rho(g_i)\le B$. 对该乘积应用引理~\ref{lem:c-root-one-variable}，可取单位根 $\zeta$ 满足 $v(\zeta-1)=\rho_h\le\rho$. 展开乘积的赋值得
+\[
+ \sum_i v(g_i(\zeta-1))\le\sum_i w_{\rho_h}(g_i)+\delta.
+\]
+另一方面，对每个 $i$ 均有 $v(g_i(\zeta-1))\ge w_{\rho_h}(g_i)$，且 $w_{\rho_h}(g_i)\le w_\rho(g_i)\le v(P_i(x_i))$.
+有限总界保证了各项取值皆有限，因而可以逐项作差：由于若干非负差值之和不超过 $\delta$，其中每一项亦不超过 $\delta$.
+由此即得单个估计与总和估计；又因 $\ell^h\mid\ell^{h_0}$，证毕.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/RootsOfUnity.lean}{469}.}
+\begin{lemma}[有限族多项式的共同单位根特化]
+\label{lem:c-root-simultaneous}
+\emitthmsource
+固定变量数上界 $s_0$、有理半径 $\rho>0$、总赋值上界 $B\ge0$ 及 $\varepsilon>0$.
+存在仅依赖于这些数据与 $\ell$ 的 $h_0$，具有如下性质：
+给定至多含 $s_0$ 个变量的有限族整系数多项式 $(P_i)_i$ 及其各自的整点 $x_i$，若所有坐标的赋值均至少为 $\rho$ 且 $\sum_i v(P_i(x_i))\le B$，则存在一组为所有多项式共用的单位根 $(\zeta_j)_j$，其阶整除 $\ell^{h_0}$，满足 $v(\zeta_j-1)\le\rho$ 以及
+\[
+ v\bigl(P_i((\zeta_j-1)_j)\bigr)\le v(P_i(x_i))+\varepsilon\qquad\text{对每个 }i .
+\]
+\end{lemma}
+\begin{proof}
+取 $\delta=\min(1,\varepsilon)/(s_0+2)$，则 $0<\delta<1$.
+由调和级数的发散性，预先选取 $h_0$ 使得 $B+1<\delta\sum_{1\le h\le h_0,\,\rho_h\le\rho}(h+1)^{-1}$.
+下面按任意次序逐坐标应用引理~\ref{lem:c-root-one-coordinate}.
+每一步中，尚未替换的坐标仍与原坐标相同，故其赋值依然至少为 $\rho$；经过 $a$ 步后，全部多项式取值的赋值总和至多为 $B+a\delta\le B+1$，因此每一步均可沿用同一个 $h_0$，且不会改动已经替换的坐标.
+对任意 $i$，总损失至多为 $s_0\delta\le\varepsilon$.
+若无变量，则取空元组，结论显然成立.
+\end{proof}
+
+\section{有限系数 Selmer 条件与同步扭转}
+\label{sec:c-selmer-synch}
+
+先在有限系数层上把 Selmer 条件写成线性方程，再用矩阵子式的赋值控制解模的长度. 这样便可与 Stickelberger 群环元素的取值一起应用上一节的共同特化.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/Line.lean}{81}.}
+\begin{lemma}[由挠层控制可除系数 Selmer 模]
+\label{lem:c-selmer-torsion-to-divisible}
+\emitthmsource
+设 $O'$ 为离散赋值环，分式域为 $F'$，极大理想生成元为 $\pi$.
+固定一个格表示及一组 Selmer 线性局部条件.
+对非零元 $a\in O'$，分别记 $S_a$ 与 $S_{\rm div}$ 为系数取 $O'/(a)$ 与 $F'/O'$ 的相应局部常值 Selmer 上闭链模.
+若 $\operatorname{len}_{O'}S_a<\operatorname{ord}_\pi(a)$，则 $\operatorname{len}_{O'}S_{\rm div}\le\operatorname{len}_{O'}S_a$.
+\end{lemma}
+\begin{proof}
+映射 $x\mapsto x/a$ 给出同构 $O'/(a)\to (F'/O')[a]$.
+该映射逐坐标与表示作用、上闭链方程及全部局部条件相容，因而诱导同构 $S_a\simeq S_{\rm div}[a]$.
+$S_{\rm div}$ 中的每个上闭链在紧 Galois 群上皆局部常值，故只取有限个值；各坐标值存在公分母，因此该上闭链被 $\pi$ 的某个幂零化.
+若存在精确阶为 $\pi^b$（其中 $b>\operatorname{ord}_\pi(a)$）的上闭链，则将其乘以 $\pi^{b-\operatorname{ord}_\pi(a)}$ 所得元素会在 $S_{\rm div}[a]$ 中生成长度为 $\operatorname{ord}_\pi(a)$ 的循环子模，与长度假设矛盾.
+由此可见 $a$ 零化整个 $S_{\rm div}$，故 $S_{\rm div}=S_{\rm div}[a]$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Line.lean\#L65}{上闭链的公共分母与挠层嵌入}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/OneSystem.lean}{300}.}
+\begin{lemma}[挠层 Selmer 方程的公共有限 Galois 商]
+\label{lem:c-selmer-finite-quotient}
+\emitthmsource
+设 $G_E$ 为数域 $E$ 的绝对 Galois 群，$H$ 为开子群，$S$ 为有限素位集，$m\ge1$.
+固定系数环 $\Lambda$、矩阵函数 $\rho(g)$ 及一组 Selmer 线性关系.
+则存在系数在 $\Lambda$ 中且具有有限列的矩阵 $A$，使得下述性质对所有特化 $e:\Lambda\to O'$ 及所有被 $m$ 零化的 $O'$-模 $B$ 同时成立：
+若 $e(\rho)$ 在 $H$ 上对 $B^n$ 的作用平凡，则以 $B^n$ 为系数、在 $S$ 外非分歧且满足指定线性关系的局部常值上闭链模，同构于 $e(A)$ 在 $B$-坐标向量上的核.
+\end{lemma}
+\begin{proof}
+对任意此类上闭链 $z$，因 $H$ 的作用平凡，$z|_H$ 为加法同态.
+记 $E_H$ 为 $H$ 的不动域，$S_H$ 为 $S$ 上方的位集.
+将 $z|_H$ 与任意加法同态 $\chi:B^n\to\mathbb Z/m$ 复合，即得 $H$ 到 $\mathbb Z/m$ 且在 $S_H$ 外非分歧的连续同态.
+由类域论可知此类同态只有有限多个：在允许分歧的有限位上，局部单位群模 $m$ 次幂有限，而理想类群亦有限.
+取所有此类同态之核的交，再取其在 $G_E$ 中的正规核，便得仅依赖于 $H,m,S$ 的开正规子群 $H_0\subseteq H$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/OneSystem.lean\#L273}{统一消去上闭链的开正规子群}.}
+
+另一方面，到 $\mathbb Z/m$ 的同态能分离任意被 $m$ 零化的 Abel 群中的点：事实上，可将任一非零元素生成的循环子群嵌入 $\mathbb Q/\mathbb Z$，再利用可除群的内射性将该映射延拓至整个群，延拓后的像必落入 $(\mathbb Q/\mathbb Z)[m]$.
+将此应用于 $z(h)$，可知对一切 $h\in H_0$ 皆有 $z(h)=0$.
+上闭链恒等式随之给出 $z(gh)=z(g)$，故所有此类上闭链均可看作有限商群 $G_E/H_0$ 上的向量值函数.
+
+以 $(gH_0,i)$（其中 $1\le i\le n$）作为列指标，将上闭链方程 $z(gu)-z(g)-\rho(g)z(u)=0$、禁止分歧位上的条件 $z(g)=0$ 以及指定的线性关系逐坐标写为矩阵的行.
+所得矩阵虽可有无穷多行，但每一行仅涉及上述有限个列坐标.
+经任意特化 $e$ 后，$e(A)$ 的核恰由这些关系所刻画.
+将核向量拉回至 $G_E$ 即得局部常值上闭链，反向则取其在陪集上的值，二者互为逆映射且均为线性的.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/OneSystem.lean\#L306}{统一方程矩阵与核的同构}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/Lib/General/Algebra/SharpMinors.lean}{258}.}
+\begin{lemma}[以最高阶子式刻画商模上的矩阵核长度]
+\label{lem:c-selmer-minors-length}
+\emitthmsource
+设 $A$ 为系数在 $\Lambda$ 中、列数为 $k$ 的矩阵（允许有无穷多行），$a\in\Lambda$.
+将 $a I_k$ 的各行补入 $A$，取所得增广矩阵的全部 $k$ 阶子式.
+对任意到离散赋值环 $O'$ 的特化 $e$，若 $e(a)\ne0$，则 $e(A)$ 在 $(O'/e(a))^k$ 上的核长度等于上述所有子式的最小赋值.
+\end{lemma}
+\begin{proof}
+在 $O'$ 中令 $L$ 为增广矩阵的行所张成的子模，并置 $M=O'^k/L$.
+因 $e(a)I_k$ 的行均属于 $L$，$M$ 被 $e(a)$ 零化.
+将列向量视作线性泛函，则矩阵方程恰等价于该泛函在 $L$ 上为零，从而矩阵的核同构于 $\operatorname{Hom}_{O'}(M,O'/(e(a)))$.
+设 $\pi$ 为 $O'$ 的一致化元，记 $b=\operatorname{ord}_\pi(e(a))$.
+对有限直和分解 $M\simeq\bigoplus_i O'/(\pi^{d_i})$，有 $0\le d_i\le b$，且 $\operatorname{Hom}_{O'}(O'/(\pi^{d_i}),O'/(\pi^b))\simeq(O'/\pi^b)[\pi^{d_i}]$ 的长度为 $d_i$.
+因此核长度恰等于 $\operatorname{len}_{O'} M$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Algebra/SharpMinors.lean\#L263}{矩阵核长度的最高阶子式最小赋值公式}.}
+
+因 $O'^k$ 是 Noether 模，$L$ 可由增广矩阵的有限多行生成.
+将此有限矩阵化为 Smith 标准形，所得非零对角元为 $\pi^{d_i}$ 乘以单位.
+全部 $k$ 阶子式生成的理想在可逆行列变换下不变，而在 Smith 标准形下恰由 $\prod_i\pi^{d_i}$ 生成.
+补回其余各行并不改变子式理想，因那些行皆为已选行的线性组合，利用行列式的多重线性性即可看出.
+故该理想的赋值为 $\sum_i d_i$，恰等于核长度.
+当 $k=0$ 时，空子式为 $1$，核长度为零.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/OneSystem.lean}{453}.}
+\begin{lemma}[在指定点达到 Selmer 长度的多项式]
+\label{lem:c-selmer-sharp-polynomial}
+\emitthmsource
+设 $\rho$ 模 $\ell^{m_0}$ 局部常值，$\lambda_j:G_E\to\mathbb Z/q$ 为有限族局部常值同态.
+设允许分歧位集有限，并给定一组线性局部关系.
+在变量 $(X_j)_j$ 上考察扭转矩阵 $\prod_j(1+X_j)^{\lambda_j(g)}\rho(g)$，其中指数取 $0,\ldots,q-1$ 中的代表元.
+对每个整点 $x$ 以及到特征零离散赋值环 $O'$ 的系数特化，记 $S(x)$ 为以 $O'/\ell^{m_0}$ 为系数的相应挠层 Selmer 方程模.
+给定某一特化及一点 $x_0$，则存在整多项式 $P$，满足
+\[
+ v(P(x_0))=\operatorname{len}S(x_0),
+ \qquad
+ \operatorname{len}S(x)\le v(P(x))\quad\text{对其他一切特化和整点}.
+\]
+此处赋值与长度均按所用离散赋值环的一致化元计量.
+\end{lemma}
+\begin{proof}
+取各 $\lambda_j$ 的核与 $\rho$ 模 $\ell^{m_0}$ 的核之交.
+该交为开子群，且泛扭转矩阵在该子群上对任一特化后的 $O'/\ell^{m_0}$-坐标模作用皆平凡.
+由引理~\ref{lem:c-selmer-finite-quotient}，可用同一个整多项式矩阵 $A$ 同时表示所有 $S(x)$，即每个 $S(x)$ 皆为 $A(x)$ 在挠系数上的核.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/OneSystem.lean\#L405}{泛扭转矩阵的统一特化}.}
+
+将 $\ell^{m_0}I$ 的各行补入 $A$，得到一族整多项式子式.
+因每个特化环的特征为零，$\ell^{m_0}$ 在其中非零.
+由引理~\ref{lem:c-selmer-minors-length}，$\operatorname{len}S(x)$ 等于这些子式在 $x$ 处的最小赋值.
+选取一个在 $x_0$ 处达到最小值的子式作为 $P$；在任意其他点处，同一子式的赋值至少为该点的最小赋值，由此即得两条结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/OneSystem.lean\#L440}{在指定点从子式中取达到下界的一项}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/Untied.lean}{491}.}
+\begin{lemma}[解除辅助位绑定的 Selmer 长度损失]
+\label{lem:c-selmer-untied-length}
+\emitthmsource
+沿辅助位绑定直线取参数 $y$，使首位 $w_0$ 的坐标为 $y$，其余各位坐标为 $a_wy$. 将系数经 $O\to O'$ 扩张至离散赋值环，在 $O'/\ell^M O'$ 挠层上考察扭转上闭链. 设原表示 $T$ 在辅助位及其共轭位的惯性群上模 $\ell^M$ 平凡，且当 $a_w\ne0$ 时，在相应的 Frobenius 元上亦模 $\ell^M$ 平凡. 假定只要 $y\mid u-1$，几何和 $\sum_{i<\ell^N}u^i$ 在挠层上即为零. 若 $\mathcal S$ 为满足原局部条件与线性关系的挠层 Selmer 模，$\mathcal S_0$ 为再附加各 $w\ne w_0$ 及其共轭位上的绑定条件
+\[
+ z(\gamma_w)=a_w z(\phi_w)
+\]
+所得的子模，则有
+\[
+ \operatorname{relLength}(\mathcal S,\mathcal S_0)
+ \le v\!\left(\prod_w\det\bigl((1+y)T(\phi_w)-I\bigr)\right).
+\]
+其中右侧采用离散赋值环的长度归一化，共轭位则取共轭逆的 Frobenius 元与驯惯性生成元.
+\end{lemma}
+
+\begin{proof}
+在辅助位的绑定选取下，扭转特征在 $\gamma_w$ 处取值为 $1+a_wy$，在 $\phi_w$ 处取值为 $1+y$. 记 $\Phi_w=(1+y)T(\phi_w)$（已将矩阵系数映入 $O'$）. 由驯关系 $\phi_w\gamma_w\phi_w^{-1}=\gamma_w^{q_w}$ 与上闭链公式可得
+\[
+ (\Phi_w-I)z(\gamma_w)=a_w y\,z(\phi_w).
+\]
+计算中右侧幂次引入的额外 $\ell^N$ 阶和为零，这由 $\ell^N\mid q_w-1$ 与几何和假设保证；共轭逆处的关系则由上闭链的逆元公式传递. 当 $a_w=0$ 时，显然有 $a_w(\Phi_w-I)z(\phi_w)=a_wy\,z(\phi_w)=0$；当 $a_w\ne0$ 时，由 $T(\phi_w)\equiv I\bmod\ell^M$ 亦得同一等式. 两式相减即知 $z(\gamma_w)-a_wz(\phi_w)$ 落入 $\Phi_w-I$ 的核中.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Untied.lean\#L378}{绑定方程的余项落在 Frobenius 核中}.}
+
+将这些差值组装为线性映射，其在 $\mathcal S$ 内的核恰为 $\mathcal S_0$，故相对长度至多为各 Frobenius 核长度之和. 若 $\Phi_w-I$ 的 Smith 标准形对角元为 $d_i$，则该核的长度为 $\sum_i\min(v(d_i),v(\ell^M))$，至多为 $v(\det(\Phi_w-I))$（行列式为零时右端取 $+\infty$）. 对各位求和即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Untied.lean\#L447}{差值映射和相对长度}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Untied.lean\#L505}{Frobenius 行列式乘积}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/Line.lean}{273}.}
+\begin{lemma}[将挠层长度多项式限制至辅助位直线]
+\label{lem:c-selmer-line-divisibility}
+\emitthmsource
+设 $T$ 为秩 $d$ 的 Selmer 格，$J$ 为已选的绑定辅助位集，首位为 $w_0$.
+记 $\lambda_w$ 为各位对应的模 $\ell^N$ Galois 特征，$a_w$ 为格 $T$ 对应的直线斜率，其中 $a_{w_0}=1$.
+对辅助位 $w\ne w_0$，绑定条件（\emph{tied local condition}）将该处驯惯性元 $\gamma_w$ 的上闭链值限定为 Frobenius 元 $\phi_w$ 上闭链值的 $a_w$ 倍，并对共轭位施加相应方程.
+设原挠层深度为 $m_0$，且在其他辅助位均保留绑定条件时，$T$ 的模 $\ell^{m_0}$ Selmer 长度至多为 $\beta$（此处长度以 $v(\ell)=1$ 归一化，即 $\operatorname{len}(O/\ell)=1$）.
+在绑定辅助位的剩余表示条件下，若 $0<r\le1$ 且 $m_0\le Nr$，则存在一元整多项式 $A$，满足 $v(A(0))\le\beta$，并具有如下性质：
+对任意满足 $v(y)\ge r$ 的 $y$，在 $x=(a_wy)_{w\in J}$ 处存在多项式 $P$，它在所有整点上均控制无绑定条件的挠层 Selmer 模长度，且满足
+\[
+ P(x)\mid A(y)B(y),\qquad
+ B(Y)=\prod_{g}\det\bigl((1+Y)T(g)-I\bigr),
+\]
+其中 $g$ 遍历各 $w\in J\setminus\{w_0\}$ 的 Frobenius 元及其共轭逆.
+\end{lemma}
+\begin{proof}
+记原有的局部条件为 $L$，附加上上述绑定方程后的条件为 $L_0$.
+对 $L_0$ 的挠层方程应用引理~\ref{lem:c-selmer-sharp-polynomial}，选取在原点取到精确长度的多项式 $F$；该引理保证 $F$ 在每个整点均控制相应的挠层长度.
+令 $A(Y)=F((a_wY)_w)$. 因原点处的长度即带绑定条件的未扭转长度，故有 $v(A(0))\le\beta$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/OneSystem.lean\#L459}{挠层方程的精确长度多项式}.}
+
+固定 $y$，在系数环中加入 $y$ 后，再对无绑定条件的挠层方程取精确长度多项式 $P$，使其在 $x=(a_wy)_w$ 处取到精确值.
+对于由 $(1+X_w)^{\lambda_w(g)}$ 扭转的挠层方程，即便整点参数尚非单位根，这些方程仍可定义 Selmer 取值模.
+此处所需的惯性阶几何和为 $\sum_{i=0}^{\ell^N-1}u^i$（其中 $y\mid u-1$）；由 $v(y)\ge r$ 及 $r\le1$ 可知，该几何和的赋值至少为 $Nr$，因而在模 $\ell^{m_0}$ 上为零.
+由引理~\ref{lem:c-selmer-untied-length}，无绑定条件的模 $S_L(x)$ 与 $S_{L_0}(x)$ 取交所损失的长度至多为 $v(B(y))$，该步用到了辅助位及其共轭位上的 Frobenius 方程，并将相应行列式的赋值相加.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/CoefficientInclusion.lean\#L87}{惯性的几何和}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Untied.lean\#L505}{去除绑定条件的局部长度损失}.}
+
+交模的长度至多为 $S_{L_0}(x)$ 的长度，而后者又由 $v(F(x))=v(A(y))$ 控制.
+两项相加，即得
+\[
+ v(P(x))=\operatorname{len}S_L(x)\le v(A(y))+v(B(y)).
+\]
+在离散赋值环的扩张中，长度与赋值按同一正因子归一化，因此上式等价于所求整除关系，且传递至 $\mathcal O$ 中依然成立.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/Line.lean}{372}.}
+\begin{lemma}[直线上的共同低赋值点]
+\label{lem:c-selmer-line-point}
+\emitthmsource
+沿用引理~\ref{lem:c-selmer-line-divisibility} 的假设.
+若 $2d|J|\le s_0$，则存在控制无绑定挠层方程长度的多项式 $P$ 以及整点 $x$，使得 $x$ 的每个坐标赋值均至少为 $r$，且 $v(P(x))\le\beta+s_0 r$.
+\end{lemma}
+\begin{proof}
+记 $A,B$ 为引理~\ref{lem:c-selmer-line-divisibility} 给出的两个一元多项式.
+考察常数项即得 $w_r(A)\le v(A(0))\le\beta$.
+$B$ 的每个行列式因子皆为 $d$ 次多项式，且首项系数为 $T(g)$ 的行列式（即单位），故其 Gauss 赋值至多为 $dr$.
+因子总数共有 $2|J\setminus\{w_0\}|$ 个，由乘积可加性得 $w_r(B)\le s_0r$.
+
+取 $t$ 满足 $v(t)=r$. 将 $A(tY)$ 与 $B(tY)$ 分别除以各自具有最小赋值的系数，所得多项式在剩余域上的约化皆非零.
+在无限剩余域中，可同时避开这两个多项式的根及零点；取如此所得剩余值的整提升 $b$，令 $y=tb$，则 $v(y)=r$，且 $v(A(y))=w_r(A)$、$v(B(y))=w_r(B)$.
+该 $y$ 落在某个充分大的有限次系数域中，因而可以应用前一条引理.
+由于各斜率 $a_w$ 皆为整元，点 $x_w=a_wy$ 的每个坐标赋值均至少为 $r$. 在该点处有\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/GaussValuation.lean\#L245}{在同一参数上实现 Gauss 赋值}.}
+\[
+ v(P(x))\le v(A(y))+v(B(y))\le\beta+s_0r .
+\]
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/Line.lean}{629}.}
+\begin{lemma}[辅助位多项式的共同构造]
+\label{lem:c-selmer-twist-polynomials}
+\emitthmsource
+设 $(T_i)_i$ 为有限族 Selmer 格，$(Y_k)_k$ 为有限族 Stickelberger 系统，各自的长度或赋值预算分别记作 $\beta_i,\beta'_k$.
+固定坏位集 $S_0$ 及其中一个不在 $\ell$ 上方的惯性元 $g_0$.
+取挠层深度 $m_0$，使得对所有 $i$ 均有 $m_0>\beta_i+1$，且系数环剩余域的阶大于 $2\,\operatorname{rk}(T_i)\operatorname{len}_O(O/\ell^{m_0})+1$.
+则存在 $s_0\ge1$，使得对任意满足 $0<r$、$s_0r<1$ 的有理数 $r$ 以及所有充分大的 $N$，均可作如下选取：
+取关于 $S_0$ 的辅助素位集 $J$，满足 $2|J|\le s_0$；每个 $w\in J$ 配有取值于 $\mathbb Z/\ell^N$ 的反分圆特征（\emph{anticyclotomic character}） $\lambda_w$，仅可能在 $w,\bar w$ 处分歧，在 $\ell$ 上方各位的分解群上平凡，且在 $w$ 的惯性群上满射.
+对每个格与每个系统，均存在以 $J$ 为变量集的整多项式 $P$ 与整点 $x$，其各坐标赋值皆至少为 $r$，且满足 $v(P(x))\le\beta+s_0r$（其中 $\beta$ 为相应的预算）.
+对任意满足 $\zeta_w^{\ell^N}=1$ 的单位根组，令 $\psi=\prod_w\zeta_w^{\lambda_w}$，则系统的多项式在 $(\zeta_w-1)_w$ 处的取值恰为 $\psi$ 在其群环元素上的取值；若格的多项式在该点的赋值小于 $\beta_i+1$，则该赋值即控制相应扭转格的可除系数 Selmer 长度.
+\end{lemma}
+\begin{proof}
+选取整数 $c\ge1$，使其同时控制各格的秩与各 Stickelberger 系统的指数列长度；再取整数 $m_1$，使对所有 $k$ 皆有 $m_1>\beta'_k+1$.
+因各 $T_i$ 的模 $\ell^{m_0}$ 表示局部常值，且各系统的值特征连续，故存在 $g_0$ 的公共邻域 $W$，使得对其中任意 $g$，$g$ 与其共轭逆在这些模表示上的作用均与 $g_0$ 及其共轭逆相同，且各系统在 $g$ 与 $g_0$ 处的特征值之差具有至少为 $m_1$ 的赋值.
+
+绑定辅助位的下降定理利用上述邻域与剩余域阶的下界，给出一个与 $N$ 无关的素位数上界 $s$.
+对每个 $N>m_0$，可选取至多含 $s$ 个素位的集合 $J$ 及首位 $w_0$，使其首 Frobenius 元落入 $W$，且带绑定条件的挠层 Selmer 长度受全局项与局部项控制.
+撤去首位的绑定条件后，所损失的长度至多为原预算中为 $g_0$ 预留的项，因而去掉首位绑定后的长度至多为 $\beta_i$.
+与此同时，各辅助位所给出的 $\lambda_w$ 均满足所需的模、反分圆性与惯性满射条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Descent.lean\#L672}{同时下降及辅助位数界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Line.lean\#L247}{去掉首位绑定条件后的长度}.}
+
+令 $s_0=2c(1+s)$. 先固定 $r$，再取充分大的 $N$ 使 $Nr\ge\max(m_0,m_1)$.
+由 $2\operatorname{rk}(T_i)|J|\le s_0$，对每个 $T_i$ 皆可应用引理~\ref{lem:c-selmer-line-point}.
+对每个 Stickelberger 系统 $Y_k$，以泛特征 $\lambda_w\mapsto (1+X_w)^{\lambda_w}$ 对系统的群环元素求值，即得整多项式；首 Frobenius 元的同余关系保证了系统的取值估计，由此可在半径 $r$ 内的整点上达到预算 $\beta'_k+s_0r$.
+代入 $X_w=\zeta_w-1$ 后，泛求值恰还原为特征 $\psi$ 对群环元素的取值.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/StickelbergerLine.lean\#L483}{群环多项式的低赋值点}.}
+
+最后，在单位根点处，格的挠层方程恰为扭转 $T_i\psi$ 的模 $\ell^{m_0}$ 方程，其长度由多项式取值控制.
+若该赋值小于 $\beta_i+1<m_0$，便可应用引理~\ref{lem:c-selmer-torsion-to-divisible}.
+只要系数环充分大以包含全部单位根，归一化长度比较对所有此类系数环均成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/Line.lean\#L441}{单位根点的可除系数长度}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/GeneralTheorem.lean}{367}.}
+\begin{lemma}[Selmer 数据与群环值的一般同步扭转]
+\label{lem:c-selmer-general-twist}
+\emitthmsource
+设 $E$ 为 CM 域，$S_0$ 为包含 $\ell$ 上方各位的有限位集，$g_0$ 位于 $S_0$ 中某不在 $\ell$ 上方之位的惯性群内. 给定有限族关于 $(S_0,g_0)$ 的 Selmer 数据 $T_i$ 与 Stickelberger 系统 $Y_k$，其有限误差分别记作 $\beta_i,\beta_k'$. 其中 $\beta_i$ 为全局项、远离 $\ell$ 的局部项以及由 $g_0$ 及其复共轭之逆给出的行列式项之和（长度按系数环 $\mathcal O$ 的 $\mathcal O/\ell$ 长度为 $1$ 归一化）；记 $\omega_k$ 为系统附带的特征，则 $\beta_k'$ 为平凡特化的赋值加上每个 Euler 指数所贡献的 $2v_\ell^+(\omega_k(g_0)-1)$. 假设存在正整数 $L$，满足 $L>\beta_i+1$ 且
+\[
+ \#\mathbf k_{\mathcal O}>2\operatorname{rk}(T_i)\operatorname{length}_{\mathcal O}(\mathcal O/\ell^L)+1
+ \quad\hbox{对每个 }i ,
+\]
+其中商模长度未经归一化. 对任意给定的整数 $m\ge1$ 与 $\varepsilon>0$，存在 $S_0$ 的辅助位集 $Q$ 及 $\ell$-幂次阶的 Galois 特征 $\psi$，使得对每个 $1\le j\le m$，$\chi=\psi^j$ 皆满足下列性质：
+
+\begin{itemize}
+\item $\chi$ 由模 $Q$ 的 idèle 类特征沿 $x\mapsto x/\bar x$ 诱导，在 $\ell$ 上方各位的分解群上平凡，且在每个 $w\in Q$ 处分歧.
+\item 对所有充分大的系数环以及每个 $i$，$T_i$ 经扭转后的可除系数 Selmer 模的归一化长度至多为 $\beta_i+\varepsilon$.
+\item 对每个 $k$，记 $\Theta_{k,Q}$ 为该系统的模 $Q$ 元素，则有 $v_\ell^+(\chi(\Theta_{k,Q}))\le\beta_k'+\varepsilon$.
+\item 对各 $w\in Q\cup\bar Q$ 任取其上方的驯惯性生成元 $\gamma_w$，皆有
+$\sum_{w\in Q\cup\bar Q}v_\ell^+(\chi(\gamma_w)-1)\le\varepsilon$.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+若 $\varepsilon\ge1$，则只需应用下面对 $1/2$ 所证结论即可，故不妨设 $0<\varepsilon<1$.
+由引理~\ref{lem:c-selmer-twist-polynomials} 得到整数 $s_0\ge1$. 选取有理数 $r>0$ 满足 $s_0r\le\varepsilon/2$. 对所有充分大的整数 $N_0$，该构造给出辅助位集 $Q$（满足 $2|Q|\le s_0$）以及与每个 $w\in Q$ 对应的模 $\ell^{N_0}$ 特征 $\lambda_w$；$\lambda_w$ 由模 $w$ 的 idèle 类特征经 $x\mapsto x/\bar x$ 诱导，在 $\ell$ 上方各位的分解群上平凡，并在 $w$ 的惯性群上满射. 同时，对每个数据或系统 $u$，还给出整系数多项式 $P_u$ 与测试点 $x_u$. 令 $\beta_u$ 分别取 $\beta_i$ 或 $\beta_k'$，则有
+\[
+ v_\ell^+(x_{u,w})\ge r,\qquad
+ v_\ell^+(P_u(x_u))\le\beta_u+s_0r.
+\]
+对任意 $\ell^{N_0}$ 次单位根组 $(\xi_w)_w$，记 $\chi_\xi=\prod_w \xi_w^{\lambda_w}$. 若 $u$ 为系统，则
+$P_u((\xi_w-1)_w)=\chi_\xi(\Theta_{u,Q})$；若 $u$ 为 Selmer 数据且该多项式取值的赋值小于 $\beta_u+1$，则此赋值即为其扭转 Selmer 长度的上界.
+
+下面同时处理 $\chi_\xi$ 的前 $m$ 次幂. 对每对 $(u,j)$，考察多项式
+\[
+ P_{u,j}(X)=P_u(((1+X_w)^j-1)_w).
+\]
+对每个坐标 $x=x_{u,w}$，均可选取 $y$ 满足 $(1+y)^j=1+x$ 且 $v_\ell^+(y)\ge r/m$：当 $x=0$ 时取 $y=0$；否则将多项式 $Z^j-(1+x)$ 的全部根写为 $1+y_a$，在 $Z=1$ 处比较因式分解两端即得 $v_\ell(x)=\sum_a v_\ell(y_a)$. 因各根皆为单位，每个 $y_a$ 均整，其中至少有一个满足 $v_\ell(y_a)\ge r/j\ge r/m$.
+由此逐坐标选取即可得到测试点 $y_{u,j}$，满足 $P_{u,j}(y_{u,j})=P_u(x_u)$，且全部取值的赋值之和至多为 $\sum_{u,j}(\beta_u+1)$.
+
+现应用引理~\ref{lem:c-root-simultaneous}，取坐标半径 $r/m$、误差 $\varepsilon/2$、变量数上界 $s_0$ 及上述有限总界. 该引理先给出仅依赖于这些参数的阶数界 $\ell^{h_0}$，因此可将扭转多项式构造中的 $N_0$ 选在 $h_0$ 之上，再对全部 $P_{u,j}$ 同时插值，从而得到阶整除 $\ell^{h_0}$ 的单位根 $\zeta_w$，满足\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/GaussValuation.lean\#L385}{幂方程的测试点}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/GeneralTheorem.lean\#L325}{对所有幂同时插值}.}
+\[
+ v_\ell^+(\zeta_w-1)\le r/m,\qquad
+ v_\ell^+(P_u((\zeta_w^j-1)_w))
+ \le v_\ell^+(P_u(x_u))+\varepsilon/2
+ \le\beta_u+\varepsilon.
+\]
+
+令 $\psi=\prod_{w\in Q}\zeta_w^{\lambda_w}$. 其 $j$ 次幂对应于 $\zeta_w^j$ 的特化，故上述赋值界直接给出群环取值与 Selmer 长度的结论（对 Selmer 数据用到了 $\beta_i+\varepsilon<\beta_i+1$）.
+
+最后核验分歧界. 设 $\zeta_w$ 的精确阶为 $\ell^h$，则
+$v_\ell(\zeta_w-1)=1/((\ell-1)\ell^{h-1})$；因该赋值有限，必有 $h\ge1$. 若 $\ell^h\mid j$，则
+$jv_\ell(\zeta_w-1)\ge\ell/(\ell-1)>1$，与 $jv_\ell(\zeta_w-1)\le r<1$ 矛盾. 否则有
+\[
+ v_\ell(\zeta_w^j-1)
+  =\ell^{v_\ell(j)}v_\ell(\zeta_w-1)\le r .
+\]
+因此每个 $\zeta_w^j$ 均非平凡. 在 $w$ 的惯性群上只有 $\lambda_w$ 可非平凡且它在该处满射，故每个 $\psi^j$ 皆在 $w$ 处分歧. 又因辅助位不在 $\ell$ 上方，野惯性群在该 $\ell$-幂次阶商上作用平凡，从而任一驯惯性生成元在像中的指数均与 $\ell$ 互素，所得赋值与 $\zeta_w^j-1$ 相同. 在 $\bar w$ 处结论一致，因为反分圆性将共轭惯性上的特征值取逆. 于是分歧赋值之和至多为 $2|Q|r\le s_0r\le\varepsilon$. 各 $\lambda_w$ 的 idèle 类刻画与分解群条件在乘积与取幂下显然保持.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/GaussValuation.lean\#L475}{单位根取幂的赋值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/GeneralTheorem.lean\#L197}{惯性上的特征值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/GeneralTheorem.lean\#L260}{分歧赋值之和}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/Selmer/TwistingTheorem.lean}{346}.}
+\begin{lemma}[容许数据的同步 Selmer 扭转]
+\label{lem:c-selmer-simultaneous-twist}
+\emitthmsource
+固定容许数据 $D$、素数 $\ell$、同构 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_\ell$，以及有限族满足主分量条件的表示 $(R_i)_i$. 分别记 $S_\ell,S_M,S_0$ 为 $\ell$、$M=p_0p_1$ 与 $\ell MN$ 上方的位集，令 $G_0$ 为各所选位 $w$ 处 $|\mathrm{GL}_{r_0t}(\mathbf k_w)|$ 之积. 置
+\[
+ c=(4f+3)r_0v_\ell(G_0),\qquad
+ \varepsilon=2^{-\ell},\qquad e_\ell=c+\varepsilon.
+\]
+则存在无穷位权为零的 $m$-重驯扭转 $\tau$（即其前 $m$ 个正整数幂在模的每个位处皆有非平凡的剩余特征）. 记共同的模位集为 $Q$. 对每个 $1\le j\le m$，令 $\xi=\tau^j$，并记 $\psi_j$ 为 $\xi^{-1}$ 对应的 $\ell$-进 Galois 特征，则有如下结论：
+
+\begin{itemize}
+\item $Q$ 为 $S_0$ 的辅助位集；$\psi_j$ 由模 $Q$ 的 idèle 类特征沿 $x\mapsto x/\bar x$ 诱导，且在 $S_\ell$ 中各位的分解群上平凡. 对每个 $w\in Q$ 均可取驯惯性生成元 $\gamma_w$，使
+$\sum_{w\in Q}v_\ell^+(\psi_j(\gamma_w)-1)\le e_\ell$.
+\item 对每个 $i$，存在不在 $\ell$ 上方的惯性元 $\gamma_i$ 及标量 $\zeta_i$，使得对所有充分大的系数环 $\mathcal O'$，$\psi_jR_i$ 均有格满足 $\gamma_i$ 的作用为 $\zeta_i I$ 且 $\zeta_i-1$ 为单位；该格以 $\operatorname{Frac}(\mathcal O')/\mathcal O'$ 为系数的 Selmer 模在 $S_\ell\cup S_M\cup Q\cup\bar Q$ 外非分歧、在 $S_\ell$ 上结晶且在 $\gamma_i$ 处取零，其归一化长度至多为 $e_\ell$.
+\item 对每个分歧临界对 $p=(\nu,z)$ 及符号 $s=\pm1$，均有
+$v_\ell^+(\iota(\operatorname{ratio}_p(\xi,s)))\le e_\ell$.
+其中 $1\le z\le t$，$\nu$ 的负权在每个无穷位介于 $z$ 与 $4b$ 之间，且其驯剩余特征恰在所选位上非平凡.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+由于 $p_0,p_1$ 互异，其中至少有一个不等于 $\ell$；取其上方的所选位 $w_0$. 因主层素数在 $E$ 中完全分裂，故 $\mathrm Nw_0=p_{i_0}$. 令 $g_0$ 为 $w_0$ 的驯惯性生成元，则它可作为 $S_0\setminus S_\ell$ 中的首个惯性输入. 由引理~\ref{lem:c-selmer-torsion-level} 同时得到各 $R_i$ 的 Selmer 格、共同系数环与挠系数层 $c+2$，记各格的归一化误差为 $\beta_i\le c$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/GaloisRepresentations/AttachedRepresentations.lean\#L246}{远离 $\ell$ 的所选位}.}
+
+对每个分歧临界对及符号 $s$ 应用引理~\ref{lem:c-selmer-ratio-transfer}，构造以同一个 $g_0$ 为首位输入的 Stickelberger 系统. 这些系统共只有有限个：事实上，整数 $z$ 与各无穷位负权均有界，所选位的剩余域亦有限，固定这些数据后，可能的特征之间仅相差有限类群的特征.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/ChosenPlaces.lean\#L307}{临界对的有限性}.}
+
+将上述格与系统一并输入引理~\ref{lem:c-selmer-general-twist}，取损失 $\varepsilon=2^{-\ell}$，从而得到辅助位集 $Q$ 及特征 $\psi$，使每个 $\psi^j$ 均满足该引理. 由 Artin 互反律，存在权为零、模为 $Q$ 的驯特征 $\tau$，使 $\psi$ 对应于其逆 $\tau^{-1}$：具体而言，将 $x/\bar x$ 所用的 idèle 类特征限制至 $\Ugrp(1)$，经 $\iota^{-1}$ 转移后取逆；该限制通过模 $Q$ 的有限类群分解. 因互反公式与乘法相容，$\psi^j$ 恰对应于 $(\tau^j)^{-1}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/ClassSums.lean\#L437}{由 Galois 表示实现构造驯特征}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L260}{Galois 实现与取幂}.}
+
+对任意 $w\in Q$，若 $\tau^j$ 的剩余特征在 $w$ 处平凡，则因 $\bar w\notin Q$，其基变换在 $w$ 处的局部单位群上平凡；由局部 Artin 互反律，其 Galois 实现在 $w$ 的惯性群上平凡，这与 $\psi^j$ 在 $w$ 处分歧相矛盾. 因此 $\tau$ 确为 $m$-重扭转，且各次幂共用模位集 $Q$. 此外，引理~\ref{lem:c-selmer-general-twist} 给出的 $Q\cup\bar Q$ 上分歧赋值之和至多为 $\varepsilon$，舍去 $\bar Q$ 上的非负项即得第一项所需的界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L273}{Galois 实现分歧推出驯分歧}.}
+
+对第 $i$ 个格，引理~\ref{lem:c-selmer-general-twist} 给出的抽象长度界为 $\beta_i+\varepsilon\le c+\varepsilon$. 对每个 $j$ 应用引理~\ref{lem:c-selmer-base-change}，即可将该界传递至陈述中的结晶条件，同时保持格在归零惯性元处的标量作用.
+最后，对每个分歧临界对与符号 $s$，群环特化赋值至多为相应系统的误差加上 $\varepsilon$；由引理~\ref{lem:c-selmer-ratio-transfer} 可将此转为
+\[
+ v_\ell^+(\iota(\operatorname{ratio}_p(\tau^j,s)))
+ \le4v_\ell(p_{i_0}-1)+\varepsilon\le e_\ell,
+\]
+其中最后一步由引理~\ref{lem:c-selmer-level-prime-loss} 给出.
+\end{proof}
+
+\section{Hecke 迹关系与 Ribet 元素}
+\label{sec:c-ribet}
+
+Ribet~\cite{Ribet1976} 从自守同余中构造 Galois 扩张类. 本节用辅助层上的 Hecke 迹关系实现共同 Ribet 元素，并以其最高次系数控制投影分母.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{642}.}
+\begin{lemma}[单个 Hecke 多项式同时零化基准层上的弱提升]
+\label{lem:c-weak-lift-hecke-root}
+\emitthmsource
+固定素数 $\ell$、$\ell$-进同构 $\iota$ 以及一对下降空间，其源秩与目标秩分别为 $r'$、$n'$，秩差 $t'=n'-r'>0$.
+固定该对的基准层，记 $N_\lambda$ 为 Hecke 特征系（\emph{Hecke eigensystem}） $\lambda$ 的归一化 Galois 表示. 若对每个 Galois 元 $g$ 均有
+\[
+ \det(1-N_\lambda(g))=0 ,
+\]
+则称 $\lambda$ 为弱提升. 于是存在避开该对的层及其共轭的分裂位 $w$，使得基准层中每个弱提升特征系对应的形式均被 $T_w=P_w(\upsilon_w^{-1}q_w^{-(t'-1)})$ 零化.
+此处 $P_w(X)$ 为 Hecke 多项式算子，$q_w$ 为剩余域阶数，$\upsilon_w$ 为低秩一侧的特征在 $w$ 处的 Frobenius 值.
+\end{lemma}
+\begin{proof}
+层外分裂位有无穷多个，而使基准层的 Hecke--Galois 相容性失效的位只有有限多个.
+故可与 $\lambda$ 无关地选取一个避开 $\ell$ 且满足基准层相容性条件的分裂位 $w$.
+对基准层上的非零 $\lambda$-特征形式 $v$，其未反转局部 Hecke 多项式 $H_{\lambda,w}(X)$ 与展开 $P_w(X)$ 后作用在 $v$ 上所得标量 $P_{\lambda,w}(X)$ 满足
+\[
+ H_{\lambda,w}(X)=X^{n'}P_{\lambda,w}(1/X)
+ \qquad (X\ne0).
+\]
+局部整体相容性表明 $H_{\lambda,w}$ 零化几何 Frobenius 的未归一化作用.
+因归一化表示在该元素处具有特征值 $1$，可知 $H_{\lambda,w}(\upsilon_w)=0$.
+又因 $|\upsilon_w|^2 q_w^{t'}=q_w^{n'}$，由球酉表示的根链定理可知，对一切 $0\le e<t'$，$\upsilon_w q_w^e$ 亦为其根.
+取 $e=t'-1$，该根非零，故 $P_{\lambda,w}(\upsilon_w^{-1}q_w^{-(t'-1)})=0$.
+由于算子 $T_w$ 作用在 $v$ 上恰为乘以此数，即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L286}{弱提升条件与未反转多项式的根链}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{684}.}
+\begin{lemma}[正交于伪提升时的类型投影]
+\label{lem:c-type-projection-false}
+\emitthmsource
+设 $V$ 为一对下降空间的目标形式空间，$C$ 为某剩余类型的正交投影，满足 $\operatorname{im}C\subseteq\operatorname{im}e$，其中 $e$ 为所取的群代数算子.
+设子空间 $Z\subseteq V$ 在 $C$ 以及全部层外分裂位的 Hecke 多项式算子下稳定，记 $\Pi_Z$ 为到 $Z$ 的正交投影.
+对每个层外分裂位 $w$，记 $T_w$ 为在提升根处取值所得的 Hecke 多项式算子，称 $\operatorname{im}e\cap Z^\perp\cap\ker T_w$ 中的形式为 $w$ 处的伪提升（\emph{false lift}）.
+设 $y$ 正交于每个 $w$ 处的伪提升. 固定一位 $w$ 及子空间 $M\subseteq V$，若 $\operatorname{im}C$ 中每个不在 $M$ 内的非零 Hecke 特征向量 $v$ 均被 $T_w$ 零化，则有
+\[
+ C(y-\Pi_Zy)\in M .
+\]
+\end{lemma}
+\begin{proof}
+令 $U=\operatorname{im}C\cap Z^\perp$，$K=U\cap\ker T_w$.
+类型投影与层外 Hecke 算子相容，而层外 Hecke 多项式算子两两交换且其伴随仍保持这些不变子空间，故 $U$、$K$ 与 $U\cap K^\perp$ 皆稳定.
+特别地，$U\cap K^\perp$ 由非零 Hecke 特征向量张成.
+若其中某个非零特征向量 $v$ 不在 $M$ 中，则由假设有 $T_wv=0$，从而 $v\in K\cap K^\perp$，与 $v\ne0$ 矛盾；由此得 $U\cap K^\perp\subseteq M$.
+另一方面，由于 $C$ 自伴且保持 $Z$，它也保持 $Z^\perp$，故 $C(y-\Pi_Zy)\in U$. 对任意 $z\in K$，有 $Cz=z$，且由 $\operatorname{im}C\subseteq\operatorname{im}e$ 可知 $z$ 为 $w$ 处的伪提升，从而
+\[
+ \langle z,C(y-\Pi_Zy)\rangle
+  =\langle Cz,y-\Pi_Zy\rangle
+  =\langle z,y\rangle-\langle z,\Pi_Zy\rangle=0 .
+\]
+这就证明了 $C(y-\Pi_Zy)\in U\cap K^\perp$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L718}{谱分解与伪提升的正交补}.}
+\end{proof}
+
+以下固定一组避开基准层的辅助位 $(w_j)_{j\in J}$.
+记 $\Gamma_j=\mathrm{GL}_{n'}(\mathbf k_{w_j})$，$\Gamma=\prod_j\Gamma_j$，$\rho$ 为剩余群在辅助层形式上的作用，$\mathcal R$ 为保持 $\ell$-进整格的算子环，并以 $G_0$ 记基准层类稳定子阶数的公倍数. 令
+\[
+ \mathcal N_j=\sum_{g\in\Gamma_j}\rho(g),\qquad
+ \mathcal N=\sum_{g\in\Gamma}\rho(g)=\prod_{j\in J}\mathcal N_j .
+\]
+其中在 $\mathcal N_j$ 中将 $\Gamma_j$ 自然嵌入乘积群 $\Gamma$. 辅助层的 Hecke 代数 $\mathbb T$ 作用在形式空间上且与 $\rho$ 交换；下文公式中以相同记号表示 Hecke 元素及其算子作用.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean}{305}.}
+\begin{lemma}[以剩余群范数升降基准层]
+\label{lem:c-auxiliary-norm}
+\emitthmsource
+存在算子 $\Psi\in\mathcal R$，使得对每个基准层形式 $l$ 均有 $\mathcal N\Psi l=G_0 l$.
+\end{lemma}
+\begin{proof}
+将辅助层的类集合分解为剩余群 $\Gamma$ 的若干轨道. 固定一条轨道，在其中一个代表位置赋予整数权 $G_0/|\Gamma_x|$（这里 $\Gamma_x$ 为该位置的稳定子），其余位置赋权为零.
+由于轨道稳定子是基准层类稳定子在辅助约化下某子群的像，其阶整除 $G_0$，故所赋权重必为整数.
+对任意位置 $y$，将该权重沿整个群 $\Gamma$ 平移并求和：若 $y$ 属于给定轨道，则将代表位置映至 $y$ 的群元素构成大小为 $|\Gamma_x|$ 的陪集，故权重之和恰为 $G_0$.
+在每条轨道上均作此选取，以逐点乘权定义算子 $\Psi$.
+该权重是相应类上的函数，且对层处未参与辅助约化的分量保持不变，因而保持辅助层形式条件；又因其点值为整数，$\Psi$ 保持整格.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GaloisRep/TaylorWiles.lean\#L778}{用整的轨道权构造辅助层算子}.}
+
+在每个点处写出共轭算子的作用，即得恒等式 $\sum_{g\in\Gamma}\rho(g)^{-1}\Psi\rho(g)=G_0 I$.
+由于基准层形式在所有 $\rho(g)$ 作用下皆不变，将其代入该恒等式便得 $\mathcal N\Psi l=G_0 l$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L309}{基准层形式的范数恒等式}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean}{118}.}
+\begin{lemma}[单辅助位的迹关系与局部导数算子]
+\label{lem:c-auxiliary-local-tie}
+\emitthmsource
+设各辅助位皆在基准层之外，且选用的归一化扭转在各驯惯性生成元上平凡. 固定一位 $w_j$，记 $q$ 为其剩余域阶数，$G_j=\mathrm{GL}_n(\mathbb F_{w_j})$，$\tau,\phi$ 分别为该位的驯惯性生成元与 Frobenius 元. 假设在基准层中所有使 Hecke 元 $\delta$ 非零的特征系上，归一化 Hecke 多项式均包含完整根链 $1,q,\dots,q^{t-1}$（其中 $t>0$），且其余因子整除 $H$. 记 $\mathrm{Nm}_j$ 为 $G_j$ 的平移之和，$\mathrm{Nm}$ 为所有辅助位的平移之和，$c$ 为稳定子阶数的公倍数. 则存在由 $w_j$ 处平移生成的整算子 $\partial_j$，使得对任意 Galois 元 $g$ 均有
+\[
+ \begin{aligned}
+ \mathrm{Nm}_j\,\operatorname{tr}((\tau-1)g)&=0,\\
+ \partial_j\,\operatorname{tr}((\tau-1)g)
+ &\equiv \mathrm{Nm}_j\,\operatorname{tr}((\phi-1)H(\phi)g).
+ \end{aligned}
+\]
+此外，对每个 $k\in G_j$，存在整算子 $Z_k$ 满足 $c\partial_j(k-1)\equiv\mathrm{Nm}_jZ_k$ 及 $\delta\,\mathrm{Nm}\,Z_k=0$. 此处迹理解为归一化 Galois 表示族给出的 Hecke 算子，而同余在允许 $2n!$ 精度损失的模 $\ell^\nu$ 约化意义下成立.
+\end{lemma}
+
+\begin{proof}
+第一式源于 $\mathrm{Nm}_j$ 的像在该位具有基准层不变向量，因而在相应 Galois 表示上 $\tau$ 的作用为 $1$. 取直线的稳定子 $K_j\subset G_j$，令 $P(X)=(X-q^{t-1})H(X)$. 将 $P$ 作用于标记直线的 Hecke 算子，构成以直线对数为权的和 $B$. 记直线陪集和为 $\mathrm{Tr}$、逆陪集和为 $\mathrm{Tr}'$，并置 $\partial_j=-\mathrm{Tr}\,B\,\mathrm{Tr}'$；上述各和均由该位上的整算子构成.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L130}{局部导数的构造}.}
+
+由标记直线的迹公式，$P$ 的 Hecke 作用可化为对 Frobenius 元施加 $P$. 对直线及其陪集求和将直线对数转化为行列式对数，而驯惯性元在迹公式中对应于菱形算子. 行列式对数的离散差分乘以该菱形算子减 $1$，给出全范数并附带一个负号，恰好与 $\partial_j$ 的负号抵消. 又由 $q\equiv1$，$P(\phi)$ 在约化迹中化为 $(\phi-1)H(\phi)$，即得第二式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L166}{由直线对数到全范数}.}
+
+等权和 $B(1)$ 在稳定子作用下保持不变；利用稳定子求和的整提升，可将 $c$ 倍导数差写为 $\mathrm{Nm}_j Z_k$. 辅助位根链的余因子条件给出 $\delta\,\mathrm{Nm}\,B(1)=0$，而 $\delta\,\mathrm{Nm}$ 在平移下不变，故同一构造亦给出 $\delta\,\mathrm{Nm}\,Z_k=0$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L192}{整提升与被 Hecke 元零化的范数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean}{231}.}
+\begin{lemma}[带辅助位参数的范数算子族]
+\label{lem:c-deformed-norm}
+\emitthmsource
+对每个 $j\in J$，记 $\gamma_j,\phi_j$ 分别为该辅助位的驯惯性元与几何 Frobenius 元，$H_j$ 为给定的整多项式.
+对辅助层的各特征系 $\lambda$ 取其归一化表示 $N_\lambda$，并要求归一化所用特征在 $\gamma_j$ 处取值为 $1$.
+在带中心变量 $(X_j)_j$ 的多项式环 $\mathbb T[X_j:j\in J]$ 中，令 $\mathfrak a$ 为由
+\[
+ \ell^\nu\operatorname{tr}(N_\lambda(g)),
+ \qquad T_{jg}-X_j R_{jg}
+\]
+生成的迹理想，其中
+\[
+\begin{aligned}
+ T_{jg}(\lambda)&=\operatorname{tr}\bigl((N_\lambda(\gamma_j)-I)N_\lambda(g)\bigr),\\
+ R_{jg}(\lambda)&=\operatorname{tr}\bigl((N_\lambda(\phi_j)-I)
+ H_j(N_\lambda(\phi_j))N_\lambda(g)\bigr).
+\end{aligned}
+\]
+设 $\delta'\in\mathbb T$ 在基准层上的非零支撑满足辅助位根链条件，即归一化 Hecke 多项式包含非空根链 $1,q_j,\ldots,q_j^{t'-1}$，且其余因子整除 $H_j$.
+令 $\delta=G_0^2\delta'$，并以 $\equiv$ 表示经某个降模映射取像后相等，该映射消去所有乘以 $2n'!$ 后落入 $\ell^\nu\mathcal R$ 的算子.
+则对每个子集 $S\subseteq J$，存在 $\mathcal R$ 中的算子 $D_S,Y_S$，使 $D_\varnothing=\mathcal N$，所有 $D_S$ 均与 Hecke 作用交换，且满足
+\[
+ \sum_{S\subseteq J}D_{J\setminus S}F_S\equiv0\quad(F\in\mathfrak a),
+ \qquad
+ \delta^{|J|}D_S\equiv Y_S\mathcal N,\qquad
+ Y_\varnothing=\delta^{|J|}.
+\]
+其中 $F_S$ 表示 $F$ 中 $\prod_{j\in S}X_j$ 的系数.
+\end{lemma}
+\begin{proof}
+由引理~\ref{lem:c-auxiliary-local-tie} 可得由位 $w_j$ 处平移生成的算子 $\partial_j\in\mathcal R$，满足
+\[
+ \mathcal N_jT_{jg}=0,\qquad
+ \partial_jT_{jg}\equiv\mathcal N_jR_{jg},
+\]
+且对每个 $k\in\Gamma_j$ 均存在整算子 $Z$，使得 $G_0\partial_j(\rho(k)-1)\equiv\mathcal N_j Z$ 与 $\delta'\mathcal N Z=0$.
+上述单辅助位关系所用的输入恰为归一化特征在驯惯性元处取 $1$，以及 $\delta'$ 支撑上的根链与余因子条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L130}{单辅助位的迹与范数算子关系}.}
+
+定义 $D_S$ 为 $\prod_j(\mathcal N_j+X_j\partial_j)$ 中 $\prod_{j\in S}X_j$ 的系数.
+因不同位上的平移两两交换且均与 Hecke 作用交换，该定义与指标排列次序无关，且显然有 $D_\varnothing=\mathcal N$.
+为证第一条结论，只需对迹理想生成元的任意多项式倍数逐一验证.
+$\ell^\nu$ 的倍数在取像后显然为零.
+对 $F=B(T_{jg}-X_jR_{jg})$，将不含 $j$ 的子集 $S$ 与 $S\cup\{j\}$ 配对；设 $B$ 对应的系数分别为 $b,b'$，两项共有的因子 $D'$ 仅含其余位上的算子，则配对后的贡献为
+\[
+ D'\left(\partial_j T_{jg}b
+        +\mathcal N_j(T_{jg}b'-R_{jg}b)\right)\equiv 0.
+\]
+由线性性即知，整个迹理想对应的系数和均为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/OnePrime.lean\#L274}{按是否含指定变量配对系数}.}
+
+下面对 $|S|$ 归纳证明：对任意 $i\ge |S|$，均存在 $Y\in\mathcal R$ 使 $\delta^iD_S\equiv Y\mathcal N$.
+当 $S=\varnothing$ 时，取 $Y=\delta^i$ 即可.
+否则令 $A=G_0\delta'\delta^{i-1}D_S$.
+对任意 $j\notin S$，$D_S$ 的第 $j$ 位因子为 $\mathcal N_j$，故 $A(\rho(k)-1)=0$；对 $j\in S$，将 $\partial_j$ 替换为 $\mathcal N_j$ 恰得 $D_{S\setminus\{j\}}$.
+结合单辅助位关系与归纳假设，有
+\[
+ A(\rho(k)-1)
+ \equiv\delta'\delta^{i-1}D_{S\setminus\{j\}}Z
+ \equiv Y'\delta'\mathcal N Z=0 .
+\]
+其中第二个同余利用了 $\delta'$ 与 $D_{S\setminus\{j\}}$、$\mathcal N$ 的交换性，从而将其移至 $Y'$ 右侧.
+由此可知对所有 $k\in\Gamma$ 皆有 $A\rho(k)\equiv A$.
+取引理~\ref{lem:c-auxiliary-norm} 证明中的共轭平均算子 $\Psi$，将共轭平均恒等式左乘 $A$，得
+\[
+ G_0 A=\sum_{k\in\Gamma}A\rho(k)^{-1}\Psi\rho(k)
+       \equiv A\Psi\mathcal N.
+\]
+因为 $G_0 A=\delta^iD_S$，归纳步骤完成. 取 $i=|J|$ 即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/OnePrime.lean\#L311}{把变形范数逐位移回普通范数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean}{434}.}
+\begin{lemma}[利用迹理想最高系数清除分母]
+\label{lem:c-integral-top-coefficient}
+\emitthmsource
+沿用引理~\ref{lem:c-deformed-norm} 的记号，取 $A,\delta_0\in\mathbb T$，令 $\delta'=A\delta_0$，并取 $\ell$-进整标量 $b_0$. 记 $i=|J|$ 和 $n_1=b_0G_0^2$.
+假设 $2n'! n_1^{i+1}\mid\ell^\nu$，因而 $n_1\ne0$.
+设 $F\in\mathbb T[X_j:j\in J]$ 满足 $(\delta_0-b_0)F\in\mathfrak a$，且基准层的两个形式 $l,z$ 满足
+\[
+ d l\text{ 整},\qquad
+ A\delta_0 l=b_0 A z,\qquad \delta_0 z=b_0 z,
+ \qquad F_S z=0\quad(S\ne J)
+\]
+其中 $d$ 为正整数.
+则 $dG_0 A^{i+1}F_J z$ 为整形式.
+\end{lemma}
+\begin{proof}
+令 $\delta=G_0^2 A\delta_0$，并取约化映射 $\sigma:\mathcal R\to\mathcal R/\mu\mathcal R$，其中 $\mu=\ell^\nu/(2n'!)=n_1^{i+1}\mu'$ 且 $\mu'$ 为整元.
+因 $\mathcal R$ 无整数挠元，只要 $2n'! T\in\ell^\nu\mathcal R$，必有 $T\in\mu\mathcal R$，故 $\sigma$ 满足引理~\ref{lem:c-deformed-norm} 的降模条件.
+记 $G=\sum_S D_{J\setminus S}F_S$. 在交换的 Hecke 代数中，由 $\delta-n_1 A=G_0^2 A(\delta_0-b_0)$ 可知 $\delta^{i+1}-n_1^{i+1}A^{i+1}$ 被 $\delta_0-b_0$ 整除.
+于是依次应用迹理想的系数消去性质与范数分解，可得
+\[
+ n_1^{i+1}A^{i+1}G
+   \equiv \delta^{i+1}G
+   \equiv G'=\sum_{S\subseteq J}Y_{J\setminus S}\mathcal N\,\delta F_S
+       \pmod{\mu\mathcal R}.
+\]
+从而存在 $W\in\mathcal R$，使得 $n_1^{i+1}A^{i+1}G-G'=n_1^{i+1}\mu' W$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/OnePrime.lean\#L67}{中心整数的算子环约化}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L329}{幂的差与迹理想}.}
+
+令 $u=\Psi(d l)$. 由引理~\ref{lem:c-auxiliary-norm} 可知 $\mathcal N u=dG_0 l$，且 $u$ 为整形式.
+因 Hecke 元素与 $\mathcal N$ 交换，有
+\[
+ \mathcal N\delta F_S u
+  = dG_0G_0^2 F_S A\delta_0 l
+  = n_1dG_0 A F_S z .
+\]
+当 $S\ne J$ 时，此项为零；对于唯一余下的项 $S=J$，有 $Y_\varnothing=\delta^i$，且在 $z$ 的 Hecke 轨道上 $\delta$ 与 $n_1 A$ 的作用相同，故 $G'u=n_1^{i+1}dG_0 A^{i+1}F_Jz$.
+在复形式空间中消去非零标量 $n_1^{i+1}$，得
+\[
+ dG_0 A^{i+1}F_J z=(A^{i+1}G-\mu'W)u .
+\]
+其右端为整算子作用在整形式上，故结果必为整形式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L397}{低系数消失与最高系数}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean}{552}.}
+\begin{lemma}[由迹函数环提取 Hecke 代数上的 Ribet 多项式]
+\label{lem:c-hecke-ribet-polynomial}
+\emitthmsource
+沿用辅助层的 Hecke 代数 $\mathbb T$ 及其迹理想 $\mathfrak a$.
+记 $\Sigma$ 为辅助层的特征系集合，$\mathcal X\subseteq\Sigma$ 为提升特征系集合，并取定 $\lambda_0\in\mathcal X$.
+设给定一族函数 $\delta_g$，并假定对每个包含各变量与全部归一化表示特征多项式系数的函数代数、以及每个包含 $\mathfrak a$ 所用迹生成元的子模，共同 Ribet 元素（\emph{common Ribet element}）的存在定理皆适用：
+具体而言，$\delta_g$ 作为常数多项式属于该代数且在 $\mathcal X$ 上取零，且存在一个多项式族，乘以任意 $\delta_g$ 后均落入该子模，其在 $\mathcal X$ 上真整除 $\prod_jX_j$ 的系数皆为零，而在 $\lambda_0$ 处的 $\prod_jX_j$ 系数 $d$ 满足 $v_\ell(a d)\le L$（其中 $a,L$ 固定）.
+则每个 $\delta_g$ 均来自 $\mathbb T$，且可用同一个 $F\in\mathbb T[X_j:j\in J]$ 同时实现上述消失性、乘入 $\mathfrak a$ 及赋值界条件.
+\end{lemma}
+\begin{proof}
+在每个特征系上对多项式系数求值，得到同态
+\[
+ \epsilon:\mathbb T[X_j:j\in J]\longrightarrow
+     \prod_{\lambda\in\Sigma}\overline{\mathbb Q}_\ell[X_j:j\in J].
+\]
+因为 $\mathbb T$ 是 $\Sigma$ 上函数的子代数，若 $\epsilon(F)=0$，则 $F$ 的每个系数函数皆为零，故 $\epsilon$ 单射.
+取 $\epsilon$ 的像作为函数代数，并取 $\epsilon(\mathfrak a)$ 作为迹子模；由于 $\mathfrak a$ 为理想，$\epsilon(\mathfrak a)$ 包含两类迹生成元且为像代数的子模.
+又因归一化表示的特征多项式各系数本身即属于 Hecke 函数，该像代数包含共同 Ribet 元素定理所需的全部系数与变量.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L589}{用 Hecke 代数的像构造迹子模}.}
+
+在此像代数上应用假设，所得多项式族具有原像 $F\in\mathbb T[X_j:j\in J]$.
+每个常值族 $\delta_g$ 的原像可取为其原像多项式的常数项 $\beta_g\in\mathbb T$（因求值与取常数项交换）.
+进而由 $\epsilon(\beta_gF)\in\epsilon(\mathfrak a)$ 及 $\epsilon$ 的单射性可知 $\beta_gF\in\mathfrak a$.
+由于求值逐系数进行，真因子系数的消失性与 $\lambda_0$ 处的赋值界均直接传递至 $F$. 这就用同一个 $F$ 同时证明了对全部 $g$ 的断言.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/RibetElement.lean}{105}.}
+\begin{lemma}[Ribet 系数局部误差与分离误差的合并]
+\label{lem:c-ribet-valuation-budget}
+\emitthmsource
+记 $g_\ell=v_\ell(G_0)$，$h_*=r_0^8$，设 $0\le h\le g_\ell$，$a_*=h_*h$，$L_*=h_*^{22}h$.
+令 $k,n_{\rm T},n_{\rm D}$ 分别为辅助位数、测试点数与检测点数，满足
+\[
+ (k+n_{\rm T})a_*\le L_*,
+ \qquad n_{\rm D}\le2(k+n_{\rm T}).
+\]
+设 $t'\le t$，$\mathrm{loc}$ 为主分量与 $t'$ 个 Tate 特征的局部缺陷总预算，$S_\ell$ 为 Selmer 长度上界，$R_\ell$ 为分歧预算.
+记 $A_{\rm odd}$ 为奇类界所用整数，$\mathrm{err}_\ell$ 如正则扭转证明中所定义，
+\[
+ \mathrm{err}_\ell=t\,v_\ell(A_{\rm odd})+
+   \bigl(8ft+2+(4t+1)h_*^{22}+h_*\bigr)g_\ell.
+\]
+若系数 $d$ 满足归一化赋值界
+\[
+ v_\ell(d)\le S_\ell+\mathrm{loc}
+      +t'v_\ell(A_{\rm odd})
+      +t'\bigl(2R_\ell+8f g_\ell+2n_{\rm D}a_*\bigr)
+      +(k+1)a_* .
+\]
+则有 $v_\ell(d)+2g_\ell\le S_\ell+2t' R_\ell+\mathrm{loc}+\mathrm{err}_\ell$.
+\end{lemma}
+\begin{proof}
+若原长度按系数环的一致化元计量，将其同乘 $v_\ell(\pi)$ 即化为陈述中的归一化赋值（因 $v_\ell(\ell)=1$）.
+其中局部损失与 Selmer 损失分别归入 $\mathrm{loc}$ 与 $S_\ell$，每个奇类项至多为 $v_\ell(A_{\rm odd})$.
+对分离误差，有
+\[
+ \begin{aligned}
+ 2t'n_{\rm D}a_*+(k+1)a_*
+ &\le4t'(k+n_{\rm T})a_*+(k+n_{\rm T})a_*+a_*\\
+ &\le(4t'+1)L_*+a_*\\
+ &\le\bigl((4t+1)h_*^{22}+h_*\bigr)g_\ell .
+ \end{aligned}
+\]
+再将 $8ft' g_\ell$ 放宽为 $8ft g_\ell$，将奇类的 $t'$ 项放宽为 $t$ 项，并计入 $2g_\ell$，即得误差项中的全部系数.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TraceRelations.lean\#L106}{同余误差的定义}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/RibetLemma.lean}{522}.}
+\begin{lemma}[离散赋值环上的共同 Ribet 元素]
+\label{lem:c-abstract-ribet-element}
+\emitthmsource
+设 $O$ 为离散赋值环，$(u_x)$ 是一有限族整矩阵表示，在 $\mathcal X$ 上分解为主块 $\rho_x$ 与 $t$ 个特征 $\xi_e$（其中 $\xi_0=1$）. 取定 $\pi\in\mathcal X$，设 $\rho_\pi(G)$ 张成全部矩阵空间. 对每个 $x\in\mathcal X$，存在 $\gamma_x$ 在主块上作用为与 $1$ 相差单位的标量，并在各特征上作用为 $1$. 令 $S$ 为包含 $X_j$ 以及 $u_x(g)$ 特征多项式系数的族代数，迹子模 $\mathcal J$ 包含 $\varpi g$ 的迹以及下列元素乘以任意 $g$ 的迹：
+\[
+  \tau_{j,b}-1-X_j(\phi_{j,b}-1)\varepsilon_j(\phi_{j,b}),
+  \qquad b\in\{0,1\}.
+\]
+其中 $\varpi$ 为非零整元，且 $\varepsilon_j(\xi_e(\phi_{j,b}))\equiv1\bmod\varpi$. 设在元素 $a$ 处的特征差之积 $\prod_{e'\ne e}(\xi_e(a)-\xi_{e'}(a))$ 整除 $C$，且各指标 $j$ 的特征类型单调. 采用如下长度预算：
+\begin{itemize}
+\item 主块中取值于 $\operatorname{Frac}(O)/O$、遵守全族 $u_x(g)-1$ 线性关系并在 $\gamma_\pi,\tau_{j,b}$ 处归零的上闭链模，其长度至多为 $b_0$.
+\item 在旧位元素 $\delta_v$ 上，各特征皆平凡且每个 $u_x(\delta_v)$ 均被 $o_v(X)(X-1)$ 零化. 相应的模 $\varpi$ 特征上闭链遵守全族线性关系、在 $\delta_v$ 处归零，且一旦在 $\gamma_\pi$ 处归零便满足 $(\xi_e(g)-1)z(a)=0$；此类上闭链由有限集合 $s$ 检测，沿类型 $e$ 的素数三角具有费用上界 $b_e$.
+\end{itemize}
+则所有 $D_\omega(x)=\det(\sum_g\omega_g(u_x(g)-I))$ 皆属于 $S$ 并在 $\mathcal X$ 上取零，且存在共同乘子 $F\in S$ 使得 $F D_\omega\in\mathcal J$. 令 $X_\ast=\prod_j X_j$，则在 $\mathcal X$ 上 $F$ 的全部真整除 $X_\ast$ 的单项式系数均为零，且 $[X_\ast]F(\pi)$ 来自满足下式的 $d\in O$：
+\[
+ v(d)\le b_0+\sum_e b_e+
+ t\left(\sum_v v(o_v(1))+2|s|\,v(C)\right)+(|J|+1)v(C).
+\]
+\end{lemma}
+
+\begin{proof}
+首先说明上述三角代价的含义，即逐项消去两条驯惯性取值之差所需的预算：具体地，可在特征上闭链模中先对一组元素施加零值条件；在所得子模中，对类型 $e$ 的第 $j$ 项，若此前各项的驯惯性取值皆成对相等且该类型此前各项的 Frobenius 取值亦成对相等，则 $C$ 零化第 $j$ 项的驯惯性差. 施加该组零值条件的长度损失，加上满足全部驯惯性零值与该类型 Frobenius 成对相等的任一子模除去 $C$-挠部后的长度，总计至多为 $b_e$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L522}{特征上闭链和三角代价的假设}.}
+
+选取有限族 $u_x(g)-I$ 的一组有限生成元以记录坐标. 若群代数中的一行作用于该组生成元的和落入迹关系所用的左理想中，则称该行满足绑定条件. 主块上闭链的长度界给出一个带绑定条件的行矩阵 $B_0$，其在主块 $\rho_\pi$ 作用并取 $X_j=0$ 后的行列式赋值至多为 $b_0$. 各特征的三角代价与检测条件则给出特征行矩阵及其行列式的加权和：对每个类型 $e$，该和在所考察的无平方因子单项式（即 $X_\ast$ 的全部因子）中均带有因子 $\prod_{\operatorname{type}(j)=e} X_j$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L600}{主块和特征的行矩阵}.}
+
+在群代数中构造投影元 $k$，使其在主块上为零、在各特征上为 $1$；再由 $a$ 处的特征差构造分离元，使其在指定特征上为 $C$、在其余特征上为零. 对每个特征行矩阵 $B_i$，以 $(1-k)B_0+kB_i$ 拼合，便在迹理想内得到适用于全部行列式 $D_\omega$ 的乘子，再按特征行矩阵的系数加权求和. 在 $\mathcal X$ 上，所得乘子分解为 $C c_0^t$、主块行列式 $D(x)$ 与各特征行列式和的乘积，其中 $c_0=\prod_v o_v(1) C^{|s|}$. 此外，$D_\omega\in S$ 的行列式计算仅用到全族的特征多项式系数，而平凡特征 $\xi_0$ 保证了它在 $\mathcal X$ 上含有零块，故在 $\mathcal X$ 上取零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L218}{拼合绑定行产生共同乘子}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L622}{乘子的块分解}.}
+
+将各类型的单项式因子相乘恰得 $X_\ast$，而其余修正项皆落入相应的单项式商理想中，从而乘积在其余待读系数上全部消失. 因此 $d$ 等于 $C c_0^t$、$D(\pi)$ 的常数项以及剩余特征乘子常数项三者之积. 三项的赋值界依次为 $v(C)+t\,v(c_0)$、$b_0$ 与 $\sum_e b_e+(|J|+t|s|)v(C)$，将 $v(c_0)$ 展开并相加即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L379}{特征乘子常数项的赋值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L667}{最高系数与总赋值}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/RibetElement.lean}{268}.}
+\begin{lemma}[共轭自对偶表示的 Ribet 元素]
+\label{lem:c-ribet-columns}
+\emitthmsource
+固定下降对、与扭转 $\vartheta$ 相容的类型，以及其秩差 $t'>0$ 与源秩 $r'$.
+设反分圆特征 $\psi$ 的辅助模与分歧预算符合一阶分母估计的条件.
+取深度为 $\nu$ 的辅助素数三角，其分离预算与测试预算分别为 $h_* h$、$h_*^{22}h$，且满足 $h\le g_\ell$.
+设 $(N_\lambda)_\lambda$ 为有限族归一化表示，具有由同一类型规定的共轭自对偶性、惯性标签、权条件及扭转惯性二次关系；在提升系集合 $\mathcal X$ 上，其迹分解为扭转主分量 $\psi R_\lambda$ 与 $\chi_\ell^{-e}$（$0\le e<t'$）的迹之和.
+设各主分量皆配有扭转格，在某个惯性元处作用为与 $1$ 相差单位的标量；在指定特征系 $\lambda_0\in\mathcal X$ 处，其 Selmer 长度具有有限上界 $S_\ell$.
+假定系数环与迹子模包含 $\ell^\nu$ 倍的迹以及辅助素数三角的迹关系（其中 $H_j(1)=1$）.
+在上述条件下，对 $\delta_g(\lambda)=\det(I-N_\lambda(g))$ 存在共同的 Ribet 元素：每个 $\delta_g$ 皆属于系数代数并在 $\mathcal X$ 上为零，乘以此元素后即落入给定迹子模；该元素在 $\mathcal X$ 上所有真整除 $\prod_j X_j$ 的系数皆为零，且在 $\lambda_0$ 处的 $\prod_j X_j$ 系数 $d$ 满足
+\[
+ v_\ell(d)+2g_\ell\le
+ S_\ell+2t'R_\ell+r'\mathrm{loc}_\ell+\mathrm{err}_\ell .
+\]
+\end{lemma}
+\begin{proof}
+先选取共同的有限次系数域，记其整数环为 $O$.
+当 $O$ 充分大时，各 $H_j$ 皆有整模型且仍满足 $H_j(1)=1$.
+对 $\lambda\in\mathcal X$，可为 $N_\lambda$ 选取块对角格，使其首块为 $\psi R_\lambda$ 的扭转格，其余各块为 $\chi_\ell^{-e}$；这可由迹分解、给定维数下半单块的识别以及格构造定理同时实现，其中对 $\lambda_0$ 选用已有 Selmer 长度界的格.
+对其余 $N_\lambda$ 亦取整模型. 因局部缺陷与奇类界的模型结论对充分大的 $O$ 均成立，由有限性即可选取同一个 $O$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetElement.lean\#L155}{块分解与共同的系数环}.}
+
+因 $\psi$ 在 $\ell$ 上方各位的分解群上平凡，$\lambda_0$ 处的扭转主分量与未扭转格具有相同的 $\ell$ 上方局部类型.
+在这些局部类型上比较结晶关系，便得主分量的上闭链长度上界为 $S_\ell$ 加上主分量的局部缺陷：具体地，先对每个模 $\ell^a$ 的上闭链应用局部长度比较以估计额外局部关系的余长，再令 $a$ 遍历正整数即得可除系数的界.
+主分量的缺陷与各 Tate 特征的结晶余长之归一化和至多为 $r'\mathrm{loc}_\ell$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetElement.lean\#L214}{主块的上闭链长度和各块的局部缺陷}.}
+
+辅助素数三角给出区分各 $\chi_\ell^{-e}$ 的元素 $g_0$，其差值乘积的赋值至多为 $a_*=h_*h$；测试点与 $g_0$ 共同检测允许的 Tate 上闭链.
+将测试点与惯性元及其共轭逆合并后，所需检测点数至多为 $2(k+n_{\rm T})$，且满足 $(k+n_{\rm T})a_*\le h_*^{22}h$.
+在辅助位处有 $\ell^\nu\mid(q_w-1)$，故各 Tate 特征在相应 Frobenius 元上模 $\ell^\nu$ 等于 $1$；再由 $H_j(1)=1$ 可知，$H_j$ 在这些特征值上的取值亦模 $\ell^\nu$ 等于 $1$.
+共轭自对偶性将原迹关系传递至包含共轭逆的迹关系；扭转模处的二次关系则给出其余驯关系，其归一化损失至多为 $2R_\ell+8f g_\ell$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TraceRelations.lean\#L576}{Tate 上闭链的三角代价}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetElement.lean\#L395}{加上共轭逆的迹关系}.}
+
+对上述整矩阵模型应用引理~\ref{lem:c-abstract-ribet-element}，以块对角迹分解、主块上闭链长度、各 Tate 特征的检测以及迹关系为输入，即可得到共同的多项式与最高系数 $d$.
+其误差逐项由主分量 Selmer 长度、全部局部缺陷、每个 Tate 特征的奇类项、每个 Tate 特征的驯分歧与检测点代价，以及 $(k+1)a_*$ 的分离费用组成，恰对应引理~\ref{lem:c-ribet-valuation-budget} 中的上界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/RibetLemma.lean\#L551}{一般 Ribet 元素与最高系数界}.}
+
+此外，引理~\ref{lem:c-abstract-ribet-element} 同时控制任意有限整系数线性组合 $\sum_g b_g(N_\lambda(g)-I)$ 的行列式；取仅在单个 $g$ 处取系数 $-1$ 的组合，即得关于 $\delta_g$ 与同一多项式的结论.
+换回原表示时，各格的矩阵共轭不改变行列式与迹，故所取元素同样适用于原系数代数.
+最后由引理~\ref{lem:c-ribet-valuation-budget} 合并各项费用，即得所证不等式.
+\end{proof}
+
+\section{素数三角与 Frobenius 根链}
+\label{sec:c-prime-triangle}
+
+本节沿用 Taylor--Wiles~\cite{TaylorWiles1995} 选取辅助素数的思路. 为在任意同余深度同时控制偶 Selmer 上闭链和基准层弱提升，逐个选取满足指定 Frobenius 条件的辅助位，并以 Kummer 取值的三角关系控制各步损失. 所用的 Galois 上同调背景见 Neukirch、Schmidt 和 Wingberg~\cite{NSW2008}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/TrianglePrimes.lean}{72}.}
+\begin{lemma}[分圆幂差的整除预算]
+\label{lem:c-triangle-power-differences}
+\emitthmsource
+设 $u\in\mathbb Z_\ell^\times$，$t+2\le y$，且对所有 $0<a<t$ 均有 $u^a-1\mid\ell^h$. 则对任意 $0\le e<t$ 及满足 $m\mid\ell^{3h}$ 的 $m\in\mathbb Z_\ell$，皆有
+\[
+ m\prod_{\substack{0\le k<t\\k\ne e}}(u^e-u^k)\mid\ell^{yh}.
+\]
+\end{lemma}
+\begin{proof}
+对每个 $k\ne e$，有 $u^e-u^k=\pm u^{\min(e,k)}(u^{|e-k|}-1)$. 其中首因子为单位，且 $0<|e-k|<t$，故该幂差整除 $\ell^h$. 将这 $t-1$ 条整除关系与 $m\mid\ell^{3h}$ 相乘，便知左端整除 $\ell^{(t+2)h}$；再结合 $t+2\le y$ 即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L75}{幂差因子分解及整除}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/TrianglePrimes.lean}{200}.}
+\begin{lemma}[分离不同指数的 Kummer 映射]
+\label{lem:c-triangle-separate-kummer}
+\emitthmsource
+设 $G=\operatorname{Gal}(\overline{\mathbb Q}/E)$，$R=\mathbb Z/\ell^\nu\mathbb Z$（$\nu>0$），$G_\nu=\ker(\chi_\ell\bmod\ell^\nu)$. 固定 $\gamma\in G$，记 $u$ 为 $\chi_\ell(\gamma)$ 在 $R$ 中的像.
+给定有限族 Kummer 映射 $\psi_i$，其指数为 $d_i\in\{0,\ldots,t-1\}$，另取一映射 $\psi_0$，其指数为 $e\in\{0,\ldots,t-1\}$. 若所有指数为 $e$ 的 $\psi_i$ 在 $G_\nu$ 上模 $\ell$ 线性无关，且 $\psi_0$ 的约化不在它们的线性张成之中，则存在 $b\in G_\nu$，使得
+\[
+  \psi_i(b)=0\quad\text{对每个 }i,\qquad
+  \psi_0(b)=\prod_{\substack{0\le k<t\\k\ne e}}(u^e-u^k).
+\]
+\end{lemma}
+\begin{proof}
+Kummer 映射限制在 $G_\nu$ 上均为加法同态. 将 $\psi_0$ 与所有指数为 $e$ 的既有映射组成联合取值映射，值域为 $R^s$（其中 $s$ 为这些映射的总数）. 因 $R$ 的标量可由整数表示，其像 $B$ 为 $R$-子模. 若模 $\ell$ 后的像为真子空间，则存在非零线性泛函在像上恒为零，从而给出被假设排除的线性关系. 故有 $R^s=B+\ell R^s$；在商模 $R^s/B$ 中反复利用 $R^s/B=\ell(R^s/B)$ 共 $\nu$ 次，即得 $B=R^s$. 由此可取 $b_0\in G_\nu$，使 $\psi_0(b_0)=1$，而其余同指数映射均取值为零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L112}{联合取值满射}.}
+
+对每个 $a\ne e$，将 $b_0$（或当前所得的任意 $b'\in G_\nu$）替换为
+\[
+  (\gamma b'\gamma^{-1})^{[u^{-1}]}(b')^{[-u^a]},
+\]
+其中 $[\cdot]$ 表示 $R$ 中元素的最小非负整数代表元. 由于 $G_\nu$ 是正规子群，新元素仍属于 $G_\nu$. 对任意指数为 $d$ 的映射 $\psi$，有 $\psi(\gamma b'\gamma^{-1})=u^{d+1}\psi(b')$，故替换后的取值为 $(u^d-u^a)\psi(b')$. 依次对所有 $0\le a<t$ 且 $a\ne e$ 施行此操作，则指数异于 $e$ 的映射必在某一步化为零，原先取值为零的同指数映射始终保持为零，而 $\psi_0$ 的最终取值恰为所求乘积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L176}{逐指数消去}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/TrianglePrimes.lean}{404}.}
+\begin{lemma}[延拓素数三角的前缀]
+\label{lem:c-triangle-next-prime}
+\emitthmsource
+设 CM 域 $E$ 包含本原 $5040$ 次单位根且至少有四个无穷位，记 $E^+$ 为其最大实子域，并沿用引理~\ref{lem:c-triangle-separate-kummer} 中的 $G,R,G_\nu$. 给定一段有限的既有数据 $(w_i,\phi_i,\psi_i,T_i,d_i)$，其中各 $w_i$ 在 $E^+$ 下的位互异且 $w_i\nmid\ell$，$\phi_i\in G_\nu$，$\psi_i$ 为指数 $d_i$ 的 Kummer 映射，$T_i$ 为其禁用位集. 设对拟增添的指数 $e$，既有同指数映射的约化线性无关. 给定 $g\in\ker\chi_\ell$、满足下述条件的允许集合 $W$ 以及引理~\ref{lem:c-triangle-power-differences} 中的参数（其中 $u=\chi_\ell(\gamma)$ 且 $4\mid\ell^{3h}$）：对任意 $s\in G$，均存在 $\delta\in\ker\chi_\ell$，使 $W$ 属于 $\delta^{\ell^\nu}s$ 处的 Frobenius 滤子.
+
+则可增添一个新位 $w$，及其对应的 Frobenius 元 $\phi\in G_\nu$、Kummer 映射 $\psi_0$ 与禁用位集 $T_0$，使得新位在 $E^+$ 下避开 $T_0$、所有 $T_i$ 以及全部既有位；新映射具有指数 $e$，按既有同指数各位施加局部条件，且其约化不在既有同指数映射的张成之中；Frobenius 数据落入 $W$，并满足
+\[
+ \psi_i(\phi)=0\quad\text{对每个 }i,\qquad
+ 2\psi_0(\phi)\mid\ell^{yh}\quad\text{在 }R\text{ 中},\qquad
+ z(\phi)=2z(g)
+\]
+其中最后一式对所有指数为 $e$ 且在 $\ell$ 外非分歧的偶 Selmer 上闭链 $z$ 均成立.
+\end{lemma}
+\begin{proof}
+设既有同指数的位共有 $s_e$ 个. 由 Kummer 映射的维数定理，存在包含 $\ell$ 上方以及上述既有位在 $E^+$ 下全部位的有限集 $T_0$，使得以这些位为局部条件、在 $T_0$ 外非分歧的 Kummer 映射之约化所张成空间的维数大于 $s_e$. 因而可在此族中选取 $\psi_0$，使其约化不在既有同指数映射的张成内. 再由引理~\ref{lem:c-triangle-separate-kummer} 得到 $b\in G_\nu$，满足 $\psi_i(b)=0$ 且 $\psi_0(b)$ 等于相应的幂差乘积.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L153}{从维数界选择新 Kummer 映射}.}
+
+记 $\bar a=cac^{-1}$，其中 $c$ 为复共轭. 在 $W$ 的假设中取 $s=g\bar g(b/\bar b)$，得到 $\delta$，并令 $\sigma=\delta^{\ell^\nu}s\in G_\nu$. 对每个 Kummer 映射，由 $G_\nu$ 上的加法性与复共轭奇性可得
+\[
+ \psi(\sigma)=\ell^\nu\psi(\delta)+\psi(g)-\psi(g)
+                  +\psi(b)+\psi(b)=2\psi(b).
+\]
+对偶上闭链，同样的计算在 $G_\nu$ 上给出 $z(\sigma)=2z(g)$. 由于 $\nu$ 固定，取值于 $R(-e)$ 的非分歧上闭链只有有限多个，且均在 $\sigma$ 处局部常值. 选取公共邻域后，任意系数环上的等式皆可通过将其模 $\ell^\nu$ 的系数映入 $R$ 来验证；这些加法映射既能分离点，又与 Tate 扭转的标量作用交换，故 $z(\phi)=2z(g)$ 在同一邻域内对所有系数环同时成立. 进一步要求该邻域包含于 $G_\nu$，并使有限族内全部 Kummer 映射保持在 $\sigma$ 处的取值.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L274}{奇映射的局部常值}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L291}{偶上闭链的统一邻域}.}
+
+由 Chebotarev 密度定理，该 Frobenius 滤子为真滤子. 将上述邻域条件、$W$ 以及避开 $\ell$ 与前述有限集的条件取交，即得满足要求的 $w$ 与 $\phi$. 此时有 $2\psi_0(\phi)=4\psi_0(b)$；由引理~\ref{lem:c-triangle-power-differences}，$4$ 乘以相应的 $\ell$-进幂差乘积整除 $\ell^{yh}$，约化至 $R$ 即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L417}{新位和新映射的联合构造}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/TrianglePrimes.lean}{543}.}
+\begin{lemma}[先前条件下的单项驯惯性零化]
+\label{lem:c-triangle-tame}
+\emitthmsource
+沿有限全序集 $J$ 重复引理~\ref{lem:c-triangle-next-prime} 的延拓构造，记 $\tau_i$ 为位 $w_i$ 处所选的驯惯性生成元. 设 $z$ 为指数 $d_j$ 的偶 Selmer 上闭链，允许在各 $w_i$ 及其共轭位处额外分歧. 若
+\[
+ z(\tau_i)=0\quad(i<j),\qquad
+ z(\phi_i)=0\quad(i<j,\ d_i=d_j),
+\]
+则 $\ell^{yh}z(\tau_j)=0$.
+\end{lemma}
+\begin{proof}
+在 $\ell$ 之外各位的惯性群上，扭转作用平凡，故 $z$ 的限制为加法同态. 设该位的剩余域特征为 $p_w\ne\ell$，则野惯性群为 pro-$p_w$ 群，其在被 $\ell^\nu$ 零化的系数模中的连续像必为零；而驯惯性的 $\ell$-部由 $\tau_i$ 拓扑生成. 由此可知 $z(\tau_i)=0$ 蕴含 $z$ 在 $w_i$ 处非分歧，再由复共轭偶性即得在 $\overline{w_i}$ 处亦非分歧.
+
+下面对第 $j$ 个映射 $\psi_j$ 应用 Kummer 互反律. 既有同指数各位均满足 $z(\phi_i)=0$，故符合互反律所需的局部条件；且所有满足 $i\ge j$ 的位皆位于 $T_j$ 之外并在 $E^+$ 下互异. 记 $\eta_i$ 为按 $E^+$ 的一致约定归一化的驯惯性生成元，则互反律给出
+\[
+ \sum_{i\ge j}2\psi_j(\phi_i)z(\eta_i)=0.
+\]
+由于所有后添位皆使既有映射 $\psi_j$ 在其 Frobenius 元处取零，上式仅余 $i=j$ 一项. 结合 $2\psi_j(\phi_j)\mid\ell^{yh}$，便得 $\ell^{yh}z(\eta_j)=0$. 又因 $z$ 在该位通过循环驯惯性商分解，$z(\tau_j)$ 是 $z(\eta_j)$ 的整数倍，故同一个因子 $\ell^{yh}$ 亦零化 $z(\tau_j)$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/KummerMaps.lean\#L692}{互反律的单项形式和生成元换算}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L551}{去除早先位的分歧}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/TrianglePrimes.lean}{624}.}
+\begin{theorem}[给定 Frobenius 条件的素数三角]
+\label{thm:c-prime-triangle}
+\emitthmsource
+在上述 CM 域条件下，进一步假设 $E\subseteq\mathbb Q(\mu_N)$，$N>0$ 且 $N+t<y$. 设 $\gamma$ 拓扑生成 $G/\ker\chi_\ell$，令 $u=\chi_\ell(\gamma)$，假定对所有 $0<a<t$ 均有 $u^a-1\mid\ell^h$，且满足 $\ell\le y^2$ 或 $h=0$. 若对每个 $\nu>0$，$W$ 皆满足引理~\ref{lem:c-triangle-next-prime} 的 Frobenius 滤子条件，则存在与 $\nu$ 无关的有限全序集 $J$ 及不减正指数列 $d_j<t$，使得对每个 $\nu>0$，均可在 $W$ 中选出以 $J$ 为指标的 Taylor--Wiles 位，其范数满足 $q_{w_j}\equiv1\pmod{\ell^\nu}$，构成以 $\gamma^{-1}$ 为基准元、一步损失为 $yh$ 且总损失为 $y^{22}h$ 的素数三角.
+\end{theorem}
+\begin{proof}
+选取有限集 $S\subset\ker\chi_\ell$，使 $\gamma^{-1}$ 与 $S$ 共同检测在 $\ell$ 外非分歧的 Tate 扭转上闭链，并在 $\ell\le y^2$ 时满足 $\#S\le y^{20}$. 该检测集可由分圆域上的有限检测集导出：将原有各检测点分解为 $g_0 b$，其中 $g_0\in\ker\chi_\ell$，$b$ 属于由 $\gamma^{-1}$ 的幂生成的闭子群. 因上闭链的零点集构成闭子群，只要上闭链在 $\gamma^{-1}$ 及所有新点 $g_0$ 上取零，它便在全部原检测点上取零，而每个原检测点至多引入一个新点.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Cyclotomic/OddSha.lean\#L264}{分圆核内的统一有限检测集}.}
+
+为 $S$ 任选一全序，令 $J=\{1,\ldots,t-1\}\times S$ 按字典序排列，并置 $d_{(e,g)}=e$. 由于 $E$ 含四次单位根，在 $\mathbb Z_\ell$ 中有 $4\mid u^e-1$；只要存在正指数，便有 $4\mid\ell^h$，从而 $4(u^e-1)^2\mid\ell^{3h}$. 又由 $N+t<y$ 可得 $t+2\le y$. 给定深度 $\nu$，沿 $J$ 依次应用引理~\ref{lem:c-triangle-next-prime}，在每一步取相应的 $g\in S$. 新映射约化的线性无关性保证了同指数族始终保持线性无关. 因各位在 $E^+$ 下互异且 Frobenius 元固定 $\ell^\nu$ 次单位根，各位及其共轭互不重合，且满足 $\ell^\nu\mid q_{w_j}-1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L497}{沿全序递归选择}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L606}{从固定单位根得到范数同余}.}
+
+对每个 $(e,g)\in J$，相应的 $\phi_j$ 使得指数为 $e$ 的非分歧偶上闭链满足 $z(\phi_j)=2z(g)$. 引理~\ref{lem:c-triangle-tame} 给出一步消去，分离幂差乘积的整除性由引理~\ref{lem:c-triangle-power-differences} 取 $m=1$ 得到，另一所需的整除关系 $4(u^e-1)^2\mid\ell^{yh}$ 则由上述 $3h$ 界及 $y\ge3$ 导出. 以 $\gamma^{-1}$ 为基准元时，逆分圆扭转的特征值恰为 $u^e$. 最后，当 $h=0$ 时总损失为零；否则有 $\ell\le y^2$，从而
+\[
+ (\#J+\#S+1)yh\le (t+2)y^{20}yh\le y^{22}h.
+\]
+这就验证了素数三角的全部条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L643}{素数三角和总损失估计}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/HeckeStrings.lean}{155}.}
+\begin{lemma}[首一因子消去与余因子的整归一化]
+\label{lem:c-hecke-chain-integral-normalization}
+\emitthmsource
+设 $A,A',B,C\in\overline{\mathbb Q}_\ell[X]$，其中 $B$ 为首一多项式，$C$ 为整多项式. 若模极大理想逐系数成立 $AB\equiv C\equiv A'B$，且 $|A'(1)|_\ell\ge1$，则存在整多项式 $E_0$，使得 $A\mid E_0$ 且 $E_0(1)=1$.
+\end{lemma}
+\begin{proof}
+对任意非零多项式 $F$，记 $i$ 为使 $F$ 的系数达到最大模的最大指标，$j$ 为 $B$ 对应的最大指标. 则 $F_i B_j$ 是 $(FB)_{i+j}$ 中唯一达到两最大模之积的项，因为其余各项或者其 $F$ 指标大于 $i$，或者其 $B$ 指标大于 $j$. 由此可见多项式的系数最大模具有乘法性；又因 $B$ 为首一多项式，其最大模至少为 $1$，故有 $\|F\|\le\|FB\|$（其中 $\|\cdot\|$ 表示系数的最大模）.
+
+由 $AB\equiv C$ 及 $C$ 整可知 $\|AB\|\le1$，进而 $\|A\|\le1$. 两式同余相减得 $\|(A-A')B\|<1$，从而 $|A(1)-A'(1)|_\ell<1$，故 $|A(1)|_\ell=|A'(1)|_\ell\ge1$. 令 $E_0=A/A(1)$，即同时满足整性与 $E_0(1)=1$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L158}{首一因子消去和整多项式的构造}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/HeckeStrings.lean}{345}.}
+\begin{lemma}[Frobenius 处的完整根链]
+\label{lem:c-hecke-local-root-chain}
+\emitthmsource
+设基准层特征系 $x$ 的归一化表示 $N_x$ 具有整特征多项式，且对所有 $g$ 其特征多项式均以 $1$ 为根. 记 $d$ 为两个 Hermite 空间的秩差，$\alpha(\phi)$ 为归一化所用的 $\ell$-进特征值. 对几乎所有 Frobenius 数据 $(w,\phi)$，若
+\[
+ \operatorname{charpol}(N_x(\phi))\equiv S(X)\prod_{i=0}^{d-1}(X-\chi_\ell(\phi)^{-i}),
+ \qquad |S(1)|_\ell\ge1 ,
+\]
+则复 Hecke 多项式 $H_{x,w}$ 在变量经 $\alpha(\phi)^{-1}$ 缩放后，包含完整根链 $\prod_{i<d}(X-q_w^i)$，且其余因子整除某个在 $1$ 处取值为 $1$ 的 $\ell$-进整多项式在复嵌入下的像.
+\end{lemma}
+\begin{proof}
+在几乎所有位处均可应用 Hecke 多项式与 Galois 表示的相伴关系. 对弱提升应用已证的根链整除性，可知归一化复 Hecke 多项式形如 $B_w T_w$，其中 $B_w=\prod_{i<d}(X-q_w^i)$. 固定同构 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_\ell$. 在几何 Frobenius 处有 $\chi_\ell(\phi)^{-1}=q_w$，故 $\iota(B_w)=B=\prod_{i<d}(X-\chi_\ell(\phi)^{-i})$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L326}{弱提升的根链整除}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L355}{相伴关系与几乎处处条件}.}
+
+设 Hecke 多项式的次数为 $n$. 将矩阵乘以 $\alpha=\alpha(\phi)$ 时，特征多项式按 $P(X)\mapsto\alpha^n P(\alpha^{-1}X)$ 变换；因 $|\alpha|_\ell=1$，该变换仅给各项系数乘以单位. 相伴关系所给出的逐系数同余随之化为
+\[
+ \alpha^n\iota(T_w)B\equiv\operatorname{charpol}(N_x(\phi))\equiv S B .
+\]
+在引理~\ref{lem:c-hecke-chain-integral-normalization} 中取 $A=\alpha^n\iota(T_w)$ 与 $A'=S$，即得满足 $A\mid E_0$ 与 $E_0(1)=1$ 的整多项式 $E_0$. 因 $\alpha^n$ 为单位，亦有 $\iota(T_w)\mid E_0$；沿 $\iota^{-1}$ 传回即得结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L374}{根链因子化及 Hecke 同余的缩放}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{205}.}
+\begin{lemma}[避开根 $1$ 的邻域与允许位集]
+\label{lem:c-hecke-allowed-frobenii}
+\emitthmsource
+令 $T=\vartheta^{-1}R$ 为主分量的辅助扭转. 取满足提升设定的基准层数据及整归一化特征多项式. 记 $W$ 为由下述 Frobenius 数据组成的集合：所在位避开坏位与基准层；所有弱提升在满足引理~\ref{lem:c-hecke-local-root-chain} 的同余条件时皆具有相应完整根链；且主分量满足 $|\det(I-T(\phi))|_\ell\ge1$. 则对任意 $\nu$ 与 $g$，均存在满足 $\chi_\ell(\delta)=1$ 的 $\delta$，使得 $W$ 属于 $\delta^{\ell^\nu}g$ 处的 Frobenius 滤子.
+\end{lemma}
+\begin{proof}
+主分量条件给出某个层素数处的惯性元 $\gamma$，其在 $R$ 上作用为标量 $y$. 置 $u=y^{\ell^\nu}$，则对 $1\le j\le4r'+2$（其中 $r'$ 为 $R$ 的秩）均有 $|u^j-1|_\ell=1$. 因该层素数异于 $\ell$ 且辅助扭转在该处非分歧，故 $\chi_\ell(\gamma)=\vartheta^{-1}(\gamma)=1$，从而
+\[
+ T((\gamma^i)^{\ell^\nu}g)=u^i T(g).
+\]
+固定 $T(g)$ 的一个特征值 $\mu$. 对 $0\le i<j\le r'$，若 $u^i\mu$ 与 $u^j\mu$ 均与 $1$ 同余，则 $|u^i\mu|_\ell=1$，且
+$|u^i\mu(u^{j-i}-1)|_\ell<1$，与 $|u^{j-i}-1|_\ell=1$ 矛盾. 由此可见，每个特征值至多排除一个指标 $i$. 因特征值至多有 $r'$ 个，必可从 $r'+1$ 个指标中选出某个 $i$，使得
+\[
+ |\det(I-u^iT(g))|_\ell=\prod_\mu |1-u^i\mu|_\ell\ge1.
+\]
+由于行列式与表示皆连续，且 $\ell$-进开单位球同时为闭集，上述不等式在 $\delta^{\ell^\nu}g$（其中 $\delta=\gamma^i$）的某个邻域内持续成立.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L242}{惯性标量及扭转平凡性}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L224}{局部一致的行列式界}.}
+
+避开坏位与基准层的要求只需排除有限多个位即可满足. 又因基准层的特征系只有有限多个，可将引理~\ref{lem:c-hecke-local-root-chain} 的几乎处处结论在相应 Frobenius 滤子中取有限交；再与上述行列式界取交，即得集合 $W$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L265}{将各条件在 Frobenius 滤子中合取}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{279}.}
+\begin{lemma}[带有完整根链的 Taylor--Wiles 素数三角]
+\label{lem:c-hecke-root-chain-triangle}
+\emitthmsource
+在引理~\ref{lem:c-hecke-allowed-frobenii} 的设定及主分量迹分解下，设 $g_1$ 为模分圆核的拓扑生成元，令 $u=\chi_\ell(g_1)$，并设对所有 $0<a<t$ 均有 $u^a-1\mid\ell^h$. 记 $d$ 为秩差，$y$ 为给定半间距，并假设 $\ell\le y^2$ 或 $h=0$. 则存在指标集 $J$ 与正指数 $d_j<d$，使得对每个深度 $\nu>0$，均存在一步损失为 $yh$、总损失为 $y^{22}h$ 且避开坏位与基准层的素数三角；此外，对每个 $j\in J$，均存在与特征系无关、满足 $H_j(1)=1$ 的整多项式 $H_j$，使得每个与指定提升 $x_0$ 剩余特征多项式同余的基准层弱提升，在位 $w_j$ 处的归一化 Hecke 多项式均包含根链 $\prod_{i<d}(X-q_{w_j}^i)$，且其余因子整除 $H_j$ 的复像.
+\end{lemma}
+\begin{proof}
+取用引理~\ref{lem:c-hecke-allowed-frobenii} 中的允许集 $W$. 由秩界得 $d\le t$，由半间距界得 $N+d<y$（其中 $N$ 为所用分圆导子）. 于是可以 $d$ 代 $t$ 应用定理~\ref{thm:c-prime-triangle}，得到所求素数三角，且全部所选位均属于 $W$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L342}{将秩差和分圆导子代入半间距界}.}
+
+记 $S_0(g,X)=\operatorname{charpol}(T(g))$. 将迹分解应用于 $g^k$，可知 $N_{x_0}(g)^k$ 的迹等于 $T(g)^k$ 的迹与 $d$ 个分圆特征 $k$ 次幂之和；由 Newton 恒等式即得
+\[
+ \operatorname{charpol}(N_{x_0}(g))=S_0(g,X)\prod_{i<d}(X-\chi_\ell(g)^{-i}).
+\]
+在位 $w_j$ 处，$W$ 的最后一项条件保证 $|S_0(\phi_j,1)|_\ell\ge1$，因此对每个与 $x_0$ 同余的弱提升 $x$，均可以 $S_0(\phi_j,X)$ 作为引理~\ref{lem:c-hecke-local-root-chain} 的输入，记所得整多项式为 $H_{j,x}$. 因基准层弱提升特征系只有有限多个，可置 $H_j=\prod_x H_{j,x}$（空积取 $1$）. 每个因子在 $1$ 处的取值均为 $1$，且各弱提升的余因子在复像中仍整除 $H_j$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L351}{迹分解与各局部余因子的共同倍式}.}
+\end{proof}
+
+\section{共同分母算子与正则扭转族}
+\label{sec:c-denominator}
+
+先用 Ribet 元素的系数校正单个提升生成向量，再合成好形式提升像上的公共分母算子. 最后对各素数处的损失求和，得到\chapref{chap:onelift}中各步比较所需的统一预算.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{519}.}
+\begin{lemma}[基准层上的一阶分母估计]
+\label{lem:c-base-denominator}
+\emitthmsource
+固定辅助扭转 $\xi$、与其相容的一组剩余类型及该类型的基准层. 假设在坏位之外增添任意有限辅助层时，各特征系 $\lambda$ 的归一化 Galois 表示 $N_\lambda$ 均满足该类型规定的共轭自对偶性、惯性标签与权条件，并在扭转模及其共轭上方的惯性群上满足
+\[
+ (N_\lambda(g)-\psi_\xi(g)I)(N_\lambda(g)-I)=0 .
+\]
+其中 $\psi_\xi$ 为 $\xi^{-1}$ 对应的 Galois 特征. 设 $\mathcal X$ 为一族提升特征系，且每个 $\lambda\in\mathcal X$ 的归一化迹皆由相应的扭转主分量与前 $t'$ 个逆分圆特征之和给出，该扭转主分量带有下降定理所需的格. 取定基准层中的系统 $\lambda_0\in\mathcal X$，并假定其主分量另具有有限 Selmer 长度界 $S_\ell$. 仍以 $R_\ell,r',t',\mathrm{loc}_\ell,\mathrm{err}_\ell$ 分别记分歧预算、源秩、秩差及两项损失，令 $L_\ell=S_\ell+2t'R_\ell+r'\mathrm{loc}_\ell+\mathrm{err}_\ell$. 则存在某个辅助层及其上的谱权 $s$，满足
+\[
+ v_\ell(G_0^2s(\lambda_0))\le L_\ell.
+\]
+此外，若基准层上的形式 $l,z$ 满足 $G_0l$ 整、$z$ 的谱支撑含于 $\mathcal X$，且 $l,z$ 在基准层的每个弱提升特征系上取值相同，则 $G_0^2D_s z$ 亦为整形式，其中 $D_s$ 在 $\lambda$ 分量上乘以 $\iota^{-1}(s(\lambda))$.
+\end{lemma}
+\begin{proof}
+令 $\delta_g(\lambda)=\det(I-N_\lambda(g))$. 因归一化表示连续而 Galois 群紧，对任意固定的 $g$，$N_\lambda(g)$ 的正负整数幂皆有界；若某个特征值 $\alpha$ 的模不为 $1$，对相应特征向量反复作用正幂或负幂即得矛盾. 故所有特征值皆为单位，特征多项式的系数均整，特别地 $\delta_g(\lambda)$ 为整元.
+
+对基准层中的每个非弱提升特征系 $k$，选取 $g_k$ 使得 $b_k=\delta_{g_k}(k)\ne0$. 因基准层的特征系只有有限多个，下述元素均有定义：
+\[
+ \delta_0(\lambda)=\prod_k \bigl(b_k-\delta_{g_k}(\lambda)\bigr),
+ \qquad b_0=\prod_k b_k\ne0 .
+\]
+显然每个基准层非弱提升特征系均使乘积中对应的因子为零. 另一方面，在提升特征系上，归一化迹包含逆分圆特征的零次幂一项，因而特征多项式必以 $1$ 为根（由各次幂的迹即可恢复特征多项式），故对一切 $g$ 皆有 $\delta_g(\lambda)=0$，从而 $\delta_0(\lambda)=b_0$.
+
+利用分圆特征选取元素 $g_1$，使其 $a$ 次幂值与 $1$ 之差对所有 $0<a<t$ 均整除 $\ell^h$，其中 $h\le v_\ell(G_0)$（当 $\ell>r_0^{16}$ 时可取 $h=0$）. 辅助素数三角的构造先固定指标集 $J$，再允许任意正整数深度. 选取充分大的 $\nu>0$，使
+\[
+ 2n'!\,(b_0G_0^2)^{|J|+1}\mid \ell^\nu
+\]
+在 $\ell$-进整数环中成立；因左端为非零整元，这样的深度必存在. 由引理~\ref{lem:c-hecke-root-chain-triangle}，可在深度 $\nu$ 处选出素数三角的辅助位 $(w_j)_{j\in J}$：它们避开坏位与基准层，且对每个模 $\ell$-进极大理想与 $\lambda_0$ 同余的基准层弱提升，在 $w_j$ 处的归一化 Hecke 多项式均包含完整根链 $\prod_{e=0}^{t'-1}(X-q_{w_j}^{\,e})$，除去此根链后的余因子整除某个与特征系无关、且满足 $H_j(1)=1$ 的整多项式 $H_j$. 对满足 $\delta_0(\lambda)\ne0$ 的基准层特征系均可应用该结论，因其必为弱提升.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L124}{分圆元素与分离深度}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L297}{同时控制根链的辅助素数三角}.}
+
+在此辅助层的迹理想上应用引理~\ref{lem:c-ribet-columns}，以全部系统的类型与惯性二次关系、$\mathcal X$ 的扭转格以及 $\lambda_0$ 处的 Selmer 长度界为输入，即得共同的 Ribet 元素：该元素在 $\mathcal X$ 上不含任何真整除 $\prod_{j\in J}X_j$ 的单项式，且在 $\lambda_0$ 处的 $\prod_j X_j$ 系数 $d$ 满足 $v_\ell(G_0^2d)\le L_\ell$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L479}{Ribet 元素的最高系数界}.}
+
+再由引理~\ref{lem:c-hecke-ribet-polynomial} 将该 Ribet 元素实现为辅助层 Hecke 代数上的多项式 $F$. 选取 Hecke 权 $A$，使其在与 $\lambda_0$ 同余的特征系上取值为 $1$，在其余特征系上取值为 $0$，并定义谱权
+\[
+ s(\lambda)=A(\lambda)^{|J|+1}\,[\textstyle\prod_j X_j]F(\lambda).
+\]
+在 $\lambda_0$ 处有 $s(\lambda_0)=d$. 为验证整性，注意到 $\delta_0-b_0$ 属于由各 $\delta_{g_k}$ 生成的理想，故 $(\delta_0-b_0)F$ 落入连接迹与辅助位算子的理想中. 将 Hecke 权 $u$ 的作用记作 $D_u$. 对假设中的形式 $l,z$，有 $D_{\delta_0}z=b_0z$，且弱提升分量相等的条件保证 $D_{A\delta_0}l=D_{A\delta_0}z=b_0D_Az$. 又因 $z$ 支撑于 $\mathcal X$ 上，$F$ 的所有低次项系数在 $z$ 上均作用为零. 至此引理~\ref{lem:c-integral-top-coefficient} 的全部条件皆获满足：根链控制所有 $A\delta_0\ne0$ 的系统，所选深度满足整除条件，且低次系数在 $z$ 上全部消失. 于是输出 $d_0G_0 D_s z$ 为整形式（其中 $d_0$ 为使 $d_0l$ 整的正整数）；取 $d_0=G_0$ 即得所求结论.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L641}{从迹理想取出整的最高系数算子}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{1021}.}
+\begin{lemma}[单个提升生成向量的分母算子]
+\label{lem:c-one-generator-denominator}
+\emitthmsource
+沿用上述下降空间、素数 $\ell$、同构 $\iota$、群代数算子 $e$ 及辅助扭转 $\xi$. 设该扭转的分歧预算为 $R_\ell$，源秩为 $r'$，秩差为 $t'$.
+设子空间 $Z\subseteq V$ 由与该扭转相容的提升生成向量张成：所谓提升生成向量，指属于 $Z$ 且落入某个合适类型投影之像（该像包含于 $\operatorname{im}e$）中的向量，其提升 Hecke 系统配有相应的主 Galois 分量与扭转格.
+对固定的非零生成向量 $v_0$，进一步假定其主分量经扭转后的可除系数 Selmer 长度具有有限上界 $S_\ell$. 记
+\[
+ L_\ell=S_\ell+2t'R_\ell+r'\mathrm{loc}_\ell+\mathrm{err}_\ell ,
+\]
+其中 $\mathrm{loc}_\ell$ 为单位源秩的局部缺陷，$\mathrm{err}_\ell$ 为同余误差.
+则存在从 $V$ 到其底层代数形式空间的线性映射 $G$，使得每个提升生成向量 $v$ 均满足 $Gv=\mu_v v^{\mathrm{alg}}$，且 $v_\ell(\iota(\mu_{v_0}))\le L_\ell$.
+若 $y\in V$ 在 $\iota$ 处整且正交于所有伪提升，则底层代数形式等于 $G(\Pi_Zy)$ 的目标形式在 $\iota$ 处亦整.
+\end{lemma}
+\begin{proof}
+选取包含 $v_0$ 的类型投影 $C$. 每个生成向量均带有层外 Hecke 特征系；$C$ 要么将其消去，要么将其保持在原有特征系中并固定该向量.
+记这些生成向量中出现的特征系集合为 $\mathcal X$，记 $v_0$ 的特征系为 $\lambda_0$.
+取 $C(V)$ 的基准层；由所取类型与下降对的相容性，该基准层满足相应的 Galois 类型与扭转惯性二次关系，且只要 $y$ 整，便有 $G_0(Cy)^{\mathrm{alg}}$ 具整坐标（其中 $G_0$ 为所选剩余线性群的阶数之积）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L1053}{选择类型、基准层和主系统}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L960}{特征系的扭转格与指定的 Selmer 长度}.}
+
+由引理~\ref{lem:c-base-denominator} 得到某个辅助层上的谱权 $s(\lambda)$，记 $D_s$ 为在 $\lambda$-特征空间上乘以 $\iota^{-1}(s(\lambda))$ 的对角算子.
+该引理给出两部分结论：其一，
+\[
+ v_\ell(G_0^2s(\lambda_0))\le L_\ell .
+\]
+其二，若基准层上的代数形式 $l,z$ 满足 $G_0l$ 整、$z$ 的谱支撑含于 $\mathcal X$ 且 $l,z$ 在基准层的每个弱提升特征系上相同，则 $G_0^2 D_s z$ 具有整坐标. （注意此一阶结论仅在 $\lambda_0$ 处要求有界 Selmer 长度，对 $\mathcal X$ 中其余系统只要求存在扭转格.）
+
+定义 $Gv=G_0^2D_s(Cv)^{\mathrm{alg}}$. 由于每个生成向量皆被 $C$ 消去或固定，$G$ 在每个生成向量上均为上述标量作用；特别地，$v_0$ 处的系数为 $G_0^2\iota^{-1}(s(\lambda_0))$，满足所需的赋值界.
+
+现对在 $\iota$ 处整且正交于伪提升的 $y$，令 $l=(Cy)^{\mathrm{alg}}$、$z=(C\Pi_Zy)^{\mathrm{alg}}$. 显然 $G_0l$ 整；又因 $\Pi_Zy$ 是生成向量的线性组合而 $C$ 保持原特征系，$z$ 的谱支撑包含于 $\mathcal X$. 为验证弱提升条件，令 $M\subseteq V$ 为所有形如 $D_u\circ(\cdot)^{\mathrm{alg}}$ 的核之交，其中谱权 $u$ 仅支撑于弱提升特征系（基准层之外的谱权不影响 $C(V)$）. 在 $C(V)$ 中，凡落于 $M$ 之外的特征向量必属于某个弱提升特征系，故由引理~\ref{lem:c-weak-lift-hecke-root}，同一个 $w$ 对应的算子零化全部此类向量. 又因 $Z$ 的生成向量均为公共特征向量，$Z$ 在 $C$ 与层外 Hecke 算子下稳定. 由此可应用引理~\ref{lem:c-type-projection-false}，得 $C(y-\Pi_Zy)\in M$，即 $l$ 与 $z$ 的弱提升分量完全一致. 结合基准层结论即知 $G(\Pi_Zy)=G_0^2D_s z$ 为整形式. 在 $\ell$ 上方整的点上各坐标皆整，恰等价于所有点处的 $\iota$-范数至多为 $1$，从而相应的目标形式在 $\iota$ 处整.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L940}{代数坐标与目标格的整性}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{1145}.}
+\begin{lemma}[全体提升生成向量的公共分母算子]
+\label{lem:c-common-denominator}
+\emitthmsource
+沿用引理~\ref{lem:c-one-generator-denominator} 的设定.
+若 $Z$ 由 Selmer 长度皆至多为 $S_\ell<\infty$ 的提升生成向量张成，则存在 $\Lambda\in\operatorname{End}_{\mathbb C}(Z)$，保持每个层外分裂位上每个 Hecke 多项式算子的特征空间，且其特征值 $\mu$ 均满足 $v_\ell(\iota(\mu))\le L_\ell$.
+此外，对任意在 $\iota$ 处整且正交于所有伪提升的 $y$，$\Lambda\Pi_Zy$ 在 $\iota$ 处亦整.
+\end{lemma}
+\begin{proof}
+由提升生成向量组成 $Z$ 的一组基 $(v_i)_{i=1}^d$.
+对每个 $v_k$ 应用引理~\ref{lem:c-one-generator-denominator}，得到线性映射 $G_k$，并记 $a_{ki}$ 为 $G_kv_i$ 相对于 $v_i^{\mathrm{alg}}$ 的标量系数.
+在 $Z$ 上定义线性算子 $A_k$ 为 $A_kv_i=a_{ki}v_i$，则取底层代数形式后 $A_k$ 与 $G_k$ 在整个 $Z$ 上一致.
+因此 $A_k$ 将每个符合条件的 $\Pi_Zy$ 映入整格，且满足 $v_\ell(\iota(a_{kk}))\le L_\ell$.
+
+对每一列 $i$，将线性式 $\sum_k\iota(a_{ki})X_k$ 除以该列中模最大的系数 $\iota(a_{ki})$.
+所得线性式具整系数，且因 $\iota(a_{ii})\ne0$，其在剩余域 $\overline{\mathbb F}_\ell$ 上的约化非零.
+有限个此类非零线性式的乘积在无限域 $\overline{\mathbb F}_\ell$ 上必有非零取值；选取该点的整提升 $(d_k)$，即得
+\[
+ \left|\sum_k d_k\iota(a_{ki})\right|_\ell\ge |\iota(a_{ii})|_\ell .
+\]
+由此可知，$\Lambda=\sum_k\iota^{-1}(d_k)A_k$ 的每个特征值均满足所需的赋值界，且整系数线性组合仍保持所要求的投影整性.
+又因每个层外 Hecke 多项式算子在同一组基下亦为对角算子，故与 $\Lambda$ 交换，从而各 Hecke 特征空间皆在 $\Lambda$ 下稳定. 当 $Z=0$ 时，取恒等算子即可.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/HeckeStrings.lean\#L80}{公共对角算子的整线性组合}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FirstOrder/DenominatorBound.lean}{1236}.}
+\begin{lemma}[分母算子的行列式与整配对]
+\label{lem:c-clearing-determinant}
+\emitthmsource
+沿用上述记号，令
+\begin{equation}
+ c_\ell=\mathrm{loc}_\ell+(1+2t)e_\ell+\mathrm{err}_\ell+v_\ell(G_0),
+ \qquad e_\ell=(4f+3)r_0v_\ell(G_0)+2^{-\ell}.
+\label{eq:c-clearing-determinant}
+\end{equation}
+设辅助扭转的分歧预算与生成向量的 Selmer 长度上界均为 $e_\ell$.
+则存在 $\Lambda_\ell\in\operatorname{End}_{\mathbb C}(Z)$，满足
+\[
+ |\iota(\det\Lambda_\ell)|_\ell
+ \ge\exp\bigl(-\dim_{\mathbb C}Z\;r'c_\ell\log\ell\bigr).
+\]
+若 $y'$ 在 $\iota$ 处整且与各处伪提升正交，则 $\Lambda_\ell\Pi_Zy'$ 在 $\iota$ 处整.
+此外，若 $y$ 在 $\ell$ 上方的每个 $\ell$-进素位处均整，则配对 $\langle y,\Lambda_\ell\Pi_Zy'\rangle$ 在 $\iota$ 处亦整.
+\end{lemma}
+\begin{proof}
+当 $Z=0$ 时，取恒等算子即可，其行列式为 $1$，且输出与配对皆为零.
+否则，任一非零生成向量的类型条件给出 $1\le r'\le r_0$、$t'\le t$，以及层上各类稳定子阶数均整除 $G_0$.
+由引理~\ref{lem:c-common-denominator} 得到 $\Lambda$，并令 $\Lambda_\ell=G_0\Lambda$. 显然它保持所需的投影整性，且其特征值的赋值至多为
+\[
+ e_\ell+2t'e_\ell+r'\mathrm{loc}_\ell+\mathrm{err}_\ell+v_\ell(G_0)
+ \le r'c_\ell .
+\]
+将每个特征值按代数重数计入行列式，结合 $|\ell|_\ell=\ell^{-1}$，即得所求下界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/TraceRelations.lean\#L140}{单位源秩的清分母预算}.}
+
+在配对展开中，将因子 $G_0$ 分配至类和的每一项.
+每个类上的局部配对在 $\iota$ 处皆整：第一输入 $y$ 在 $\ell$ 上方各位（包括取共轭所涉及的素位）皆整，而第二输入 $\Lambda\Pi_Zy'$ 在 $\iota$ 处整.
+由于类和的权重为稳定子阶数的倒数，因子 $G_0$ 恰好消去各项的分母.
+有限个整元素之和仍整，由此证得配对的整性.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L1300}{类和的整配对}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FitTwistsExist.lean}{475}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L495}{好形式提升像的分母界}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L507}{主临界对的投影配对界}.}
+\begin{lemma}[单个有限位上的扭转分母控制]
+\label{lem:c-local-twist}
+\emitthmsource
+固定容许数据 $D$、素数 $\ell$ 及同构 $\iota:\mathbb C\simeq\overline{\mathbb Q}_\ell$.
+记 $G_0=\prod_w|\mathrm{GL}_{r_0t}(\mathbf k_w)|$ 为各所选有限位处线性群阶数之积，$h_1$ 为 $\Ugrp(1)$ 在所选层上的双陪集数. 令 $c_\ell$ 为公共分母估计所用的清分母指数，具体各项见引理~\ref{lem:c-regular-family} 的证明. 置
+\[
+ e_\ell=(4f+3)r_0v_\ell(G_0)+2^{-\ell},\qquad
+ B_\ell=\bigl(c_\ell+v_\ell(h_1)\bigr)\log\ell .
+\]
+则存在 $m$-重扭转 $\tau$，其模范数与 $\ell$ 互素，使得对所有 $1\le j\le m$（记 $\xi=\tau^j$），以下结论同时成立：首先，对每个分歧临界对 $p=(\nu,z)$ 及符号 $s=\pm1$，皆有
+\[
+ \bigl|\iota\bigl(\operatorname{ratio}_p(\xi,s)^{-1}\bigr)\bigr|_\ell
+ \le \ell^{e_\ell},
+\]
+其中 $\operatorname{ratio}_p(\xi,s)$ 为相应的部分 Hecke $L$-值模长之比.
+其次，下述两类投影的分母界皆以 $B_\ell$ 为预算：记 $Z$ 为第 $j$ 步扭转提升在好形式上的像，$P_Z$ 为其正交投影，则存在 $\Lambda\in\operatorname{End}_{\mathbb C}(Z)$，满足
+\[
+ |\iota(\det\Lambda)|_\ell\ge \exp(-\dim_{\mathbb C}Z\ r_0 B_\ell),
+\]
+且对每个在 $\iota$ 处整并正交于相应伪提升的形式 $y$，$\Lambda P_Z y$ 在 $\iota$ 处亦整；此外，对每个第 $j$ 步主临界对（\emph{main pair}）及任意两个测试形式 $\Xi,\Xi'$，其到常数形式的秩一提升所张成直线 $Z_1$ 的正交投影满足
+\[
+ \bigl|\iota(\langle P_{Z_1}\Xi,P_{Z_1}\Xi'\rangle)\bigr|_\ell\le e^{B_\ell}.
+\]
+此处测试形式（\emph{test form}）指在每个 $\ell$-进素位处皆整且正交于下降映射核内规定伪提升的形式.
+\end{lemma}
+\begin{proof}
+\emph{同时选取各步的扭转.}
+记 $\mathcal S$ 为末端定号空间 $W_m$ 上好形式中所出现的 Hecke 特征系集合；因有限维空间中互异的非零公共特征空间构成直和，$\mathcal S$ 必为有限集.
+对每对 $(j,q)$（$q\in\mathcal S$），取未扭转第 $j$ 步提升的秩 $r_0$ 主分量 $R_{j,q}$；对每个第 $j$ 步主临界对 $p$，另取由 $\Ugrp(1)$ 平凡特征系给出的秩一主分量 $R_{p,j}^{(1)}$.
+主分量条件涵盖共轭自对偶性、Hodge--Tate 跳跃以及层处惯性条件，并刻画了各扭转提升的 Galois 迹如何由该分量与一串特征组成.
+两组指标集皆有限，其中主临界对的有限性源于 $z$、各无穷位权以及有限层剩余特征的取值范围有限.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/GaloisRepresentations/RowsFromEigensystems.lean\#L480}{特征系的主分量}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L297}{主临界对的主分量}.}
+
+将上述两组分量合并于同一个有限不交并上，应用引理~\ref{lem:c-selmer-simultaneous-twist}，即可得到同一个扭转 $\tau$：其每个幂 $\xi=\tau^j$ 均在模的每个位处分歧，且模所含各位均避开 $\ell p_0p_1N$ 上方的位及其共轭；各幂对应的反向 Galois 特征 $\psi_\xi$ 在扭转位上的总分歧代价至多为 $e_\ell$；上述每个主分量经扭转后的可除系数 Selmer 模长度亦至多为 $e_\ell$.
+此处 Selmer 条件要求在 $\ell M$ 上方各位、扭转位及其共轭之外非分歧，在 $\ell$ 上方结晶，并在定理指定的惯性元处取零（该元素在所选格上作用为与 $1$ 相差单位的标量）.
+与此同时，该引理给出全部分歧临界对的比值赋值上界 $v_\ell\bigl(\iota(\operatorname{ratio}_p(\xi,s))\bigr)\le e_\ell$，按 $|\ell|_\ell=\ell^{-1}$ 换算即得逆比值的模长上界；而模范数与 $\ell$ 互素则直接源于辅助模避开了 $\ell$ 上方各位.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/Selmer/TwistingTheorem.lean\#L370}{有限组主分量的同步扭转}.}
+
+\emph{检验分母定理的张成条件.}
+固定 $j$ 并令 $\xi=\tau^j$. 空间 $Z$ 由好 Hecke 特征形式逐类型提升所得向量张成.
+对任一非零生成向量，因相应内形式上好形式部分的特征重数相同，其源特征系 $q$ 亦出现于 $W_m$ 中.
+该向量位于所选位类型投影的像内，其类型在每个层素数上至少含有一个本原标签；经 $\xi$ 扭转后相关标签不含根 $1$，且类型投影落入好幂等元 $e_0$ 的像中.
+其在层外分裂位上的 Hecke 多项式即为 $q$ 的提升多项式.
+结合 $R_{j,q}$ 及其 Selmer 长度估计，便验证了分母定理对该族生成向量所要求的全部条件（扭转前后下降对的 $\Ugrp(1)$ 特征恰差因子 $\xi$）.
+对主临界对，则取标签 $X-1$，以常数函数的提升作为 $Z_1$ 的生成向量，并配合平凡特征系与 $R_{p,j}^{(1)}$ 检验同样的条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L326}{好提升的类型与特征系}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L415}{两类空间的生成向量}.}
+
+\emph{由生成向量导出公共分母.}
+引理~\ref{lem:c-clearing-determinant} 对秩 $r_0$ 的提升空间给出公共分母算子，将 $P_Zy$ 映入 $\iota$ 处的整格，且其行列式的 $\ell$-进范数至少为 $\exp(-\dim Z\ r_0 c_\ell\log\ell)$.
+各生成向量之所以适用该引理，正是因为前一段已验证类型与提升特征系条件，而引理~\ref{lem:c-selmer-simultaneous-twist} 提供了所需的分歧与 Selmer 长度预算.
+因 $B_\ell\ge c_\ell\log\ell$，该下界直接蕴含本引理关于 $Z$ 的结论.
+对主临界对对应的直线 $Z_1$ 同样可应用引理~\ref{lem:c-clearing-determinant}；此时源秩为 $1$，故分母算子退化为标量，并附带整配对性质.
+
+\emph{主临界对的直线配对.}
+设 $\phi$ 为常数形式的提升，记 $P=P_{Z_1}$. 当 $\phi=0$ 时，所求配对显然为零.
+设 $\phi\ne0$，并记 $T(a)$ 为附带中心特征乘子的归一化中心平移.
+因 $\Ugrp(1)$ 的所选层无挠，可在 $\ell$ 上方选取整的类代表 $a_c$，令 $\Xi''=\sum_c T(a_c)^{-1}\Xi'$.
+每个平移均保持整性且固定 $\phi$，故有 $P\Xi''=h_1P\Xi'$.
+另一方面，若 $u$ 是 $\phi^\perp$ 中对应于某层外分裂位的伪提升，则 $T(a_c)$ 保持其类型投影像及相应 Hecke 多项式的核，且其正向平移和被下降算子零化：事实上，在每个点处借助下降核形式即可看出，因层无挠，核形式在 $h_1$ 个类代表上的和恰等于 $\phi$，故其下降值为 $\langle\phi,u\rangle=0$.
+由此知 $\Xi'$ 与 $\sum_c T(a_c)u$ 正交，进而 $\Xi''$ 与 $u$ 正交，从而 $\Xi''$ 满足直线分母定理的输入条件.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/CentralAction.lean\#L170}{中心平移、下降与测试形式}.}
+
+直线上的公共分母算子为标量 $\mu$，满足 $|\iota(\mu)|_\ell\ge\exp(-c_\ell\log\ell)$.
+将整配对界应用于 $\Xi$ 与 $\mu P\Xi''$，即得
+\[
+ |\iota(\mu h_1\langle\Xi,P\Xi'\rangle)|_\ell\le1 .
+\]
+再结合 $\langle\Xi,P\Xi'\rangle=\langle P\Xi,P\Xi'\rangle$ 与 $|\iota(h_1)|_\ell=\ell^{-v_\ell(h_1)}$，便得上界 $e^{B_\ell}$.
+于是同一个 $\tau$ 对各步同时满足两类分母条件.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Congruences/FitTwistsExist.lean}{517}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L531}{有限素数集上的预算求和}.}
+\begin{lemma}[正则扭转族的存在性]
+\label{lem:c-regular-family}
+\emitthmsource
+固定容许数据 $D$. 对每个有限位同构 $\iota:\mathbb C\simeq\overline{\mathbb Q}_\ell$，均可选取一个 $m$-重扭转 $\theta_\iota$，使其模范数与 $\ell$ 互素，并满足下述两条性质：
+其一，对每个 $1\le j\le m$、每个分歧临界对 $p$ 及符号 $s=\pm1$，族 $\bigl(\operatorname{ratio}_p(\theta_\iota^j,s)^{-1}\bigr)_\iota$ 的高度至多为 $x_1$；
+其二，对每个 $j$，存在一族非负实数 $B_\ell$，使得在 $\ell$ 上方的每个同构 $\iota$ 处，扭转 $\theta_\iota^j$ 均以 $B_\ell$ 为预算满足引理~\ref{lem:c-local-twist} 中的两个投影分母界，且对任意有限素数集 $T$ 皆有
+\[
+ \sum_{\ell\in T}B_\ell
+ \le B_0.
+\]
+\end{lemma}
+\begin{proof}
+依据引理~\ref{lem:c-local-twist}，对每个 $\iota$ 选取扭转 $\theta_\iota$，则局部结论对全部 $j,p,s$ 同时成立.
+沿用该引理中的记号 $e_\ell,B_\ell,G_0,h_1$；因这些预算仅依赖于素数 $\ell$，故可同时用于 $\ell$ 上方的所有同构.
+以下分别估计逆比的高度预算与投影的对数分母预算.
+
+对任意正整数 $n$，由素因子分解可得 $\sum_{\ell\in T}v_\ell(n)\log\ell\le\log n$.
+此外，结合 $\log\ell\le\ell$，有
+\[
+ \sum_{\ell\in T}2^{-\ell}\log\ell
+ \le \sum_{n=1}^{\infty} n 2^{-n}=2.
+\]
+从而局部扭转误差满足
+\[
+ \sum_{\ell\in T}e_\ell\log\ell
+ \le (4f+3)r_0\log G_0+2\le x^{999}\le x_1 .
+\]
+其中中间一步用到了容许数据对所选层群阶的尺度界.
+对任意给定的 $j,p,s$，在高度定义中取公共乘子为 $1$、无穷位预算为 $0$、有限位预算为 $e_\ell$，结合局部逆比值估计与上述加权和即得高度界.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L65}{赋值求和与几何级数}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L176}{扭转误差的总和}.}
+
+为估计 $B_\ell$，将清分母指数展开为
+\[
+ c_\ell
+ =\mathrm{loc}_\ell+(1+2t)e_\ell+\mathrm{err}_\ell+v_\ell(G_0).
+\]
+其中 $\mathrm{loc}_\ell$ 为局部缺陷项，$\mathrm{err}_\ell$ 为一阶同余估计的误差项.
+先对局部缺陷项求和：记 $h=r_0^8$、$b_0=b$，并置
+\[
+ \Pi=\prod_{\max(0,b_0-30h^3)<n\le b_0+30h^3}n .
+\]
+则 $\mathrm{loc}_\ell$ 定义为
+\[
+ \mathrm{loc}_\ell
+ =4f\,10^6\,\frac{m}{k}
+  \bigl(b_0v_\ell(M)+v_\ell((2b_0)!\Pi^{h^3})\bigr).
+\]
+上述乘积至多包含 $60h^3$ 个因子，且每个因子均不超过 $b_0+30h^3$，故 $\Pi^{h^3}\le(b_0+30h^3)^{60h^6}$.
+由素因子分解及尺度约束可得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L90}{局部缺陷项的求和}.}
+\begin{align*}
+ \sum_{\ell\in T}\mathrm{loc}_\ell\log\ell
+ &\le 4f\,10^6\,\frac{m}{k}
+    \bigl(b_0\log M+\log((2b_0)!(b_0+30h^3)^{60h^6})\bigr)\\
+ &\le 4\cdot10^6 e^{180} f\frac{m}{k}b\log b .
+\end{align*}
+
+误差项定义为 $\mathrm{err}_\ell=t\,v_\ell(A_{\mathrm{odd}})+c\,v_\ell(G_0)$，其中 $A_{\mathrm{odd}}$ 为奇特征类长度界所用的正整数，且
+\[
+ c=8ft+2+(4t+1)h^{22}+h.
+\]
+奇类界满足 $A_{\mathrm{odd}}\le 2^{4(q_1d+t+3)^{27}}h_E$（这里 $h_E$ 为 $E$ 的理想类数）.
+结合 $\log h_E\le x^{30}$ 与尺度界，可得 $\log A_{\mathrm{odd}}\le x^{2000}$，进而有
+\[
+ \sum_{\ell\in T}\mathrm{err}_\ell\log\ell
+ \le t\,x^{2000}+c\log G_0\le x^{4000}.
+\]
+同理，由 $h_1\le\exp(x^{30})$ 即得 $\sum_{\ell\in T}v_\ell(h_1)\log\ell\le x^{30}$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L158}{奇类界、误差项及类数项}.}
+
+将上述各项代回 $B_\ell$，便得
+\[
+ \sum_{\ell\in T} B_\ell
+ \le 4\cdot10^6 e^{180} f\frac{m}{k}b\log b
+ +(1+2t)x^{999}+x^{4000}+\log G_0+x^{30}
+ \le \frac{fa(\log b)^3}{mk}.
+\]
+最后一个不等式是容许数据的分母预算界，其中 $\frac{fa(\log b)^3}{mk}=B_0$. 这族 $B_\ell$ 可用于所有步，故 $(\theta_\iota)_\iota$ 是定义~\ref{def:regular-twist-family} 中的正则扭转族.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Congruences/FitTwistsExist.lean\#L232}{分母预算}.}
+\end{proof}

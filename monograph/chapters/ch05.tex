@@ -1,0 +1,227 @@
+\chapter{链行列式与定理 C}
+\label{chap:determinant}
+
+\begin{chapterguide}
+对近乎张成好目标空间的线性无关向量族，本章先借助辅助形式将其补全为一组基，再于有限位与无穷位同时估量同一个未扭转 Gram 行列式的大小，并由全局乘积公式导出余体积下界（定理 C）. 其中单步行列式比的高度界来自\chapref{chap:onelift}，所需的正则反分圆扭转族由\chapref{chap:congruences}构造.
+\end{chapterguide}
+
+\section{行列式比与高度预算}
+\label{sec:c-height}
+
+记 $\nu_j^{(0)}$ 为第 $j$ 步的未扭转 Hecke 特征. 对任意扭转 $\chi$，令 $\mathcal R(\nu,\chi)$ 表示 $1\le z\le t$ 处部分 Hecke $L$ 值绝对值之比的乘积，其中每项均以扭转后的部分 $L$ 值为分子、扭转前的值为分母；未扭转的部分 $L$ 值删去所选位及其共轭，扭转后的值则另行删去扭转模的各位及其共轭. 在比较整条提升链时，定义两族乘积
+\[
+ \begin{aligned}
+ T_{ij}(\vartheta)&=\mathcal R\bigl(\nu_{i+1}^{(0)}\nu_{j+1}^{(0)},\vartheta^{j+1}\bigr)
+      &&(0\le i,j<m),\\
+ Q_{ij}(\vartheta)&=\mathcal R\bigl(\nu_j^{(0)}/\nu_i^{(0)},\vartheta^{j-i}\bigr)
+      &&(1\le i<j\le m).
+ \end{aligned}
+\]
+
+记 $p$-进素位为 $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_p$，相应的绝对值按 $|p|_p=p^{-1}$ 归一化. 对一族复数 $Y=(Y_\iota)$，写 $\operatorname{ht}(Y)\le c$ 表示存在共同的非零乘子 $\lambda$、无穷位预算 $\alpha$ 以及非负的有限位预算 $h_p$，使得对每个 $\sigma\in\operatorname{Aut}(\mathbb C)$、每个 $\iota$ 及每个有限素数集 $S$ 均成立
+\begin{equation}\label{eq:height-budget}\begin{aligned}
+ &|\sigma(\lambda)|\le e^\alpha,\qquad |\iota(\lambda Y_\iota)|_p\le p^{h_p},
+\\
+&\alpha+\sum_{p\in S} h_p\log p\le c.
+\end{aligned}\end{equation}
+对两个此类族作逐项乘积时，将相应乘子相乘、各素位预算相加，即得乘积族的高度上界；取正整数次幂则将高度上界相应倍乘.
+
+记 $B_0=B/(mk)$ 为单步对数分母预算. 须注意到，式~\eqref{eq:height-budget} 中的有限位预算允许依赖于素数 $p$，但乘子 $\lambda$ 必须对整族统一选取——正是这一统一性要求，使全局乘积公式能够直接施用于未扭转 Gram 行列式. 另一方面，容许扭转在不同的 $p$-进同构处可以分别选取，只要各步高度预算同时受控即可.
+
+\section{辅助形式、补基与链分解}
+\label{sec:c-chain}
+
+辅助形式的张成性依托于秩一限制周期的非零性，其实际调用的实位估计见\chapref{chap:discrete-series}的式~\eqref{eq:ch8-laplace-lower}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{53}.}
+\begin{lemma}[具有整提升的辅助形式]
+\label{lem:c-auxiliary-forms}
+\emitthmsource
+固定容许数据 $D$. 对 $m$-重扭转 $\vartheta$，记 $N_\vartheta$ 为其扭转模的范数. 存在整数 $e$ 与非零标量族 $\gamma(\vartheta)$，满足 $\gamma(1)=1$ 及
+\[
+ |\gamma(\vartheta)|
+ =N_\vartheta^{e/2}\prod_{0\le i,j<m}T_{ij}(\vartheta).
+\]
+好目标空间 $W$ 由满足以下两条性质的向量 $z$ 张成：对每个 $p$-进嵌入 $\iota$（下方素数为 $p$）及每个满足 $p\nmid N_\vartheta$ 的扭转 $\vartheta$，$\gamma(\vartheta)\Theta_\vartheta z$ 在 $\iota$ 处为整；对每个无穷位共轭 $\sigma\in\operatorname{Aut}(\mathbb C)$，均有
+\[
+ \|\Theta_1 z\|_\sigma^2\le \exp(2x_1^2b^2).
+\]
+\end{lemma}
+\begin{proof}
+设 $V_{\mathrm{pr}}$ 为 $Y_0$ 上的主层形式空间，$V_{\mathrm{grid}}$ 为双网格最后一条路径外端的形式空间. 记
+\[
+ F(\vartheta)=\prod_{0\le i,j<m}T_{ij}(\vartheta).
+\]
+最后路径的整性与范数估计给出满射 $R\colon V_{\mathrm{grid}}\to V_{\mathrm{pr}}$、非零标量 $s$、非零标量族 $c(\vartheta)$、整数 $e$ 与实常数 $C_0$，使得 $|c(\vartheta)|^2=C_0 N_\vartheta^e F(\vartheta)^2$. 对任意 $\phi\in V_{\mathrm{grid}}$，若其对应的代数形式满足 $p$ 处的规范条件且 $p\nmid N_\vartheta$，则 $\bigl(c(\vartheta)/c(1)\bigr)T_\vartheta(sR\phi)$ 在 $\iota$ 处为整；若该代数形式在 $\sigma$ 下各取值的平方 Weyl 范数至多为 $B_0$，则 $T_1(sR\phi)$ 在同一共轭下各取值的平方 Weyl 范数至多为 $\exp(2x^{201}b^2)B_0$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/SpanningForms.lean\#L667}{最后路径的整性与范数估计}.}
+
+双网格外端的短形式张成 $V_{\mathrm{grid}}$. 具体而言，该层作用自由，代数形式的短基定理在其 Weyl 表示上给出一个张成族. 由于外端秩至多为 $2n_m$，且 Young 图方格数与最高权均受容许尺度控制，该张成族在每个有限位处皆整，且所有共轭下的取值平方 Weyl 范数均不超过 $\exp(x^{99}b^2)$. 经满射 $sR$ 映入 $V_{\mathrm{pr}}$ 后，所得族仍张成 $V_{\mathrm{pr}}$；由上段结论，它们皆具有整提升，且未扭转提升在每个共轭下的逐点平方范数至多为\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/SpanningForms.lean\#L743}{外端短形式及其满射像}.}
+\[
+ \exp((2x^{201}+x^{99})b^2)\le \exp(x^{202}b^2).
+\]
+
+令 $\gamma(\vartheta)=c(\vartheta)/c(1)$. 每个 $T_{ij}(\vartheta)$ 均非负且在平凡扭转处等于 $1$，又 $N_1=1$，故 $C_0=|c(1)|^2>0$. 将模长平方关系两边同除以 $|c(1)|^2$ 后取非负平方根，即得所需的模长分解与 $\gamma(1)=1$.
+
+最后，通过投影的整倍数 $|G|e_0$ 将 $V_{\mathrm{pr}}$ 的上述张成族满射至 $W$. 记 $\mathcal L_\vartheta$ 为全主层空间上的提升链. 由于提升链与有限群作用可交换，$\mathcal L_\vartheta(|G|e_0 v)$ 在点 $h$ 的取值为
+\[
+ \sum_{t\in G} |G|e_0(t)\,
+       (\mathcal L_\vartheta v)(h\,\widetilde t_\vartheta),
+\]
+其中 $e_0(t)$ 为群代数系数，$\widetilde t_\vartheta$ 为提升上的整右平移. 因系数 $|G|e_0(t)$ 为代数整数，且整右平移保持局部整性条件，若 $\gamma(\vartheta)\mathcal L_\vartheta v$ 在 $\iota$ 处整，则由超度量不等式可知 $\gamma(\vartheta)\Theta_\vartheta(|G|e_0 v)$ 亦在 $\iota$ 处整.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L480}{好形式投影保持整性}.}
+
+在无穷位，每个 $\sigma(e_0(t))$ 的模长均至多为 $1$：事实上，投影所对应的 $|G|\sigma(e_0(t))$ 是维数至多为 $|G|$ 的有限群特征标. 因此上式的平方范数逐点至多为 $|G|^4\exp(x^{202}b^2)$. 未扭转末层的类数至多为 $\exp(x^{30})$，且其类和权重均至多为 $1$. 由 $x^{30}+4\log |G|\le x^{99}$ 可得
+\[
+ \|\Theta_1(|G|e_0 v)\|_\sigma^2
+ \le \exp(x^{99}+x^{202}b^2)
+ \le \exp(2x_1^2b^2),
+\]
+其中最后一步用到 $x_1\ge x^{10^6}$ 及 $x,b\ge1$. 这些投影向量张成 $W$，从而证毕.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L526}{好形式投影的无穷位估计}.}
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{154}.}
+\begin{lemma}[提升链的 Gram 行列式比]
+\label{lem:c-chain-factorization}
+\emitthmsource
+固定容许数据 $D$. 设 $Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta)$，并令 $Z_j(\vartheta)$（$1\le j\le m$）为扭转 $\vartheta^j$ 下第 $j$ 个单步提升在好形式空间上的 Gram 行列式. 存在整数 $e$，使得对每个 $m$-重扭转 $\vartheta$ 均有
+\begin{equation}
+ \frac{Z(1)}{Z(\vartheta)}
+ =\left(N_\vartheta^{e/2}
+          \prod_{1\le i<j\le m}Q_{ij}(\vartheta)\right)^{-r}
+       \prod_{j=1}^m \frac{Z_j(1)}{Z_j(\vartheta)},
+\label{eq:c-chain-ratio}
+\end{equation}
+其中 $N_\vartheta$ 为扭转的层范数.
+\end{lemma}
+\begin{proof}
+记 $S_j(\vartheta)$ 为第 $j$ 个单步提升在扭转 $\vartheta^j$ 下的 Rallis 算子在 $W$ 上的实现，$c_Q(\vartheta)$ 为单步范数公式中的层因子. 由于 $\vartheta$ 为 $m$-重扭转，各次幂 $\vartheta^j$（$1\le j\le m$）在其扭转位处的局部特征均非平凡，故这些幂的模相同，各步的层因子 $c_Q(\vartheta)$ 亦相同. 单步 Rallis 范数公式（经典背景见 Li~\cite{Li1992}、Kudla--Rallis~\cite{KudlaRallis1994} 与 Gan--Qiu--Takeda~\cite{GQT2014}）给出与扭转无关的非零常数 $a_j$. 好形式部分的内形式交换保持空间维数 $r$ 与 $S_j(\vartheta)$ 的行列式，因而
+\[
+ Z_j(\vartheta)=(a_j c_Q(\vartheta))^r\det S_j(\vartheta),
+\]
+此处用到 $\det(u^*u)$ 为提升 $u$ 的 Gram 行列式以及 $\det(aS)=a^r\det S$.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L115}{单步 Rallis 行列式}.}
+
+记 $F(\vartheta)=\prod_{1\le i<j\le m}Q_{ij}(\vartheta)$. 令 $g_n(\vartheta)$ 为提升三角第 $n$ 层的有限线性群阶，$M(\vartheta)$ 为单步层模上的矩阵总数. 加权提升链的 Gram 配对公式给出
+\[
+ \kappa(\vartheta)
+ \frac{g_0(\vartheta)\,g_1(\vartheta)^m}{g_m(\vartheta) M(\vartheta)^m}
+ \left\langle x,
+     S_1(\vartheta)\cdots S_m(\vartheta)y\right\rangle,
+\]
+其中 $|\kappa(\vartheta)|^2=C_1N_\vartheta^{k_1}F(\vartheta)^2$，常数 $C_1,k_1$ 与 $\vartheta$ 无关. 该三角公式将各步的 Rallis 配对依次传过交换图，并在每个交换方块处引入相应的 Hecke 值比（有关互补秩群上自守特征 Theta 积分的交换现象，可参见 Snitz~\cite{Snitz2007} 与 Erez~\cite{Erez2024}）.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L158}{加权提升链的 Gram 公式}.}
+
+从加权链的 Petersson 配对换算至 $\Theta_\vartheta$ 的内积，须再乘以末层指数与一个与扭转无关的 Weyl 维数因子. 末层指数具有形式
+\[
+ C_2 N_\vartheta^{k_2}\,\delta(\vartheta)^m\,
+     \frac{g_m(\vartheta)}{g_0(\vartheta)g_1(\vartheta)^m},
+\]
+其中 $\delta(\vartheta)$ 是第一步的局部 Gram 因子，且满足 $\delta(\vartheta)/M(\vartheta)=C_3c_Q(\vartheta)$，常数 $C_2,C_3$ 与 $\vartheta$ 无关. 有限群阶相消后，仅余 $c_Q(\vartheta)^m$ 以及 $\kappa(\vartheta)$ 乘以固定常数和 $N_\vartheta$ 的整数次幂. 于是存在标量 $c(\vartheta)$ 使得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/ChainNorms.lean\#L710}{末层指数公式}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L212}{两种内积的换算}.}
+\[
+ \Theta_\vartheta^*\Theta_\vartheta
+   =c(\vartheta)c_Q(\vartheta)^m S_1(\vartheta)\cdots S_m(\vartheta),
+ \qquad
+ |c(\vartheta)|^2=C_4N_\vartheta^{k_4}F(\vartheta)^2 .
+\]
+
+由于单步提升与整条提升链皆为单射，$Z(\vartheta)$ 与各 $Z_j(\vartheta)$ 均为正实数. 若 $r=0$，所有行列式皆为空行列式并等于 $1$，取 $e=0$ 即成立. 现设 $r>0$. 在平凡扭转处，提升链算子公式的左端为正定算子，故 $c(1)\ne0$. 又因各扭转比非负且在平凡扭转处取值为 $1$，结合 $N_1=1$ 与模长平方公式立得 $C_4=|c(1)|^2$，从而
+\[
+ |c(\vartheta)|=|c(1)|N_\vartheta^{k_4/2}F(\vartheta).
+\]
+对提升链算子取行列式，由行列式的可乘性与单步公式可得
+\[
+ Z(\vartheta)
+ =\left(\frac{c(\vartheta)}{\prod_{j=1}^m a_j}\right)^r
+       \prod_{j=1}^m Z_j(\vartheta).
+\]
+对两侧取模，借由行列式的正性可将 $c(\vartheta)$ 与 $\prod_j a_j$ 分别换为 $|c(\vartheta)|$ 与 $\prod_j |a_j|$. 以平凡扭转处的同一等式作分子并相除，公共常数 $|c(1)|/\prod_j |a_j|$ 随之消去，取 $e=k_4$ 即得式~\eqref{eq:c-chain-ratio}.
+\end{proof}
+
+\section{余体积下界与乘积公式}
+\label{sec:c-covolume}
+
+利用式~\eqref{eq:c-chain-ratio} 比较扭转前后的链行列式之比时，补基后的整矩阵校正在 $\iota$ 与 $\bar\iota$ 两处各贡献至多 $\delta$. 在无穷位一侧，尚须妥善处理复自同构与复共轭的作用次序；因此下文在主定理的证明中先行处理混合 Gram 行列式估计，再借全局乘积公式导出式~\eqref{eq:c-long-forms}.
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{136}.}
+\begin{lemma}[各步同时满足高度界的扭转族]
+\label{lem:c-good-twists-volume}
+\emitthmsource
+存在 $m$-重扭转族 $(\vartheta_\iota)_\iota$，使得各扭转的模范数均与相应素数互素，每个分歧对的逆 Hecke 值比的高度至多为 $x_1$，且对每个 $1\le j\le m$ 均有
+\begin{equation}
+ \operatorname{ht}\left(\left(\frac{Z_j(1)}{Z_j(\vartheta_\iota)}\right)_\iota\right)
+ \le r\left(\frac{L}{m}-k\mathcal D\right).
+\label{eq:c-uniform-volume}
+\end{equation}
+\end{lemma}
+\begin{proof}
+由引理~\ref{lem:c-regular-family} 选取正则扭转族，它自动满足所需的互素条件与分歧对高度界. 对该族在每一步 $j$ 分别应用式~\eqref{eq:c-single-volume}，并代入 $k\ell B_0=k\ell B/(mk)=L/m$，即得式~\eqref{eq:c-uniform-volume}.
+\end{proof}
+
+\thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{208}.}
+\begin{theorem}[C：余体积的下界]
+\label{thm:long-forms}
+\emitthmsource
+设 $y=(y_1,\dots,y_n)$ 是好目标空间 $W$ 中的线性无关族，且满足 $n\ge(1-4/b^2)r$. 若局部格指数界 $\mathcal I_\delta(y)$ 与余体积上界 $\mathcal V_V(y)$ 同时成立，则有
+\begin{equation}
+  r(H-3L)\le V+2\delta.
+\label{eq:c-long-forms}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{补基.}
+引理~\ref{lem:c-auxiliary-forms} 给出非零标量族 $\gamma(\vartheta)$ 以及一族张成 $W$ 的辅助向量：对该族中的每个向量 $z$，每当素数 $p$ 不整除扭转 $\vartheta$ 的层范数时，$\gamma(\vartheta)\Theta_\vartheta z$ 在 $p$ 上方的每个 $p$-进素位处皆为整；且对每个 $\sigma\in\operatorname{Aut}(\mathbb C)$，均有 $\|\Theta_1 z\|_\sigma^2\le \exp(2x_1^2b^2)$. 依次从该辅助向量族中挑出不在当前张成子空间内的向量，即可将 $y$ 补全为 $W$ 的一组基 $w=(y_1,\dots,y_n,z_1,\dots,z_{n'})$，其中补基个数满足
+\[
+ n'=r-n\le 4r/b^2.
+\]
+
+\emph{乘积公式推论.}
+先确立一项关于高度的乘积公式推论：若 $z\ne0$，常值族 $z$ 的高度至多为 $c$，且对所有 $\sigma\in\operatorname{Aut}(\mathbb C)$ 均有 $|\sigma(z)|\le e^A$，则必有 $0\le A+c$. 事实上，对常值族 $z^{-1}$ 可取乘子 $\lambda=z$、无穷位预算 $A$ 及全零的有限位预算，从而常值族 $1$ 的高度至多为 $A+c$. 设 $\lambda$ 是族 $1$ 的一个乘子，其所有 $2$-进像均一致有界，故 $\lambda$ 必为 $\mathbb Q$ 上的代数数——否则，若 $\lambda$ 超越，可选取含 $\lambda$ 的超越基，将基元 $\lambda$ 映为 $2^{-k}\lambda$ 而固定其余基元，再延拓为 $\mathbb C$ 的自同构并与固定的 $2$-进嵌入复合，其绝对值将随 $k$ 趋于无界，矛盾. 于是令 $q=\mathrm N_{\mathbb Q(\lambda)/\mathbb Q}(\lambda)\ne0$ 并记 $d_\lambda=[\mathbb Q(\lambda):\mathbb Q]$. 每个局部嵌入均可延拓为相应的域同构，故有 $\log |q|\le d_\lambda\alpha$ 与 $\log |q|_p\le d_\lambda h_p\log p$. 对包含 $q$ 全部非平凡有限位的有限素数集应用 $\mathbb Q$ 上的全局乘积公式（参见 Bombieri--Gubler~\cite{BombieriGubler2006}），即得 $0\le d_\lambda(A+c)$，从而 $0\le A+c$.
+
+\emph{选取扭转并比较链行列式.}
+令 $Z(\vartheta)$ 为 $\Theta_\vartheta$ 在好目标空间上的链 Gram 行列式，$Z_j(\vartheta)$ 为第 $j$ 次单步提升的 Gram 行列式. 引理~\ref{lem:c-good-twists-volume} 给出满足式~\eqref{eq:c-uniform-volume} 的扭转族 $(\vartheta_\iota)$，其中每个 $\vartheta_\iota$ 的层范数均与 $\iota$ 下方的素数互素. 对每个 $1\le j\le m$，族 $Z_j(1)/Z_j(\vartheta_\iota)$ 的高度至多为 $r\bigl(L/m-k\mathcal D\bigr)$，其中 $H=mk\mathcal D$. 注意到下方两个分解式中所涉的每项比值，其倒数均为至多 $t$ 个高度不超过 $x_1$ 的逆 Hecke 值比之积，因而每项比值倒数的高度均至多为 $tx_1$.
+
+由引理~\ref{lem:c-chain-factorization}，存在固定整数 $e_1$ 使得
+\[
+ \frac{Z(1)}{Z(\vartheta)}
+ =A(\vartheta)^{-r}\prod_{j=1}^{m}\frac{Z_j(1)}{Z_j(\vartheta)},\qquad
+ A(\vartheta)=\operatorname{Nm}(Q_\vartheta)^{e_1/2}
+                  \prod_{1\le i<j\le m}Q_{ij}(\vartheta).
+\]
+由引理~\ref{lem:c-auxiliary-forms}，另有固定整数 $e_2$ 使得
+\[
+ |\gamma(\vartheta)|=\operatorname{Nm}(Q_\vartheta)^{e_2/2}
+                   \prod_{0\le i,j<m}T_{ij}(\vartheta),
+\]
+其中 $\operatorname{Nm}(Q_\vartheta)$ 即扭转的层范数. 对 $\vartheta_\iota$ 而言，层范数在 $\iota$ 下方的素数处为单位，故其整数或半整数次幂的绝对值恒为 $1$，对应因子可取乘子 $1$ 与零预算. 由此可知，上述两乘积倒数的高度分别至多为 $m^2 t x_1$，进而 $|\gamma(\vartheta_\iota)|^{-2}$ 的高度至多为 $2m^2 t x_1$. 容许尺度约束给出 $2m^2tx_1\le b$（具体地，由 $m\le 2\sqrt{x}$、$t\le e^8 x^5$ 以及 $x^{10^6}\le x_1$、$x_1^{10^6}\le b$，有 $8e^8x^6x_1\le x_1^3\le b$）. 合并链分解中的 $m$ 个单步比及 $A(\vartheta_\iota)^{-r}$，便得
+\[
+ \operatorname{ht}\left(\left(\frac{Z(1)}{Z(\vartheta_\iota)}\right)_\iota\right)
+ \le r(b+L-H),\qquad
+ \operatorname{ht}\bigl((|\gamma(\vartheta_\iota)|^{-2})_\iota\bigr)\le b.
+\]
+
+\emph{有限位控制同一个未扭转行列式.}
+记 $\mathcal G_\vartheta$ 为基像 $\Theta_\vartheta w$ 的 Gram 行列式. 因 $w$ 是 $W$ 的一组基，若记 $A_w$ 为 $w$ 在标准正交基下的坐标矩阵，则有 $\mathcal G_\vartheta=|\det A_w|^2 Z(\vartheta)$. 由于所有提升 $\Theta_\vartheta$ 皆为单射，这些行列式均非零.
+
+固定 $\iota$ 并令 $\vartheta=\vartheta_\iota$，记共轭嵌入为 $\bar\iota(v)=\iota(\bar v)$. 设 $u,u'$ 分别为局部格指数条件在 $\iota$ 与 $\bar\iota$ 处提供的校正矩阵，均满足 $|\det u|_\iota,|\det u'|_{\bar\iota}\ge p^{-j_p}$. 两处的指数条件均同时适用于所有层范数与 $p$ 互素的扭转，故可使用同一个 $\vartheta$. 在下方补基块上配置 $\gamma(\vartheta)I_{n'}$，记所得分块矩阵为 $v,v'$. 经此校正后，Gram 配对的左侧向量在 $\bar\iota$ 处整、右侧向量在 $\iota$ 处整；由目标扭转格的整配对条件，每个配对的 $\iota$-绝对值皆至多为 $1$，从而其行列式仍满足同一上界. 另一方面，基变换表明该行列式等于 $\overline{\det v'}\,\mathcal G_\vartheta\,\det v$. 结合两块行列式及指数条件消去 $u,u'$，并利用 $\iota(|\gamma|^{2n'})=\iota(\gamma)^{n'}\bar\iota(\gamma)^{n'}$，即得
+\[
+ |\iota(|\gamma(\vartheta)|^{2n'}\mathcal G_\vartheta)|_p\le p^{2j_p}.
+\]
+对这一族取乘子 $1$，其高度预算即为 $2\delta$.
+
+对每个 $\iota$ 均成立同一恒等式
+\[
+ \mathcal G_1
+ =\bigl(|\gamma(\vartheta)|^{2n'}\mathcal G_\vartheta\bigr)
+  \bigl(|\gamma(\vartheta)|^{-2}\bigr)^{n'}\,\frac{Z(1)}{Z(\vartheta)} .
+\]
+由高度的次可加性，常值族 $\mathcal G_1$ 的高度至多为 $2\delta+n'b+r(b+L-H)$.
+
+\emph{无穷位并入乘积公式.}
+对任意 $\sigma\in\operatorname{Aut}(\mathbb C)$，对 $w$ 的坐标经 $\sigma$ 共轭后所得的 Gram 矩阵依次应用 Fischer 不等式与 Hadamard 不等式：原向量块的余体积受 $e^V$ 控制，补基块的每个对角元均至多为 $\exp(2x_1^2b^2)$，由此得到
+\[
+ \mathcal V_{V+2n'x_1^2b^2}(w).
+\]
+尚须将坐标共轭后的 Gram 行列式上界转化为对 $\sigma(\mathcal G_1)$ 的估计. 由于原 Gram 配对的坐标矩阵有理，令 $\sigma'=\operatorname{conj}\circ\sigma\circ\operatorname{conj}$；对原配对施加 $\sigma$ 后，左侧坐标受 $\sigma'$ 作用，右侧坐标受 $\sigma$ 作用. 由外幂内积的 Cauchy--Schwarz 不等式，该混合 Gram 行列式模长的平方不超过两侧各自 Gram 行列式模长之积. 两因子同受上述余体积上界控制，故有 $|\sigma(\mathcal G_1)|\le\exp(V+2n'x_1^2b^2)$.
+
+将前文的乘积公式推论施用于 $\mathcal G_1$，立即得到
+\[
+ 0\le V+2\delta+n'(2x_1^2b^2+b)+r(b+L-H).
+\]
+最后，由 $n'\le 4r/b^2$ 及 $b\ge x_1^{10^6}$、$x_1\ge 12$，有 $n'(2x_1^2b^2+b)\le 4r(2x_1^2+b^{-1})\le rb$. 又由 $a=xb$、$f\ge1$、$\log b\ge1$ 知 $b\le L$，故 $r(b+L-H)+rb\le r(3L-H)$. 移项整理，即得 $r(H-3L)\le V+2\delta$.
+\end{proof}

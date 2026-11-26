@@ -1,0 +1,89 @@
+\chapter{前置理论}
+\label{app:lib-overview}
+
+可读版将证明所依托的背景理论收录于 \texttt{src/Lib/} 目录. 本附录按主题简述正文实际调用的核心输入，注明相应的经典文献出处，并将对应 Lean 声明的源码入口置于页下脚注；每项结果的精确假设与适用范围均以所链接的形式化声明为准.
+
+\section{阿代尔酉群与迹公式}
+
+酉群的有限层与无穷位离散序列型共同确定\chapref{chap:spanning}所用的自守形式空间. 简单迹公式比较在给定尖点测试函数及大间隙无穷位参数的条件下，比较不同符号型酉群上的迹，从而建立内形式间好形式空间维数与重数的相等关系；相关的简单迹公式与酉群基变换理论可参见 Arthur--Clozel~\cite{ArthurClozel1989}、Harris--Labesse~\cite{HarrisLabesse2004} 与 Labesse~\cite{Labesse2011}.\leanfn{Lean 源码：\leansourcelink{src/Lib/Adelic/TraceFormula/TraceComparison.lean}{665}.}
+
+\section{解析数论}
+
+解析收官所用的 Dirichlet 特征 Theta 级数借助 Poisson 求和满足模反演关系~\cite{Davenport2000,IwaniecKowalski2004,MontgomeryVaughan2007}；二次扭转的零点密度与特征和均值估计可参见 Heath-Brown~\cite{HeathBrown1995}，关于 $\zeta(s)$ 与 $L$ 函数零点分布的经典背景另见 Titchmarsh~\cite{Titchmarsh1986}.\leanfn{Lean 源码：\leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{1}；\leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/Tauberian.lean}{319}.} \chapref{chap:reduction}还调用固定模数算术级数素数定理的误差估计~\cite{MontgomeryVaughan2007}，以在第二尺度 $x_1$ 上压低余项；相应的 Tauber 型估计则比较 Laplace 变换的 Taylor 系数界与余项关于 Gamma 密度的平均.
+
+\section{复乘与形式群}
+
+可读版系统建立了复乘椭圆曲线的周期、正规化 Theta 函数及局部形式参数的整性理论. Chowla--Selberg 公式~\cite{SelbergChowla1967}用于归一化 CM 周期，Lubin--Tate 型局部形式群~\cite{LubinTate1965}以及代数 Theta 函数的 $p$-进幂级数指数计算~\cite{BannaiKobayashi2010}则支撑\chapref{chap:derivatives}的高阶射流整除性估计.\leanfn{Lean 源码：\leansourcelink{src/Lib/CM/ChowlaSelberg.lean}{1}；\leansourcelink{src/New/Derivatives/FormalGroup/Exponent.lean}{1}.}
+
+\section{类域论与上闭链计数}
+
+\chapref{chap:congruences}所需的局部同余条件以 Hecke 特征与 Galois 上闭链刻画. 在选定分裂位满足 Frobenius 检测条件且具备适当中心元时，Greenberg--Wiles 型算术对偶公式允许精确控制带局部平凡化约束的上闭链数目；相关的整体类域论与 Galois 上同调对偶理论可参见 Serre~\cite{Serre1997} 与 Neukirch--Schmidt--Wingberg~\cite{NSW2008}.\leanfn{Lean 源码：\leansourcelink{src/Lib/ClassField/GreenbergWiles/CocycleCounts.lean}{707}.}
+
+\section{分圆域的奇部估计}
+
+奇部上闭链的长度上界由分圆域上的 Stickelberger 元素计算及 Kolyvagin 型欧拉系论证建立，其经典源流见 Mazur--Wiles~\cite{MazurWiles1984} 与 Rubin~\cite{Rubin2000}. \chapref{chap:congruences}在引用该上界控制同余误差项时，须先验证相应的分歧与素数互素条件.\leanfn{Lean 源码：\leansourcelink{src/Lib/Cyclotomic/OddSha.lean}{645}.}
+
+\section{点函子上同调与不动点公式}
+
+背景库构造用于 Galois 表示的点函子上同调~\cite{Milne1980}，并在带图卡簇上证明 Woods Hole 型迹公式（参见 Atiyah--Bott~\cite{AtiyahBott1968}）. 证明实际调用的是其中的一项消失结论：若一族对应映射在指定 Hodge--Tate 分量上的线性组合作用为零，则相应权的局部重合项之和亦为零.\leanfn{Lean 源码：\leansourcelink{src/Lib/Cohomology/WoodsHole.lean}{214}.}
+
+\section{Shimura 整模型与 Galois 表示}
+
+背景库建立了相关酉 Shimura 簇的整模型与分裂素位处的同余关系. 定酉群代数自守形式所附着的 $\ell$-进 Galois 表示在球形位满足局部兼容性，经典构造可参见 Shin~\cite{Shin2011}、Chenevier--Harris~\cite{ChenevierHarris2013} 及 Barnet-Lamb--Gee--Geraghty--Taylor~\cite{BLGGT2014}；\chapref{chap:congruences}引用的附着条件均以可读版的形式化定义为准.\leanfn{Lean 源码：\leansourcelink{src/Lib/GaloisRep/Main/AllRanks.lean}{465}.}
+
+\section{周期环与 Breuil--Kisin 模}
+
+局部结晶条件的定量分析依托 $p$-进周期环与 Breuil--Kisin 模比较理论~\cite{Kisin2006,BhattScholze2023}. 框架定理给出 Kummer 图卡上所选格的九项结构性质，用于在极大权情形下提升结晶扩张类并控制局部损失.\leanfn{Lean 源码：\leansourcelink{src/Lib/PadicHodge/Kisin/FrameTheorem.lean}{735}.}
+
+\section{Weil 表示与 Theta 内积公式}
+
+阿代尔 Weil 表示~\cite{Weil1964,Howe1989}给出构造 Theta 核的群作用. 当目标秩严格大于源秩两倍且测试数据满足尖锐条件时，可读版证明了相应 Petersson 配对的 Rallis 型内积公式（经典版本见 Li~\cite{Li1992}、Kudla--Rallis~\cite{KudlaRallis1994} 与 Gan--Qiu--Takeda~\cite{GQT2014}）；在源数据满足适当边条件时，同一结果还蕴含 Theta 提升在指定型空间上的单射性.\leanfn{Lean 源码：\leansourcelink{src/Lib/SiegelWeil/RallisInner/SharpData.lean}{367}.}
+
+\chapter{可读版与精简版}
+\label{app:edition-comparison}
+
+上游仓库的
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh}{可读版 \texttt{grh/}}
+与
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact}{精简版 \texttt{grh-compact/}}
+形式化并证明了完全相同的五条公开定理. 表~\ref{tab:app-editions} 对照列出两版中功能相应的核心对象，各对象的精确定义以对应版本的 Lean 源码为准.
+
+\begin{table}[htbp]
+\centering
+\caption{可读版与精简版的记号与论证步骤对照}
+\label{tab:app-editions}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.23\textwidth}
+                  >{\raggedright\arraybackslash}p{0.31\textwidth}
+                  >{\raggedright\arraybackslash}p{0.37\textwidth}@{}}
+\toprule
+对象 & 可读版 & 精简版\\
+\midrule
+基本模数与分圆模数 & $q_0,q_1$ & $N_0,N_1$\\
+选定无穷位集 & \hyperref[def:a-places]{$\Phi_a$}, \hyperref[def:admissible-data]{$\Phi_b$}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L127}{tops},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L26}{thick}\\
+源形式与目标形式
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L760}{SourceForm},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Rows.lean\#L296}{targetForms}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Columns/ColumnDefs.lean\#L71}{Column},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Trace/GoodIdempotent.lean\#L118}{rows}\\
+主量及双尺度余项
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L62}{mainAmount},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L73}{totalRemainder}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/ShortAndEnough.lean\#L32}{mainHeight},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/ShortAndEnough.lean\#L42}{remainder}\\
+误差单位
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L255}{errorUnit}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L143}{budget}\\
+加权素数余项
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L65}{primeRemainder}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/PrimeError.lean\#L38}{primeError}\\
+第二尺度误差 & 固定模数算术级数素数定理 & Laplace 变换在指定窗口上的单侧估计\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+在解耦双尺度余项的步骤中，两版采用了略有区别的解析路线：可读版先选定满足尺度条件的第二尺度 $x_1$，并在该点直接调用固定模数的算术级数素数定理，详见\secref{sec:one-sided-bound}；精简版则借助窗口引理在区间 $[t,t^2]$ 中选取 $\log x_1$，使得所需的两项余项之差从上方受到 $e^{-t}$ 的一致控制.\leanfn{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{1}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Main.lean\#L149}{精简版的单侧界}.}
+
+\printbibliography[heading=monographbib,title={参考文献}]
