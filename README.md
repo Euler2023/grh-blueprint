@@ -1,12 +1,21 @@
-# RH 与 GRH 的 Lean 证明蓝图
+# RH 与 GRH 的 Lean 证明蓝图与中文专著
 
 **简体中文** · [English](README.en.md)
+
+## Lean 证明蓝图
 
 这份中文蓝图根据上游项目 [lsernau/grh-lean](https://github.com/lsernau/grh-lean) 的可读版 Lean 证明编写，导读其中的五条公开定理。正文从几何数据和带权素数余项出发，逐步说明定理 A、B、C、主不等式及其到零点结论的证明链。HTML 版附有交互依赖图，节点可跳转至相应陈述和 Lean 源码。
 
 - [在 GitHub 预览 PDF](blueprint.pdf) · [下载 PDF](https://github.com/Euler2023/grh-blueprint/releases/latest/download/blueprint.pdf)
 - [下载 HTML 阅读包](https://github.com/Euler2023/grh-blueprint/releases/latest/download/grh-blueprint-html.zip)
 - [查看发布版本](https://github.com/Euler2023/grh-blueprint/releases)
+
+## 中文专著
+
+《从 Theta 提升到广义 Riemann 猜想》以蓝图为基础，详述 Theta 提升和主不等式的证明，并说明如何由主不等式推出 Riemann 猜想与 Dirichlet $L$ 函数的广义 Riemann 猜想。正文中的 Lean 链接指向上游源码的固定提交和行号。
+
+- [在 GitHub 预览专著 PDF](monograph/GRH_Monograph.pdf)
+- [LaTeX 源码与编译说明](monograph/README.md)
 
 ## 本地阅读 HTML
 
