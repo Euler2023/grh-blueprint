@@ -14,6 +14,15 @@ This Chinese-language blueprint is based on the readable edition of [lsernau/grh
 
 *From Theta Lifts to the Proof of the Generalized Riemann Hypothesis* builds on the blueprint and develops the argument from theta lifts and the main inequality to the Riemann hypothesis and the generalized Riemann hypothesis for Dirichlet L-functions. Links in the text point to specific lines in a pinned revision of the upstream Lean source. Both English and Chinese editions are included.
 
+<p align="center">
+  <a href="monograph/GRH_Monograph_EN.pdf" title="Open the English monograph PDF">
+    <img src="monograph/figures/cover-illustration.png" width="420" alt="Shared monograph cover illustration showing theta lifts, the critical line, and the proof roadmap">
+  </a>
+  <a href="monograph/figures/proof-dependencies-en.pdf" title="Open the vector proof dependency map">
+    <img src="monograph/figures/proof-dependencies-en.png" width="236" alt="English proof dependency map">
+  </a>
+</p>
+
 - [Preview the English monograph PDF on GitHub](monograph/GRH_Monograph_EN.pdf)
 - [Preview the Chinese monograph PDF on GitHub](monograph/GRH_Monograph.pdf)
 - [LaTeX source and build instructions](monograph/README.md)

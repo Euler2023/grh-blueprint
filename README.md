@@ -14,6 +14,15 @@
 
 《从 Theta 提升到广义 Riemann 猜想的证明》（*From Theta Lifts to the Proof of the Generalized Riemann Hypothesis*）以蓝图为基础，详述 Theta 提升和主不等式的证明，并说明如何由主不等式推出 Riemann 猜想与 Dirichlet $L$ 函数的广义 Riemann 猜想。正文中的 Lean 链接指向上游源码的固定提交和行号，现同时提供中文版与英文版。
 
+<p align="center">
+  <a href="monograph/GRH_Monograph.pdf" title="打开中文版专著 PDF">
+    <img src="monograph/figures/cover-illustration.png" width="420" alt="中英文专著共用的封面插图，包括 Theta 提升、临界线和证明路线">
+  </a>
+  <a href="monograph/figures/proof-dependencies.pdf" title="打开全书证明依赖图矢量 PDF">
+    <img src="monograph/figures/proof-dependencies.png" width="236" alt="中文版全书证明依赖图">
+  </a>
+</p>
+
 - [在 GitHub 预览中文专著 PDF](monograph/GRH_Monograph.pdf)
 - [在 GitHub 预览英文专著 PDF](monograph/GRH_Monograph_EN.pdf)
 - [LaTeX 源码与编译说明](monograph/README.md)
