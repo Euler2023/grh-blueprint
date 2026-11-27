@@ -5,6 +5,12 @@
 - 中文版 PDF：[GRH_Monograph.pdf](GRH_Monograph.pdf)
 - 英文版 PDF：[GRH_Monograph_EN.pdf](GRH_Monograph_EN.pdf)
 
+两版均在前言之后安排一页竖版证明依赖图，可从目录或前言跳转。图中编号链接至正文对应结果。
+
+- 独立矢量图 [中文版](figures/proof-dependencies.pdf) · [英文版](figures/proof-dependencies-en.pdf)
+- PNG 图 [中文版](figures/proof-dependencies.png) · [英文版](figures/proof-dependencies-en.png)
+- [节点、依赖边与版式核对](work/proof-dependencies/figure-qa.md)
+
 PDF 内的章、节、定理、图表、封面路线图和公式引用均可跳转，Lean 源码链接固定到上游提交和行号：[上游可读版](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh)。
 
 ## 编译

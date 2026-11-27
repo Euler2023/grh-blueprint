@@ -1,0 +1,21 @@
+\clearpage
+\begingroup
+\def\ProofMapInBook{}
+\ifdefined\ProofMapEnglish
+  \def\ProofMapTitle{Proof dependency map}
+\else
+  \def\ProofMapTitle{全书证明依赖图}
+\fi
+\phantomsection
+\label{page:proof-dependencies}
+\addcontentsline{toc}{chapter}{\ProofMapTitle}
+\thispagestyle{plain}
+\noindent\makebox[\linewidth][c]{%
+  \ifdefined\ProofMapEnglish
+    \input{../figures/proof-dependencies-diagram}%
+  \else
+    \input{figures/proof-dependencies-diagram}%
+  \fi
+}\par
+\clearpage
+\endgroup

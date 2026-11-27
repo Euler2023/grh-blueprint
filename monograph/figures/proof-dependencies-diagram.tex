@@ -1,0 +1,303 @@
+% Both editions use these coordinates and paths. Proof references are clickable in the book.
+\begingroup
+\newcommand{\MapText}[2]{\ifdefined\ProofMapEnglish #2\else #1\fi}
+\newcommand{\MapRef}[2]{%
+  \ifdefined\ProofMapInBook
+    \hyperref[#1]{\ref*{#1}}%
+  \else
+    #2%
+  \fi
+}
+\newcommand{\MapSection}[2]{\S\MapRef{#1}{#2}}
+\newcommand{\MapLem}{\MapText{引理}{Lem.}}
+\newcommand{\MapThm}{\MapText{定理}{Thm.}}
+\newcommand{\MapId}[1]{\textbf{#1}}
+\newcommand{\MapLemma}[2]{\MapId{\MapLem~\MapRef{#1}{#2}}}
+\newcommand{\MapTheorem}[2]{\MapId{\MapThm~\MapRef{#1}{#2}}}
+\newcommand{\MapFont}[2]{\normalfont\sffamily\linespread{1}\fontsize{#1}{#2}\selectfont}
+
+\definecolor{MapNavy}{HTML}{20354C}
+\definecolor{MapBlue}{HTML}{47678A}
+\definecolor{MapGreen}{HTML}{35695F}
+\definecolor{MapBurgundy}{HTML}{864A58}
+\definecolor{MapOchre}{HTML}{786037}
+\definecolor{MapViolet}{HTML}{5D5078}
+\definecolor{MapSlate}{HTML}{64717C}
+
+\begin{tikzpicture}[
+  x=1cm, y=-1cm,
+  map node/.style={
+    draw=MapNavy, fill=white, text=MapNavy, rounded corners=1.7pt,
+    line width=.5pt, align=center, inner xsep=2.3pt, inner ysep=1.45pt, outer sep=.25pt,
+    font=\MapFont{9.5}{11.15}
+  },
+  map upper/.style={draw=MapBlue, fill=MapBlue!5},
+  map span/.style={draw=MapGreen, fill=MapGreen!6},
+  map period/.style={draw=MapGreen, fill=MapGreen!11},
+  map volume/.style={draw=MapBurgundy, fill=MapBurgundy!5},
+  map analytic/.style={draw=MapOchre, fill=MapOchre!6},
+  map public/.style={draw=MapViolet, fill=MapViolet!6},
+  map gate/.style={line width=.85pt, font=\MapFont{11}{12}},
+  map heading/.style={anchor=west, inner sep=0pt, font=\MapFont{10.5}{12}\bfseries},
+  map direct/.style={draw=MapNavy, line width=.58pt, -{Stealth[length=1.40mm,width=1.12mm]}},
+  map technical/.style={draw=MapSlate, line width=.55pt, dash pattern=on 2.6pt off 1.5pt,
+    -{Stealth[length=1.35mm,width=1.08mm]}},
+  map cases/.style={draw=MapBlue, line width=.68pt, dash pattern=on 3pt off 1.3pt,
+    -{Stealth[length=1.40mm,width=1.12mm]}},
+  map implication/.style={draw=MapSlate, line width=.63pt, densely dotted,
+    -{Stealth[length=1.35mm,width=1.08mm]}},
+  map crossover/.style={preaction={draw=white, line width=1.85pt, -}},
+  map key/.style={anchor=west, inner sep=0pt, font=\MapFont{9.5}{10.8}, text=MapNavy},
+]
+\path[use as bounding box] (0,0) rectangle (15.30,21.53);
+
+\node[text=MapNavy, font=\MapFont{18}{20}\bfseries, inner sep=0pt,
+  minimum width=7.6cm, minimum height=.65cm] (title) at (7.65,.43)
+  {\MapText{全书证明依赖图}{Proof dependency map}};
+
+% Legend symbols use the same line styles as the proof edges.
+\draw[map direct] (.34,1.18) -- (1.04,1.18);
+\node[map key] at (1.17,1.18) {\MapText{直接依赖}{Direct}};
+\draw[map technical] (3.89,1.18) -- (4.59,1.18);
+\node[map key] at (4.72,1.18) {\MapText{技术输入}{Technical input}};
+\draw[map cases] (7.79,1.18) -- (8.49,1.18);
+\node[map key] at (8.62,1.18) {\MapText{互补情形}{Case split}};
+\draw[map implication] (12.01,1.18) -- (12.71,1.18);
+\node[map key] at (12.84,1.18) {\MapText{推出或特化}{Implication}};
+\draw[MapSlate!40, line width=.45pt] (.32,1.54) -- (14.99,1.54);
+
+% The upper part uses five aligned columns. The period branch in the middle feeds B and C.
+\node[map heading,text=MapBlue] at (.32,1.90) {\MapText{A\quad 提升范数与格指数}{A\quad Norms and lattice indices}};
+\node[map heading,text=MapGreen] at (6.34,1.90) {\MapText{B\quad 张成}{B\quad Spanning}};
+\node[map heading,text=MapBurgundy] at (9.35,1.90) {\MapText{C\quad 余体积下界}{C\quad Covolume lower bound}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (jets) at (1.63,2.94)
+  {\MapId{\MapRef{thm:ch2-normal-form}{2.5}\MapText{、}{, }\MapRef{lem:a-charged-schur-jet}{2.8}}\\
+   \MapText{Taylor 正规形\\与导数赋值}{Taylor form\\and valuations}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (cases) at (1.63,4.37)
+  {\MapId{\MapRef{thm:a-edge-elementary-divisors}{3.20} / \MapSection{sec:a-hecke}{3.2}–\MapRef{sec:a-level-prime}{3.4}}\\
+   \MapText{有限位整除性\\与格余长}{Local divisibility\\and colength}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (loss) at (1.63,5.80)
+  {\MapLemma{lem:a-uniform-divisibility}{3.48}\\
+   \MapText{统一局部损失}{Uniform local\\loss}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (short) at (1.63,7.23)
+  {\MapId{\MapLem~\MapRef{lem:a-short-source-basis}{3.4}\MapText{、}{, }\MapRef{lem:a-composite-size}{3.7}}\\
+   \MapText{短整形式与\\复合提升范数}{Short integral\\forms and norms}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (seesaw) at (4.64,4.37)
+  {\MapTheorem{thm:a-seesaw}{3.65}\\
+   \MapText{上下提升链\\Seesaw 恒等式}{Seesaw identity\\for the lift chains}};
+
+\node[map node,map upper,minimum width=2.64cm,minimum height=1.10cm] (ramified) at (4.64,7.23)
+  {\MapId{\MapLem~\MapRef{lem:a-ramified-dimension}{3.5}–\MapRef{lem:a-ramified-loss-scale}{3.6}}\\
+   \MapText{分歧源空间余维}{Ramified source\\codimension}};
+
+\node[map node,map upper,map gate,minimum width=2.64cm,minimum height=1.10cm] (a1) at (1.63,8.86)
+  {\MapId{A(a)\enspace\MapRef{thm:short-forms}{3.66}}\\
+   \MapText{平方范数上界}{Norm bound}};
+
+\node[map node,map upper,map gate,minimum width=2.64cm,minimum height=1.10cm] (a2) at (4.64,8.86)
+  {\MapId{A(b)\enspace\MapRef{thm:index-bound}{3.67}}\\
+   \MapText{格指数上界}{Index bound}};
+
+\node[map node,map period,minimum width=2.64cm,minimum height=1.10cm] (laplace) at (7.65,2.94)
+  {\MapId{\MapRef{lem:ch8-pointwise}{8.3}\MapText{、}{, }\MapRef{thm:ch8-laplace}{8.4}}\\
+   \MapText{Laplace 法的\\实位周期下界}{Laplace bound\\for real periods}};
+
+\node[map node,map period,minimum width=2.64cm,minimum height=1.10cm] (stationary) at (7.65,4.37)
+  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
+   \MapText{驻相位置群\\周期下界}{Stationary\\position periods}};
+
+\node[map node,map span,minimum width=2.64cm,minimum height=1.10cm] (bessel) at (7.65,5.80)
+  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
+   \MapText{实位 Bessel 测试}{Bessel tests\\at real places}};
+
+\node[map node,map span,minimum width=2.64cm,minimum height=1.10cm] (moments) at (7.65,7.23)
+  {\MapId{\MapRef{lem:b-amplitude-blocks}{4.1}\MapText{、}{, }\MapRef{lem:b-near-isometry}{4.30}\MapText{、}{, }\MapRef{lem:b-second-moment}{4.45}}\\
+   \MapText{展开、近等距\\与二阶矩}{Near isometry\\and 2nd moment}};
+
+\node[map node,map span,map gate,minimum width=2.64cm,minimum height=1.10cm] (b) at (7.65,8.86)
+  {\MapId{B\enspace\MapRef{thm:enough-forms}{4.46}}\\
+   \MapText{平移近乎张成}{Near spanning}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (coeff) at (10.66,2.94)
+  {\MapLemma{lem:c-derivative-sharpness}{2.16}\\
+   \MapText{导数系数\\有限位下界}{Jet coefficient\\lower bound}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (hecke) at (10.66,4.37)
+  {\MapId{\MapLem~\MapRef{lem:c-test-pairing-lower}{6.5}–\MapRef{lem:c-hecke-product-height}{6.7}}\\
+   \MapText{测试配对与\\逆 Hecke 值比}{Inverse Hecke\\ratios via tests}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (restriction) at (10.66,5.80)
+  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
+   \MapText{秩差一限制\\形式张成}{Rank gap of one\\restriction spans}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (aux) at (10.66,7.23)
+  {\MapLemma{lem:c-auxiliary-forms}{5.1}\\
+   \MapText{有整提升的\\辅助形式}{Auxiliary forms\\with integral lifts}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (factor) at (10.66,8.86)
+  {\MapLemma{lem:c-chain-factorization}{5.2}\\
+   \MapText{整链行列式\\比的分解}{Chain Gram ratio\\as a product}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (regular) at (13.67,2.94)
+  {\MapId{\MapRef{lem:c-selmer-simultaneous-twist}{7.20}\MapText{、}{, }\MapRef{lem:c-clearing-determinant}{7.43}–\MapRef{lem:c-regular-family}{7.45}}\\
+   \MapText{正则扭转\\与投影分母}{Regular twists\\\& denominators}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (comp) at (13.67,4.37)
+  {\MapId{\MapLem~\MapRef{lem:c-comparison-operator}{6.46}–\MapRef{lem:c-compression-identity}{6.47}}\\
+   \MapText{比较算子\\与正交压缩}{Comparison and\\compression}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (single) at (13.67,5.80)
+  {\MapLemma{lem:c-single-volume-height}{6.48}\\
+   \MapText{单步行列式比\\的高度}{Single-step\\Gram ratio height}};
+
+\node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (sync) at (13.67,7.23)
+  {\MapLemma{lem:c-good-twists-volume}{5.3}\\
+   \MapText{同一扭转族\\控制全部单步}{One twist family\\for all steps}};
+
+\node[map node,map volume,map gate,minimum width=2.64cm,minimum height=1.10cm] (c) at (13.67,8.86)
+  {\MapId{C\enspace\MapRef{thm:long-forms}{5.4}}\\
+   \MapText{余体积下界}{Covolume}};
+
+\node[map node,map gate,fill=MapNavy!6,minimum width=6.06cm,minimum height=1.10cm,
+  font=\MapFont{11}{14}]
+  (star) at (7.65,10.40)
+  {\MapTheorem{thm:star}{1.33}\quad\MapText{主不等式}{Main inequality}\\
+   $mS\le fa(\log b)^5$};
+
+% Two analytic inputs to the nonvanishing argument.
+\node[map heading,text=MapOchre] at (.32,11.40) {\MapText{素数幂余项}{Prime-power remainder}};
+\node[map heading,text=MapOchre] at (9.34,11.40) {\MapText{Landau 判据}{Landau's criterion}};
+
+\node[map node,map analytic,minimum width=2.64cm,minimum height=1.10cm] (scales) at (1.63,12.46)
+  {\MapId{\MapLem~\MapRef{lem:data-existence}{1.45}–\MapRef{lem:data-scales}{1.46}}\\
+   \MapText{容许数据\\与尺度}{Admissible data\\and scales}};
+
+\node[map node,map analytic,minimum width=2.64cm,minimum height=1.10cm] (far) at (4.64,12.46)
+  {\MapId{\MapLem~\MapRef{lem:weighted-pnt}{1.48}–\MapRef{lem:second-scale}{1.49}}\\
+   \MapText{固定模素数定理\\与大尺度余项}{Fixed-modulus\\prime estimate}};
+
+\node[map node,map analytic,minimum width=2.64cm,minimum height=1.10cm] (normalize) at (7.65,12.46)
+  {\MapId{\MapRef{lem:remainder}{1.20}\MapText{、}{, }\MapRef{lem:normalized}{1.47}}\\
+   \MapText{双尺度恒等式\\与归一化上界}{Two-scale\\remainder bound}};
+
+\node[map node,map analytic,minimum width=2.64cm,minimum height=1.10cm] (qtwist) at (10.66,12.46)
+  {\MapId{\MapRef{lem:theta-detect}{1.60}\MapText{、}{, }\MapRef{lem:theta-tail-average}{1.65}–\MapRef{lem:twist-choice}{1.68}}\\
+   \MapText{尾积分与\\二次扭转选取}{Tail bounds and\\quadratic twists}};
+
+\node[map node,map analytic,minimum width=2.64cm,minimum height=1.10cm] (residues) at (13.67,12.46)
+  {\MapId{\MapLem~\MapRef{lem:prime-transform}{1.69}–\MapRef{lem:landau}{1.70}}\\
+   \MapText{留数公式\\与 Landau 引理}{Residues and\\Landau's lemma}};
+
+\node[map node,map analytic,map gate,minimum width=5.23cm,minimum height=1.10cm] (one) at (4.64,13.90)
+  {\MapId{\MapRef{lem:integer-bound}{1.50}\MapText{、}{, }\MapThm~\MapRef{thm:one-sided}{1.51}}\\
+   \MapText{单侧余项界}{One-sided remainder bound}};
+
+\node[map node,map analytic,map gate,minimum width=5.23cm,minimum height=1.10cm] (criterion) at (12.17,13.90)
+  {\MapTheorem{thm:criterion}{1.71}\\
+   \MapText{Landau 型无零点判据}{Landau-type nonvanishing}};
+
+\node[map node,map analytic,map gate,minimum width=7.15cm,minimum height=1.37cm] (half) at (7.65,15.49)
+  {\MapTheorem{thm:half-plane}{1.72}\\
+   \MapText{Dirichlet $L$ 函数在 $\operatorname{Re}s>1/2$ 无零点}{Dirichlet $L$ nonvanishing for $\operatorname{Re}s>1/2$}\\
+   \MapText{主特征的 $s=1$ 除外}{Except $s=1$ for the principal character}};
+
+\node[map heading,text=MapViolet] at (.32,16.57) {\MapText{五条公开定理}{Five public theorems}};
+
+\node[map node,map public,minimum width=4.43cm,minimum height=1.03cm] (zsym) at (2.61,17.52)
+  {\MapLemma{lem:zeta-reflection}{1.76}\\
+   \MapText{{\MapFont{10}{11.15}$\zeta$} 函数的零点对称性}{{\MapFont{10}{11.15}$\zeta$} zero symmetry}};
+
+\node[map node,map public,minimum width=4.43cm,minimum height=1.03cm] (lsym) at (12.69,17.52)
+  {\MapId{\MapLem~\MapRef{lem:primitive-zero-reflection}{1.74}–\MapRef{lem:dirichlet-reflection}{1.75}}\\
+   \MapText{Dirichlet {\MapFont{10}{11.15}$L$} 零点的对称性}{Dirichlet {\MapFont{10}{11.15}$L$} zero symmetry}};
+
+\node[map node,map public,map gate,minimum width=4.43cm,minimum height=1.19cm] (rh) at (2.61,19.00)
+  {\MapTheorem{thm:rh}{1.77}\\
+   \MapText{Riemann 猜想}{Riemann hypothesis}};
+
+\node[map node,map public,map gate,minimum width=4.43cm,minimum height=1.19cm] (zline) at (2.61,20.63)
+  {\MapTheorem{thm:zeta-zeros}{1.78}\\
+   \MapText{$\zeta$ 非平凡零点\\在临界线上}{Nontrivial $\zeta$ zeros\\on the critical line}};
+
+\node[map node,map public,map gate,minimum width=4.18cm,minimum height=1.19cm] (grh_half) at (7.65,19.35)
+  {\MapTheorem{thm:right-nonvanishing}{1.79}\\
+   \MapText{广义 Riemann 猜想\\半平面形式}{Generalized Riemann\\hypothesis, half-plane}};
+
+\node[map node,map public,map gate,minimum width=4.43cm,minimum height=1.19cm] (grh_line) at (12.69,19.00)
+  {\MapTheorem{thm:l-zeros}{1.80}\\
+   \MapText{Dirichlet $L$ 临界带零点\\在临界线上}{Critical-strip $L(s,\chi)$ zeros\\on the critical line}};
+
+\node[map node,map public,map gate,minimum width=4.43cm,minimum height=1.19cm] (grh_primitive) at (12.69,20.63)
+  {\MapTheorem{thm:primitive}{1.81}\\
+   \MapText{本原特征的临界带\\零点在临界线上}{Critical line for\\primitive characters}};
+
+% Every displayed proof edge has a matching source and target in dependency-edges.csv.
+\draw[map technical] (jets.south) -- (cases.north);
+\draw[map cases] (cases.south) -- (loss.north);
+\draw[map direct] (short.south) -- (a1.north);
+\draw[map direct,map crossover] ([xshift=-8mm]ramified.south) -- (3.84,8.15)
+  -- (3.06,8.15) -- (3.06,8.86) -- (a1.east);
+\draw[map direct] (ramified.south) -- (a2.north);
+\draw[map direct] (seesaw.west) -- (3.15,4.37) -- (3.15,7.97)
+  -- (2.52,7.97) -- ([xshift=8.9mm]a1.north);
+\draw[map direct] (seesaw.east) -- (6.20,4.37) -- (6.20,7.97)
+  -- (5.51,7.97) -- ([xshift=8.7mm]a2.north);
+\draw[map technical] (loss.west) -- (.15,5.80) -- (.15,8.68) -- ([yshift=1.8mm]a1.west);
+\draw[map direct,map crossover] (loss.east) -- (3.02,5.80) -- (3.02,7.89)
+  -- (3.60,7.89) -- ([xshift=-10.4mm]a2.north);
+\draw[map implication] (laplace.south) -- (stationary.north);
+\draw[map technical] (stationary.south) -- (bessel.north);
+\draw[map technical] (bessel.south) -- (moments.north);
+\draw[map direct] (moments.south) -- (b.north);
+\draw[map direct,map crossover] (ramified.east) -- (6.07,7.23)
+  -- (6.07,8.86) -- (b.west);
+
+\draw[map technical] (coeff.south) -- (hecke.north);
+\draw[map technical] (regular.west) -- (12.12,2.94) -- (12.12,3.66)
+  -- (11.45,3.66) -- ([xshift=7.9mm]hecke.north);
+\draw[map technical] ([yshift=-1.6mm]regular.east) -- (15.10,3.10)
+  -- (15.10,5.80) -- (single.east);
+\draw[map direct] (comp.south) -- (single.north);
+\draw[map direct] (hecke.south) -- (10.66,5.08) -- (12.83,5.08)
+  -- ([xshift=-8.4mm]single.north);
+\draw[map direct] ([yshift=1.6mm]regular.east) -- (15.25,2.78)
+  -- (15.25,7.23) -- (sync.east);
+\draw[map direct] (single.south) -- (sync.north);
+\draw[map implication] (stationary.east) -- (9.16,4.37) -- (9.16,5.07)
+  -- (9.77,5.07) -- ([xshift=-8.9mm]restriction.north);
+\draw[map technical] (restriction.south) -- (aux.north);
+\draw[map direct] (aux.south) -- (10.66,8.05) -- (12.86,8.05)
+  -- ([xshift=-8.1mm]c.north);
+\draw[map direct] (factor.east) -- (c.west);
+\draw[map direct] (sync.south) -- (c.north);
+
+\draw[map direct] (a1.south) -- (1.63,9.74) -- (5.17,9.74) -- ([xshift=-24.8mm]star.north);
+\draw[map direct] (a2.south) -- (4.64,9.57) -- (6.69,9.57) -- ([xshift=-9.6mm]star.north);
+\draw[map direct] (b.south) -- (7.65,9.57) -- (8.22,9.57) -- ([xshift=5.7mm]star.north);
+\draw[map direct] (c.south) -- (13.67,9.57) -- (10.13,9.57) -- ([xshift=24.8mm]star.north);
+
+\draw[map direct] (star.south) -- (normalize.north);
+\draw[map direct] (normalize.south) -- (7.65,13.19) -- (6.61,13.19) -- ([xshift=19.7mm]one.north);
+\draw[map direct] (scales.south) -- (1.63,13.19) -- (2.67,13.19) -- ([xshift=-19.7mm]one.north);
+\draw[map direct] (far.south) -- (one.north);
+\draw[map direct] (qtwist.south) -- (10.66,13.19) -- (10.89,13.19) -- ([xshift=-12.8mm]criterion.north);
+\draw[map direct] (residues.south) -- (13.67,13.19) -- (13.45,13.19) -- ([xshift=12.8mm]criterion.north);
+\draw[map direct] (criterion.south) -- (12.17,14.67) -- (9.53,14.67) -- ([xshift=18.8mm]half.north);
+\draw[map direct] (one.south) -- (4.64,14.67) -- (5.77,14.67) -- ([xshift=-18.8mm]half.north);
+
+\draw[map direct] ([xshift=-17.3mm]half.south) -- (5.92,16.37) -- (5.16,16.37)
+  -- (5.16,19.00) -- (rh.east);
+\draw[map direct] (zsym.south) -- (rh.north);
+\draw[map implication] (rh.south) -- (zline.north);
+\draw[map implication] (half.south) -- (grh_half.north);
+\draw[map direct] ([xshift=17.3mm]half.south) -- (9.38,16.37) -- (10.14,16.37)
+  -- (10.14,19.00) -- (grh_line.west);
+\draw[map direct] (lsym.south) -- (grh_line.north);
+\draw[map implication] (grh_line.south) -- (grh_primitive.north);
+\end{tikzpicture}%
+\endgroup

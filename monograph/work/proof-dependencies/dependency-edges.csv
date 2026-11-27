@@ -1,0 +1,93 @@
+edge_id,source,target,relation,evidence_location,evidence,confidence,placement,diagram_source,diagram_target
+E01,thm:ch2-normal-form,lem:a-charged-schur-jet,direct,chapters/ch02.tex:204,将标准数据的 Taylor 级数改写成正规形后进行方向替换。,high,within node,jets,jets
+E02,lem:a-charged-schur-jet,lem:a-marked-neighbor-jet-gauge,technical-input,chapters/ch03.tex:1067,将导数矩阵元赋值界与对角 Weyl 因子合成标记邻点处的单步规范界。,high,drawn,jets,cases
+E03,lem:a-marked-neighbor-jet-gauge,lem:a-marked-hecke-datum-transfer,direct,chapters/ch03.tex:1090–1096,Hecke 算子归纳的初始项调用双陪集点的单步规范界。,high,within node,cases,cases
+E04,lem:a-marked-hecke-datum-transfer,lem:a-marked-hecke-chain-gauge,direct,chapters/ch03.tex:1128–1140,应用单步传递构造各步的核数据，并迭代至第 m 步。,high,within node,cases,cases
+E05,lem:a-marked-hecke-chain-gauge,lem:a-full-mark-valuation,direct,chapters/ch03.tex:1162–1175,以完整标记消去碰撞，使用标记 Hecke 幂的链规范界。,high,within node,cases,cases
+E06,thm:a-edge-elementary-divisors,lem:a-mark-single-colength,direct,chapters/ch03.tex:669–701,把单个标记算子识别为边 Hecke 算子在源格上的作用并代入截断余长上界。,high,within node,cases,cases
+E07,lem:a-mark-single-colength,lem:a-exceptional-hecke-colength,direct,chapters/ch03.tex:715–733,将逐个标记的余长界迭代到标记乘积。,high,within node,cases,cases
+E08,lem:a-weak-chain-integral-away,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1452,处理 p 不在所选集合 Q 且 p 不等于层素数 N 的情况。,high,drawn,cases,loss
+E09,lem:a-weak-chain-unmarked-valuation,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1453,处理 Q 中非例外素数的提升规范。,high,drawn,cases,loss
+E10,lem:a-nonexceptional-collision,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1453,把非例外素数的碰撞代价吸收入预算。,high,drawn,cases,loss
+E11,lem:a-exceptional-hecke-colength,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1454,处理 Q 中例外素数的格指数。,high,drawn,cases,loss
+E12,lem:a-full-mark-valuation,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1454,处理 Q 中例外素数的提升规范。,high,drawn,cases,loss
+E13,lem:a-level-up-colength,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1455,处理层素数 N 的格指数。,high,drawn,cases,loss
+E14,lem:a-level-composite-gauge,lem:a-uniform-divisibility,complementary-case,chapters/ch03.tex:1455,处理层素数 N 的提升规范。,high,drawn,cases,loss
+E15,lem:a-short-source-basis,thm:short-forms,direct,chapters/ch03.tex:2099,先选取全源空间的短整张成族。,high,drawn,short,a1
+E16,lem:a-composite-size,thm:short-forms,direct,chapters/ch03.tex:2113–2122,将平凡扭转下的点值范数提升为复合链上的范数界。,high,drawn,short,a1
+E17,lem:a-ramified-dimension,thm:short-forms,direct,chapters/ch03.tex:2101,利用分歧化算子构造分歧源空间的短整张成族。,high,drawn,ramified,a1
+E18,lem:a-ramified-dimension,thm:index-bound,direct,chapters/ch03.tex:2208,用分歧源空间的维数界换算全源空间的局部指数预算。,high,drawn,ramified,a2
+E19,lem:a-ramified-loss-scale,thm:index-bound,direct,chapters/ch03.tex:2208,证明全源维数至多为分歧源维数的两倍。,high,drawn,ramified,a2
+E20,thm:a-seesaw,thm:short-forms,direct,chapters/ch03.tex:2104–2111,将下链与 Poincaré 映射的复合改写成可估计的上链提升。,high,drawn,seesaw,a1
+E21,thm:a-seesaw,thm:index-bound,direct,chapters/ch03.tex:2195,把归一化复合上链的局部整性传递至任一允许扭转的下链。,high,drawn,seesaw,a2
+E22,lem:a-uniform-divisibility,thm:short-forms,technical-input,chapters/ch03.tex:2136–2151,其局部损失统一预算确定归一化系数 c_B，并控制全部复共轭下的大小。,high,drawn,loss,a1
+E23,lem:a-uniform-divisibility,thm:index-bound,direct,chapters/ch03.tex:2182–2194,提供同一局部校正格，适用于该素数处所有允许扭转。,high,drawn,loss,a2
+E24,lem:ch8-pointwise,thm:ch8-laplace,direct,chapters/ch08.tex:174–187,把振幅衰减与实部下界积分，并以体积覆盖吸收尾项。,high,within node,laplace,laplace
+E25,thm:ch8-laplace,lean:IsStationary.period_lower_bound_of_surjective,implication,"chapters/ch08.tex:211; ../grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean:399–402,460",先验证位置群满足 Laplace 数据，再沿真满射推前测度并拉回周期下界。,high,drawn,laplace,stationary
+E26,lean:IsStationary.period_lower_bound_of_surjective,lean:IsSteep.exists_stationary_point,technical-input,../grh/src/New/Spanning/Bessel/LargeFunction.lean:437,将周期下界用于 Bessel 图群以取得满足所需下界的实位驻相点。,high,drawn,stationary,bessel
+E27,lean:IsSteep.exists_stationary_point,lean:exists_besselSystem,direct,../grh/src/New/Spanning/Bessel/FillingData.lean:372–379,选择驻相点并以周期模长下界控制归一化 Bessel 平均的平方积分。,high,within node,bessel,bessel
+E28,lean:exists_besselSystem,lem:b-amplitude-blocks,technical-input,"chapters/ch04.tex:11,42–50; ../grh/src/New/Spanning/Bessel/FillingData.lean:461–471; ../grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean:168–176",以选出的局部测试构成填充数据内的 Bessel 系统，Petersson 展开在该填充数据上展开 Poincaré 映射。,high,drawn,bessel,moments
+E29,lem:b-amplitude-blocks,lem:b-near-isometry,direct,chapters/ch04.tex:1514–1519,以单位平移的振幅块展开控制与单位算子的差，并扣除坏类型。,high,within node,moments,moments
+E30,lem:b-amplitude-blocks,lem:b-second-moment,direct,chapters/ch04.tex:2548–2551,将振幅块的模平方和解释为平移后的 Hilbert–Schmidt 平方范数。,high,within node,moments,moments
+E31,lem:b-finite-sieve,lem:b-open-link,direct,chapters/ch04.tex:2402,固定向量条件决定施用筛法的中间群。,high,within node,moments,moments
+E32,lem:b-poisson-sieve,lem:b-open-link,direct,chapters/ch04.tex:2415–2425,用 Poisson 筛控制开元上的链接平方和。,high,within node,moments,moments
+E33,lem:b-open-link,lem:b-global-moment,direct,chapters/ch04.tex:2472–2483,开链接估计提供子群开元上的总质量界。,high,within node,moments,moments
+E34,lem:b-global-moment,lem:b-second-moment,direct,chapters/ch04.tex:2566–2573,对已识别为正型函数的振幅二阶矩应用总和估计。,high,within node,moments,moments
+E35,lem:b-near-isometry,thm:enough-forms,direct,"chapters/ch04.tex:2597–2606,2635–2643",好形式空间维数为正，并由近等距估计控制一次平移的原像维数。,high,drawn,moments,b
+E36,lem:b-second-moment,thm:enough-forms,direct,"chapters/ch04.tex:2597–2604,2612–2623",控制群平均算子从而选取每次增加足够维数的平移。,high,drawn,moments,b
+E37,lem:a-ramified-dimension,thm:enough-forms,direct,chapters/ch04.tex:2672–2682,从全源像转为分歧源像时逐个平移估计维数损失。,high,drawn,ramified,b
+E38,lem:a-ramified-loss-scale,thm:enough-forms,direct,chapters/ch04.tex:2672–2682,把分歧余维估计为 b 的负幂乘全源维数。,high,drawn,ramified,b
+E39,lem:c-derivative-sharpness,lem:c-test-pairing-lower,technical-input,chapters/ch06.tex:129–141,选取第一块的剩余点与单项式，取得测试配对的有限位下界。,high,drawn,coeff,hecke
+E40,lem:c-test-pairing-lower,lem:c-main-pair-height,direct,chapters/ch06.tex:170–184,在共轭有限位分别选取测试形式，随后控制秩一直线上的投影配对。,high,within node,hecke,hecke
+E41,lem:c-main-pair-height,lem:c-hecke-product-height,direct,chapters/ch06.tex:210–215,主对逐项高度与分歧对预算相加。,high,within node,hecke,hecke
+E42,lem:c-comparison-operator,lem:c-compression-identity,direct,chapters/ch06.tex:1449–1461,压缩算子的行列式与单步 Gram 行列式相乘，等于比较算子的拉回行列式。,high,within node,comp,comp
+E43,lem:c-selmer-simultaneous-twist,lem:c-local-twist,direct,chapters/ch07.tex:1251–1253,同一个局部扭转的前 m 次幂满足所需的 Selmer 长度与分歧对赋值界。,high,within node,regular,regular
+E44,lem:c-clearing-determinant,lem:c-local-twist,direct,chapters/ch07.tex:1263–1267,分别对秩 r₀ 的提升像和秩一直线应用分母算子。,high,within node,regular,regular
+E45,lem:c-local-twist,lem:c-regular-family,direct,"chapters/ch07.tex:1299–1303,1354–1361",逐有限位选取扭转后在有限素数集上求和控制预算。,high,within node,regular,regular
+E46,def:regular-twist-family,lem:c-main-pair-height,technical-input,chapters/ch06.tex:186; chapters/ch07.tex:12–20,正则性提供测试直线投影的分母预算和分歧对的逆比高度。,high,drawn,regular,hecke
+E47,def:regular-twist-family,lem:c-single-volume-height,technical-input,chapters/ch06.tex:1477–1482; chapters/ch07.tex:12–20,为压缩到好形式提升像的算子提供有限位投影分母预算。,high,drawn,regular,single
+E48,lem:c-comparison-operator,lem:c-single-volume-height,direct,"chapters/ch06.tex:1477,1485–1495",用比较算子的整性、伪提升正交性与无穷位范数控制压缩算子。,high,drawn,comp,single
+E49,lem:c-compression-identity,lem:c-single-volume-height,direct,chapters/ch06.tex:1495–1502,把压缩行列式与 Hecke 比值换算为所求 Gram 行列式之比。,high,drawn,comp,single
+E50,lem:c-hecke-product-height,lem:c-single-volume-height,direct,chapters/ch06.tex:1497–1507,为压缩公式中的标量比提供剩余高度估计。,high,drawn,hecke,single
+E51,lem:c-regular-family,lem:c-good-twists-volume,direct,chapters/ch05.tex:153,具体选取具有互素性和分歧对高度界的正则族。,high,drawn,regular,sync
+E52,lem:c-single-volume-height,lem:c-good-twists-volume,direct,chapters/ch05.tex:153,在同一正则族上逐步应用单步高度界。,high,drawn,single,sync
+E53,lean:IsStationary.period_lower_bound_of_surjective,lean:IsSteep.exists_volume_le_mul_norm_integral_dsCoeff,implication,../grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean:713–729,应用秩差一的驻相位置，旗标相位为零，得到限制周期的定量下界。,high,drawn,stationary,restriction
+E54,lean:IsSteep.exists_volume_le_mul_norm_integral_dsCoeff,lean:exists_eq_zero_of_orthogonal_gridLevelForms,technical-input,../grh/src/New/Determinant/AuxiliaryForms/DeepLevelVanishing.lean:739–766; chapters/ch08.tex:216,在各无穷位提供一个配对有下界的点，再由深层 Poincaré 周期推出与所有限制正交的主层形式为零。,high,within node,restriction,restriction
+E55,lean:exists_eq_zero_of_orthogonal_gridLevelForms,lem:c-auxiliary-forms,technical-input,"chapters/ch05.tex:34,51–57; ../grh/src/New/Determinant/AuxiliaryForms/FirstPath.lean:304,352,457; ../grh/src/New/Determinant/AuxiliaryForms/SpanningForms.lean:412,647,682",限制张成性先给出平坦限制满射，再沿网格路径传到引理 5.1 中末路径的满射 R。,high,drawn,restriction,aux
+E56,lem:c-auxiliary-forms,thm:long-forms,direct,"chapters/ch05.tex:167–171,186–195",用可控整提升补基，并控制补基块的归一化因子。,high,drawn,aux,c
+E57,lem:c-chain-factorization,thm:long-forms,direct,chapters/ch05.tex:179–195,把链行列式比化为单步比值、层因子与部分 Hecke 值比。,high,drawn,factor,c
+E58,lem:c-good-twists-volume,thm:long-forms,direct,chapters/ch05.tex:176–195,同时代入单步高度和分歧对逆比预算，估计整链之比。,high,drawn,sync,c
+E59,thm:short-forms,thm:star,direct,chapters/ch01.tex:565–580,从短整张成族的平移像抽取向量，用 Hadamard 不等式取得余体积上界。,high,drawn,a1,star
+E60,thm:index-bound,thm:star,direct,chapters/ch01.tex:581–586,同一向量族的局部格指数给出误差预算。,high,drawn,a2,star
+E61,thm:enough-forms,thm:star,direct,chapters/ch01.tex:565–581,提供高秩向量族与平移数界，验证定理 C 的适用条件。,high,drawn,b,star
+E62,thm:long-forms,thm:star,direct,chapters/ch01.tex:588–594,应用余体积下界后消去公共主量 H。,high,drawn,c,star
+E63,lem:prime-window,lem:data-existence,direct,chapters/ch01.tex:1209–1211,幂模数的素数窗口验证构造容许对象的素数存在性假设。,high,ledger only,,scales
+E64,lem:sparse-places-ranks,lem:admissible-construction,direct,chapters/ch01.tex:1082,选取符合秩和尺度约束的稀疏无穷位集。,high,ledger only,,
+E65,lem:admissible-construction,lem:data-existence,direct,chapters/ch01.tex:1199–1213,构造与投影到容许数据相结合。,high,ledger only,,scales
+E66,lem:admissible-fields,lem:data-existence,direct,chapters/ch01.tex:1199–1213,把已构造的容许对象转换为所需数据。,high,ledger only,,scales
+E67,lem:main-amount-lower,thm:star,direct,chapters/ch01.tex:592,使用 H 非负以 r 替代 n 控制主量项。,high,ledger only,,star
+E68,lem:remainder,lem:normalized,direct,chapters/ch01.tex:1247–1259,解双尺度余项恒等式，分离小尺度处的余项。,high,within node,normalize,normalize
+E69,thm:star,lem:normalized,direct,chapters/ch01.tex:1253–1259,控制归一化后的总余项 S 项。,high,drawn,star,normalize
+E70,lem:data-existence,lem:data-scales,direct,chapters/ch01.tex:1225,为每个充分大的整数选择第一尺度为该整数的容许数据。,high,within node,scales,scales
+E71,lem:weighted-pnt,lem:second-scale,direct,chapters/ch01.tex:1348–1356,对两个固定模数控制大尺度处余项。,high,within node,far,far
+E72,lem:normalized,lem:integer-bound,direct,chapters/ch01.tex:1370–1377,将大尺度余项和参数界代入归一化不等式。,high,drawn,normalize,one
+E73,lem:data-scales,lem:integer-bound,direct,chapters/ch01.tex:1370,为充分大的整数 x 选择 m 与 x₁ 满足所需尺度的容许数据。,high,drawn,scales,one
+E74,lem:second-scale,lem:integer-bound,direct,chapters/ch01.tex:1370–1377,两个大尺度余项都至多为 x⁻²。,high,drawn,far,one
+E75,lem:integer-bound,thm:one-sided,direct,chapters/ch01.tex:1409–1413,用取整误差将整数点单侧界扩至充分大的所有实数。,high,within node,one,one
+E76,lem:theta-detect,lem:primitive-twist-count,direct,chapters/ch01.tex:1785,有零点的二次扭转迫使相应尾积分超过阈值。,high,within node,qtwist,qtwist
+E77,lem:theta-tail-average,lem:primitive-twist-count,direct,chapters/ch01.tex:1785,尾积分总和控制超过阈值的坏素数个数。,high,within node,qtwist,qtwist
+E78,lem:primitive-twist-count,lem:twist-density,direct,chapters/ch01.tex:1797,由有限 Euler 因子及有限个特征，汇总本原扭转的坏素数计数。,high,within node,qtwist,qtwist
+E79,lem:twist-density,lem:twist-choice,direct,chapters/ch01.tex:1807–1809,坏素数的加权和收敛，与单位剩余类的素数加权和发散比较，从而选到无零点的扭转。,high,within node,qtwist,qtwist
+E80,lem:twist-choice,thm:criterion,direct,chapters/ch01.tex:1894–1898,在指定矩形内消去扭转项的零点阶数，使实轴留数非负。,high,drawn,qtwist,criterion
+E81,lem:prime-transform,thm:criterion,direct,chapters/ch01.tex:1896–1903,将余项变换留数表达为零点阶数差，且处理 s 等于 1 的可去点。,high,drawn,residues,criterion
+E82,lem:landau,thm:criterion,direct,chapters/ch01.tex:1900–1903,由单侧界假设及实轴留数的非负性推出待检点的留数为零。,high,drawn,residues,criterion
+E83,thm:criterion,thm:half-plane,direct,chapters/ch01.tex:1912–1918,在升模 q₀ 后应用判据，再用有限 Euler 乘积返回模 q。,high,drawn,criterion,half
+E84,thm:one-sided,thm:half-plane,direct,chapters/ch01.tex:1914,取 ε 等于 β 减 1/2，给出应用 Landau 判据时对各 d 所需的单侧界。,high,drawn,one,half
+E85,lem:primitive-zero-reflection,lem:dirichlet-reflection,direct,chapters/ch01.tex:1960–1966,在临界带内 Gamma 因子非零，将零点反射到逆特征的 1−s。,high,within node,lsym,lsym
+E86,thm:half-plane,thm:rh,direct,chapters/ch01.tex:1987,满足 ζ 零点对称性引理的右半平面非零假设。,high,drawn,half,rh
+E87,lem:zeta-reflection,thm:rh,direct,chapters/ch01.tex:1987,应用 ζ 的函数方程所得对称性，推出非平凡零点的实部为 1/2。,high,drawn,zsym,rh
+E88,thm:rh,thm:zeta-zeros,implication,chapters/ch01.tex:1997; ../grh/src/Main.lean:7,后一陈述是前一陈述在 Lean 中的定义展开。,high,drawn,rh,zline
+E89,thm:half-plane,thm:right-nonvanishing,implication,chapters/ch01.tex:2007; ../grh/src/Main.lean:10–12,直接给出公开的 Dirichlet L 函数半平面形式。,high,drawn,half,grh_half
+E90,thm:half-plane,thm:l-zeros,direct,chapters/ch01.tex:2017,给出对全体模数与特征统一成立的右半平面非零性。,high,drawn,half,grh_line
+E91,lem:dirichlet-reflection,thm:l-zeros,direct,chapters/ch01.tex:2017,在整个临界带中应用一般特征的零点对称性。,high,drawn,lsym,grh_line
+E92,thm:l-zeros,thm:primitive,implication,chapters/ch01.tex:2027; ../grh/src/Main.lean:19–20,将对所有 Dirichlet 特征的结论限制到本原特征。,high,drawn,grh_line,grh_primitive
