@@ -1,0 +1,336 @@
+\usepackage[
+  a4paper,
+  inner=30mm,
+  outer=25mm,
+  bindingoffset=2mm,
+  top=24mm,
+  bottom=26mm,
+  includeheadfoot,
+  headheight=22pt,
+  headsep=14pt,
+  footskip=23pt
+]{geometry}
+
+\usepackage{emptypage}
+\usepackage[english]{babel}
+\usepackage{fontspec}
+\usepackage{titlesec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs,longtable,array,multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,backgrounds}
+\usepackage{tikz-cd}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+
+\definecolor{OxfordNavy}{RGB}{24, 48, 65}
+\definecolor{DefinitionInk}{RGB}{31, 88, 83}
+\definecolor{DeepBurgundy}{RGB}{114, 50, 57}
+\definecolor{WarmGold}{RGB}{146, 112, 64}
+\definecolor{SlateInk}{RGB}{55, 66, 73}
+\definecolor{CodeSlate}{RGB}{48, 62, 78}
+\definecolor{LinkBlue}{RGB}{18, 86, 174}
+\definecolor{SoftIvory}{RGB}{250, 249, 246}
+\definecolor{SoftSlateBg}{RGB}{245, 247, 250}
+\definecolor{HairlineGray}{RGB}{185, 192, 200}
+
+\usepackage{xurl}
+\usepackage{csquotes}
+\usepackage{zref-perpage}
+\zmakeperpage{footnote}
+\usepackage[
+  backend=biber,
+  style=numeric-comp,
+  sorting=nyt,
+  giveninits=true,
+  maxbibnames=6,
+  doi=true,
+  isbn=false,
+  url=true
+]{biblatex}
+\addbibresource{../references.bib}
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldsource=entrykey, match=\regexp{\AAlpoge2026\z}, final]
+      \step[fieldset=title, fieldvalue={A note on the {Riemann} hypothesis and its generalization to {Dirichlet} \(L\)-functions}]
+    }
+  }
+}
+\defbibheading{monographbib}[\bibname]{%
+  \chapter*{#1}%
+  \addcontentsline{toc}{chapter}{#1}%
+  \markboth{#1}{#1}%
+}
+\renewcommand*{\bibfont}{\small}
+\renewcommand*{\UrlFont}{\ttfamily\footnotesize}
+
+\usepackage[
+  colorlinks=true,
+  hypertexnames=false,
+  linktoc=all,
+  linkcolor=OxfordNavy,
+  citecolor=DeepBurgundy,
+  urlcolor=LinkBlue,
+  bookmarksnumbered=true,
+  pdftitle={From Theta Lifts to the Proof of the Generalized Riemann Hypothesis},
+  pdfauthor={Based on the lsernau/grh-lean formalization}
+]{hyperref}
+\usepackage{bookmark}
+
+% Text fonts for the English edition.
+\setmainfont{texgyrepagella}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\setsansfont{texgyreheros}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\setmonofont{Latin Modern Mono}
+
+\linespread{1.20}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[2]
+
+% Running headers (preserve proper capitalization of math names like Seesaw, Hecke)
+\pagestyle{fancy}
+\fancyhf{}
+\makeatletter
+\renewcommand{\chaptermark}[1]{\markboth{\ifnum\value{secnumdepth}>-1\if@mainmatter\@chapapp\ \thechapter\quad\fi\fi #1}{}}
+\makeatother
+\renewcommand{\sectionmark}[1]{\markright{\thesection\quad #1}}
+\fancyhead[LE]{\small\bfseries\color{SlateInk}\leftmark}
+\fancyhead[RO]{\small\bfseries\color{SlateInk}\rightmark}
+\fancyfoot[LE,RO]{\footnotesize\color{SlateInk}\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{HairlineGray}\leaders\hrule height \headrulewidth\hfill}}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\footnotesize\color{SlateInk}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+\titleformat{\chapter}[display]
+  {\raggedright\huge\bfseries\color{OxfordNavy}}
+  {\LARGE\sffamily\bfseries\color{DefinitionInk}\chaptertitlename\ \thechapter}
+  {0.65em}{}
+\titlespacing*{\chapter}{0pt}{0.7em}{1.15em}
+
+\titleformat{\section}
+  {\large\bfseries\color{OxfordNavy}\raggedright}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{1.45em plus 0.3em minus 0.2em}{0.65em}
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{SlateInk}\raggedright}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{1.05em plus 0.2em minus 0.1em}{0.4em}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{SlateInk}}{\thesubsubsection}{1em}{}
+
+% Compact scholarly list spacing
+\setlist[itemize]{topsep=0.4em, itemsep=0.22em, parsep=0pt, leftmargin=2em}
+\setlist[enumerate]{topsep=0.4em, itemsep=0.22em, parsep=0pt, leftmargin=2.2em}
+
+% Subtle dark-slate Lean identifier macros; web links inherit LinkBlue
+\DeclareRobustCommand{\lean}[1]{\ifmmode\text{\upshape\ttfamily\small\color{CodeSlate}#1}\else{\upshape\ttfamily\small\color{CodeSlate}#1}\fi}
+\DeclareRobustCommand{\leanlink}[2]{\href{#1}{{\upshape\ttfamily\small #2}}}
+\DeclareRobustCommand{\leanfile}[1]{\ifmmode\text{\upshape\ttfamily\footnotesize\color{SlateInk}#1}\else{\upshape\ttfamily\footnotesize\color{SlateInk}#1}\fi}
+\newcommand{\leansourcelink}[2]{%
+  \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/#1\#L#2}{{\upshape\ttfamily\nolinkurl{#1}\#L#2}}%
+}
+\newcommand{\leansource}[2]{\leansourcelink{#1}{#2}}
+\newcommand{\leanfn}[1]{\footnote{\normalfont\footnotesize\color{SlateInk}#1}}
+
+% Refined footnote rule and spacing
+\renewcommand{\footnoterule}{%
+  \kern-3pt
+  {\color{HairlineGray}\hrule width 0.34\textwidth height 0.4pt}%
+  \kern2.6pt
+}
+\setlength{\footnotesep}{0.45em}
+
+\newcommand{\chapref}[1]{\hyperref[#1]{Chapter~\ref*{#1}}}
+\newcommand{\secref}[1]{\hyperref[#1]{Section~\ref*{#1}}}
+\newcommand{\appref}[1]{\hyperref[#1]{Appendix~\ref*{#1}}}
+\newcommand{\statementlink}[2]{\hyperref[#1]{\textcolor{LinkBlue}{#2}}}
+\newcommand{\statementref}[2]{\statementlink{#2}{#1~\ref*{#2}}}
+\pdfstringdefDisableCommands{%
+  \def\lean#1{#1}%
+  \def\leanlink#1#2{#2}%
+  \def\leanfile#1{#1}%
+  \def\RePart{Re }%
+}
+
+% Tate-Shafarevich symbol Sha via crisp TeX rules
+\newcommand{\Sha}{\mathord{\mkern1.5mu\rule{0.5pt}{1.3ex}\rule{0.36em}{0.5pt}\rule{0.5pt}{1.3ex}\rule{0.36em}{0.5pt}\rule{0.5pt}{1.3ex}\mkern1.5mu}}
+
+% Standard Number Theory & Automorphic Macros
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\AAf}{\mathbb{A}_f}
+\newcommand{\AAA}{\mathbb{A}}
+\newcommand{\FF}{\mathbb{F}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\pp}{\mathfrak{p}}
+\newcommand{\qq}{\mathfrak{q}}
+\newcommand{\mm}{\mathfrak{m}}
+\newcommand{\aaIdeal}{\mathfrak{a}}
+\newcommand{\pMap}{\mathfrak{p}}
+\newcommand{\zVol}{\mathfrak{z}}
+\newcommand{\Gbar}{\overline{G}}
+
+\DeclareMathOperator{\RePart}{Re}
+\DeclareMathOperator{\ImPart}{Im}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\Ugrp}{U}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\covol}{covol}
+\DeclareMathOperator{\IndexLe}{IndexLe}
+\DeclareMathOperator{\CovolumeLe}{CovolumeLe}
+\DeclareMathOperator{\HeightLe}{HeightLe}
+\DeclareMathOperator{\ColengthDvd}{ColengthDvd}
+\DeclareMathOperator{\GaugeLe}{GaugeLe}
+\DeclareMathOperator{\DenominatorLe}{DenominatorLe}
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Fil}{Fil}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\HS}{HS}
+
+% Airy, borderless-except-left-accent Chapter Abstract (Cambridge / EMS Press style)
+\newtcolorbox{chapterguide}[1][Chapter overview]{
+  enhanced,
+  breakable,
+  frame hidden,
+  colback=white,
+  borderline west={1pt}{0pt}{HairlineGray},
+  sharp corners,
+  left=9pt,right=2pt,top=4pt,bottom=4pt,
+  before skip=0.2em,
+  after skip=1.3em,
+  fontupper=\small\color{SlateInk},
+  title={\small\bfseries\color{OxfordNavy}#1},
+  colbacktitle=white,
+  boxed title style={empty},
+  attach title to upper={\quad}
+}
+
+% Subtle left-accent block ONLY for Landmark Main Theorems (inequality (*), public theorems)
+\newtcolorbox{landmarkbox}{
+  enhanced,
+  breakable,
+  frame hidden,
+  colback=SoftIvory,
+  borderline west={2pt}{0pt}{DeepBurgundy},
+  sharp corners,
+  left=10pt,right=10pt,top=3pt,bottom=3pt,
+  before skip=0.7em,
+  after skip=0.7em
+}
+
+% Clean unboxed structural remark block
+\newenvironment{keyinsight}[1][Structural remark]{%
+  \par\medskip\noindent{\bfseries\color{OxfordNavy}#1.}\quad\ignorespaces
+}{%
+  \par\medskip
+}
+
+% Hook to attach primary Lean source links cleanly as theorem-header footnotes
+\makeatletter
+\newcommand{\@pendingthmsource}{}
+\newcommand{\thmsource}[1]{\gdef\@pendingthmsource{#1}}
+\newcommand{\@emitthmsourcemark}{%
+  \ifx\@pendingthmsource\@empty\else
+    \kern0.08em{\normalfont\footnotemark}%
+  \fi
+}
+\newcommand{\emitthmsource}{%
+  \ifx\@pendingthmsource\@empty\else
+    \leavevmode
+    \footnotetext{\normalfont\footnotesize\color{SlateInk}\@pendingthmsource}%
+    \gdef\@pendingthmsource{}%
+    \ignorespaces
+  \fi
+}
+
+\newtheoremstyle{thmstyle}
+  {0.75em}{0.75em}
+  {\normalfont\itshape}
+  {0pt}{\bfseries\color{OxfordNavy}}{.\@emitthmsourcemark}{0.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ {\normalfont\color{SlateInk}(#3)}}}
+
+\newtheoremstyle{mainstyle}
+  {0.6em}{0.6em}
+  {\normalfont\itshape}
+  {0pt}{\bfseries\color{DeepBurgundy}}{.\@emitthmsourcemark}{0.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ {\normalfont\color{SlateInk}(#3)}}}
+
+\newtheoremstyle{defstyle}
+  {0.7em}{0.7em}
+  {\normalfont}
+  {0pt}{\bfseries\color{DefinitionInk}}{.\@emitthmsourcemark}{0.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ {\normalfont\color{SlateInk}(#3)}}}
+
+\newtheoremstyle{lemstyle}
+  {0.7em}{0.7em}
+  {\normalfont}
+  {0pt}{\bfseries\color{SlateInk}}{.\@emitthmsourcemark}{0.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ {\normalfont(#3)}}}
+
+\newtheoremstyle{remstyle}
+  {0.6em}{0.6em}
+  {\normalfont}
+  {0pt}{\bfseries\color{SlateInk}}{.\@emitthmsourcemark}{0.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{(#3)}}
+\makeatother
+
+\theoremstyle{mainstyle}
+\newtheorem{maintheorem}{Main Theorem}[chapter]
+
+\theoremstyle{thmstyle}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{lemstyle}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{defstyle}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+
+\theoremstyle{remstyle}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% Proof header in bold upright type
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep\bfseries\color{OxfordNavy}#1\@addpunct{.}]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother
+\renewcommand{\proofname}{Proof}

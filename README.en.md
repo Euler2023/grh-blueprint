@@ -1,4 +1,4 @@
-# Lean Blueprint and Chinese Monograph for RH and GRH
+# Lean Blueprint and Monographs (Chinese & English) for RH and GRH
 
 [简体中文](README.md) · **English**
 
@@ -10,12 +10,17 @@ This Chinese-language blueprint is based on the readable edition of [lsernau/grh
 - [Download the HTML bundle](https://github.com/Euler2023/grh-blueprint/releases/latest/download/grh-blueprint-html.zip)
 - [Browse releases](https://github.com/Euler2023/grh-blueprint/releases)
 
-## Chinese monograph
+## Monographs (Chinese and English)
 
-*From Theta Lifts to the Generalized Riemann Hypothesis* builds on the blueprint and develops the argument from theta lifts and the main inequality to the Riemann hypothesis and the generalized Riemann hypothesis for Dirichlet L-functions. Links in the text point to specific lines in a pinned revision of the upstream Lean source.
+*From Theta Lifts to the Proof of the Generalized Riemann Hypothesis* builds on the blueprint and develops the argument from theta lifts and the main inequality to the Riemann hypothesis and the generalized Riemann hypothesis for Dirichlet L-functions. Links in the text point to specific lines in a pinned revision of the upstream Lean source. Both English and Chinese editions are included.
 
-- [Preview the monograph PDF on GitHub](monograph/GRH_Monograph.pdf)
-- [LaTeX source and build instructions (Chinese)](monograph/README.md)
+- [Preview the English monograph PDF on GitHub](monograph/GRH_Monograph_EN.pdf)
+- [Preview the Chinese monograph PDF on GitHub](monograph/GRH_Monograph.pdf)
+- [LaTeX source and build instructions](monograph/README.md)
+
+## Updates
+
+- **2026-11-27**: Added the full English monograph edition (`monograph/GRH_Monograph_EN.pdf` and `monograph/en/`), updated the Chinese monograph edition and bilingual titles, and introduced a redesigned shared vector TikZ cover illustration featuring a 50-digit Hardy $Z(t)$ curve, the first six nontrivial zeros, and a clickable proof roadmap.
 
 ## Read the HTML edition locally
 

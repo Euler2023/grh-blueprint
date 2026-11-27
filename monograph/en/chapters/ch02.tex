@@ -1,0 +1,536 @@
+\chapter{CM Formal Groups and Derivatives of Theta Functions}
+\label{chap:derivatives}
+
+\begin{chapterguide}
+This chapter studies the higher derivatives and Taylor coefficients at the origin of theta kernels on standard definite unitary spaces. The normal form from complex multiplication (CM) gives lower bounds on $p$-adic valuations of derivatives of products of minors, the arithmetic input for local integrality and divisibility gains in \statementref{Theorem}{thm:index-bound} in \chapref{chap:upperbound}. At each finite place we also construct a residue-class indicator vector whose Taylor coefficient satisfies the lower bound on absolute value in~\eqref{eq:ch2-sharpness}. This is used for the single-lift comparison in \chapref{chap:onelift}.
+\end{chapterguide}
+
+\section{CM lattices and Taylor scales}
+\label{sec:ch2-cm-field}
+
+Fix the admissible data of \chapref{chap:reduction}. Write $K=\QQ(\sqrt{-d})$ and $E=K(\zeta)$, where $\zeta$ is a primitive $q_1$-th root of unity. Let $\Phi$ be the set of infinite places of $E$. At each such place choose the representative complex embedding extending $K\hookrightarrow\CC$ and denote it by the same symbol.
+
+\begin{proposition}[The different of the cyclotomic extension]
+\label{prop:ch2-field-different}
+Let $\Phi_{q_1}(T)$ be the $q_1$-th cyclotomic polynomial. Then
+\begin{equation}
+\label{eq:ch2-different}
+ \OO_E=\OO_K[\zeta],\qquad
+ \mathfrak D_{E/K}=(\Phi_{q_1}'(\zeta)),\qquad
+ \mathfrak D_{E/\QQ}=(\sqrt{-d}\,\Phi_{q_1}'(\zeta)).
+\end{equation}
+Moreover, every prime dividing $q_1$ splits in $K$.
+\end{proposition}
+
+\begin{proof}
+Since $d\equiv7\pmod8$, we have $\OO_K=\ZZ[(1+\sqrt{-d})/2]$, of discriminant $-d$. Since $q_1$ and $q_0$ have the same prime factors and $q_0\mid2(d+1)$, every odd prime $p$ dividing $q_1$ divides $(d+1)/4$. For $p=2$, we likewise have $2\mid(d+1)/4$ by $d\equiv7\pmod8$. Thus the minimal polynomial $T^2-T+(d+1)/4$ of the generator has distinct roots $0$ and $1$ modulo $p$. This proves splitting and gives $\gcd(d,q_1)=1$.
+
+The discriminant of the cyclotomic field $\QQ(\zeta)$ has prime factors only among the divisors of $q_1$, so it is coprime to the discriminant of $K$. The integral basis theorem for composita of coprime discriminants gives $\OO_E=\OO_K[\zeta]$. The extensions are linearly disjoint over $\QQ$: the sole nontrivial subextension of $K$ is ramified at $d$, whereas $\QQ(\zeta)$ is unramified at $d$. Thus $\Phi_{q_1}(T)$ is also the minimal polynomial of $\zeta$ over $K$. The different formula for a monogenic extension gives the relative different $\mathfrak D_{E/K}$, and transitivity in the tower gives the absolute different $\mathfrak D_{E/\QQ}$.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Field/PrimeDecomposition.lean}{206}, \leansourcelink{src/New/Derivatives/Field/PrimeDecomposition.lean}{271}.}
+\end{proof}
+
+In the Weil data for $E$ fix the finite idele $\alpha$ and put $\mathfrak a_0=E\cap\alpha\widehat{\OO}_E$, where $\widehat{\OO}_E$ is the product of the rings of integers at the finite places. The normalization satisfies $\mathfrak a_0\overline{\mathfrak a_0}=\mathfrak D_{E/K}^{-1}$.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Field/WeilData.lean}{445}.}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/General/LinearAlgebra/PolarDecomposition.lean}{97}.}
+\begin{definition}[Tight frames]
+\label{def:ch2-tight-frame}
+\emitthmsource
+Given a finite index set, vectors $w_i\in\mathfrak a_0$, and nonnegative integer multiplicities $c_i$, suppose that for every $\sigma,\tau\in\Phi$,
+\begin{equation}
+\label{eq:ch2-tight-frame}
+ \sum_i c_i\,\sigma(w_i)\overline{\tau(w_i)}=M\delta_{\sigma,\tau},
+\end{equation}
+Then $(w_i,c_i)$ is called a tight frame of length $M$.
+\end{definition}
+
+Write $w_i^\dagger Z=\sum_{\tau\in\Phi}\overline{\tau(w_i)}Z_\tau$. Expanding the absolute square and simplifying the inner coefficient by~\eqref{eq:ch2-tight-frame} gives
+\begin{equation}
+\label{eq:ch2-tight-frame-norm}
+ \sum_i c_i\,|w_i^\dagger Z|^2=M\sum_{\tau\in\Phi}|Z_\tau|^2.
+\end{equation}
+Thus pulling back the Hermitian forms of the one-dimensional theta sections along the frame linear forms and adding them recovers the standard Hermitian form. \statementref{Lemma}{lem:c-derivative-twelve-realization} uses this compatibility for the translation multipliers.
+
+Let $\Omega_0\ne0$ be the chosen complex period and $\mathcal C=\CC/(\Omega_0\OO_K)$ the associated CM elliptic curve. Write $\theta$ for the normalized theta function of the curve satisfying $\theta(0)=1$ and $y$ for the local formal parameter translated to the chosen point of order two, so $y(0)=0$. The period $\Omega_0$ determines the period lattice of the curve. The positive real number $\Omega$ used in the archimedean estimates of \chapref{chap:reduction} has the normalization given by the Chowla--Selberg formula~\cite{SelbergChowla1967}. Let $C_{\rm per}$ be the vacuum scale $\operatorname{vacuumRoot}$ prescribed by the Weil data divided by the Chowla--Selberg unit, and put $a_{\rm area}=\sqrt{2\pi/\sqrt d}$. The Taylor scale used in this chapter is
+\begin{equation}
+\label{eq:ch2-jet-scale}
+ s_{\rm jet}=C_{\rm per}a_{\rm area}/\Omega_0.
+\end{equation}
+To read a $p$-adic image of a complex power series, apply the given embedding $\iota\colon\CC\hookrightarrow\CC_p$ to the coefficients alone.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{90}, \leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{122}.}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{297}, \leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{323}, \leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{338}.}
+\begin{definition}[The integral vacuum and standard finite data]
+\label{def:ch2-int-vacuum}
+\emitthmsource
+In the Weil model of a standard definite space of rank $n$, let $v_{\rm vac}$ be the vacuum vector and $V\ne0$ the rank-one integrality constant. Define the rank-$n$ integral vacuum to be $\theta^\circ=V^n v_{\rm vac}$. Write $\operatorname{finVec}(x)$ for the finite adelic vector whose archimedean component is zero and whose $i$-th finite coordinate is $\alpha x_i$. For a prime $p$ and embedding $\iota$, the standard finite data form the $\iota^{-1}(\OO_{\CC_p})$-submodule generated by the finite Heisenberg translates of $\theta^\circ$ that are integral at every place above $p$.
+\end{definition}
+
+The integrality constant ensures that the values of the rank-one integral vacuum at each $\operatorname{finVec}(x)$ are $p$-adically integral, and that their complex conjugate absolute values satisfy a bound of the form $\exp(C_Eq_1^2)$. The vacuum values for the standard definite space are products of the values at each coordinate, giving, for every $\sigma\in\operatorname{Aut}(\CC)$, the rank-$n$ estimate
+\begin{equation}
+\label{eq:ch2-vacuum-bounds}
+ \bigl|\iota(\theta^\circ(\operatorname{finVec}(x)))\bigr|_p\le1,\qquad
+ \bigl|\sigma(\theta^\circ(\operatorname{finVec}(x)))\bigr|
+ \le\exp(nC_Eq_1^2),
+\end{equation}
+Here $C_E$ is the rank-one vacuum bound in the Lean source and depends only on the fixed parameters. Prove the rank-one conjugate bound first for complex automorphisms fixing $K$. Since $K$ is imaginary quadratic, an automorphism restricts on $K$ to either the identity or conjugation. In the second case postcompose with complex conjugation to fix $K$ while preserving absolute value.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{363}, \leansourcelink{src/New/Derivatives/Vacuum/IntegralVacuum.lean}{400}.}
+
+\section{Normal forms at nonsplit primes}
+\label{sec:ch2-normal-form}
+
+Fix a prime $p$ and embedding $\iota$. Write $v_p$ for the normalized additive valuation with $v_p(p)=1$, and set $v_p(0)=+\infty$. Write $\pi_p$ for a local uniformizer of the base field $K$ above $p$, used below when $p$ is nonsplit. The table gives the valuation $\rho_p$ of the coordinate scaling and the net gain per degree $\gamma_p$ from the factorial after scaling.
+\begin{equation}
+\label{eq:ch2-slopes}
+\begin{array}{c|ccc}
+p\text{ in }K&\text{split}&\text{inert}&\text{ramified }(p=d)\\ \hline
+\rho_p &\dfrac1{p-1}&\dfrac1{p^2-1}&\dfrac1{2(p-1)}\\[3pt]
+\gamma_p=\dfrac1{p-1}-\rho_p
+  &0&\dfrac{p}{p^2-1}&\dfrac1{2(p-1)}
+\end{array}
+\end{equation}
+If $p$ is inert, then $v_p(\pi_p)=1$ and the residue field has size $p^2$. If $p=d$, then $v_p(\pi_p)=1/2$ and the residue field has size $p$. In the two nonsplit cases, $\rho_p$ equals $v_p(\pi_p)$ divided by the residue field size minus one.\leanfn{Lean source: \leansourcelink{src/Lib/CM/FormalGroup/PrimeNotation.lean}{100}.}
+
+Let $I_p^\circ$ denote the allowed partner exponents in the normal form: the positive odd integers when $p$ is inert, all nonnegative integers when $p=d$, and the empty set when $p$ splits. Put $I_p=I_p^\circ\cap\ZZ_{>0}$. By \statementref{Proposition}{prop:ch2-field-different}, when $p$ is nonsplit we have $p\nmid q_1$. For every $e\in I_p^\circ$, multiplication by the unit class of $-p^e$ gives the partner infinite place $\tau'=\nu_{p^e}\tau$. With the second index of $Z_{\tau,i}$ ranging over a fixed finite set, define the coupling polynomial by\leanfn{Lean source: \leansourcelink{src/New/Derivatives/FormalGroup/ThetaProducts.lean}{107}, \leansourcelink{src/Lib/CM/FormalGroup/PrimeNotation.lean}{163}.}
+\begin{equation}
+\label{eq:ch2-coupling}
+ \Gamma_e(Z)=\sum_{\tau,i}Z_{\tau,i}^{p^e}Z_{\nu_{p^e}\tau,i}.
+\end{equation}
+
+\begin{definition}[Normal form]
+\label{def:ch2-normal-form}
+Suppose $p$ is nonsplit in $K$. Assume there exist a scalar $\varpi$ satisfying $v_p(\varpi)=\rho_p$, an integral formal power series $W$, and $p$-adic integers $\lambda_{e,j}$ such that
+\begin{equation}
+\label{eq:ch2-normal-form}
+ F(\varpi Z)=W(Z)\exp\!\left(
+    \frac{\varpi^{p+1}}{p}
+    \sum_{e\in I_p^\circ}\sum_{j\ge0}
+          \lambda_{e,j}\Gamma_e(Z)^{p^j}
+ \right),
+\end{equation}
+Then $F$ is said to have the stated normal form.
+\end{definition}
+Since $\Gamma_e$ is a homogeneous polynomial of degree $p^e+1$, only finitely many terms of the double sum contribute at any given total degree. The series in the exponent has zero constant term, so the right-hand side is well defined in the formal power series ring.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Divisibility/NormalForm.lean}{50}.}
+
+\begin{theorem}[Normal form of the standard theta data]
+\label{thm:ch2-normal-form}
+Suppose $p$ is nonsplit in $K$. Take standard finite data $\psi$ as in \statementref{Definition}{def:ch2-int-vacuum} and a complex scalar $c$ satisfying $|\iota(c)|_p\le1$. Form the Taylor series of the theta function of $\psi$ at scale $c\,s_{\rm jet}$ and read its coefficients through $\iota$. The resulting series $F$ has the normal form of \statementref{Definition}{def:ch2-normal-form}. For the $p$-adic exponential structure of CM formal groups and algebraic theta functions, see Lubin and Tate~\cite{LubinTate1965} and Bannai and Kobayashi~\cite{BannaiKobayashi2010}.
+\end{theorem}
+
+\begin{proof}
+We use two facts about CM theta data. First, let $u_i$ be $E$-vectors integral above $p$, and let $m_i$ be nonnegative integers. If $\sum_i m_i u_i(u_i^\dagger Z)=Z$ holds for all $Z$, then the product $\prod_i\theta(u_i^\dagger Z)^{m_i}$ times any integral series in $y(u_i^\dagger Z)$ has normal form~\eqref{eq:ch2-normal-form}. In the inert case $\lambda_{e,0}$ is a $p$-adic unit for every odd $e$. Second, the Taylor series of the standard finite data at scale $a_{\rm area}/\Omega_0$ is such a product. This uses the finite-translate decomposition of standard data, with $p\nmid q_1$ ensuring the vectors are integral above $p$.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/FormalGroup/ThetaProducts.lean}{434}, \leansourcelink{src/New/Derivatives/Vacuum/Divisibility.lean}{170}.}
+
+To pass from scale $a_{\rm area}/\Omega_0$ to $c\,s_{\rm jet}$, multiply all variables by $cC_{\rm per}$. Since $C_{\rm per}$ is a local unit at primes not dividing $q_1$, the factor is integral at $\iota$. Integral scaling preserves the integrality of the coefficients of $W$ and multiplies each coefficient of $\Gamma_e^{p^j}$ by $(cC_{\rm per})^{(p^e+1)p^j}$, which is integral. Thus normal form is preserved.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/TightFrames.lean}{341}.}
+\end{proof}
+
+\begin{lemma}[Integrality through a finite degree after substitution]
+\label{lem:ch2-truncated-integrality}
+Let $F$ have normal form~\eqref{eq:ch2-normal-form} and let $Y$ be a family of integral power series with zero constant terms. If every allowed coupling $\Gamma_e(Y)$ of degree $p^e+1\le B$ is divisible by $\pi_p$, then all coefficients through total degree $B$ in $F(\varpi Y)$ are integral.
+\end{lemma}
+
+\begin{proof}
+At total degrees at most $B$, all coupling terms satisfying $p^e+1>B$ can be discarded. In both the inert and ramified cases,~\eqref{eq:ch2-slopes} gives
+\begin{equation}
+\label{eq:ch2-exp-valuation}
+ (p+1)\rho_p-1+v_p(\pi_p)=\frac1{p-1}.
+\end{equation}
+Thus every coefficient retained in the exponent has valuation at least $1/(p-1)$. The coefficients in its $k$-th power have valuation at least $k/(p-1)$, and $v_p(k!)\le k/(p-1)$, so division by $k!$ still gives integral coefficients. Integrality of $W(Y)$ then gives integrality of the product through the required degree.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Divisibility/NormalForm.lean}{262}.}
+\end{proof}
+
+\section{Valuation lower bounds for derivatives of products of minors}
+\label{sec:ch2-jet-divisibility}
+
+At each infinite place $\tau$ write $\kappa(\tau,h)$ for the number of columns of height $h$ in a Young diagram. Below we denote the family of Young diagrams by $\kappa$ and reserve $\kappa_\tau$ for the weights of the admissible data. Let $F$ be a formal series in variables $Z$ and let $Q$ be homogeneous. Write $J(Q,F)=Q(\partial_Z)F(0)$ for the corresponding differential operator applied to the series at the origin. Let standard tableaux $I$ and $I'$ index the bases of the source and target Weyl models. Taking the entries of $Z_\tau$ as polynomial variables, use the $(I',I)$ entry of the Schur matrix from one Weyl model to the other as $Q$. Then $J(Q,F)$ is the corresponding Schur derivative.
+
+\begin{lemma}[A factorial estimate for homogeneous derivatives]
+\label{lem:ch2-legendre-jet}
+Let $Q$ be an integral homogeneous polynomial of total degree $L$ in $s_{\rm var}$ variables. If the coefficients of the series $F$ in total degree $L$ are integral, then
+\begin{equation}
+\label{eq:ch2-legendre-jet}
+ v_p\bigl(J(Q,F)\bigr)\ge
+ \frac{L}{p-1}-s_{\rm var}\bigl(1+\lfloor\log_p\max(L,1)\rfloor\bigr).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+For each multi-index $\eta$ satisfying $\sum_i\eta_i=L$, the contribution to $J(Q,F)$ is the product of the corresponding coefficients of $Q$ and $F$ times $\prod_i\eta_i!$. Legendre's formula gives $v_p(\eta_i!)=(\eta_i-s_p^{\rm dig}(\eta_i))/(p-1)$, where $s_p^{\rm dig}$ denotes the sum of the base-$p$ digits. Since $\eta_i\le L$ for each index, the base-$p$ digit sum is at most $(p-1)\bigl(1+\lfloor\log_p\max(L,1)\rfloor\bigr)$. Sum over all coordinates $i$ and apply the ultrametric inequality to the contributions to obtain~\eqref{eq:ch2-legendre-jet}. The estimate also holds for $L=0$.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Divisibility/Count.lean}{68}.}
+\end{proof}
+
+To apply the estimate to Schur derivatives, fix the target rank $n'$ and at each infinite place $\tau$ count only columns of height strictly below $n'$. Write $a_\tau,a'_\tau,\ell_\tau$ for the number of columns of height $1$, the number of remaining columns, and the total number of boxes in those remaining columns, respectively. Let $\tau_e=\nu_{p^e}\tau$ and define the ramification correction by
+\begin{equation}
+\label{eq:ch2-ramified-correction}
+ R_{p,\kappa}
+ =\begin{cases}
+ \dfrac12\displaystyle\sum_\tau
+ \bigl(\min(a_\tau,a_{\tau_0}+a'_{\tau_0})+a'_\tau+
+                 \min(\ell_\tau,\ell_{\tau_0})\bigr),&p=d,\\[4pt]
+ 0,&p\ne d,
+ \end{cases}
+\end{equation}
+Define the predicted divisibility by
+\begin{equation}
+\label{eq:ch2-predicted-divisibility}
+\begin{aligned}
+ \operatorname{Pred}_p(\kappa,n')={}&v_p(\pi_p)\sum_{e\in I_p}\sum_\tau
+    \left(
+      \left(\frac{a_\tau}{p^e}-a_{\tau_e}-a'_{\tau_e}\right)_+
+     +\left(\frac{\ell_\tau}{p^e}-\ell_{\tau_e}\right)_+
+     -\frac{a'_\tau}{p^e}
+    \right)-R_{p,\kappa}.
+\end{aligned}
+\end{equation}
+The two positive parts arise by counting columns and boxes in the change of directions. The terms decay with $p^{-e}$, giving absolute convergence of the double sum. In the ramified case the contribution of exponent $e=0$ was included separately in~\eqref{eq:ch2-ramified-correction}.\leanfn{Lean source: \leansourcelink{src/New/Derivatives/Divisibility/Count.lean}{422}.}
+
+\statementref{Lemma}{lem:a-charged-schur-jet} reduces the valuation of any Schur derivative matrix entry to that of a derivative of a product of minors. Before differentiating, choose a change of directions making all coupling polynomials in the required truncation divisible by $\pi_p$. After applying~\eqref{eq:ch2-legendre-jet}, account for the determinant factors from this change and the row corrections.
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/Divisibility.lean}{228}.}
+\begin{lemma}[Bounding weighted Schur derivatives by products of minors]
+\label{lem:a-charged-schur-jet}
+\label{thm:ch2-jet-count}
+\emitthmsource
+Suppose $p$ is nonsplit in $K$. Use the standard finite data $\psi$ of \statementref{Definition}{def:ch2-int-vacuum} and multiply the standard Taylor scale by an additional $p$-adic integral scalar. Denote the resulting theta series by $F$. Let $\kappa$ be a family of Young diagrams compatible with the source and target ranks, $n'$ the target rank, and $B_\kappa$ the total number of boxes in columns of height below $n'$. For a subset $S'$ of infinite places, write $\kappa^\circ$ for the family obtained by deleting all columns of height $1$ at $S'$. Given valuation corrections $c(\tau,h,b)\in\mathbb N$ indexed by place $\tau$, column height $h$, and row $b$, suppose that for any allowed partner exponent $e$, if $\tau'=\nu_{p^e}\tau$ and either $\tau\in S'$ or both $h=1$ and $\tau'\in S'$ hold, then
+\[
+             c(\tau,1,b)+c(\tau',h,b)>0.
+\]
+For a target tableau $I'$ let $c(I')$ be the sum of the valuation corrections over its boxes. Each Schur derivative matrix entry then satisfies
+\[
+ v_p\bigl(\operatorname{SchurJet}_{\kappa,F}(I',I)\bigr)+c(I')
+ \ \ge\
+ \operatorname{Pred}_p(\kappa^\circ,n')
+ +\gamma_{p,\mathrm{box}}(B_\kappa-B_{\kappa^\circ})
+ - f(n')^3\bigl(1+\log_p\max(B_\kappa,1)\bigr),
+\]
+Here $\operatorname{Pred}_p$ is given by~\eqref{eq:ch2-predicted-divisibility}, $\gamma_{p,\mathrm{box}}=(p-1)^{-1}-v_p(\varpi)$, and $\varpi$ is the scaling factor in the normal form of the standard series.
+\end{lemma}
+\begin{proof}
+First bound the $p$-adic absolute values of all entries in a row of the Schur matrix by a derivative of a product of minors. Fix a target tableau $I'$ and write $J_I$ for the entries in its derivative row. To each source tableau $I$ associate its flag-minor basis polynomial $B_I(Y)$ multiplied by the determinant factor for the weight representation. The Schur expansion shows that for any family $Y$ of integral matrices, taking each column as a minor of $ZY$ yields the derivative of the product of minors equal to $\sum_I J_I B_I(Y)$. The basis polynomials $B_I$ remain independent modulo the maximal ideal, and the residue field of $\mathbb C_p$ is infinite. For a nonzero row, choose an entry $J_\ast$ of largest absolute value and divide the row by $J_\ast$. The resulting polynomial is nonzero after reduction, hence is nonzero at some family of residue matrices. Pick integral lifts $Y$ of those matrices. The corresponding derivative of the product of minors has $p$-adic absolute value $|J_\ast|_p$, and it therefore bounds every entry in the row. If the row is zero, take any $Y$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L772}{Schur expansion of the product of minors}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L800}{Choosing integral matrices to bound the Schur terms by a product of minors}.}
+
+By \statementref{Theorem}{thm:ch2-normal-form}, $F$ has normal form~\eqref{eq:ch2-normal-form}. Apply an integral change of directions to the product of minors for the chosen $Y$, and write
+\[
+ L_0=\left\lfloor\log_p\max(B_\kappa,1)\right\rfloor,\qquad
+ D_0=\sum_{\substack{e\le L_0\\ e\ \text{allowed}}}
+          \sum_\tau \operatorname{deductionTerm}_{p,\kappa,n',S'}(\tau,\nu_{p^e}\tau,e).
+\]
+Choose the change-of-directions matrices $G_{\tau,h}$ at the $\tau$-th place for columns of height $h$ so that the product of their determinant absolute values satisfies
+\[
+ \prod_{\tau,h<n'}|\det G_{\tau,h}|_p^{\kappa(\tau,h)}
+ \ge p^{-v_p(\pi_p)D_0},
+\]
+Here $\pi_p$ is a local uniformizer of $K$ above $p$. Multiply the directions by the correction factors $p^{c(\tau,h,b)}$. By hypothesis, each coupling involving a deleted column has at least one direction with this extra factor, making its coupling divisible by $\pi_p$. The partner conditions for the directions give divisibility of the remaining couplings. \statementref{Lemma}{lem:ch2-truncated-integrality} now gives integral coefficients of the substituted series in the required total degree $B_\kappa$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/Divisibility.lean\#L170}{The nonsplit normal form of standard data}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/NullFrames.lean\#L361}{Partner terms and the determinant cost of the new directions}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L585}{Valuation corrections in the normal form}.}
+
+Differentiate the integral series to total degree $B_\kappa$ in the new variables. Each multi-index $\eta$ contributes a factorial $\prod_\ell\eta_\ell!$. By Legendre's estimate~\eqref{eq:ch2-legendre-jet} its valuation is at least $B_\kappa/(p-1)$ minus the number of nonzero coordinates times $1+L_0$, since each base-$p$ digit sum is at most $(p-1)(1+L_0)$. There are at most $f(n')^3$ direction variables, so the new derivative has valuation at least $B_\kappa/(p-1)-f(n')^3(1+L_0)$. By the chain rule, the derivative of the original product of minors was multiplied by $\varpi^{B_\kappa}$, the total correction $p^{c(I')}$, and the product of the direction-matrix determinants. Moving these factors back gives the following lower bound for the original valuation plus $c(I')$.
+\[
+ \gamma_{p,\mathrm{box}} B_\kappa-v_p(\pi_p)D_0
+ -f(n')^3(1+L_0).
+\]
+Counting the terms to subtract gives
+\[
+ \gamma_{p,\mathrm{box}} B_\kappa-v_p(\pi_p)D_0
+ \ge\operatorname{Pred}_p(\kappa^\circ,n')
+   +\gamma_{p,\mathrm{box}}(B_\kappa-B_{\kappa^\circ}).
+\]
+Finally use $L_0\le\log_p\max(B_\kappa,1)$ and bound the Schur entry by the chosen product of minors to obtain the claimed lower bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L369}{Determinants and corrections in the chain rule}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Divisibility/Count.lean\#L547}{Terms subtracted from the predicted divisibility}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/Divisibility.lean\#L246}{Weighted Schur derivatives}.}
+\end{proof}
+
+\section{Local prime sums and upper bounds for coefficient valuations}
+\label{sec:ch2-sharpness}
+
+Fix the place weights $\kappa_\tau$ from the admissible data. For each prime $p$ define the local prime sum
+\begin{equation}
+\label{eq:ch2-localprimesum}
+\begin{aligned}
+ s_p(y,\tau)&=v_p^*\sum_{e\in I_p}
+      \bigl(y/p^e-\kappa_{\nu_{p^e}\tau}\bigr)_+,\\
+ S_{p,\tau}&=s_p(\kappa_\tau,\tau),\qquad
+ S_p=\sum_{\tau\in\Phi}S_{p,\tau},\qquad
+ v_p^*=\begin{cases}1/2,&p=d,\\1,&p\ne d.\end{cases}
+\end{aligned}
+\end{equation}
+When $p$ splits in $K$, we have $I_p=\varnothing$, so $s_p(y,\tau)=0$. The positive part cuts off all but finitely many terms for each fixed $y$. Let $\Lambda$ be the von Mangoldt function. Then for any integer $e\ge1$,
+\begin{equation}
+\label{eq:ch2-weighted-primes}
+ 2\log p\;v_p^*\,\mathbf1_{e\in I_p}
+ =\Lambda(p^e)(1-\chi_K(p^e)).
+\end{equation}
+More precisely, when $p$ is inert the right-hand side is $2\log p$ for odd $e$ and zero for even $e$. When $p=d$ is ramified it is always $\log p$, and when $p$ splits it is zero. Summing over primes $p$ thus identifies~\eqref{eq:ch2-localprimesum} with the weighted prime-power sum of \chapref{chap:reduction}.\leanfn{Lean source: \leansourcelink{src/New/UpperBound/Size/ShortColumns.lean}{65}.}
+
+The local integrality argument in \statementlink{sec:a-conclusions}{Theorem~A} uses lower bounds for the $p$-adic valuations of derivatives. The single-lift comparison for \statementlink{thm:long-forms}{Theorem~C} also needs a coefficient of the specified degree whose valuation is at most a given bound, establishing sharpness from the other side. Here we construct tight frames and bound valuations of coefficients of a product of twelve curve series. The next section transfers the estimate to residue-class indicator vectors by finite Fourier inversion. Let $l_0=3^{\lfloor\log_3 s\rfloor+4}$ be the sparseness parameter determined by the tower exponent $s$, used to constrain nearby partner indices at small primes. As before, $\Phi_b$ is the set of infinite places of weight $b$.
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Vacuum/ShortVectors.lean}{780}.}
+\begin{lemma}[Tight frames of principal level with unit coefficients]
+\label{lem:c-derivative-frame}
+\emitthmsource
+Take admissible data and let $\mathfrak a_0=E\cap\alpha\widehat{\mathcal O}_E$, where $\alpha$ is the finite idele of the Weil data. There is a finite family of vectors $w_i\in\mathfrak a_0$ with integer multiplicities $c_i\ge6fb$ satisfying the tight frame identity
+\[
+       \sum_i c_i\,\sigma(w_i)\overline{\tau(w_i)}
+        =M\delta_{\sigma,\tau}
+        \qquad(\sigma,\tau\in\Phi).
+\]
+Let $C_{\mathrm{per}}$ be the period factor from comparing the curve period with the vacuum. For each prime $p$ and $p$-adic embedding $\iota$, there is a single index $i_0$ such that $|\iota(C_{\mathrm{per}}\overline{\tau(w_{i_0})})|_p=1$ for each $\tau\in\Phi$.
+\end{lemma}
+
+\begin{proof}
+Let $\zeta$ be a primitive root of unity in $E$ of order $q_1$. The powers $\zeta^a$ for $0\le a<q_1$ form a tight frame of length $q_1$ with multiplicity $1$ at each entry. At a single embedding the sum of products is $q_1$, and at distinct embeddings it is a nontrivial geometric sum and hence vanishes. There is also an auxiliary tight frame $(v_i)$ of length $h$ with all multiplicities $1$, satisfying $1\le h\le b$ and $\gcd(h,q_1)=1$. For each $p$-adic embedding $\iota$, a vector in the union of the two families has all coefficients of its period linear form $p$-adic units. The choices are $1$ or the last vector of the relative trace-dual basis multiplied by $\zeta$, according to whether the conjugate of the quadratic generator is a unit at $\iota$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L388}{A tight frame of roots of unity}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L552}{Two choices for unit coefficients}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L753}{A short frame of length coprime to $q_1$}.}
+
+Put $R=\lceil6fb\rceil$. The admissible scales ensure $M\ge q_1h+R(q_1+h)$. By $\gcd(q_1,h)=1$ and the two-generator theorem for nonnegative integer combinations, nonnegative integers $a_1,a_2$ exist such that
+\[
+ a_1q_1+a_2h=M-R(q_1+h).
+\]
+Give each root of unity power multiplicity $a_1+R$ and each auxiliary frame vector multiplicity $a_2+R$. Add the two tight frame identities to get precisely the scalar $(a_1+R)q_1+(a_2+R)h=M$ on the right. All multiplicities are now at least $R$, and the vector with unit coefficients for each $\iota$ still lies in the union of the two families.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L584}{Combining coprime lengths}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/ShortVectors.lean\#L787}{Scale estimates for the principal-level frame}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/Couplings.lean}{568}.}
+\begin{lemma}[Sixfold theta coupling at an inert prime]
+\label{lem:c-derivative-six-coupling}
+\emitthmsource
+Let $C$ be a CM lattice for the imaginary quadratic field $\mathbb Q(\sqrt{-d})$, with $d\equiv7\pmod8$ prime and $p>2$ inert in the field. Put $\Theta=\prod_i\theta(\mu_i z)^{m_i}$, where $\mu_i$ is an integral linear form. Take a scaling factor satisfying $v_p(\varpi)=\rho_p=1/(p^2-1)$ and assume the series has normal form~\eqref{eq:ch2-normal-form}:
+\[
+ \Theta(\varpi z)=W(z)\exp(\kappa\Xi(z)),\qquad
+ \kappa=\varpi^{p+1}/p,\qquad
+ \Xi=\sum_{\substack{a\ \text{odd}\\ b\ge0}}\lambda_{a,b}\Gamma_a^{p^b},
+ \qquad
+ \Gamma_a=\sum_\tau z_\tau^{p^a}z_{\operatorname{pr}(a,\tau)},
+\]
+Here each $W,\lambda_{a,b}$ is integral and each $\lambda_{a,0}$ is a unit. Choose couplings by assigning to each chosen source place $\tau$ an odd exponent $e_\tau$. The corresponding coupling has neighboring place $\tau^+=\operatorname{pr}(e_\tau,\tau)$ and strictly smallest degree among couplings from the chosen source places with that neighbor. Given a nonnegative degree allocation $j_\tau\ge0$, let $\nu'$ and $\nu''$ be the exponent vectors of the monomials $\prod_\tau z_\tau^{p^{e_\tau}j_\tau}$ and $\prod_\tau z_{\tau^+}^{j_\tau}$, respectively, and put $\nu=\nu'+\nu''$ and $J=\sum_\tau j_\tau$. For a multi-index $\beta$, write $v_p(\beta!)=\sum_i v_p(\beta_i!)$. Write $\operatorname{val}_6(\nu)\le r$ if an element $H_c$ of the integral power series ring generated by the shifted coordinates $y(\mu_i z_c)$ gives a coefficient in the product $\prod_{c=0}^5(H_c\Theta)(z_c)$ in six independent sets of variables with total placewise degree $\nu$ and valuation at most $r$. Then
+\[
+ \operatorname{val}_6(\nu)\le -J,\qquad
+ \operatorname{val}_6(\nu)+v_p(\nu'!\nu''!)\le\gamma_p|\nu|-J,
+ \qquad \gamma_p=\frac1{p-1}-\rho_p.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $F(z)=\Theta(\varpi z)$. Since $F(0)=1$ and $\Xi(0)=0$, the integral series $W$ is a unit. Integrality of the sixfold theta product supplies an integral scalar $\delta_c$ with $\delta_0=1$ such that $U(z)=\prod_c F(\delta_c z)$ is an integral series of constant term $1$. Introduce two independent sets of variables $z',z''$ and consider $G=F(z'+z'')\prod_{c\ne0}F(\delta_c z')$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L471}{An integral product of six scaled factors}.}
+
+Apply the partial derivatives specified by $\nu''$ to $G$ in the second variables $z''$. Suppose $\kappa^kQ_kG$ is the result after $k$ derivatives, with $Q_0=1$, and write $\partial$ for the next partial derivative. Since $W$ is an integral unit, the recurrence is
+\[
+ Q_{k+1}=\kappa^{-1}\partial Q_k+
+    \left(\kappa^{-1}\frac{\partial W}{W}+\partial\Xi\right)Q_k ,
+\]
+Here $W$ and $\Xi$ are evaluated at $z'+z''$. Since $v_p(\kappa^{-1})>0$, all $Q_k$ are integral, and their reductions modulo the maximal ideal come only from the products of the successive $\partial\Xi$. Take $z''=0$. The reduction becomes $\prod_\tau(\partial_{\tau^+}\Xi)^{j_\tau}$, and $G(z',0)=U(z')$. Modulo the maximal ideal the higher powers of $b>0$ and the terms differentiating $z_\tau^{p^a}$ vanish. Among the selected source variables the lowest-degree term of each $\partial_{\tau^+}\Xi$ is a unit times $z_\tau^{p^{e_\tau}}$. Set the unselected variables to zero and use $U(0)=1$ to see that the coefficient at $z'^{\nu'}$ in the product is still a unit. The relation between higher derivatives and Taylor coefficients gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L201}{Lowest-degree terms with the same neighbor}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L358}{The coefficient identity in the two sets of variables}.}
+\[
+ v_p([z'^{\nu'}z''^{\nu''}]G)=J\,v_p(\kappa)-v_p(\nu''!).
+\]
+
+Undoing the variable scaling $\varpi$ decreases the coefficient valuation by $\rho_p|\nu|$. Both linear substitutions are integral, so the coefficient is an integral linear combination of coefficients of the sixfold product of total placewise degree $\nu$. The ultrametric inequality gives
+\[
+ \operatorname{val}_6(\nu)\le \frac{J}{p-1}-J-\rho_p|\nu|-v_p(\nu''!).
+\]
+From $|\nu|\ge(p+1)J$ and $\rho_p(p+1)=1/(p-1)$, the right-hand side is at most $-J$, giving the first estimate. For the second, Legendre's formula gives $v_p(\nu'!)\le|\nu'|/(p-1)$. Adding back both factorial valuations and using $|\nu|=|\nu'|+J$ proves the claim.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L506}{Removing the scaling and applying the integral substitution}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L581}{The two valuation bounds}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/Cases.lean}{669}.}
+\begin{lemma}[A valuation estimate for twelve curve series]
+\label{lem:c-derivative-valuation}
+\emitthmsource
+Let $p$ be prime and fix a $p$-adic embedding $\iota$. Take a tight frame $(w_i,c_i)$ of length $M$ with a linear form $\mu_{i_0}$ whose coefficients are all $p$-adic units. Let the integers $d_\tau$ satisfy $\kappa_\tau\le d_\tau\le\kappa_\tau+x^{42}$, write $\boldsymbol d=(d_\tau)_\tau$, and put
+\[
+ n^\sharp=\lceil6b/k\rceil,\qquad
+ B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr).
+\]
+Write $v(\boldsymbol\nu!)=\sum_\tau v_p(\nu_\tau!)$. For $n$ copies of the curve series, write $\operatorname{val}_n(\boldsymbol\nu)\le r$ if coefficients can be selected in $n$ factors $H_j\Theta$ with total placewise degree $\boldsymbol\nu$ and product of valuation at most $r$. Here $\Theta=\prod_i\theta(\mu_i X)^{c_i}$, and each $H_j$ is an integral series in the curve coordinates $y(\mu_i X)$. Then
+\[
+ \operatorname{val}_{12}(\boldsymbol d)
+ \le S_p+2\sum_\tau v_p(B_\tau)-v(\boldsymbol d!).
+\]
+\end{lemma}
+
+\begin{proof}
+When the placewise degrees are split among different factors, the degrees add, as do the upper bounds on the valuations of the products. The constant term of a factor can be used at zero cost to supply any remaining copies. We consider three cases according to the arithmetic type of $p$.
+
+\emph{Case 1. The prime $p$ splits in $K$.} Here $S_p=0$. The sixfold estimate along $\mu_{i_0}$, whose coefficients are all $p$-adic units, gives $\operatorname{val}_6(\boldsymbol d)\le-v(\boldsymbol d!)$. In the other six copies use only the constant terms. Since each $v_p(B_\tau)\ge0$, this proves the bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/LeastValuation.lean\#L509}{Estimate from one unit linear form}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L526}{The split-prime case}.}
+
+\emph{Case 2. We have $p>k$ and $p$ is nonsplit.} Since a ramified prime satisfies $d\le k$, the prime $p$ is inert. Let $\tau(1)$ be the partner place of $\tau$ at exponent $1$, and put
+\[
+ i_\tau=\left\lfloor\frac{(d_\tau-n^\sharp)_+}{p}\right\rfloor,
+ \qquad j_\tau=\min\{i_\tau,d_{\tau(1)}\}.
+\]
+In the first six copies, couple each $\tau$ with its partner $\tau(1)$ a total of $j_\tau$ times. Each coupling uses $p$ degrees at the source and $1$ at the target. Since $\tau\mapsto\tau(1)$ is bijective and $j_\tau\le n^\sharp$, the total degree used is at most $\boldsymbol d$. By the normal form and \statementref{Lemma}{lem:c-derivative-six-coupling}, the first six copies give valuation at most $-\sum_\tau j_\tau$. Fill the remaining degrees with the other six copies. In the inert case the additional valuation cost of doing so is at most zero.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L504}{Allocation of the degrees at each place}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Couplings.lean\#L581}{The sixfold coupling estimate}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L220}{Filling the remaining degrees in the inert case}.}
+
+Further, $i_\tau\le n^\sharp$ and $n^\sharp!\mid B_\tau$ imply $v_p(i_\tau!)\le v_p(B_\tau)$. Applying the Legendre recurrence to $(d_\tau-n^\sharp)_+!$ and restoring the missing factor gives $v_p(d_\tau!)\le i_\tau+2v_p(B_\tau)$. Using $(d_\tau-n^\sharp)_+\le\kappa_\tau$ and $d_{\tau(1)}\ge\kappa_{\tau(1)}$ and keeping only the term of exponent $1$ in the local prime sum gives
+\[
+ i_\tau-j_\tau
+  \le (\kappa_\tau/p-\kappa_{\tau(1)})_+
+  \le S_{p,\tau}.
+\]
+Summing over all $\tau\in\Phi$ gives the bound in this case.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L349}{Factorial error at a large inert prime}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L544}{The large inert-prime case}.}
+
+\emph{Case 3. We have $p\le k$ and $p$ is nonsplit.} Let $\Phi_0$ be the set of source places admitting a near pairing. This means that for some allowed partner exponent $e<l_0/2$ the source and target both lie in the set $\Phi_b$ of infinite places of weight $b$. By sparseness, the exponent $e_\tau$ is unique for each $\tau\in\Phi_0$. Take $j_\tau=\lfloor d_\tau/p^{e_\tau}\rfloor$ for $\tau\in\Phi_0$ and zero elsewhere. Let $\boldsymbol\nu'$ and $\boldsymbol\nu''$ be the degrees used at the sources and targets. Comparing degrees place by place gives $\boldsymbol d=\boldsymbol\nu'+\boldsymbol\nu''+\boldsymbol\eta$ with $\boldsymbol\eta\ge0$. Let $\gamma_p$ be the net slope in~\eqref{eq:ch2-slopes}, namely $p/(p^2-1)$ in the inert case and $1/(2p-2)$ in the ramified case. The first six copies use the near pairings, and the other six use the unit-coefficient linear form to supply the remainder $\boldsymbol\eta$. Thus
+\[
+ \operatorname{val}_{12}(\boldsymbol d)
+ \le \gamma_p\sum_\tau d_\tau-\sum_\tau j_\tau
+    -v(\boldsymbol\nu'!)-v(\boldsymbol\nu''!)-v(\boldsymbol\eta!).
+\]
+For the ramified prime $p=d$ there are no near pairings, so take the constant terms in the first six copies.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/NearPairs.lean\#L113}{The near-pairing condition}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L595}{The sixfold estimate for near pairings}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L619}{The small nonsplit-prime case}.}
+
+Legendre's formula at each place bounds the difference between $v(\boldsymbol d!)$ and the sum of the three factorial valuations by $3f(\log b+2)$. Comparing the contributions from near pairings and the other partner exponents gives
+\[
+  \gamma_p\sum_\tau d_\tau-\sum_\tau j_\tau+3f(\log b+2)
+      \le S_p+\sum_\tau v_p(B_\tau).
+\]
+Thus in case $p\le k$ we lose at most one copy of $\sum_\tau v_p(B_\tau)$. Together the three cases prove the uniform valuation bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L377}{Rounding error in Legendre's formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L403}{Comparison with the local prime sum}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/Cases.lean\#L672}{Combining the three cases}.}
+\end{proof}
+
+\section{From curve coefficients to indicator vectors for theta kernels}
+\label{sec:ch2-realization}
+
+\statementref{Lemma}{lem:c-derivative-valuation} bounds the valuation of a coefficient of a product in twelve independent sets of curve variables. We realize such a coefficient as a Taylor coefficient of a vector in the target Weil model. The tight frame identity~\eqref{eq:ch2-tight-frame-norm} determines the translation multiplier of the product of sections, and finite Fourier expansion supplies the residue-class indicator vector.
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{154}.}
+\begin{lemma}[Integral theta realization of a product of twelve elliptic-curve sections]
+\label{lem:c-derivative-twelve-realization}
+\emitthmsource
+Take a tight frame $(w_i,c_i)$ of length $M$ and write $\mu_i(X)=C_{\mathrm{per}}\sum_\tau\overline{\tau(w_i)}X_\tau$ for its period linear forms. Given nonnegative integers $e_{j,i}$ indexed by $1\le j\le12$ satisfying $3e_{j,i}\le c_i$, fix a prime $p$ and a $p$-adic embedding $\iota$. There is a first-block Heisenberg vector $F$ taking $p$-adic integer values at all adelic points with zero archimedean component. Its theta function is invariant under signed translation by $\pi_M\mathfrak a_0^{12}$. Applying $\iota$ to its Taylor series at scale $\pi_M s_{\mathrm{jet}}$ gives
+\[
+ \iota_*\mathcal J(F)=
+ \prod_{j=1}^{12}\prod_i
+       y(\mu_i(X_j))^{e_{j,i}}\theta(\mu_i(X_j))^{c_i},
+\]
+Here $X_j=(X_{j,\tau})_\tau$ is the $j$-th set of variables. On the right, take the Taylor series of the curve functions at zero and map the coefficients into $\CC_p$ by $\iota$.
+\end{lemma}
+
+\begin{proof}
+On the CM curve $C=\mathbb C/(\Omega_0\mathcal O_K)$ take monomial sections with exponents $(c_i-3e_{j,i},0,e_{j,i})$ of weighted degree $c_i$ and function expression $\theta^{c_i-3e_{j,i}}(y\theta^3)^{e_{j,i}}=y^{e_{j,i}}\theta^{c_i}$. Set $a_{\mathrm{area}}=\sqrt{2\pi/\sqrt d}$ and use the linear forms
+\[
+ A_{j,i}(Z)=\frac{\Omega_0}{\pi_M a_{\mathrm{area}}}
+                \sum_\tau\overline{\tau(w_i)}Z_{j,\tau}
+\]
+to pull back the sections and multiply them to get the entire function $S$. The period lattice has covolume $|\Omega_0|^2\sqrt d/2$. Since $\pi_M\bar\pi_M=M$, the Hermitian form $B_C$ on the curve acquires the factor $1/M$ on multiplication by the square of the scale of $A_{j,i}$. Summing by the tight frame identity~\eqref{eq:ch2-tight-frame-norm} shows that $\sum_{j,i}A_{j,i}^*(c_i B_C)$ is exactly the standard Fock Hermitian form on the first block.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L795}{Summing the pulled-back Hermitian forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L183}{The curve period and area}.}
+
+By integrality of the CM inner product, multiplying the CM inner product of a lattice vector with $w_i$ by $\Omega_0$ gives an element of the curve period lattice. Thus each $A_{j,i}$ sends the archimedean lattice $\pi_M\mathfrak a_0^{12}$ into the period lattice. The translation multipliers of the sections multiply to the standard multiplier for the Fock form, so signed translation fixes $S$. Finite Fourier inversion for the theta function on this period lattice gives $S=\Theta_F$, where $F$ belongs to the finite part.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L686}{Integrality of the period lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L824}{The translation multiplier of the product}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L860}{Realizing the theta product}.}
+
+Each finite adelic translation can be replaced by a rational translation acting the same way on $F$. The value there is the translated theta function at the origin, the product of the twisted values of the sections at the corresponding translated points. Clearing the denominator of the rational translation with a positive integer $L$ puts the $ML$-fold multiple of each translated point in the period lattice. Thus each translated point is torsion. The twisted torsion values of the monomial sections are $p$-adic integers, so their product is as well.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/TightFrames.lean\#L755}{Integrality from torsion values}.}
+
+Finally take $Z=\pi_M s_{\mathrm{jet}}X$ using the integrality normalization. Equation~\eqref{eq:ch2-jet-scale} gives $A_{j,i}(Z)=\mu_i(X_j)$. Expand the curve sections in twelve distinct sets of variables and map the coefficients into $\mathbb C_p$ by $\iota$ to obtain the Taylor identity.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L169}{The Taylor identity in twelve sets of variables}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{216}.}
+\begin{lemma}[Comparing indicator vectors by finite Fourier inversion]
+\label{lem:c-derivative-fourier-indicator}
+\emitthmsource
+Fix a prime $p$ and a $p$-adic embedding $\iota$. Let $F$ be a first-block Heisenberg vector taking $p$-adic integer values on all adelic points with zero archimedean component, whose theta function is invariant under signed translation by $\pi_M\mathfrak a_0^{12}$. Let $v_0$ be the value of the unscaled vacuum at any such point. Given a complex linear functional $L$ on the first-block vector space and a modulus $\mathfrak m$ of ideal $(\pi_M)$, there is a residue class $a$ modulo $\mathfrak m$ such that
+\[
+  |\iota(M^{12f}L(F)v_0)|_p\le|\iota(L(D_a))|_p ,
+\]
+Here $D_a$ is the vacuum vector with the indicator of the residue class $a$ at the finite modulus $\mathfrak m$.
+\end{lemma}
+
+\begin{proof}
+Apply finite Fourier inversion on the first block with the integer $\delta=\bar\pi_M$ in the general formula, satisfying $\delta\bar\delta=M$. Let $v$ be the unscaled vacuum vector and $\rho(u)$ the finite Heisenberg translation by a rational vector $u$. Inversion gives finitely many $u$ and scalars $b_u$ such that
+\[
+ M^{12f}F=\sum_u b_u\rho(u)v,\qquad
+ \bar\pi_M u\in\mathfrak a_0^{12}.
+\]
+Each $b_u v$ is a sum obtained by translating $F$ by $-u$, then translating by lattice representatives with phases. At adelic points of zero archimedean component these operations change only the finite coordinates and multiply by roots of unity, so each term has $p$-adic absolute value at most $1$. The ultrametric inequality gives $|\iota(b_u v_0)|_p\le1$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Construction/FourierInversion.lean\#L429}{Inversion and evaluation formulas}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Construction/FourierInversion.lean\#L478}{Integrality of sums of translations with phases}.}
+
+By $\bar\pi_M u\in\mathfrak a_0^{12}$, on each residue class modulo $\pi_M$ the finite component of $\rho(u)v$ is a root of unity times the corresponding vacuum indicator. This gives $\rho(u)v=\sum_a\epsilon_{u,a}D_a$ and $|\iota(\epsilon_{u,a})|_p=1$. Apply the linear functional $L$ to the inversion formula and multiply by $v_0$ to get
+\[
+ M^{12f}v_0 L(F)
+      =\sum_{u,a}(v_0 b_u)\epsilon_{u,a}L(D_a).
+\]
+The right-hand side has $p$-adic norm at most $\max_a|\iota(L(D_a))|_p$ by the ultrametric inequality. Choose a residue class $a$ attaining the maximum.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Algebra/LevelModulus.lean\#L258}{Expanding a vacuum translation by residue classes}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L224}{Comparison of indicator vectors}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{272}.}
+\begin{lemma}[Transferring curve coefficients to residue-class indicator vectors]
+\label{lem:c-derivative-indicator}
+\emitthmsource
+Fix a prime $p$ and a $p$-adic embedding $\iota$. Take a tight frame $(w_i,c_i)$ of length $M$, with period linear forms $\mu_i$ and curve theta product $\Theta=\prod_i\theta(\mu_i X)^{c_i}$. Let the nonnegative degrees $\boldsymbol d=(d_\tau)$ satisfy $3\sum_\tau d_\tau\le c_i$ for every place $i$. Suppose we can choose a coefficient in each of $12$ factors $H_j\Theta$, where each $H_j$ is integral in the curve coordinates $y(\mu_i X)$, giving total placewise degree $\boldsymbol d$ and product valuation at most $r$.
+
+Let $c_{\mathrm{vac}}$ denote the value of the $12$-row integral vacuum at any adelic point with archimedean component zero. Then for each modulus $\mathfrak m$ with ideal $(\pi_M)$ there is a residue class $a$ and multi-index $\gamma$ satisfying $\sum_j\gamma_{\tau,j}=d_\tau$ and
+\[
+  p^{-r}|\iota(M^{12f}c_{\mathrm{vac}})|_p
+      \le \bigl|\iota(V^{12}[X^\gamma]\mathcal J(D_a))\bigr|_p ,
+\]
+Here $D_a$ is the first-block indicator vector, and $\mathcal J$ is the Taylor transform at scale $\pi_M s_{\mathrm{jet}}$.
+\end{lemma}
+
+\begin{proof}
+Fix the degrees $\boldsymbol\gamma_j$ in the individual factors given by the hypothesis. Since each $y(\mu_i X)$ has zero constant term, only monomials of degree at most $|\boldsymbol\gamma_j|$ can contribute to the chosen coefficient. The ultrametric inequality for the integral coefficients allows each $H_j$ to be replaced by some monomial $\prod_i y(\mu_i X)^{e_{j,i}}$ without decreasing the $p$-adic absolute value of the coefficient in factor $j$. By $\sum_i e_{j,i}\le|\boldsymbol\gamma_j|\le\sum_\tau d_\tau$ the bound $3e_{j,i}\le c_i$ is automatic.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/LeastValuation.lean\#L362}{Choosing a monomial that attains the coefficient bound}.}
+
+At linear form $i$ in factor $j$, use the identity $y^{e_{j,i}}\theta^{c_i}=(y\theta^3)^{e_{j,i}}\theta^{c_i-3e_{j,i}}$ to regard the monomial as a curve section of degree $c_i$. By \statementref{Lemma}{lem:c-derivative-twelve-realization} the product of these sections is the theta function of a Heisenberg vector $F$ taking $p$-adic integer values at adelic points with archimedean component zero and invariant under signed translation along $\pi_M\mathfrak a_0^{12}$. Substituting the Taylor scale $\pi_M s_{\mathrm{jet}}$ into the sections recovers the period linear forms $\mu_i$. The twelve sets of variables are independent, so the coefficient $a_F$ of degree $\gamma=(\boldsymbol\gamma_j)_j$ of $\mathcal J(F)$ is the product of the $12$ chosen coefficients, and $|\iota(a_F)|_p\ge p^{-r}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L78}{Product of coefficients in separate sets of variables}.}
+
+Let $v_0$ be the value of the unscaled vacuum at the chosen adelic point, so $c_{\mathrm{vac}}=V^{12}v_0$. Define the linear functional $L_\gamma(F')=V^{12}[X^\gamma]\mathcal J(F')$ and apply \statementref{Lemma}{lem:c-derivative-fourier-indicator} to obtain
+\[
+ |\iota(M^{12f}v_0 L_\gamma(F))|_p
+ \,\le\,\max_a|\iota(L_\gamma(D_a))|_p .
+\]
+The left-hand side equals $|\iota(M^{12f} c_{\mathrm{vac}}a_F)|_p\ge p^{-r}|\iota(M^{12f}c_{\mathrm{vac}})|_p$. A residue class $a$ attaining the maximum on the right gives the claim.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L226}{Ultrametric comparison of coefficients}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{323}.}
+\begin{lemma}[Conjugate absolute values of the common derivative scaling factor]
+\label{lem:c-derivative-height}
+\emitthmsource
+Take admissible data, let $d_\tau\le\kappa_\tau+x^{42}$ be nonnegative integers, and put $n^\sharp=\lceil6b/k\rceil$ and $B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr)$. For the value $c_{\mathrm{vac}}$ of the first-block integral vacuum at any adelic point with archimedean component zero, and every $\sigma\in\operatorname{Aut}(\mathbb C)$, we have
+\[
+ \left|\sigma\left(M^{12f}c_{\mathrm{vac}}\prod_\tau B_\tau^2\right)\right|
+       \le\exp(fmb/k).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $C_E$ be the fixed parameter bound and $q_1$ the order of the root of unity giving the cyclotomic part of $E$. The conjugate norm bound for the integral vacuum~\eqref{eq:ch2-vacuum-bounds} gives $|\sigma(c_{\mathrm{vac}})|\le\exp(12C_E q_1^2)$. By $d_\tau\le2b$, each factor of $B_\tau$ is at most $2b+n^\sharp$, so
+\[
+ \prod_\tau B_\tau^2\le(2b+n^\sharp)^{2f n^\sharp}.
+\]
+Since complex automorphisms fix rational integers, the product of the three conjugate absolute values is at most
+\[
+ \exp\left(12f\log M+2f n^\sharp\log(2b+n^\sharp)+12 C_E q_1^2\right).
+\]
+Substitute $n^\sharp=\lceil6b/k\rceil$ and use the logarithmic bounds on the principal level, ranks, and field constants in the admissible data to see that the exponent is at most $fmb/k$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L332}{Bounds on the three factors and comparison of scales}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Magnitudes.lean\#L77}{Scale inequalities for admissible data}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Derivatives/Sharpness/BoundAttained.lean}{371}.}
+\begin{lemma}[A finite-place lower bound for first-block derivative coefficients]
+\label{lem:c-derivative-sharpness}
+\label{thm:ch2-sharpness}
+\emitthmsource
+Take admissible data. Let $V$ be the rank-one vacuum integrality constant and $s_{\mathrm{jet}}$ the integrality factor for Taylor scaling. Write $S_p$ for the sum over infinite places of local prime sums for the weights $\boldsymbol\kappa$ at the prime $p$. For every infinite place $\tau$ let the integer $d_\tau$ satisfy $\kappa_\tau\le d_\tau\le\kappa_\tau+x^{42}$. On the definite first block of $12$ rows let $D_a$ be the vector with the vacuum at infinity, the indicator of residue class $a$ at the finite modulus $\mathfrak m$, and the vacuum at the other finite places. Let $\mathcal J(D_a)$ be the Taylor series of its theta function at the origin at scale $\pi_M s_{\mathrm{jet}}$.
+
+There is a nonzero constant $u$ independent of the finite place and modulus, such that for every $\sigma\in\operatorname{Aut}(\mathbb C)$,
+\[
+     |\sigma(u)|\le \exp(fmb/k),
+\]
+and for every modulus $\mathfrak m$ with ideal $(\pi_M)$, every prime $p$, and every $p$-adic embedding $\iota$, there is a residue class $a$ and multi-index $\gamma=(\gamma_{\tau,j})$ with $1\le j\le12$ such that
+\begin{equation}
+\label{eq:ch2-sharpness}
+\begin{gathered}
+ \sum_{j=1}^{12}\gamma_{\tau,j}=d_\tau\qquad(\tau\in\Phi),\\
+ \left|\iota\left(\frac{V^{12}}{u}\,
+       \Bigl(\prod_\tau d_\tau!\Bigr)
+       [X^\gamma]\mathcal J(D_a)\right)\right|_p
+ \ge p^{-S_p}.
+\end{gathered}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $n^\sharp=\lceil6b/k\rceil$ and at every infinite place $\tau$ set
+\[
+ B_\tau=\prod_{i=1}^{n^\sharp}\bigl((d_\tau-n^\sharp)_++i\bigr),
+ \qquad
+ F_{\boldsymbol d}=\prod_\tau d_\tau!,
+ \qquad B_{\boldsymbol d}=\prod_\tau B_\tau .
+\]
+Choose an adelic point with archimedean component zero where the rank-$12$ integral vacuum has nonzero value $c_{\mathrm{vac}}$. Define
+\[
+ U=M^{12f}c_{\mathrm{vac}},\qquad u=U B_{\boldsymbol d}^2 .
+\]
+Each $B_\tau$ is a positive integer, and $M>0$. Hence $u\ne0$. \statementref{Lemma}{lem:c-derivative-height} gives the bound for the conjugate absolute values. This $u$ is fixed before choosing $p,\iota,\mathfrak m$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/IntegralVacuum.lean\#L428}{An integral vacuum with nonzero value}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L393}{Choosing the common scaling factor}.}
+
+By \statementref{Lemma}{lem:c-derivative-frame} take a tight frame of length $M$ with multiplicities satisfying $c_i\ge6fb$. For the given $p,\iota$, one of its linear forms has $p$-adic unit coefficients at every infinite-place coordinate. By $d_\tau\le\kappa_\tau+x^{42}\le2b$ we have $3\sum_\tau d_\tau\le6fb\le c_i$, so \statementref{Lemma}{lem:c-derivative-valuation} applies along this frame to give a valuation bound for a coefficient of a product of $12$ curve series,
+\[
+ r_p=S_p+2v_p(B_{\boldsymbol d})-v_p(F_{\boldsymbol d})
+\]
+where $v_p(p)=1$. Transfer this coefficient by \statementref{Lemma}{lem:c-derivative-indicator} to an indicator vector for a finite residue class. This gives $a,\gamma$ with the required placewise degrees and
+\[
+ \bigl|\iota(V^{12}[X^\gamma]\mathcal J(D_a))\bigr|_p
+       \ge p^{-r_p}|\iota(U)|_p .
+\]
+Multiplying both sides by $|\iota(F_{\boldsymbol d}/u)|_p$ and substituting $u=U B_{\boldsymbol d}^2$ gives exactly the following on the right.
+\[
+ p^{-r_p}\frac{|\iota(F_{\boldsymbol d})|_p}
+                     {|\iota(B_{\boldsymbol d})|_p^2}
+ =p^{-S_p},
+\]
+This also shows that the Taylor coefficient is nonzero.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L406}{Valuations on the curve and the factorial correction}.}
+\end{proof}
+
+In~\eqref{eq:ch2-sharpness} the common scaling factor $u$ is fixed as soon as the degree vector $\boldsymbol d$ is given. At different finite places the residue class $a$ and multi-index $\gamma$ may be chosen separately. In the height comparison for a single lift, \chapref{chap:onelift} uses both the global conjugate absolute-value bound for $u$ and the coefficient lower bounds at each finite place $p$.

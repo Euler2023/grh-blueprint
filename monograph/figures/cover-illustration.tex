@@ -1,0 +1,257 @@
+% Shared by the Chinese and English covers.
+% Tall borderless monochrome-gray editorial monograph plate with native TikZ critical-strip plot.
+\providecommand{\CoverLink}[2]{\hyperref[#1]{#2}}
+\ifcsname CoverSansFont\endcsname\else
+  \newfontfamily\CoverSansFont{texgyreheros}[
+    Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+    BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\fi
+\ifcsname CoverSerifFont\endcsname\else
+  \newfontfamily\CoverSerifFont{texgyrepagella}[
+    Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+    BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\fi
+
+% Soft monochrome architectural gray palette (no harsh black rules; DeepBurgundy only for zeros/RH)
+\definecolor{CoverBg}{RGB}{244,245,247}
+\definecolor{CoverStripLeft}{RGB}{231,234,238}
+\definecolor{CoverStripRight}{RGB}{238,240,243}
+\definecolor{CoverWaveFill}{RGB}{118,125,134}
+\definecolor{CoverWaveLine}{RGB}{86,93,102}
+\definecolor{CoverInk}{RGB}{50,55,62}
+\definecolor{CoverMuted}{RGB}{98,105,114}
+\definecolor{CoverLightInk}{RGB}{138,145,154}
+\definecolor{CoverTierLight}{RGB}{156,163,172}
+\definecolor{CoverTierDark}{RGB}{94,101,110}
+\definecolor{CoverRule}{RGB}{204,209,216}
+\definecolor{CoverHairline}{RGB}{218,222,228}
+\definecolor{CoverGrid}{RGB}{217,221,227}
+\definecolor{CoverAxis}{RGB}{108,115,124}
+
+% Load mpmath-generated critical-strip zeros and Hardy Z(t) curve coordinates
+\IfFileExists{figures/critical-strip-data.tex}{%
+  \input{figures/critical-strip-data.tex}%
+}{%
+  \input{../figures/critical-strip-data.tex}%
+}
+
+\begin{tikzpicture}[
+  x=1pt, y=1pt,
+  font=\CoverSerifFont\fontsize{9.2}{11.2}\selectfont,
+  text=CoverInk,
+  eyebrow/.style={
+    anchor=west, inner sep=0pt,
+    font=\CoverSansFont\bfseries\addfontfeature{LetterSpace=7.0}\fontsize{7.6}{9.5}\selectfont,
+    text=CoverInk
+  },
+  tier/.style={
+    sharp corners, fill=white, draw=CoverHairline, line width=0.4pt,
+    minimum width=178pt, minimum height=27pt, inner sep=0pt,
+    font=\CoverSerifFont\fontsize{9.8}{12}\selectfont, text=CoverInk
+  },
+  flow arrow/.style={
+    -{Stealth[length=4.0pt,width=2.8pt]}, draw=CoverAxis, line width=0.65pt
+  },
+  note/.style={
+    inner sep=0pt, text=CoverMuted,
+    font=\CoverSerifFont\fontsize{8.5}{10.8}\selectfont
+  },
+  step label/.style={
+    anchor=north, align=center, inner sep=0pt,
+    font=\CoverSerifFont\fontsize{8.5}{10.4}\selectfont, text=CoverInk
+  },
+  edge note/.style={
+    anchor=south, inner sep=0pt,
+    font=\CoverSerifFont\itshape\fontsize{8.0}{9.4}\selectfont, text=CoverMuted
+  },
+  tick label/.style={
+    inner sep=0pt,
+    font=\CoverSansFont\fontsize{7.5}{9}\selectfont, text=CoverMuted
+  },
+]
+  % Full textwidth (435pt) x grand portrait-balanced height (346pt), borderless light-gray canvas
+  \path[use as bounding box] (0,0) rectangle (435,346);
+  \fill[CoverBg] (0,0) rectangle (435,346);
+
+  % Quiet interior hairlines only (no heavy top/bottom border lines)
+  \draw[CoverRule, line width=0.45pt] (16,108)  -- (419,108);
+  \draw[CoverRule, line width=0.45pt] (214,122) -- (214,330);
+
+  % ==========================================================================
+  % 01 | THETA LIFTS (Top Left, x = 0..214, y = 108..346)
+  % ==========================================================================
+  \node[eyebrow] at (16,328) {%
+    {\color{CoverLightInk}01}\hspace{5pt}{\color{CoverRule}\rule[-0.12ex]{0.55pt}{1.15ex}}\hspace{5pt}THETA LIFTS%
+  };
+
+  % Source tier (crisp white band with calm mid-gray left accent)
+  \node[tier] (source) at (107,294) {Automorphic form \(f\) on \(G\)};
+  \fill[CoverTierLight] (source.south west) rectangle ($(source.north west)+(1.8pt,0)$);
+
+  % Sculptural symmetric pairing arcs framing the integral operator
+  \draw[CoverRule, line width=0.48pt]
+    (21,274) .. controls (13,242) and (13,198) .. (21,166);
+  \draw[CoverRule, line width=0.48pt]
+    (193,274) .. controls (201,242) and (201,198) .. (193,166);
+  \fill[CoverRule] (21,274) circle[radius=1.1pt]  (21,166) circle[radius=1.1pt]
+                   (193,274) circle[radius=1.1pt] (193,166) circle[radius=1.1pt];
+
+  % Central integral kernel (generous symmetrical 24pt flow arrows)
+  \draw[flow arrow] (107,277.5) -- (107,253.5);
+  \node[font=\CoverSerifFont\fontsize{10.0}{12}\selectfont, text=CoverInk] (integral) at (107,231) {%
+    \CoverLink{eq:adelic-theta-integral}{\(\displaystyle
+      (\Theta_\varphi f)(h)=\int_{[G]} f(g)\,\theta_\varphi(g,h)\,dg\)}%
+  };
+  \node[note, align=center] at (107,194) {%
+    Integrate against the theta kernel\\
+    over the source quotient \([G]\)%
+  };
+  \draw[flow arrow] (107,178.5) -- (107,154.5);
+
+  % Target tier (deeper slate-gray left accent showing lift progression)
+  \node[tier] (target) at (107,138) {Lifted form \(\Theta_\varphi f\) on \(H\)};
+  \fill[CoverTierDark] (target.south west) rectangle ($(target.north west)+(1.8pt,0)$);
+
+  % ==========================================================================
+  % 02 | THE CRITICAL LINE (Top Right, x = 214..435, y = 108..346)
+  % ==========================================================================
+  \node[eyebrow] at (230,328) {%
+    {\color{CoverLightInk}02}\hspace{5pt}{\color{CoverRule}\rule[-0.12ex]{0.55pt}{1.15ex}}\hspace{5pt}THE CRITICAL LINE%
+  };
+
+  % Tall native TikZ critical-strip coordinate system:
+  % Re(s) = 0 -> x = 264pt, Re(s) = 1/2 -> x = 324pt, Re(s) = 1 -> x = 384pt (1 unit = 120pt)
+  % Im(s) = 0 -> y = 179pt, Im(s) = 40  -> y = 301pt (1 unit = 3.05pt, 122pt tall!)
+  \begin{scope}[shift={(264,179)}, x=120pt, y=3.05pt]
+    % Critical strip 0 <= Re(s) <= 1 (subtle tonal split at Re(s) = 1/2)
+    \fill[CoverStripLeft]  (0,0)   rectangle (0.5,40.4);
+    \fill[CoverStripRight] (0.5,0) rectangle (1,40.4);
+
+    % Subtle horizontal grid lines
+    \foreach \yt in {10,20,30,40} {
+      \draw[CoverGrid, line width=0.38pt] (-0.15,\yt) -- (1.10,\yt);
+    }
+
+    % Strip boundaries Re(s) = 0 and Re(s) = 1
+    \draw[CoverRule, line width=0.55pt] (0,0) -- (0,40.4);
+    \draw[CoverRule, line width=0.55pt] (1,0) -- (1,40.4);
+
+    % Exact Hardy Z(t) wave along the critical line (shaded + stroke)
+    \CoverFillHardyZArea[fill=CoverWaveFill, fill opacity=0.14]
+    \CoverDrawHardyZCurve[draw=CoverWaveLine, line width=0.82pt, line join=round]
+
+    % Critical line Re(s) = 1/2 (sole restrained burgundy focal line, flush with strip top)
+    \draw[DeepBurgundy, line width=1.0pt, dash pattern=on 2.8pt off 2.0pt]
+      (0.5,0) -- (0.5,40.4);
+
+    % Axes (L-shaped, crisp open gray)
+    \draw[CoverAxis, line width=0.58pt, -{Stealth[length=3.4pt,width=2.3pt]}]
+      (-0.15,0) -- (1.13,0);
+    \draw[CoverAxis, line width=0.58pt, -{Stealth[length=3.4pt,width=2.3pt]}]
+      (-0.15,0) -- (-0.15,41.6);
+
+    % Y-axis ticks & labels
+    \foreach \yt in {0,10,20,30,40} {
+      \draw[CoverAxis, line width=0.52pt] (-0.15,\yt) -- ++(-2.4pt,0);
+      \node[tick label, anchor=east] at ($(-0.15,\yt)+(-4.4pt,0)$) {\yt};
+    }
+
+    % X-axis ticks & labels
+    \foreach \xt/\xl in {0/0, 1/1} {
+      \draw[CoverAxis, line width=0.52pt] (\xt,0) -- ++(0,-2.4pt);
+      \node[tick label, anchor=north] at ($(\xt,0)+(0,-4.4pt)$) {\xl};
+    }
+    \draw[DeepBurgundy, line width=0.68pt] (0.5,0) -- ++(0,-2.7pt);
+    \node[tick label, anchor=north, text=DeepBurgundy,
+          font=\CoverSansFont\bfseries\fontsize{7.7}{9}\selectfont]
+      at ($(0.5,0)+(0,-4.4pt)$) {1/2};
+
+    % Axis titles (matched TeX math font, generous clearance from eyebrow & captions)
+    \node[anchor=south, inner sep=0pt, text=CoverInk,
+          font=\CoverSerifFont\fontsize{8.1}{9.5}\selectfont]
+      at ($(-0.15,41.6)+(0,2.4pt)$) {\(\operatorname{Im}(s)\)};
+    \node[anchor=west, inner sep=0pt, text=CoverInk,
+          font=\CoverSerifFont\fontsize{8.1}{9.5}\selectfont]
+      at ($(1.13,0)+(2.4pt,0)$) {\(\operatorname{Re}(s)\)};
+
+    % Subtle Hardy Z(t) annotation in calm lower-left strip space
+    \node[anchor=east, inner sep=0pt, text=CoverLightInk,
+          font=\CoverSerifFont\fontsize{7.5}{9}\selectfont]
+      at (0.26,7.2) {\(Z(t)\)};
+
+    % First six nontrivial zeta zeros on Re(s) = 1/2
+    \foreach \zt in \CoverCriticalZeros {
+      \filldraw[fill=DeepBurgundy, draw=white, line width=0.7pt]
+        (0.5,\zt) circle[radius=2.35pt];
+    }
+  \end{scope}
+
+  % Right-column captions (clear hierarchy & symmetric cushion above y = 108)
+  \node[note] at (324,154.5) {First six nontrivial zeros with \(\operatorname{Im}(s)>0\)};
+  \node[align=center, inner sep=0pt,
+        font=\CoverSerifFont\fontsize{9.0}{11.4}\selectfont, text=CoverInk] at (324,132.5) {%
+    \CoverLink{thm:rh}{\textcolor{DeepBurgundy}{\textbf{RH}}}. Every nontrivial zero of \(\zeta(s)\) lies\\
+    on the critical line \(\operatorname{Re}(s)=1/2\).%
+  };
+
+  % ==========================================================================
+  % 03 | FROM THETA LIFTS TO THE PROOF OF GRH AND RH (Bottom, x = 0..435, y = 0..108)
+  % ==========================================================================
+  \node[eyebrow] at (16,92) {%
+    {\color{CoverLightInk}03}\hspace{5pt}{\color{CoverRule}\rule[-0.12ex]{0.55pt}{1.15ex}}\hspace{5pt}FROM THETA LIFTS TO THE PROOF OF GRH AND RH%
+  };
+
+  % Horizontal proof-roadmap timeline arrows (y = 64, uniform 72pt pitch)
+  \draw[flow arrow] (46.0,64)  -- (103.8,64);
+  \draw[flow arrow] (115.8,64) -- (175.8,64);
+  \draw[flow arrow] (187.8,64) -- (247.8,64);
+  \draw[flow arrow] (259.8,64) -- (319.8,64);
+  \draw[flow arrow, draw=DeepBurgundy!65!CoverAxis] (331.8,64) -- (389.2,64);
+
+  % Clean italic arrow annotations (ample separation, clear of Node 6 halo)
+  \node[edge note] at (290,71.5) {Landau criterion};
+  \node[edge note] at (360,71.5) {Functional equations};
+
+  % Timeline nodes
+  % 1. Starting engine (filled slate-gray + soft ring)
+  \draw[CoverAxis!55, line width=0.58pt] (38,64) circle[radius=5.8pt];
+  \fill[CoverTierDark] (38,64) circle[radius=3.5pt];
+
+  % 2-5. Intermediate theorem stages (precision hollow ring + center dot)
+  \foreach \nx in {110,182,254,326} {
+    \filldraw[fill=white, draw=CoverAxis, line width=0.85pt] (\nx,64) circle[radius=3.5pt];
+    \fill[CoverTierDark] (\nx,64) circle[radius=1.15pt];
+  }
+
+  % 6. Destination (DeepBurgundy double-ring accent)
+  \draw[DeepBurgundy!65, line width=0.7pt] (398,64) circle[radius=6.6pt];
+  \fill[DeepBurgundy] (398,64) circle[radius=3.9pt];
+
+  % Step labels with all original PDF hyperlinks preserved (generous bottom margin)
+  \node[step label] at (38,52) {%
+    \CoverLink{sec:theta-lifts}{Iterated}\\
+    \CoverLink{sec:theta-lifts}{theta lifts}%
+  };
+  \node[step label] at (110,52) {%
+    \CoverLink{sec:main-inequality}{Theorems}\\
+    \CoverLink{sec:main-inequality}{A–C}%
+  };
+  \node[step label] at (182,52) {%
+    \CoverLink{thm:star}{Main}\\
+    \CoverLink{thm:star}{inequality}%
+  };
+  \node[step label] at (254,52) {%
+    \CoverLink{thm:one-sided}{One-sided}\\
+    \CoverLink{thm:one-sided}{prime-power}\\
+    \CoverLink{thm:one-sided}{bound}%
+  };
+  \node[step label] at (326,52) {%
+    \CoverLink{thm:half-plane}{Zero-free}\\
+    \CoverLink{thm:half-plane}{half-plane}\\
+    \CoverLink{thm:half-plane}{\(\operatorname{Re}(s)>1/2\)}%
+  };
+  \node[step label] at (398,52) {%
+    \CoverLink{thm:rh}{\textcolor{DeepBurgundy}{\textbf{RH}}} and\\
+    \CoverLink{thm:l-zeros}{\textcolor{DeepBurgundy}{\textbf{Dirichlet GRH}}}%
+  };
+\end{tikzpicture}

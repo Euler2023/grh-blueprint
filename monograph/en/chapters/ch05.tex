@@ -1,0 +1,227 @@
+\chapter{Determinants of the Lift Chain and Theorem C}
+\label{chap:determinant}
+
+\begin{chapterguide}
+Given a linearly independent family that nearly spans the good target space, we use auxiliary forms to extend it to a basis. We bound the same untwisted Gram determinant at the finite and infinite places, and use the global product formula to obtain the covolume lower bound of \statementlink{thm:long-forms}{Theorem~C}. The bounds for the heights of the single-step determinant ratios come from \chapref{chap:onelift}, and \chapref{chap:congruences} constructs the required family of regular anticyclotomic twists.
+\end{chapterguide}
+
+\section{Determinant ratios and height budgets}
+\label{sec:c-height}
+
+Let $\nu_j^{(0)}$ be the untwisted Hecke character at step $j$. For a twist $\chi$, write $\mathcal R(\nu,\chi)$ for the product over $1\le z\le t$ of the ratios of the absolute values of the partial Hecke $L$-values, with the twisted partial $L$-value in the numerator and the untwisted value in the denominator. The untwisted partial $L$-value omits the chosen places and their conjugates. The twisted value also omits the places of the twist modulus and their conjugates. To compare the entire chain of lifts, define the two families of products
+\[
+ \begin{aligned}
+ T_{ij}(\vartheta)&=\mathcal R\bigl(\nu_{i+1}^{(0)}\nu_{j+1}^{(0)},\vartheta^{j+1}\bigr)
+      &&(0\le i,j<m),\\
+ Q_{ij}(\vartheta)&=\mathcal R\bigl(\nu_j^{(0)}/\nu_i^{(0)},\vartheta^{j-i}\bigr)
+      &&(1\le i<j\le m).
+ \end{aligned}
+\]
+
+Write $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_p$ for a $p$-adic place, with absolute value normalized by $|p|_p=p^{-1}$. For a family of complex numbers $Y=(Y_\iota)$, write $\operatorname{ht}(Y)\le c$ if there exist a common nonzero multiplier $\lambda$, an archimedean budget $\alpha$, and nonnegative finite-place budgets $h_p$ such that for every $\sigma\in\operatorname{Aut}(\mathbb C)$, every $\iota$, and every finite set $S$ of primes,
+\begin{equation}\label{eq:height-budget}\begin{aligned}
+ &|\sigma(\lambda)|\le e^\alpha,\qquad |\iota(\lambda Y_\iota)|_p\le p^{h_p},
+\\
+&\alpha+\sum_{p\in S} h_p\log p\le c.
+\end{aligned}\end{equation}
+For the termwise product of two such families, multiply the corresponding multipliers and add the budgets at each place to bound the height of the product. Taking a positive integer power multiplies the height bound by that power.
+
+Write $B_0=B/(mk)$ for the single-step logarithmic denominator budget. In~\eqref{eq:height-budget} the finite-place budget may depend on $p$, but the multiplier $\lambda$ must be common to the entire family. This lets us apply the global product formula directly to the untwisted Gram determinant. The admissible twist can be chosen separately at each $p$-adic isomorphism, provided the budgets for all steps are controlled simultaneously.
+
+\section{Auxiliary forms, basis completion, and chain factorization}
+\label{sec:c-chain}
+
+Spanning by the auxiliary forms uses nonvanishing of the restriction period for unitary groups whose ranks differ by one. The real-place estimate used here is~\eqref{eq:ch8-laplace-lower} in \chapref{chap:discrete-series}.
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{53}.}
+\begin{lemma}[Auxiliary forms with integral lifts]
+\label{lem:c-auxiliary-forms}
+\emitthmsource
+Fix admissible data $D$. For an $m$-fold twist $\vartheta$, let $N_\vartheta$ be the norm of its twist modulus. There are an integer $e$ and a family of nonzero scalars $\gamma(\vartheta)$ with $\gamma(1)=1$ and
+\[
+ |\gamma(\vartheta)|
+ =N_\vartheta^{e/2}\prod_{0\le i,j<m}T_{ij}(\vartheta).
+\]
+The good target space $W$ is spanned by vectors $z$ with the following two properties. For each $p$-adic embedding $\iota$ above the prime $p$ and each twist $\vartheta$ with $p\nmid N_\vartheta$, the lift $\gamma(\vartheta)\Theta_\vartheta z$ is integral at $\iota$. For each archimedean conjugate $\sigma\in\operatorname{Aut}(\mathbb C)$,
+\[
+ \|\Theta_1 z\|_\sigma^2\le \exp(2x_1^2b^2).
+\]
+\end{lemma}
+\begin{proof}
+Let $V_{\mathrm{pr}}$ be the space of principal-level forms on $Y_0$ and $V_{\mathrm{grid}}$ the space of forms at the outer endpoint of the last path through the double grid. Write
+\[
+ F(\vartheta)=\prod_{0\le i,j<m}T_{ij}(\vartheta).
+\]
+The last-path integrality and norm estimates give a surjection $R\colon V_{\mathrm{grid}}\to V_{\mathrm{pr}}$, a nonzero scalar $s$, a family of nonzero scalars $c(\vartheta)$, an integer $e$, and a real constant $C_0$ such that $|c(\vartheta)|^2=C_0 N_\vartheta^e F(\vartheta)^2$. For any $\phi\in V_{\mathrm{grid}}$, if its algebraic form satisfies the gauge condition at $p$ and $p\nmid N_\vartheta$, then $\bigl(c(\vartheta)/c(1)\bigr)T_\vartheta(sR\phi)$ is integral at $\iota$. If the squared Weyl norms of the values of that form under $\sigma$ are bounded by $B_0$, then the squared Weyl norms of the values of $T_1(sR\phi)$ under that conjugate are bounded by $\exp(2x^{201}b^2)B_0$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/SpanningForms.lean\#L667}{Integrality and norm estimates for the last path}.}
+
+Short forms at the outer endpoint of the double grid span $V_{\mathrm{grid}}$. The level acts freely there, and the short basis theorem for algebraic forms gives a spanning family with values in the Weyl representation. The outer rank is at most $2n_m$, and the admissible scales control the number of boxes in the Young diagrams and the highest weights. Thus the family is integral at all finite places, and the squared Weyl norms of its values at all conjugates are at most $\exp(x^{99}b^2)$. The surjection $sR$ carries it to a spanning family of $V_{\mathrm{pr}}$, which still spans $V_{\mathrm{pr}}$. By the preceding estimates these forms have integral lifts, and the untwisted lifts have pointwise squared norm at each conjugate bounded by\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/SpanningForms.lean\#L743}{Short forms at the outer endpoint and their images under the surjection}.}
+\[
+ \exp((2x^{201}+x^{99})b^2)\le \exp(x^{202}b^2).
+\]
+
+Set $\gamma(\vartheta)=c(\vartheta)/c(1)$. Each $T_{ij}(\vartheta)$ is nonnegative and equals $1$ at the trivial twist. Since $N_1=1$, it follows that $C_0=|c(1)|^2>0$. Dividing the squared absolute value identity by $|c(1)|^2$ and taking the nonnegative square root gives the desired factorization of the absolute value and $\gamma(1)=1$.
+
+Finally apply the integral multiple $|G|e_0$ of the projection to the spanning family of $V_{\mathrm{pr}}$ to obtain a spanning family of $W$. Let $\mathcal L_\vartheta$ be the chain of lifts on the full principal-level space. The chain commutes with the finite group action, so the value of $\mathcal L_\vartheta(|G|e_0 v)$ at $h$ is
+\[
+ \sum_{t\in G} |G|e_0(t)\,
+       (\mathcal L_\vartheta v)(h\,\widetilde t_\vartheta),
+\]
+Here $e_0(t)$ is a group algebra coefficient and $\widetilde t_\vartheta$ is an integral right translation on the lift. The coefficient $|G|e_0(t)$ is an algebraic integer, and integral right translation preserves local integrality. Thus, if $\gamma(\vartheta)\mathcal L_\vartheta v$ is integral at $\iota$, the ultrametric triangle inequality gives integrality of $\gamma(\vartheta)\Theta_\vartheta(|G|e_0 v)$ at $\iota$ as well.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L480}{The projection onto good forms preserves integrality}.}
+
+At infinity each $\sigma(e_0(t))$ has absolute value at most $1$. Indeed, $|G|\sigma(e_0(t))$ is the value of a finite group character of degree at most $|G|$. The displayed expression thus has pointwise squared norm at most $|G|^4\exp(x^{202}b^2)$. The class number at the untwisted final level is at most $\exp(x^{30})$, and each weight in the class sum is at most $1$. Using $x^{30}+4\log |G|\le x^{99}$ gives
+\[
+ \|\Theta_1(|G|e_0 v)\|_\sigma^2
+ \le \exp(x^{99}+x^{202}b^2)
+ \le \exp(2x_1^2b^2),
+\]
+The last step uses $x_1\ge x^{10^6}$ and $x,b\ge1$. These projected vectors span $W$, completing the proof.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ArchimedeanSize.lean\#L526}{Archimedean estimate for the projection onto good forms}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{154}.}
+\begin{lemma}[The Gram determinant ratio of the chain of lifts]
+\label{lem:c-chain-factorization}
+\emitthmsource
+Fix admissible data $D$. Let $Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta)$, and for $1\le j\le m$ let $Z_j(\vartheta)$ be the Gram determinant on good forms of the $j$-th single-step lift with twist $\vartheta^j$. There exists an integer $e$ such that for every $m$-fold twist $\vartheta$,
+\begin{equation}
+ \frac{Z(1)}{Z(\vartheta)}
+ =\left(N_\vartheta^{e/2}
+          \prod_{1\le i<j\le m}Q_{ij}(\vartheta)\right)^{-r}
+       \prod_{j=1}^m \frac{Z_j(1)}{Z_j(\vartheta)},
+\label{eq:c-chain-ratio}
+\end{equation}
+Here $N_\vartheta$ is the norm of the twist level.
+\end{lemma}
+\begin{proof}
+Let $S_j(\vartheta)$ be the realization on $W$ of the Rallis operator for lift step $j$ with twist $\vartheta^j$, and let $c_Q(\vartheta)$ be the level factor in the single-step norm formula. Since $\vartheta$ is an $m$-fold twist, every power $\vartheta^j$ with $1\le j\le m$ has nontrivial local character at the twist places. These powers share the same modulus, so the factor $c_Q(\vartheta)$ is the same at every step. The single-step Rallis norm formula gives nonzero constants $a_j$ independent of the twist. For the classical background, see Li~\cite{Li1992}, Kudla and Rallis~\cite{KudlaRallis1994}, and Gan, Qiu, and Takeda~\cite{GQT2014}. Passing between inner forms on the good space preserves its dimension $r$ and the determinant of $S_j(\vartheta)$, so
+\[
+ Z_j(\vartheta)=(a_j c_Q(\vartheta))^r\det S_j(\vartheta),
+\]
+Here $\det(u^*u)$ is the Gram determinant of the lift $u$, and we use $\det(aS)=a^r\det S$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L115}{The single-step Rallis determinant}.}
+
+Write $F(\vartheta)=\prod_{1\le i<j\le m}Q_{ij}(\vartheta)$. Let $g_n(\vartheta)$ be the order of the finite linear group at level $n$ of the lift triangle, and $M(\vartheta)$ the number of matrices over the single-step level modulus. The weighted lift-chain Gram formula gives
+\[
+ \kappa(\vartheta)
+ \frac{g_0(\vartheta)\,g_1(\vartheta)^m}{g_m(\vartheta) M(\vartheta)^m}
+ \left\langle x,
+     S_1(\vartheta)\cdots S_m(\vartheta)y\right\rangle,
+\]
+Here $|\kappa(\vartheta)|^2=C_1N_\vartheta^{k_1}F(\vartheta)^2$, with $C_1,k_1$ independent of $\vartheta$. The triangle formula passes the successive Rallis pairings through the commutative diagram and introduces the corresponding Hecke-value ratio at each square. For commutation of theta integrals of automorphic characters on groups of complementary rank, see Snitz~\cite{Snitz2007} and Erez~\cite{Erez2024}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L158}{Gram formula for the weighted chain of lifts}.}
+
+To pass from the weighted chain's Petersson pairing to the inner product for $\Theta_\vartheta$, multiply by the terminal level index and a Weyl dimension factor independent of the twist. The terminal level index has the form
+\[
+ C_2 N_\vartheta^{k_2}\,\delta(\vartheta)^m\,
+     \frac{g_m(\vartheta)}{g_0(\vartheta)g_1(\vartheta)^m},
+\]
+Here $\delta(\vartheta)$ is the local Gram factor at the first step and satisfies $\delta(\vartheta)/M(\vartheta)=C_3c_Q(\vartheta)$, with $C_2,C_3$ independent of $\vartheta$. After cancellation of finite group orders, the remaining factors are $c_Q(\vartheta)^m$, $\kappa(\vartheta)$, a fixed constant, and an integer power of $N_\vartheta$. Thus there exists a scalar $c(\vartheta)$ such that\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/ChainNorms.lean\#L710}{Formula for the terminal level index}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L212}{Conversion between the two inner products}.}
+\[
+ \Theta_\vartheta^*\Theta_\vartheta
+   =c(\vartheta)c_Q(\vartheta)^m S_1(\vartheta)\cdots S_m(\vartheta),
+ \qquad
+ |c(\vartheta)|^2=C_4N_\vartheta^{k_4}F(\vartheta)^2 .
+\]
+
+The single-step lifts and the full chain are injective, so $Z(\vartheta)$ and each $Z_j(\vartheta)$ are positive reals. If $r=0$, the determinants are empty and equal $1$, and we can take $e=0$. Now suppose $r>0$. At the trivial twist, the left-hand side of the operator formula for the chain is positive definite, so $c(1)\ne0$. The twist ratios are nonnegative and equal $1$ at the trivial twist. Using $N_1=1$ and the squared absolute value formula gives $C_4=|c(1)|^2$ and therefore
+\[
+ |c(\vartheta)|=|c(1)|N_\vartheta^{k_4/2}F(\vartheta).
+\]
+Taking determinants in the chain operator identity and using multiplicativity and the single-step formula gives
+\[
+ Z(\vartheta)
+ =\left(\frac{c(\vartheta)}{\prod_{j=1}^m a_j}\right)^r
+       \prod_{j=1}^m Z_j(\vartheta).
+\]
+Take absolute values on both sides. Positivity of the determinants permits replacing $c(\vartheta)$ and $\prod_j a_j$ by $|c(\vartheta)|$ and $\prod_j |a_j|$, respectively. Divide the identity at the trivial twist by the one at the given twist. The common constant $|c(1)|/\prod_j |a_j|$ cancels, and $e=k_4$ gives~\eqref{eq:c-chain-ratio}.
+\end{proof}
+
+\section{The covolume lower bound and the product formula}
+\label{sec:c-covolume}
+
+In using~\eqref{eq:c-chain-ratio} to compare the chain determinants before and after twisting, the integral corrections for the completed basis contribute at most $\delta$ at each of $\iota$ and $\bar\iota$. At the infinite places, the order of the complex automorphism and complex conjugation matters. The proof below first estimates a mixed Gram determinant, then uses the global product formula to obtain~\eqref{eq:c-long-forms}.
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{136}.}
+\begin{lemma}[A family of twists with simultaneous height bounds at all steps]
+\label{lem:c-good-twists-volume}
+\emitthmsource
+There is a family of $m$-fold twists $(\vartheta_\iota)_\iota$ such that each twist's modulus norm is coprime to its corresponding prime, each inverse Hecke-value ratio for a ramification pair has height at most $x_1$, and for every $1\le j\le m$,
+\begin{equation}
+ \operatorname{ht}\left(\left(\frac{Z_j(1)}{Z_j(\vartheta_\iota)}\right)_\iota\right)
+ \le r\left(\frac{L}{m}-k\mathcal D\right).
+\label{eq:c-uniform-volume}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Choose the regular twist family of \statementref{Lemma}{lem:c-regular-family}. It meets the coprimality conditions and height bounds for the ramification pairs. Apply~\eqref{eq:c-single-volume} at every step $j$ and substitute $k\ell B_0=k\ell B/(mk)=L/m$ to obtain~\eqref{eq:c-uniform-volume}.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{208}.}
+\begin{theorem}[C: a lower bound for covolume]
+\label{thm:long-forms}
+\emitthmsource
+Let $y=(y_1,\dots,y_n)$ be a linearly independent family in the good target space $W$ satisfying $n\ge(1-4/b^2)r$. If the local lattice index bound $\mathcal I_\delta(y)$ and the covolume upper bound $\mathcal V_V(y)$ both hold, then
+\begin{equation}
+  r(H-3L)\le V+2\delta.
+\label{eq:c-long-forms}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{Completing the basis.}
+\statementref{Lemma}{lem:c-auxiliary-forms} gives nonzero scalars $\gamma(\vartheta)$ and a spanning family of auxiliary vectors for $W$. For each vector $z$ in the family, whenever the prime $p$ does not divide the level norm of the twist $\vartheta$, the lift $\gamma(\vartheta)\Theta_\vartheta z$ is integral at every $p$-adic place above $p$. Also $\|\Theta_1 z\|_\sigma^2\le \exp(2x_1^2b^2)$ for every $\sigma\in\operatorname{Aut}(\mathbb C)$. Successively choosing auxiliary vectors outside the current span extends $y$ to a basis $w=(y_1,\dots,y_n,z_1,\dots,z_{n'})$ of $W$. The number of added vectors satisfies
+\[
+ n'=r-n\le 4r/b^2.
+\]
+
+\emph{A consequence of the product formula.}
+First we establish a height consequence of the product formula. Suppose $z\ne0$, the constant family $z$ has height at most $c$, and $|\sigma(z)|\le e^A$ for every $\sigma\in\operatorname{Aut}(\mathbb C)$. Then $0\le A+c$. Indeed, for the constant family $z^{-1}$ we can take multiplier $\lambda=z$, archimedean budget $A$, and zero finite-place budgets. Thus the constant family $1$ has height at most $A+c$. Let $\lambda$ be a multiplier for the family $1$. Its $2$-adic images are uniformly bounded, so $\lambda$ is algebraic over $\mathbb Q$. If $\lambda$ were transcendental, take a transcendence basis containing $\lambda$, send the basis element $\lambda$ to $2^{-k}\lambda$, and fix all the others. Extend to an automorphism of $\mathbb C$ and compose with a fixed $2$-adic embedding. The absolute values would become unbounded as $k$ grows, a contradiction. Now let $q=\mathrm N_{\mathbb Q(\lambda)/\mathbb Q}(\lambda)\ne0$ and write $d_\lambda=[\mathbb Q(\lambda):\mathbb Q]$. Each local embedding extends to the corresponding field isomorphism, giving $\log |q|\le d_\lambda\alpha$ and $\log |q|_p\le d_\lambda h_p\log p$. Apply the global product formula on $\mathbb Q$ to a finite set of primes containing all finite places where $q$ is nontrivial, as in Bombieri and Gubler~\cite{BombieriGubler2006}. This gives $0\le d_\lambda(A+c)$ and hence $0\le A+c$.
+
+\emph{Choosing twists and comparing the chain determinants.}
+Let $Z(\vartheta)$ be the Gram determinant of $\Theta_\vartheta$ on the good target space, and $Z_j(\vartheta)$ the Gram determinant at step $j$. \statementref{Lemma}{lem:c-good-twists-volume} supplies twists $(\vartheta_\iota)$ satisfying~\eqref{eq:c-uniform-volume}, with the level norm of each $\vartheta_\iota$ coprime to the prime below $\iota$. For each $1\le j\le m$, the family $Z_j(1)/Z_j(\vartheta_\iota)$ has height at most $r\bigl(L/m-k\mathcal D\bigr)$, where $H=mk\mathcal D$. Each reciprocal of a ratio in the next two factorizations is a product of at most $t$ inverse Hecke-value ratios of height at most $x_1$. Its height is therefore at most $tx_1$.
+
+By \statementref{Lemma}{lem:c-chain-factorization} there is a fixed integer $e_1$ such that
+\[
+ \frac{Z(1)}{Z(\vartheta)}
+ =A(\vartheta)^{-r}\prod_{j=1}^{m}\frac{Z_j(1)}{Z_j(\vartheta)},\qquad
+ A(\vartheta)=\operatorname{Nm}(Q_\vartheta)^{e_1/2}
+                  \prod_{1\le i<j\le m}Q_{ij}(\vartheta).
+\]
+By \statementref{Lemma}{lem:c-auxiliary-forms} there is also a fixed integer $e_2$ such that
+\[
+ |\gamma(\vartheta)|=\operatorname{Nm}(Q_\vartheta)^{e_2/2}
+                   \prod_{0\le i,j<m}T_{ij}(\vartheta),
+\]
+Here $\operatorname{Nm}(Q_\vartheta)$ is the twist level norm. For $\vartheta_\iota$ the level norm is a unit at the prime below $\iota$, so its integer and half-integer powers have absolute value $1$ there. The corresponding factor can use multiplier $1$ and zero budgets. Hence the reciprocals of the two products have heights at most $m^2 t x_1$ each, and $|\gamma(\vartheta_\iota)|^{-2}$ has height at most $2m^2 t x_1$. The admissible scales give $2m^2tx_1\le b$. Specifically, $m\le 2\sqrt{x}$, $t\le e^8 x^5$, $x^{10^6}\le x_1$, and $x_1^{10^6}\le b$ imply $8e^8x^6x_1\le x_1^3\le b$. Combining the $m$ single-step ratios in the chain factorization with $A(\vartheta_\iota)^{-r}$ gives
+\[
+ \operatorname{ht}\left(\left(\frac{Z(1)}{Z(\vartheta_\iota)}\right)_\iota\right)
+ \le r(b+L-H),\qquad
+ \operatorname{ht}\bigl((|\gamma(\vartheta_\iota)|^{-2})_\iota\bigr)\le b.
+\]
+
+\emph{Control of the same untwisted determinant at the finite places.}
+Let $\mathcal G_\vartheta$ be the Gram determinant of the images $\Theta_\vartheta w$ of the basis. Since $w$ is a basis of $W$, writing $A_w$ for the coordinate matrix of $w$ in an orthonormal basis gives $\mathcal G_\vartheta=|\det A_w|^2 Z(\vartheta)$. Every $\Theta_\vartheta$ is injective, so the determinants are nonzero.
+
+Fix $\iota$ and set $\vartheta=\vartheta_\iota$. Write $\bar\iota(v)=\iota(\bar v)$ for the conjugate embedding. Let $u,u'$ be the correction matrices supplied by the local lattice index condition at $\iota$ and $\bar\iota$, respectively, so that $|\det u|_\iota,|\det u'|_{\bar\iota}\ge p^{-j_p}$. The index conditions at both places hold simultaneously for every twist with level norm coprime to $p$, so we may use the same $\vartheta$. Put $\gamma(\vartheta)I_{n'}$ in the lower block for the added basis vectors and call the resulting block matrices $v,v'$. After correction the left vectors in the Gram pairing are integral at $\bar\iota$ and the right vectors at $\iota$. By the integral pairing condition on the twisted target lattice, the $\iota$-absolute value of each entry is at most $1$, as is the determinant. Change of basis expresses that determinant as $\overline{\det v'}\,\mathcal G_\vartheta\,\det v$. Using the determinants of the two blocks and the index inequalities to eliminate $u,u'$, together with $\iota(|\gamma|^{2n'})=\iota(\gamma)^{n'}\bar\iota(\gamma)^{n'}$, gives
+\[
+ |\iota(|\gamma(\vartheta)|^{2n'}\mathcal G_\vartheta)|_p\le p^{2j_p}.
+\]
+Taking multiplier $1$ for this family gives height budget $2\delta$.
+
+For every $\iota$ we have the identity
+\[
+ \mathcal G_1
+ =\bigl(|\gamma(\vartheta)|^{2n'}\mathcal G_\vartheta\bigr)
+  \bigl(|\gamma(\vartheta)|^{-2}\bigr)^{n'}\,\frac{Z(1)}{Z(\vartheta)} .
+\]
+By subadditivity of height, the constant family $\mathcal G_1$ has height at most $2\delta+n'b+r(b+L-H)$.
+
+\emph{Incorporating the infinite places in the product formula.}
+For any $\sigma\in\operatorname{Aut}(\mathbb C)$, apply Fischer's and Hadamard's inequalities in turn to the Gram matrix obtained by applying $\sigma$ to the coordinates of $w$. The covolume of the original block is controlled by $e^V$, and each diagonal entry of the added block is at most $\exp(2x_1^2b^2)$. This gives
+\[
+ \mathcal V_{V+2n'x_1^2b^2}(w).
+\]
+It remains to turn the bound for the Gram determinant of the conjugated coordinates into an estimate for $\sigma(\mathcal G_1)$. The coordinate matrix of the original pairing is rational. Put $\sigma'=\operatorname{conj}\circ\sigma\circ\operatorname{conj}$. Applying $\sigma$ to the pairing applies $\sigma'$ to the coordinates on the left and $\sigma$ to those on the right. The Cauchy--Schwarz inequality for the exterior-power inner product bounds the squared absolute value of this mixed Gram determinant by the product of the Gram determinants of the two individual families. The covolume bound above controls both factors, so $|\sigma(\mathcal G_1)|\le\exp(V+2n'x_1^2b^2)$.
+
+Apply the consequence of the product formula proved above to $\mathcal G_1$ to obtain
+\[
+ 0\le V+2\delta+n'(2x_1^2b^2+b)+r(b+L-H).
+\]
+Finally, $n'\le 4r/b^2$ together with $b\ge x_1^{10^6}$ and $x_1\ge 12$ gives $n'(2x_1^2b^2+b)\le 4r(2x_1^2+b^{-1})\le rb$. Also $a=xb$, $f\ge1$, and $\log b\ge1$ imply $b\le L$, hence $r(b+L-H)+rb\le r(3L-H)$. Rearranging yields $r(H-3L)\le V+2\delta$.
+\end{proof}

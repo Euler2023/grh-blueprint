@@ -1,0 +1,43 @@
+\begin{titlepage}
+\thispagestyle{empty}
+\sffamily
+\setlength{\parindent}{0pt}
+\vspace*{0.03\textheight}
+
+{\large\bfseries\color{DefinitionInk} A Guide to the Formal Proof in Lean\par}
+\vspace{0.55em}
+{\color{DefinitionInk}\rule{27mm}{1pt}\par}
+\vspace{1.35em}
+
+{\fontsize{29pt}{36pt}\linespread{1.06}\selectfont\bfseries\color{OxfordNavy}
+ From Theta Lifts to the Proof\par
+ of the Generalized Riemann\par
+ Hypothesis\par}
+\vspace{1.65em}
+
+{\normalsize\rmfamily\color{SlateInk}
+ Based on the readable Lean proof in
+ \href{https://github.com/lsernau/grh-lean}{\texttt{lsernau/grh-lean}}
+ and its accompanying blueprint.\par}
+\vspace{0.35em}
+{\small\sffamily\color{SlateInk!75}
+ Upstream build environment: Lean 4.35.0\quad\textperiodcentered\quad
+ Mathlib \texttt{56a00585}\par}
+
+\vfill
+{\graphicspath{{../figures/}}%
+ \noindent\input{../figures/cover-illustration}\par}
+\end{titlepage}
+
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\markboth{Abstract}{Abstract}
+
+This monograph follows a streamlined Lean blueprint in giving a systematic account of the complete argument for the Riemann hypothesis and the generalized Riemann hypothesis for Dirichlet $L$-functions. The blueprint is based on the Lean~4 formalization by Levent Alpöge and Claude. Starting from admissible data, weighted prime-power remainders, and adelic and algebraic theta lifts on unitary groups, the book establishes four arithmetic and analytic estimates. \statementlink{thm:short-forms}{Theorem~A(a)} supplies short integral source forms and bounds the archimedean norms of the untwisted lifts of their normalized images. \statementlink{thm:index-bound}{Theorem~A(b)} bounds the local lattice index of the normalized lifts. \statementlink{thm:enough-forms}{Theorem~B} shows that the images of a small number of Poincaré translates nearly span the space of good target forms. \statementlink{thm:long-forms}{Theorem~C} gives a lower bound for the covolume of a chain of theta lifts of integral forms. Applying the four estimates to the same linearly independent family, whose span has nearly full dimension in the target, yields the main inequality \eqref{eq:ch1-star} through the exact cancellation of dimension factors and the common main term.
+
+The iteration count $m\asymp\sqrt{x}$ yields a square-root saving. Together with the prime number theorem in arithmetic progressions for a fixed modulus, which controls the error at the second scale, it turns the main inequality into a one-sided upper bound for the weighted remainder over inert prime powers. A zero-density estimate for families of quadratic twists then rules out pole cancellation. Landau's positivity criterion converts the one-sided remainder bound into nonvanishing on the right half-plane $\RePart s>1/2$. Finally, the functional equations of the Dirichlet $L$-functions and the Riemann $\zeta$-function give the critical-line conclusions and complete the proofs of the five public theorems.
+
+\cleardoublepage
+\pdfbookmark[0]{Contents}{monograph-contents}
+\tableofcontents

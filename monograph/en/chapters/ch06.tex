@@ -1,0 +1,1508 @@
+\chapter{Single-Step Theta Lifts and Comparison Operators}
+\label{chap:onelift}
+
+\begin{chapterguide}
+This chapter bounds the ratio of the Gram determinants of a single-step lift of good forms. Test forms for the main critical pairs give the norms for the trivial twist, and the regular twist families of \chapref{chap:congruences} give the denominator bounds. The comparison operator is constructed from twist-independent period lifts and their orthogonality to the false lift space. For related seesaw pairings and nonvanishing results, see Kudla~\cite{Kudla1984}, Li~\cite{Li1992}, and Gan--Qiu--Takeda~\cite{GQT2014}.
+\end{chapterguide}
+
+\section{Main critical pairs and test forms}
+\label{sec:c-main-pairs}
+
+Write
+\[
+ J_0=\sum_{\tau}s_\infty(\kappa_\tau),\qquad
+ S_0=\sum_{\tau}s_{\rm fin}(\kappa_\tau,\tau),\qquad
+ \mathcal D=J_0-S_0 ,
+\]
+By definition of $H$, we have $H=mk\mathcal D$.
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/AlgebraicPartSize.lean}{461}.}
+\begin{lemma}[Norm of the trivially twisted lift for a main pair]
+\label{lem:c-untwisted-main-pair}
+\emitthmsource
+For any main pair $P=(\nu,z)$ at step $j$, let $\phi_1$ be the normalized lift with trivial twist. Then the height of the constant family $\|\phi_1\|^2$ is at most $B_0-J_0$.
+\end{lemma}
+\begin{proof}
+Choose a flat critical pair (\emph{flat pair}) $Q$ of the same rank, with negative weight $z$ at every archimedean place, and with lift of rank $2z$. Write $\psi_1$ for its normalized lift. With trivial twist, the integral algebraic part (\emph{integral algebraic part}) $I_Q$ equals $n_{\rm aut}d_Q^2\|\psi_1\|^2$, where $d_Q$ is the denominator factor for the flat pair. Since $I_Q$ is nonzero and integral at every finite place, the common multiplier $\lambda=I_Q/\|\phi_1\|^2$ gives zero budget at every finite place.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/AlgebraicPartSize.lean\#L469}{A flat pair of the same rank and a common multiplier}.}
+
+For an automorphism $\sigma$ fixing the base field $K$, the equal-rank formula for conjugate norms gives the same constant $c_\sigma$ and yields
+\[
+ \log|\sigma(\|\psi_1\|^2)|=c_\sigma+e_Q,\qquad
+ \log|\sigma(\|\phi_1\|^2)|=c_\sigma+e_P+
+     \sum_\tau s_\infty(\kappa'_\tau),
+\]
+where $e_Q\le4f$ and $e_P\ge-4f$, and $\kappa'_\tau$ is the row length of the main pair. The weight condition for the main pair implies $\kappa'_\tau\ge\kappa_\tau$, and the derivative scale $s_\infty$ is nondecreasing on the range in use. Subtract the two formulas and combine with $\log(n_{\rm aut}d_Q^2)\le x^{33}$ to obtain
+\[
+ \log|\sigma(\lambda)|\le x^{33}+8f-J_0\le B_0-J_0 .
+\]
+Any automorphism of the complex numbers either fixes $K$ or fixes $K$ after composition with complex conjugation. This composition preserves absolute values, so we can use the same budget $B_0-J_0$ at every archimedean place. The common scale term $c_\sigma$ in the equal-rank norm formula cancels when the two types of critical pairs are compared.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/AlgebraicPartSize.lean\#L329}{Formula for conjugate norms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/AlgebraicPartSize.lean\#L483}{Subtracting the common equal-rank term}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{93}.}
+\begin{lemma}[Twist averaging over the rank-one class group]
+\label{lem:c-test-character-average}
+\emitthmsource
+Suppose $\Gamma$ contains the rational points of $\Ugrp(1)$ and $K$ is a compact open subgroup containing the principal level at the set $S$ of finite places. Suppose also that $H=\Gamma\backslash \Ugrp(1)(\mathbb A_f)/K$ is finite and every class has trivial stabilizer. For any function $s:\Ugrp(1)(\mathbb A_f)\to\mathbb C$ and any $\ell$-adic embedding $\iota$ there exist $z\in \Ugrp(1)(\mathbb A_f)$ and a character $\psi$ of weight zero with trivial tame part outside $S$ such that
+\[
+ \left|\iota\left(\frac1{|H|}\sum_{c\in H}\psi(c^\circ z)s(c^\circ z)\right)\right|_\ell
+ \ge |\iota(s(1))|_\ell .
+\]
+where $c^\circ$ is the fixed representative of each class.
+\end{lemma}
+\begin{proof}
+Since $\Ugrp(1)(\mathbb A_f)$ is abelian, $H$ is its finite quotient by $\Gamma K$. Pulling back a character of $H$ to the full adelic group makes it trivial on the rational points, at the archimedean places, and on the integral level associated with $S$. It is thus an admissible tame character of weight zero.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L74}{Principal level and pullback of class group characters}.}
+
+Take $z$ to be the inverse of the representative of the identity class. Translation by $z$ sends that representative to $1$ and keeps every other representative in its nonidentity class. Average over the characters $\psi$ of $H$ and interchange the finite sums. Character orthogonality gives
+\[
+ \frac1{|H|}\sum_{c\in H}s(c^\circ z)
+         \sum_{\psi\in\widehat H}\psi(c)=s(1).
+\]
+The class stabilizers are trivial, so the weights are those of an ordinary class sum. Apply $\iota$ to this identity. The ultrametric inequality in the $\ell$-adic field shows that at least one term has absolute value at least $|\iota(s(1))|_\ell$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{660}.}
+\begin{lemma}[A common geometric mean for two flat blocks]
+\label{lem:c-test-geometric-mean}
+\emitthmsource
+Let $X$ be the group of admissible weight-zero tame characters at the selected places. For each $\chi\in X$, choose flat critical pairs $q_1(\chi),q_3(\chi)$ of the two specified even ranks and let $A_i(\chi)$ be the nonzero untwisted integral algebraic part of $q_i(\chi)$. Then there exists $L\ne0$ satisfying
+\[
+ L^{|X|}=\prod_{\chi\in X} A_1(\chi)A_3(\chi),
+ \qquad |\sigma(L)|\le e^{2x^{34}}\quad(\sigma\in\operatorname{Aut}(\mathbb C)).
+\]
+Moreover, given $\psi\in X$ and a $\ell$-adic embedding $\iota$, we can factor $\psi$ as $\psi=\psi_3\psi_1$ so that
+\[
+ |\iota(L)|_\ell\le|\iota(A_3(\psi_3)A_1(\psi_1))|_\ell.
+\]
+\end{lemma}
+\begin{proof}
+The right-hand side is nonzero, so taking a $|X|$-th root in $\mathbb C$ gives $L$. The integral algebraic part of each flat pair has absolute value at most $e^{x^{34}}$ under every $\sigma\in\operatorname{Aut}(\mathbb C)$. Multiply these bounds and take the $|X|$-th root to bound the absolute values of the conjugates of $L$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/AlgebraicPartSize.lean\#L138}{Integral algebraic parts and size bounds for flat critical pairs}.}
+
+Fix $\psi\in X$. The map $\chi\mapsto\psi\chi^{-1}$ permutes $X$, so the product $\prod_{\chi\in X}A_3(\psi\chi^{-1})A_1(\chi)$ still equals $L^{|X|}$. Taking $\ell$-adic absolute values at $\iota$, some term is at least the geometric mean $|\iota(L)|_\ell$. Choose a maximizing $\chi$ as $\psi_1$ and set $\psi_3=\psi\chi^{-1}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L160}{Comparing the products of absolute values}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{557}.}
+\begin{lemma}[Seesaw pairing for a four-block test form]
+\label{lem:c-test-seesaw-factorization}
+\emitthmsource
+Let $P=(\nu,z)$ be a main pair at step $j$ and suppose the modulus norm of the twist $\vartheta$ is coprime to $\ell$. Partition the $2z$ indices of the main pair into four blocks of ranks $12,4,4,2z-20$ in order. The last three correspond to flat critical pairs $q_2,q_3,q_1$, with twists $\vartheta,1,1$ and integral algebraic parts $A_2,A_3,A_1$. Choose the character $\chi$ for the first block so that its product with those of the three flat blocks is the character of the higher-rank member of the twisted main pair. Take a residue point $a$ and Taylor monomial $X^\alpha$ for the first block. Suppose the degree at each archimedean place $\tau$ equals the main pair's row length $d_\tau$. Let $s_\chi(g)$ be the value at $(1,g)$ of the first-block kernel determined by the point indicator and $X^\alpha$. Write $h_1$ for the rank-one class number at the chosen level, $V$ for the rank-one vacuum's integral normalization constant, and $K_P(g)$ for the kernel form of the main pair. Then there is a test form $\Xi$ such that for each $g\in \Ugrp(1)(\mathbb A_f)$ we have
+\[
+ h_1^3 V^{2z-12}\langle\Xi,K_P(g)\rangle
+  =\frac{\prod_\tau d_\tau!}{\prod_i\alpha_i!}\, A_1 A_3 A_2\,s_\chi(g),
+\]
+and $\Xi$ is integral at all places above $\ell$ and orthogonal to the specified false lifts in the kernel of the descent operator.
+\end{lemma}
+\begin{proof}
+Choose the integral Weyl vector for $X^\alpha$. Its Fock polynomial is $\bigl(\prod_\tau d_\tau!/\prod_i\alpha_i!\bigr)X^\alpha$. The chosen first-block operator fixes it. Combine the first-block residue point $a$ with the residue columns of the three flat blocks to obtain the full residue column. This column defines an injection. Thus placing the vector at the four-block point $(1,h_2,h_3,h_1')$ and extending by the level action defines the point form $F(h_1',h_2,h_3)$. Injectivity ensures compatibility of the residue conditions on the support of the point form.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L327}{Injectivity of the test residue column}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L602}{Integral Weyl vector and point form}.}
+
+Expand the main kernel at a point into its four blocks. The first block leaves only the point $a$ and the monomial $X^\alpha$, and the others give the Weyl coordinates of their respective flat kernels. The character product condition gives the product of determinant characters across blocks. Hence the pairing of the point form with $K_P(g)$ becomes
+\[
+ \frac{\prod_\tau d_\tau!}{\prod_i\alpha_i!}\,s_\chi(g)\,
+ K_2(g;h_2)K_3(g;h_3)K_1(g;h_1'),
+\]
+where each kernel is evaluated in the Weyl coordinates of its block.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L349}{Blockwise pairing of the point form and kernel}.}
+
+Take class sums over $h_1',h_3,h_2$ in order, using the normalized lift of the corresponding flat pair as the weight at each stage. The first sum gives a test form with integral point values and zero periods against the false lifts in the descent kernel. The next two sums form linear combinations with integral weights after clearing the stabilizer denominators, and thus preserve the integral lattice and the orthogonality. Coprimality of the twist modulus with $\ell$ ensures integrality of the weights for the twisted blocks.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L216}{Preservation of the integral submodule by the class sums}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L448}{Test conditions after the first class sum}.}
+
+Apply the same three class sums to the pairing formula. The seesaw scalar formula for each flat pair replaces the contribution of the rank-$d$ block by $A_i/(h_1V^d)$. The ranks $2z-20,4,4$ sum to $2z-12$, so the three divisors have product $h_1^3V^{2z-12}$. Extract the common first-block coefficient to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L246}{Seesaw scalars of the flat blocks}.}
+\end{proof}
+
+\section{Finite-place pairings and Hecke value ratios}
+\label{sec:c-hecke-ratios}
+
+\statementref{Lemma}{lem:c-derivative-sharpness} of \chapref{chap:derivatives} lets us choose a nonzero coefficient at a given finite place. We then use it in the pairing with a test form to control the inverse Hecke value ratios for the main critical pairs and the single-step lift.
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{691}.}
+\begin{lemma}[Finite-place pairing of the test form with the main-pair lift]
+\label{lem:c-test-pairing-lower}
+\emitthmsource
+Let $P=(\nu,z)$ be a main pair at step $j$ and $q_2$ a flat critical pair of rank $4$. There is a nonzero number $c_0$, independent of the finite place and the twist, satisfying
+\[
+ |\sigma(c_0)|\le \exp(fmb/k+3x^{34}) \qquad(\sigma\in\operatorname{Aut}(\mathbb C)).
+\]
+For each $\ell$-adic embedding $\iota$ and twist $\vartheta$ whose modulus norm is coprime to $\ell$, let $\phi_\vartheta$ be the normalized twisted lift of the main pair, let $\rho_2=\operatorname{ratio}_{q_2}(\vartheta)$, and let $\mu_\ell$ be the sum of the local prime sums over the archimedean places from the derivative divisibility bound. Then there is a test form $\Xi$ such that
+\[
+ |\iota(\langle\Xi,\phi_\vartheta\rangle)|_\ell
+ \ge |\iota(c_0\rho_2)|_\ell\,\ell^{-\mu_\ell}.
+\]
+\end{lemma}
+\begin{proof}
+For each weight-zero tame character $\chi$, choose flat critical pairs $q_1(\chi),q_3(\chi)$ of ranks $2z-20$ and $4$ with the required residue labels on their characters. Use \statementref{Lemma}{lem:c-test-geometric-mean} to choose the common $L$. Write $A_2^0$ for the untwisted integral algebraic part of $q_2$. The row length for the main pair satisfies $\kappa_\tau\le d_\tau\le\kappa_\tau+x^{42}$, so \statementref{Lemma}{lem:c-derivative-sharpness} gives a nonzero number $u$ independent of the prime place and twist, satisfying $|\sigma(u)|\le e^{fmb/k}$. At any admissible prime place and twist it also selects a first-block residue point $a$ and monomial $\alpha$. Let $s$ be the first-block kernel function for this point and monomial. Take its character $\chi_0$ to be the quotient of the higher-rank character of the main pair by the higher-rank character after twisting by $q_2$. At the identity adelic point the character takes value $1$, so Taylor expansion gives
+\[
+ [X^\alpha]\mathcal J(D_a)=J\,s(1)/\prod_i\alpha_i!,
+ \qquad J=(\pi_M s_{\rm jet})^{\sum_\tau d_\tau},
+\]
+where $s_{\rm jet}$ is the Taylor expansion's integral normalization factor and $D_a$ is the indicator datum at the residue point $a$. The finite-place lower bound in the lemma can therefore be written as
+\[
+ \ell^{-\mu_\ell}\le |\iota(c\,s(1))|_\ell,\qquad
+ c=V^{12}u^{-1}
+       \frac{\prod_\tau d_\tau!}{\prod_i\alpha_i!}\,J.
+\]
+Put $c_0=uA_2^0 L$. The conjugate absolute value bounds on the three factors give the required $\exp(fmb/k+3x^{34})$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L732}{Common derivative scaling and the choice of flat blocks}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L381}{Finite-place lower bound for a nonzero derivative coefficient}.}
+
+Apply \statementref{Lemma}{lem:c-test-character-average} to $s$ and choose the translation $z_0$ and tame character $\psi$. Write $A$ for the resulting normalized twisted class average. Then $|\iota(A)|_\ell\ge|\iota(s(1))|_\ell$. \statementref{Lemma}{lem:c-test-geometric-mean} factors $\psi$ as $\psi=\psi_3\psi_1$ with $W=A_3(\psi_3)A_1(\psi_1)$ satisfying $|\iota(W)|_\ell\ge|\iota(L)|_\ell$. Choose $\chi_0/\psi$ as the first-block character. Its kernel is then $\psi(g)s(g)$ and its product with the last three block characters is the main-pair character. \statementref{Lemma}{lem:c-test-seesaw-factorization} constructs the desired test form $\Xi$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L645}{Transformation of the kernel under a change of character}.}
+
+Write $T=\prod_\tau d_\tau!/\prod_i\alpha_i!$ and let $A_2^\vartheta$ be the integral algebraic part of the second block after twisting. Take the class sum over $g z_0$ of the four-block pairing formula. Translation invariance of the lift of the constant function by the main kernel gives
+\[
+ \left\langle\Xi,\sum_{c'\in H}K_P(c'^\circ z_0)\right\rangle
+ =\frac{T\,W A_2^\vartheta A}{h_1^2V^{2z-12}}.
+\]
+The normalized lift of the main pair is this kernel class sum multiplied by $V^{2z}J$. Since $A_2^\vartheta=A_2^0\rho_2$, we have
+\[
+ \frac{h_1^2\langle\Xi,\phi_\vartheta\rangle}{\rho_2}
+ =V^{12}JTWA_2^0 A=u A_2^0 W\,c A .
+\]
+By $|\iota(h_1)|_\ell\le1$ the right-hand side has absolute value at most $|\iota(\langle\Xi,\phi_\vartheta\rangle/\rho_2)|_\ell$. Combining $|\iota(W)|_\ell\ge|\iota(L)|_\ell$ and $|\iota(A)|_\ell\ge|\iota(s(1))|_\ell$ with the lower bound for the derivative value gives a lower bound $|\iota(c_0)|_\ell\ell^{-\mu_\ell}$ for the same absolute value. Combine the bounds and multiply back by $|\iota(\rho_2)|_\ell$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L790}{Exact scalar for the class sum and two absolute value comparisons}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{851}.}
+\begin{lemma}[Inverse Hecke value ratio for a main pair]
+\label{lem:c-main-pair-height}
+\emitthmsource
+Let $(\vartheta_\iota)_\iota$ be a regular $m$-tuple family of twists, and let $P=(\nu,z)$ be a main pair at step $j$. Then the family
+\[
+ \left(\operatorname{ratio}_{P}(\vartheta_\iota^j)^{-1}\right)_\iota
+\]
+has height at most $6B_0-\mathcal D$. Here $\operatorname{ratio}_{P}$ is the ratio of the absolute values of the twisted and untwisted critical $L$-values, each with Euler factors omitted as prescribed by its own level.
+\end{lemma}
+\begin{proof}
+Choose a flat critical pair of rank $4$ with finite tame part $\chi_M$. The pair is ramified because $\chi_M$ is nontrivial at a selected place. Let $\rho_\iota$ be its positive real Hecke value ratio under $\vartheta_\iota^j$, let $\phi_\iota$ be the normalized lift for the same twist of the main pair, and retain $\phi_1$ for the trivially twisted lift.
+
+\statementref{Lemma}{lem:c-test-pairing-lower} gives a nonzero number $c_0$ independent of $\iota$, with all conjugates of absolute value at most $\exp(fmb/k+3x^{34})\le e^{B_0}$. Keep the notation $\mu_p$ for the local prime sum. At $\iota$ choose a test form $\Xi$ such that $|\iota\langle\Xi,\phi_\iota\rangle|_p\ge |\iota(c_0\rho_\iota)|_p p^{-\mu_p}$. For the same twist choose a test form $\Xi'$ at the conjugate place $\bar\iota$. Conjugate the second formula and use $\overline{\rho_\iota}=\rho_\iota$, then multiply the two to obtain
+\[
+ |\iota M_\iota|_p\ge
+ |\iota(c_0\bar c_0\rho_\iota^2)|_p p^{-2\mu_p},
+ \qquad M_\iota=\langle\Xi,\phi_\iota\rangle
+                        \langle\phi_\iota,\Xi'\rangle .
+\]
+In particular, $M_\iota\ne0$, and both test forms are integral and orthogonal to the corresponding false lifts.
+
+Let $\pi_\iota$ be orthogonal projection onto the line $\mathbb C\phi_\iota$. The projection formula gives $\langle\pi_\iota\Xi,\pi_\iota\Xi'\rangle=M_\iota/\|\phi_\iota\|^2$. The algebraic-part formula for the main pair thus expresses the reciprocal Hecke value ratio as
+\[
+ (\operatorname{Nm} Q_{\vartheta_\iota})^{2z-1}
+ \underbrace{\|\phi_1\|^2}_{\text{Norm for the trivial twist}}\,
+ \langle\pi_\iota\Xi,\pi_\iota\Xi'\rangle\,
+ \rho_\iota^{-2}\,\frac{\rho_\iota^2}{M_\iota}.
+\]
+The initial level norm factor is a $p$-adic unit. For the next four factors, \statementref{Lemma}{lem:c-untwisted-main-pair} gives the first height budget $B_0-J_0$. The denominator condition of the regular family for the line projection gives the second budget $B_0$. The inverse ratio bound for a ramified pair gives the third budget $2x_1$. Use $c_0\bar c_0$ as a common multiplier for the fourth factor, with archimedean budget $2B_0$ and finite-place loss controlled by $2\mu_p\log p$. The derivative divisibility count gives $2\sum_{p\in T}\mu_p\log p\le S_0$ for every finite set $T$ of primes. Thus the fourth budget is $2B_0+S_0$. Add the four and use $x_1\le B_0$ and $\mathcal D=J_0-S_0$ to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L879}{Test forms at two places and four height budgets}.}
+\[
+ (B_0-J_0)+B_0+2x_1+(2B_0+S_0)
+ \le6B_0-\mathcal D .
+\]
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/HeckeValues/TwistedValueHeights.lean}{1057}.}
+\begin{lemma}[Height of the inverse ratio for the single-step Hecke value product]
+\label{lem:c-hecke-product-height}
+\emitthmsource
+Let $(\vartheta_\iota)_\iota$ be a regular family. For the three critical pairs $(\nu_i,z_i)$ at step $j$, write $s_i\in\{1,-1\}$ for their twist signs and let $S_\vartheta$ be the union of the selected finite places and those in the twist modulus. Let $\mathrm{Nm}(w)$ be the norm of $w$ and define
+\[
+ \mathcal E_j(\vartheta)=\prod_i
+ \left(\prod_{w\in S_\vartheta}\operatorname{Nm}(w)^{z_i^2}
+       \prod_{z=1}^{z_i}|L^{S_\vartheta}(z,(\nu_i\vartheta^{s_i})^{-1})|^2\right),
+ \qquad \rho_\vartheta=\frac{\mathcal E_j(\vartheta)}{\mathcal E_j(1)}.
+\]
+Then the family $(\rho_{\vartheta_\iota^j}^{-1})_\iota$ has height at most
+\[
+ 10mx_1+k(6B_0-\mathcal D).
+\]
+\end{lemma}
+\begin{proof}
+Expand the Hecke value product using the three critical pairs in the single-step exchange. For critical pair $i$, let $z_i$ be its critical upper bound and $s_i\in\{1,-1\}$ its twist sign. Its factors correspond to $1\le z\le z_i$. In the twisted-to-untwisted ratio, the common level factors cancel, leaving a fixed integer power of the twisted level norm times the product of all squared ratios of absolute values of critical values. The three critical upper bounds are $7(m/2)+k/2$, $m$, and $m/2$. For the first critical pair, the $k/2$ terms corresponding to $7(m/2)<z\le7(m/2)+k/2$ are all main pairs, since $k$ is even. The three other ranges contain $7(m/2)+m+m/2=5m$ terms altogether, all ramified pairs, since $m$ is even and the tame part $\chi_M^{\pm j}$ at step $j$ is nontrivial at a selected place.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L969}{Classification of the critical factors and factorization of the product}.}
+
+Take reciprocals and substitute $\vartheta_\iota^j$ at each $\iota$. Coprimality of $\operatorname{Nm}Q_{\vartheta_\iota}$ and $p$ gives finite-place absolute value $1$ for the level norm power. \statementref{Lemma}{lem:c-main-pair-height} bounds each main pair's inverse ratio by budget $6B_0-\mathcal D$, and regularity bounds each ramified pair's contribution by budget $x_1$. Squaring each factor doubles its budget, so the total budget is
+\[
+ 2\bigl((k/2)(6B_0-\mathcal D)+5mx_1\bigr)
+ =k(6B_0-\mathcal D)+10mx_1 .
+\]
+\end{proof}
+
+\section{Gluing maps and three kernel exchanges}
+\label{sec:c-gluing}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{704}.}
+\begin{lemma}[Pointwise values of an individual product form in gluing]
+\label{lem:c-gluing-product-value}
+\emitthmsource
+Fix admissible data and step $j$ and decompose $V_j=V''\oplus V^\circ$ for the trivial twist. Let $i$ be a gluing choice (\emph{gluing choice}) and choose a representative $h^\circ_c$ of a principal congruence class $c$ for $V^\circ$. Take a finite point $h$ of $V''$ and let $h_i$ be the glued lattice basis matrix corresponding to $i$. Let $F_{i,c,h}$ be the form supported on the double coset of $(h,h^\circ_c)h_i$, generated by the Cartan product (\emph{Cartan product}) of the first factor $\phi_i''(h)$ and tuple component $\zeta_{i,c}$. Let $n_{\rm aut}$ be a common multiple of the stabilizer orders, let $A=fmb(\log b)^2$, and let $\|\zeta\|_\sigma^2=\sum_{i,c}\|\sigma(\zeta_{i,c})\|_{\rm W}^2$, with $\|\cdot\|_{\rm W}$ denoting the Weyl norm. Then for every finite adelic point $g$ and every $\sigma\in\operatorname{Aut}(\mathbb C)$ we have
+\[
+ \bigl\|\sigma(F_{i,c,h}(g))\bigr\|_{\rm W}^2
+ \le n_{\rm aut}^2 e^A\|\zeta\|_\sigma^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $u=(h,h^\circ_c)h_i$. Let $v$ be the Cartan product of $\phi_i''(h)$ and $\zeta_{i,c}$, and let $\Gamma$ be the rational unitary group of $V_j$, with finite level $K_j$ and level character $\chi$ for the trivial twist. If $g$ lies in the specified double coset, the $\gamma\in\Gamma$ satisfying $u^{-1}\gamma g\in K_j$ form one left orbit of $\Gamma\cap u K_j u^{-1}$, with $|\Gamma\cap uK_j u^{-1}|$ elements. The supported form at $g$ is then the sum of the corresponding $\chi(u^{-1}\gamma g)\,\rho(\gamma^{-1})v$, with $\rho$ the Weyl representation. Its value is zero outside the double coset. Since $\chi$ takes root-of-unity values and the rational unitary action preserves the Weyl norm under each complex automorphism $\sigma\in\operatorname{Aut}(\mathbb C)$, the termwise triangle inequality gives
+\[
+ \|\sigma(F_{i,c,h}(g))\|_{\rm W}
+ \le |\Gamma\cap uK_j u^{-1}|\,\|\sigma(v)\|_{\rm W}
+ \le n_{\rm aut}\,\|\sigma(v)\|_{\rm W}.
+\]
+The last step uses that $K_j$ is a subgroup of the standard integral level and $\operatorname{rk}(V_j)\le2n_m$, so the stabilizer order divides the chosen $n_{\rm aut}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/PAdicGauge.lean\#L280}{Norm of a form supported on one double coset}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftChains.lean\#L548}{Divisibility of the stabilizer order}.}
+
+In this decomposition each Young diagram meets the column height bound for its block. The Cartan product commutes with $\sigma$, and its Weyl norm is the tensor product norm of the two factors. More precisely, the mixed Cartan embedding is isometric in the Weyl metric and sends the product to the pure tensor of the two factors in the enlarged alphabets. The alphabet coordinate embeddings are isometric as well, so
+\[
+ \|\sigma(v)\|_{\rm W}^2
+ =\|\sigma(\phi_i''(h))\|_{\rm W}^2
+  \,\|\sigma(\zeta_{i,c})\|_{\rm W}^2.
+\]
+For the trivial twist, the squared norm of the uniformly normalized first factor is at most $e^A$, and that of the other factor is a nonnegative term of $\|\zeta\|_\sigma^2$. Multiply the two bounds to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L136}{Column height bounds for the two weights}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GLn/Dual.lean\#L781}{Cartan product and field embeddings}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/GLn/Dual.lean\#L911}{Weyl norm of the Cartan product}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/FirstFactors.lean\#L657}{Uniform normalization of the first factor}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{644}.}
+\begin{lemma}[Denominator and class number budgets for gluing]
+\label{lem:c-gluing-norm-budget}
+\emitthmsource
+Fix admissible data and the trivial twist at step $j$. Let $\lambda$ be the exponent used to clear denominators by $M^\lambda$ before gluing, $J$ the number of pairs of gluing choices and principal congruence classes for $V^\circ$, and $n_{\rm aut}$ a common multiple of the stabilizer orders. Let $A=fmb(\log b)^2$. Then
+\[
+ M^{2\lambda} e^b (J e^b n_{\rm aut})^2\le e^A.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $b_0=xb/x_1$, $\Delta=2r_0^8$, $s_+=r_0+9m+1$, and $s_\flat=6m+1$. The last three denote the weight difference, rank of $V''$, and rank of the auxiliary unitary space used to select rows. The Weyl weights give at most $b+b_0+(m+1)\Delta$ counted columns of positive weight at each archimedean place and at most $\Delta$ columns of negative weight at each height, with $\operatorname{rk}(V^\circ)\le t=5r_0$. For the denominator exponent each positive column can contribute at most $3m$ powers of $M$, the number of divided directions. For the negative weight one counts up to $t$ directions per column, giving\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluedForms.lean\#L450}{Exponent for clearing denominators}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/LineCoordinates.lean\#L396}{Number of columns of positive weight}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L574}{Number of columns of negative weight and ranks}.}
+\[
+ \lambda\le f\bigl(3m[b+b_0+(m+1)\Delta]+t^2\Delta\bigr).
+\]
+
+Let $\varpi$ generate the chosen level ideal. Then $M=\varpi\overline\varpi$, so $(M^2)\subseteq(\varpi^2)$. By $[E:\mathbb Q]=2f$ we have $|\mathcal O_E/(\varpi^2)|\le M^{4f}$. Each gluing choice consists of a $3m\times s_+$ matrix over this residue ring, a principal congruence class of the auxiliary unitary space, and at most $\Delta/2$ row selection lists at each archimedean place, each choosing $2m$ ordered indices from $s_\flat$ rows. The other component of the pair is a principal congruence class of $V^\circ$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ExchangeData.lean\#L191}{Row selections and auxiliary classes}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ExchangeData.lean\#L294}{Gluing choices}.}
+
+The unitary spaces above have rank at most $2n_m$, and their principal congruence levels contain the principal congruence level modulo the rational integer $M^2$. Thus each class number is at most $\exp(x^{29}(1+2\log M))$. The same bound holds throughout this rank range for any finite level containing the principal congruence level modulo $\varpi^2$. Combining $M\le b^{22}$, $b\ge x^{10^{12}}$, $x\ge2$, and $\ell=\log b\le\sqrt b$ gives
+\[
+ x^{29}(1+2\log M)
+ \le 45x^{29}\sqrt b\le b,
+\]
+where we used $45x^{29}\le x^{35}\le \sqrt b$. Consequently\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/Estimates.lean\#L248}{Class number bound for standard definite unitary groups}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L629}{Class number modulo $\varpi^2$}.}
+\[
+ J\le M^{4f(3m)s_+}e^{2b}s_\flat^{\,f(\Delta/2)(2m)} .
+\]
+
+For the numerical budget, admissibility of the scales gives $b_0\le b$, $\ell\ge10^6$, $m\le2x$, and $r_0\le3x^5$. It follows that $s_+\le22x^5$ and $s_\flat\le13x$, and also
+\[
+ (m+1)\Delta\le x^{57},\qquad
+ t^2\Delta\le x^{72},\qquad
+ \Delta s_\flat\le x^{59}.
+\]
+The three right-hand sides follow by increasing $3\cdot2\cdot3^8$, $15^2\cdot2\cdot3^8$, and $13\cdot2\cdot3^8$ respectively to $x^{16}$, $x^{22}$, and $x^{18}$. Each term is at most $b$, so $\lambda\le10fmb$. The logarithm of the matrix count satisfies $4f(3m)s_+\log M\le 5808fm x^5\ell\le fmb$ since $5808x^5\le x^{18}\le\sqrt b$. The logarithm of the count of row lists is at most $fm\Delta\log s_\flat\le fmb$. Thus if $J>0$ then $\log J\le2b+2fmb\le4fmb$. Also $\log n_{\rm aut}\le x^{32}\le b$, so taking the logarithm of the left-hand side of the desired inequality gives
+\[
+ 2\lambda\log M+b+2(\log J+b+\log n_{\rm aut})
+ \le (440\ell+13)fmb
+ \le A .
+\]
+When $J=0$ the original left-hand side is zero, which also gives the bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L102}{Scales and ranks of the admissible data}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Magnitudes.lean\#L508}{Size of the principal level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftChains.lean\#L603}{Logarithmic bound for the common multiple of stabilizer orders}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{751}.}
+\begin{lemma}[Norm of the gluing map for the trivial twist]
+\label{lem:c-gluing-norm}
+\emitthmsource
+Fix admissible data and step $j$. Let $G_1$ be the gluing map from tuples of forms on $V^\circ$ to forms on $V_j$ for the trivial twist, and let $A=fmb(\log b)^2$. For every tuple $\zeta$ and every $\sigma\in\operatorname{Aut}(\mathbb C)$ we have
+\[
+  \|G_1\zeta\|_\sigma^2\le e^{2A}\|\zeta\|_\sigma^2,
+\]
+Here the squared norm of a tuple is the sum of the squared Weyl norms of its conjugate components. The squared target norm sums the squared Weyl norms of the point values, weighted by the reciprocals of the double coset stabilizer orders.
+\end{lemma}
+
+\begin{proof}
+Let $J$ be the number of tuple components, $\lambda$ the denominator exponent, and $n_{\rm aut}$ the common multiple of the stabilizer orders. For each gluing choice $i$ let $\mathcal H_i$ be a set of double coset representatives for $V''$ at its finite level $K_i$. For a principal congruence class $c$ of $V^\circ$ let $F_{i,c,h}$ be the product form of \statementref{Lemma}{lem:c-gluing-product-value} and define
+\[
+ v(g)=\sum_{i,c}\sum_{h\in\mathcal H_i}F_{i,c,h}(g),
+ \qquad
+ (G_1\zeta)(g)=M^\lambda v(g).
+\]
+The double coset stabilizer of every $K_i$ is trivial, so the inner class sum is an ordinary sum with no stabilizer denominators.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L199}{Trivial stabilizers at the gluing level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L350}{Definition of the gluing map}.}
+
+Let $K_j$ be the finite level of the trivial twist on $V_j$ and $\mathcal H$ its double coset representatives. Since each $K_i$ and $K_j$ contains the principal congruence level modulo $\varpi^2$ in its respective space, and the ranks are at most $2n_m$, the class number bound in the proof of \statementref{Lemma}{lem:c-gluing-norm-budget} gives $|\mathcal H_i|\le e^b$ and $|\mathcal H|\le e^b$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L638}{Principal congruence level contained in the first-factor level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L744}{Principal congruence level contained in the target level}.}
+
+Fix $g$. The pointwise estimate bounds the Weyl norm of each $\sigma(F_{i,c,h}(g))$ by $n_{\rm aut} e^{A/2}\|\zeta\|_\sigma$, where $\|\zeta\|_\sigma$ is the nonnegative square root of the squared norm of the tuple. The triangle inequality gives
+\[
+ \|\sigma(v(g))\|_{\rm W}
+ \le J e^b n_{\rm aut} e^{A/2}\|\zeta\|_\sigma .
+\]
+Since $M$ is a positive integer, $\sigma(M^\lambda)=M^\lambda$. The weights in the target norm are reciprocals of positive integers and hence at most $1$. Squaring term by term and summing gives
+\[
+ \|G_1\zeta\|_\sigma^2
+ \le M^{2\lambda}e^b(J e^b n_{\rm aut})^2 e^A\|\zeta\|_\sigma^2
+ \le e^{2A}\|\zeta\|_\sigma^2,
+\]
+where the last step applies \statementref{Lemma}{lem:c-gluing-norm-budget}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/PAdicGauge.lean\#L666}{Class sum for the target norm}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{548}.}
+\begin{lemma}[Finite-place integrality of the gluing map]
+\label{lem:c-gluing-integrality}
+\emitthmsource
+Fix step $j$ and twist $\vartheta$, and let $Q_\vartheta$ be the twisting part of its finite modulus. Suppose the prime $p$ is coprime to $\operatorname N Q_\vartheta$ and $\iota\colon\mathbb C\hookrightarrow\mathbb C_p$ is a $p$-adic place. If a tuple $\zeta$ of forms on $V^\circ$ is integral at $\iota$, then $G_\vartheta\zeta$ is integral at $\iota$. Integrality of the tuple means the contravariant Weyl gauge of each conjugate component at the conjugate place is at most $1$.
+\end{lemma}
+
+\begin{proof}
+Retain $\lambda$ for the exponent that clears the gluing denominators. The selected principal level ideal is $(\varpi)$ and $M=\varpi\overline\varpi\in(\varpi)$. Fix the gluing choice $i$, small- and large-block class representatives $h^\circ_c$ and $h$, and corresponding glued basis matrix $h_i$. Let $v$ be the Cartan product of the first factor $\phi_{\vartheta,i}''(h)$ and $\zeta_{i,c}$, and put $u=(h,h^\circ_c)h_i$. The local bound for the glued lattice gives
+\[
+ \operatorname{gauge}_{\iota,u}(v)\le
+  |M|_p^{-\lambda}
+  \operatorname{gauge}_{\iota,h}(\phi_{\vartheta,i}''(h))
+  \operatorname{gauge}_{\bar\iota,h^\circ_c}(\overline{\zeta_{i,c}}).
+\]
+The second block acts by inverse transpose, so the right-hand side uses the conjugate prime place and conjugate vector. For the denominator bound, only the divided directions contribute $M$ for the large block. All directions can contribute for the small block. This columnwise bound is exactly the definition of $\lambda$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluedForms.lean\#L450}{Denominator exponent}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluedForms.lean\#L573}{Local gauge bound for the Cartan product}.}
+
+If $p$ is coprime to the twist modulus norm, the first factor is integral at $\iota$. The second factor is integral by the tuple hypothesis. Thus the right-hand side is at most $|M|_p^{-\lambda}$. Extending $v$ to a form supported on the double coset of $u$ uses left translation by rational points, right translation by the finite integral level, and multiplication by level character values. The translations preserve the gauges at the relevant points, and multiplication by the root-of-unity values does not increase them. The ultrametric inequality bounds the gauge of the supported form by $|M|_p^{-\lambda}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L329}{Integrality of the first factor}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/PAdicGauge.lean\#L252}{Local gauge of the supported form}.}
+
+The double coset stabilizers at the first-factor level are trivial, so all inner class sum weights are $1$. Multiplying each term by $M^\lambda$ multiplies its gauge by $|M|_p^\lambda$, clearing the denominator in the bound. Each term is therefore integral at each target point. By the ultrametric inequality $G_\vartheta\zeta$ is integral at $\iota$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L552}{Integrality of the gluing map}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ThreeExchanges.lean}{741}.}
+\begin{lemma}[Uniform normalization of the three kernel exchanges]
+\label{lem:c-third-exchange}
+\emitthmsource
+Fix step $j$. Let $\mathcal T_{\vartheta,i}(g)$ be the double class sum on the left of the third exchange and $F_i(g)$ the carrier period, with gluing choice $i$, $g\in \Ugrp(W_j)(\mathbb A)$, and $F_i$ independent of the twist. Let $\mathcal E_j(\vartheta)$ be the Hecke value product for the three exchanges. Then there are a constant $C$ independent of the twist and a scalar $c_\vartheta$ for each twist $\vartheta$ such that
+\[
+ |c_\vartheta|^2=\frac{C}{\mathcal E_j(\vartheta)},
+ \qquad
+ c_\vartheta\mathcal T_{\vartheta,i}(g)=F_i(g)
+ \quad\text{for all }i,g .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $S$ be the carrier space of signature difference $(2m,m)$ and $I_{3m}$ the standard positive definite space of rank $3m$, and write
+\[
+ W'=W_j\oplus(E^j)^-\oplus E^{3m-j}\oplus W^\flat ,
+ \qquad \operatorname{rk}W^\flat=6m+1 .
+\]
+The third exchange takes place among $I_{3m}\oplus W'$, $V''$, and $S$. Let $\alpha=\chi_M^j\vartheta$ be the weight-zero character, $\gamma_j$ the twist-independent carrier character, and $\upsilon$ the splitting character on the rank-one unitary group. The source and target characters are $\alpha\gamma_j$ and $\nu''_\vartheta$, satisfying $\alpha\gamma_j=\nu''_\vartheta\upsilon^m$. The tame part of the source character is given by $\alpha$ with modulus $\mathfrak m_\vartheta=(\varpi^2)Q_\vartheta$. Its weight at $\tau$ is $m-d_\tau$, where $d_\tau$ is the number of positive-block determinants in the exchange polynomial. This is the weight required by the exchange formula. The corresponding rank condition is
+\[
+ \operatorname{rk}V''=3m+2z_*,
+ \qquad z_*=7(m/2)+k/2,
+ \qquad 2m+2\le\operatorname{rk}(I_{3m}\oplus W').
+\]
+The exchange formula therefore gives a scalar $c_3(\vartheta)$ of squared modulus $C_3/L_*(\vartheta)$, where $L_*(\vartheta)$ is the normalized Hecke product for character $(\alpha\gamma_j)^{-1}\upsilon^{3m+z_*}$ and endpoint $z_*$. Let $S_\vartheta$ be the union of the selected and twisting places. For character $\nu$ and endpoint $z_0$, the normalized product is $\prod_{w\in S_\vartheta}(\mathrm Nw)^{z_0^2}\prod_{1\le z\le z_0}|L^{S_\vartheta}(z,\nu)|^2$, where the partial $L$-values omit the Euler factors at $S_\vartheta$ and the conjugate places.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L650}{Character relation for the third exchange}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L664}{Archimedean weight and tame part}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Exchange/ExplicitMatching.lean\#L788}{Exchange formula with a Hecke factor}.}
+
+For the matrix $\Lambda_i$ attached to gluing choice $i$, let $\psi_i$ be the additive trace character it defines. Put $\mathcal R=\mathcal O_E/(\varpi^2)$ and take the invariant datum
+\[
+ \Psi_i^{\rm inv}(X)
+   =\sum_{v\in\mathrm{GL}_{3m}(\mathcal R)}
+       \psi_i(X_0v) ,
+\]
+Here $X_0$ denotes reduction of the matrix from modulus $\mathfrak m_\vartheta$ to modulus $\varpi^2$. Right multiplication by an invertible matrix permutes the summation index $v$, so the datum is right invariant. Let $\chi$ be the residue character induced by $\alpha$ modulo $\mathfrak m_\vartheta$. For the matrix $(X',X'')$ on the left of the third exchange, use datum $\chi(\det X'')\Psi_i^{\rm inv}((X'')^{-1}X')$, with value zero when $X''$ is singular. The matching datum on the right takes value $\chi(\det Y')\Psi_i^{\rm inv}(Y'')$ on the block column $(Y';Y'')$. When $Y'$ is invertible, the right factor $-(Y')^{-1}$ is absorbed by right invariance of $\Psi_i^{\rm inv}$. This verifies the matching formula.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L607}{Trace datum invariance}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/OneExchange.lean\#L192}{Matching block matrix data}.}
+
+The matching polynomial for gluing choice $i$ uses only the variables of $W'$. It is a product of two factors, the product of minors from $W_j$ and the padding rows and columns, and the product of determinants on $W^\flat$ with rows chosen by $i$. The kernel on the right thus factors by $I_{3m}\oplus W'$. For a fixed $I_{3m}$-class representative $h'$, the exchange formula expresses the class sum over $V''$ multiplied by $c_3(\vartheta)$ as
+\[
+ \int_{[\Ugrp(S)]}
+  K_{S,I_{3m}}^{\vartheta}(x,h')\,
+  K_{S,W'}^{\rm inv}(x,g_i)\,dx ,
+\]
+Here $g_i=(g,1,1,h_i^\flat)$. The first kernel has character $(\upsilon^m,\alpha)$, datum $\chi\circ\det$, and polynomial $1$. The second has character $(\upsilon^m,\gamma_j)$, datum $\Psi_i^{\rm inv}$, and the polynomial given by the two factors above.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L686}{Block factorization of the matching polynomial}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/OneExchange.lean\#L268}{Factoring the kernel and interchanging class sums}.}
+
+Write $A_\vartheta(h')$ for the large-block coefficient of the double class sum. The first two exchanges give a scalar $c_{12}(\vartheta)$ satisfying
+\[
+ c_{12}(\vartheta)\sum_{h'}^{\rm cl} A_\vartheta(h')
+ K_{S,I_{3m}}^{\vartheta}(x,h')=\phi^\circ(x),
+\]
+where $|c_{12}(\vartheta)|^2=C_{12}/(L_+(\vartheta)L_-(\vartheta))$, with factors for character $\alpha^{-1}\upsilon^m$ at endpoint $m$ and character $\alpha\upsilon^{m/2}$ at endpoint $m/2$. The class sums are finite and the exchange integrals converge absolutely. Combining the first two exchanges with the third gives
+\[
+ c_3(\vartheta)c_{12}(\vartheta)\mathcal T_{\vartheta,i}(g)
+ =\int_{[\Ugrp(S)]}\phi^\circ(x)K_{S,W'}^{\rm inv}(x,g_i)\,dx.
+\]
+Expand $\Psi_i^{\rm inv}$. The carrier is invariant under the integral level. Right translation and invariance of the quotient measure give integral $F_i(g)$ for each translated term. Let $B=|\mathrm{GL}_{3m}(\mathcal R)|$. Then the integral is exactly $BF_i(g)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L284}{Carrier identity from the first two exchanges}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L722}{Carrier integral for the invariant trace datum}.}
+
+Finally, put $\nu_+=(\upsilon^{m})^{-1}\chi_M^j$ and $\nu_-=(\upsilon^{m/2})^{-1}\chi_M^{-j}$ and write $\nu_* =\mu_j^0\upsilon^{j+\lfloor(t-11m-1)/2\rfloor}$ for the third pair's character, where $\mu_j^0$ is the single-step character for the trivial twist. Substitution shows that the three characters are $(\nu_+\vartheta)^{-1}$, $(\nu_-\vartheta^{-1})^{-1}$, and $(\nu_*\vartheta)^{-1}$, respectively, so $L_+L_-L_*=\mathcal E_j(\vartheta)$. The Euler factors are omitted at the same sets of places and the powers of the place norms agree. Set $c_\vartheta=c_3(\vartheta)c_{12}(\vartheta)/B$ and $C=C_3C_{12}/B^2$ for the two formulas.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L528}{Character comparison for the three exchanges}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L181}{Product of the three Hecke value factors}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{1045}.}
+\begin{lemma}[The twist-independent period lift]
+\label{lem:c-period-adjoint}
+\emitthmsource
+Fix step $j$. Let $u_\vartheta$ be the single-step lift of good forms and $G_\vartheta$ the gluing map. Let $\Xi_{\vartheta,i}$ be the first-block theta pairing for gluing choice $i$ and $F_i$ the corresponding carrier period function. Choose the scalar $c_\vartheta$ from the three kernel exchanges so that $c_\vartheta\Xi_{\vartheta,i}=c''F_i$ for all $i$, with $c''\ne0$ the uniform first-block normalization constant. Write $P^\circ$ for the period lift (\emph{period lift}). Then for each twist $\vartheta$ we have
+\[
+ c_\vartheta G_\vartheta^*u_\vartheta=P^\circ,
+ \qquad P^\circ=c_1G_1^*u_1 .
+\]
+\end{lemma}
+
+\begin{proof}
+Write $[\Ugrp(W_j)]=\Ugrp(W_j)(\mathbb Q)\backslash \Ugrp(W_j)(\mathbb A)$ and use the quotient measure for the lift on it. For tuple $\zeta_i$ on the small block, in position $i$, let $K^\circ(\zeta_i;g)$ be its pairing with the theta kernel for $W_j,V^\circ$. The pairing is conjugate-linear in $\zeta_i$. Let $\lambda$ be the gluing denominator exponent, $w_i$ the glued lattice Weil scalar for gluing choice $i$, and $\mathcal J^1$ the finite group of invertible matrices modulo $\varpi^2$ reducing to the identity modulo $\varpi$. These data are independent of the twist. Let $\widetilde v$ denote the finite translation representatives for $v\in\mathcal J^1$.
+
+The theta integral formula for $u_\vartheta$ gives $\langle\zeta,G_\vartheta^*u_\vartheta y\rangle$ as the integral of $y$ against the conjugate of the normalized descent of the glued form. Expand this descent along the two blocks. Its conjugate at $g$ is
+\[
+ \sum_i M^\lambda w_i\sum_{v\in\mathcal J^1}
+ \Xi_{\vartheta,i}(g\widetilde v)
+ K^\circ(\zeta_i;g\widetilde v).
+\]
+The inner product is linear in its second variable. Each term in the expansion is a product of a first-block pairing and a small-block kernel pairing. The translations come from the two-block decomposition of the glued lattice.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L460}{The theta integral for the adjoint pairing}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L418}{Two-block expansion of the descended glued form}.}
+
+Since the good form $y$ is fixed by the principal congruence level, $y(g\widetilde v)=y(g)$. The integrand is rapidly decreasing and the quotient measure is right invariant. Thus every $v\in\mathcal J^1$ gives the same integral, so
+\[
+ \langle\zeta,G_\vartheta^*u_\vartheta y\rangle
+ =\sum_i M^\lambda w_i|\mathcal J^1|
+  \int_{[\Ugrp(W_j)]} y(g)\Xi_{\vartheta,i}(g)K^\circ(\zeta_i;g)\,dg .
+\]
+The first-block pairing gives $\Xi_{\vartheta,i}=c''\mathcal T_{\vartheta,i}$, where $\mathcal T_{\vartheta,i}$ is the left side of the exchange in \statementref{Lemma}{lem:c-third-exchange}. The lemma then gives $c_\vartheta\Xi_{\vartheta,i}=c''F_i$. Substituting in the preceding formula gives
+\[
+ \langle\zeta,c_\vartheta G_\vartheta^*u_\vartheta y\rangle
+ =\sum_i a_i
+  \int_{[\Ugrp(W_j)]} y(g)F_i(g)K^\circ(\zeta_i;g)\,dg,
+ \qquad a_i=M^\lambda w_i|\mathcal J^1|c''.
+\]
+The right-hand side is independent of the twist $\vartheta$ and is precisely $\langle\zeta,P^\circ y\rangle$. Nondegeneracy of the inner product gives the operator identity.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L397}{Invariance under the principal congruence level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L499}{Right translation in the integral}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L748}{Three kernel exchanges}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L317}{Normalization of the first-block pairing}.}
+\end{proof}
+
+\section{Peak estimates and injectivity of the period lift}
+\label{sec:c-period-injective}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{90}.}
+\begin{lemma}[Triangular factorization along an isotropic vector]
+\label{lem:c-peak-triangular-factor}
+\emitthmsource
+Let $J=\operatorname{diag}(s_i)$ and $s_i=\pm1$, and let $o$ be a total order on the coordinate set. Suppose $v^*Jv=0$ and $t\in\mathbb C$, and write $x_i=s_i|v_i|^2$ and $\lambda=2\operatorname{Re}t$. If all prefix quantities defined by the order $o$
+\[
+ p_i^-=1-\lambda\sum_{j<i}x_j,\qquad
+ p_i^+=1-\lambda\sum_{j\le i}x_j
+\]
+are positive, then $M=1-tv v^*J$ factors as $M=hb$, where $h^*Jh=J$ and $b$ is invertible upper triangular with diagonal entries $b_{ii}=\sqrt{p_i^+/p_i^-}$.
+\end{lemma}
+
+\begin{proof}
+Expanding with $v^*Jv=0$ gives $M^*JM=J-\lambda J v v^*J$. Set $r_i=(p_i^-p_i^+)^{-1/2}$ and $\beta_i=s_i\bar v_i r_i$ and construct the upper triangular matrix $c$ as follows.
+\[
+ c_{ji}=
+ \begin{cases}
+        \lambda v_j\beta_i,&j<i,\\
+        r_i p_i^-,&j=i,\\
+        0,&j>i.
+ \end{cases}
+\]
+Its diagonal entries are positive, so it is invertible. For each column $i$, component $i$ of $v^*Jc$ is $(\lambda\sum_{j<i}x_j+p_i^-)\beta_i=\beta_i$. Thus
+\[
+       (Mc)^*J(Mc)=c^*J(c-\lambda v\beta),
+\]
+Here $v\beta$ denotes the outer product of a column and a row. Since $c-\lambda v\beta$ is lower triangular with diagonal $r_i(p_i^--\lambda x_i)=r_i p_i^+$, $c^*J(c-\lambda v\beta)$ is both lower triangular and Hermitian and is therefore diagonal. Its diagonal entry $i$ is $(r_i p_i^-)s_i(r_i p_i^+)=s_i$. Hence $h=Mc$ preserves $J$. Take $b=c^{-1}$, which has diagonal entries $(r_i p_i^-)^{-1}=\sqrt{p_i^+/p_i^-}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L76}{Gram matrix of the rank-one transformation}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L94}{Explicit triangular factorization}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{244}.}
+\begin{lemma}[The weight of the triangular factor]
+\label{lem:c-peak-triangular-weight}
+\emitthmsource
+Suppose $J=\operatorname{diag}(s_i)$, the order places positive signs first, and $v^*Jv=0$. Let $u$ be an integral weight such that each negative-sign entry exceeds each positive-sign entry by at least $1$, and $|u_i|\le B$ ($B\ge2$). If real numbers $y>1$ and $0<\eta\le1/2$ and complex number $t$ satisfy $1-\operatorname{Re}t\,\|v\|^2=y-\eta$, then there is a factorization $1-tv v^*J=hb$ with $h$ preserving $J$ and $b$ invertible upper triangular, and
+\[
+           |b^u|=\left|\prod_i b_{ii}^{u_i}\right|
+                      \le \frac{e^{2B\eta}}{\sqrt y}.
+\]
+\end{lemma}
+
+\begin{proof}
+Keep $x_i=s_i|v_i|^2$ and $\lambda=2\operatorname{Re}t$. Isotropy gives $\sum_i x_i=0$ and $\sum_{s_i=1}x_i=\|v\|^2/2$. With the positive signs first, the prefix sums are first nondecreasing and then nonincreasing, with values between $0$ and $\|v\|^2/2$. Thus every prefix quantity $1-\lambda\sum_{j\le i}x_j$ lies between $1$ and $y-\eta$, so all are positive. Apply \statementref{Lemma}{lem:c-peak-triangular-factor} to factor and put $L_i=\log(p_i^+/p_i^-)$. Then
+\[
+ \log|b^u|=\tfrac12\sum_i u_iL_i,\qquad
+ \sum_i L_i=0,\qquad
+ \sum_{s_i=1}L_i=\log(y-\eta),
+\]
+The last two identities telescope over all coordinates and over the initial positive-sign block, respectively.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L224}{Sums of differences of prefix logarithms}.}
+
+When $\lambda\le0$, $L_i$ and $s_i$ have the same sign. Choose an integer $a$ so that the positive-sign weights are at most $a-1$ and the negative-sign weights are at least $a$. Multiply in each block by the corresponding $L_i$ and sum to obtain $\sum_i u_iL_i\le a\sum_i L_i-\sum_{s_i=1}L_i=-\log(y-\eta)$. When $\lambda>0$, $L_i$ and $s_i$ have opposite signs. Use $u_i\ge-B$ on the positive block and $u_i\le B$ on the negative block to obtain $\sum_i u_iL_i\le-2B\log(y-\eta)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L165}{Logarithmic sum from the weight gap}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L183}{Logarithmic sum from the absolute weight bound}.}
+
+By $y-\eta\ge1/2$ we have $y\le(y-\eta)(1+2\eta)$, so $\log y-\log(y-\eta)\le\log(1+2\eta)\le2\eta$. Hence $\log|b^u|\le\eta-\frac12\log y\le2B\eta-\frac12\log y$ when $\lambda\le0$ and $\log|b^u|\le2B\eta-B\log y\le2B\eta-\frac12\log y$ when $\lambda>0$, using $y>1$ in the latter case. Exponentiating proves the bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L250}{Uniform triangular weight bound}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{326}.}
+\begin{lemma}[Triangular weight bounds for complexified transvections on the upper half-plane]
+\label{lem:c-peak-triangular-upper}
+\emitthmsource
+Suppose $J=\operatorname{diag}(s_i)$, with positive signs first, and $v^*Jv=0$. Let $u$ be an integral weight whose negative-sign entries exceed its positive-sign entries by at least $1$ and whose entries have absolute value at most $A\ge2$. Choose a purely imaginary $a$ and suppose $\eta=\operatorname{Im}(a)\|v\|^2\in(0,1/2]$. Then for each $z$ in the upper half-plane,
+\[
+ 1-a(z-i)v v^*J=hb,\qquad h^*Jh=J,\qquad
+             |b^u|\le\frac{e^{2A\eta}}{\sqrt{1+\eta\operatorname{Im}z}},
+\]
+with $b$ invertible upper triangular.
+\end{lemma}
+
+\begin{proof}
+Put $t=a(z-i)$ and $y=1+\eta\operatorname{Im}z>1$. Since $a$ is purely imaginary, $\operatorname{Re}t=\operatorname{Im}(a)(1-\operatorname{Im}z)$ and hence $1-\operatorname{Re}t\,\|v\|^2=y-\eta$. Substitute into \statementref{Lemma}{lem:c-peak-triangular-weight}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L331}{Substitution of the upper half-plane parameter}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{345}.}
+\begin{lemma}[A cusp Schwarz bound for periodic holomorphic functions]
+\label{lem:c-peak-schwarz}
+\emitthmsource
+Let $f$ be holomorphic on the upper half-plane with period $1$ and suppose $|f|\le M$. If $f(z)\to0$ as $\operatorname{Im}z\to+\infty$, then
+\[
+                       |f(i)|\le M e^{-2\pi}.
+\]
+\end{lemma}
+
+\begin{proof}
+By periodicity, the substitution $q=e^{2\pi i z}$ descends $f$ to a holomorphic function $\varphi(q)$ on the punctured unit disk. Since $\varphi$ is bounded, the singularity at $q=0$ is removable and the cusp limit gives $\varphi(0)=0$. If $M=0$ the conclusion follows directly. If $M>0$, Schwarz's lemma applied to $\varphi/M$ gives $|\varphi(q)|\le M|q|$. Evaluate at $q=e^{-2\pi}$, corresponding to $z=i$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L347}{Schwarz's lemma in the cusp coordinate}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{421}.}
+\begin{lemma}[Bound at the identity for a holomorphic function invariant under a unitary transvection]
+\label{lem:c-peak-transvection-bound}
+\emitthmsource
+Let $F$ be holomorphic of weight $u$ on the product of the archimedean unitary groups and satisfy the uniform bound $|F|\le C$ ($C>0$). Place the positive signs first, with the negative-sign weights exceeding the positive-sign weights by at least $1$ at each place, and let $|u_{\tau,i}|\le A$ ($A\ge2$). At each archimedean place choose an isotropic vector $v_\tau$ for the standard Hermitian form $J$ and a purely imaginary $a_\tau$. Suppose
+\[
+ \eta_\tau=\operatorname{Im}(a_\tau)\,\|v_\tau\|^2>0,
+ \qquad A\sum_\tau\eta_\tau\le1 .
+\]
+If left translation by the unitary point $T=(1-a_\tau v_\tau v_\tau^*J)_\tau$ fixes $F$, then $|F(1)|\le C e^{2-2\pi}$.
+\end{lemma}
+
+\begin{proof}
+For $\operatorname{Im}z>0$ put $X_\tau(z)=1-a_\tau(z-i)v_\tau v_\tau^*J$. By $v_\tau^*Jv_\tau=0$ we have $(v_\tau v_\tau^*J)^2=0$, so $X(i)=1$ and $X(z+1)=TX(z)$. Since $\eta_\tau\le1/A\le1/2$, \statementref{Lemma}{lem:c-peak-triangular-upper} gives a factorization $X_\tau(z)=h_\tau(z)b_\tau(z)$ at each archimedean place, with $h_\tau(z)$ unitary and $b_\tau(z)$ invertible upper triangular, satisfying
+\[
+      |b_\tau(z)^{u_\tau}|
+      \le \frac{e^{2A\eta_\tau}}{\sqrt{1+\eta_\tau\operatorname{Im}z}} .
+\]
+Here $b^u$ denotes the weight character on the diagonal of the triangular matrix.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L319}{Addition law for rank-one transvections}.}
+
+The holomorphic weight transformation law gives the analytic extension $\widetilde F$ on products of unitary and upper triangular matrices. Since $X$ is affine in $z$ and factors as above at every point, $f(z)=\widetilde F(X(z))$ is holomorphic on the upper half-plane. The transformation law gives
+\[
+ f(z)=F(h(z))\prod_\tau b_\tau(z)^{u_\tau},\qquad f(i)=F(1).
+\]
+At $z+1$ we can use the unitary factor $Th(z)$ with the same triangular factor. Thus $F(Th(z))=F(h(z))$ implies $f(z+1)=f(z)$. Taking absolute values gives
+\[
+ |f(z)|\le C\exp\!\left(2A\sum_\tau\eta_\tau\right)
+       \prod_\tau(1+\eta_\tau\operatorname{Im}z)^{-1/2}
+       \le C e^2.
+\]
+Since each $\eta_\tau>0$, we have $f(z)\to0$ as $\operatorname{Im}z\to+\infty$. Apply \statementref{Lemma}{lem:c-peak-schwarz} to obtain $|F(1)|=|f(i)|\le C e^2 e^{-2\pi}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L433}{Archimedean holomorphic extension and periodicity}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean}{547}.}
+\begin{lemma}[First minimum of the translated lattice at a peak]
+\label{lem:c-peak-first-minimum}
+\emitthmsource
+Let $V$ be a nonzero-rank Hermitian space over the CM field $E$, with standard signs $s$ at the archimedean places and total order $o$ placing positive signs first. On $\Ugrp(V)(\mathbb A)$ let $F$ be left rational-invariant and right invariant under principal congruence level modulo $p\in\mathcal O_E$. Suppose every one of its archimedean translates is holomorphic of weight $u$. At each archimedean place suppose the negative-sign weight entries exceed the positive-sign entries by at least $1$ and all entries have absolute value at most $A\ge2$. Suppose also $\bar p=-p$ and $0<\operatorname{Im}\tau(p)\le A'$ for every chosen archimedean embedding $\tau$ ($A'\ge1$). If $g$ is a peak of $F$, meaning that $F$ is bounded and $|F(g)|>\tfrac12\sup|F|$, then the first minimum of the lattice translated at $g$ satisfies
+\[
+       \lambda_1(V_g)\ge(AA')^{-1/2}.
+\]
+The first minimum is truncated at $1$, and vector length is the square root of the sum of the squared standard coordinates over the archimedean places.
+\end{lemma}
+
+\begin{proof}
+Let $C=\sup|F|>0$. If the lower bound fails, $(AA')^{-1/2}\le1$ gives a nonzero vector $y\in E^{\operatorname{rk}V}$ in the translated lattice whose standard adelic coordinates $Y$ satisfy
+\[
+ \sum_\tau\|Y_\tau\|^2<(AA')^{-1},\qquad
+         Y_f\in\widehat{\mathcal O}_E^{\operatorname{rk}V}.
+\]
+Let $J_V$ be the matrix of the rational Hermitian form. At every finite place $y^*J_Vy$ is the standard pairing of integral coordinate vectors, hence it is an algebraic integer. Each archimedean conjugate has absolute value at most $\|Y_\tau\|^2<1$. The norm of an algebraic integer then forces $y^*J_Vy=0$, so the standard coordinate vectors $Y$ are isotropic at every place.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean\#L563}{Isotropy of a short lattice vector}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L574}{Choosing a short vector at the peak}.}
+
+In the standard coordinates for the translated lattice, let $J$ be the standard Hermitian form and put $T=1-pYY^*J$, taking the adelic image of $p$. Expanding with $(YY^*J)^2=0$ and $p+\bar p=0$ gives $T^*JT=J$. Denote by $(T_\infty,T_f)$ the unitary point given by $T$. Let $x$ take the original standard coordinates to the rational coordinates. Then $Y=(xg)^{-1}y$ and $J=(xg)^*J_V(xg)$, hence $(xg)T(xg)^{-1}=1-pyy^*J_V$, so $gTg^{-1}$ is rational in the original standard coordinates. Since $Y_f$ are integral, $T_f$ and its inverse are integral, and $T_f$ is the identity modulo $p$. Left and right invariance of $F$ give, for every real point $h$,\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L511}{Rationality of the unitary transvection}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L529}{Principal congruence level of the finite part}.}
+\[
+ \begin{aligned}
+ F(g(T_\infty h,1))
+ &=F\bigl((gTg^{-1})\,g(h,1)(1,T_f^{-1})\bigr)\\
+ &=F(g(h,1)).
+ \end{aligned}
+\]
+
+At every archimedean place put $\eta_\tau=\operatorname{Im}\tau(p)\|Y_\tau\|^2$. As $Y_\tau$ is obtained from a nonzero rational vector by embedding and an invertible matrix, $Y_\tau\ne0$. Thus $\eta_\tau>0$ and
+\[
+       A\sum_\tau\eta_\tau
+       \le AA'\sum_\tau\|Y_\tau\|^2<1 .
+\]
+Apply \statementref{Lemma}{lem:c-peak-transvection-bound} to $h\mapsto F(g(h,1))$ to obtain $|F(g)|\le C e^{2-2\pi}<C/2$, contradicting that $g$ is a peak.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L556}{First minimum at a peak}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{359}.}
+\begin{lemma}[Lattice bound at a peak of the carrier form]
+\label{lem:c-peak-carrier}
+\emitthmsource
+Let $S$ be the carrier space with signature difference $(2m,m)$ and $\phi^\circ$ the carrier form lifted from the constant $1$ on a negative definite space of rank $m$. Suppose $\phi^\circ$ is rapidly decreasing at every principal congruence level and holomorphic of weight $(0;3m)$ at the archimedean places in the order with positive signs first. Then there is a peak $g_1$ such that
+\[
+       \lambda_1(S_{g_1})\ge(5b\sqrt b)^{-1/2},
+\]
+where $b$ is the scale of the admissible data and the first minimum is truncated at $1$.
+\end{lemma}
+
+\begin{proof}
+The carrier form $\phi^\circ$ is nonzero and bounded by rapid decay. Write $C=\sup|\phi^\circ|>0$, and choose $g_1$ with $|\phi^\circ(g_1)|>C/2$. At each archimedean place the positive-sign weight is $0$ and the negative-sign weight $3m$. The gap is at least $1$ and every weight entry has absolute value at most $5b$. Take the modulus generator $p=\sqrt{-d}$. The carrier form is invariant under its principal congruence level. This generator is purely imaginary, with imaginary part $\sqrt d\le\sqrt b$ at each chosen archimedean place. Since $5b\ge2$ and $\sqrt b\ge1$, apply \statementref{Lemma}{lem:c-peak-first-minimum} with $A=5b$ and $A'=\sqrt b$ to get the lattice bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L403}{A peak of a nonzero rapidly decreasing form}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L366}{Modulus generator and weight of the carrier form}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/SiegelWeil/Reproduction.lean}{387}.}
+\begin{lemma}[Finite theta-kernel reproduction for holomorphic real convolution]
+\label{lem:c-theta-kernel-reproduction}
+\emitthmsource
+Let $S$ be a Hermitian space over the CM field $E$ and $T$ a standard positive definite space, with $\operatorname{rk}T>2\operatorname{rk}S$. Choose a principal modulus $\mathfrak m=(N)$ divisible by at least one prime and construct the theta kernel with a prescribed-weight character $c,b$ whose tame part is trivial. Suppose $u$ is dominant within each sign block with positive signs first, and its quotient of principal minors $m_u$ is integrable. Let $Q_0$ be a nonzero polynomial whose Fock vector is holomorphic of weight $u$ on the $S$ side for the specified character. Suppose that for each principal congruence class $p$ of $T$, the span of the Fock vectors of the finite family $Q_{p,i}$ contains every real translate under $T$ of the Fock vector of $Q_0$. Write $K_{p,i}(g)$ for the value at the class representative $p$ of $T$ of the kernel formed from the Fock vector of $Q_{p,i}$ and the indicator of the standard inclusion matrix modulo $\mathfrak m$. Then for each $x\in \Ugrp(S)(\mathbb A)$ there are coefficients $a_{p,i}(x)$ independent of $\psi$ such that every rapidly decreasing automorphic function $\psi$ at the principal congruence level satisfies
+\[
+ \int_{\Ugrp(S)_\infty}\psi(x(h,1))\,m_u(h)\,dh
+ =\sum_{p,i}a_{p,i}(x)\int_{[\Ugrp(S)]}\psi(g)K_{p,i}(g)\,dg .
+\]
+\end{lemma}
+
+\begin{proof}
+Regard the integrals on the right as linear functionals $L_{p,i}$, and write $\Lambda_x$ for the left side. Suppose $\psi$ lies in the common kernel of all $L_{p,i}$. Any adelic point of $T$ can be brought to the relevant class representative $p$ using a rational point, a level element, and a real point. Automorphy absorbs the rational point, and the level element fixes the standard inclusion indicator and its character. Thus the theta lift of $Q_0$ at any point is computed at $p$ with the corresponding real translate of the $Q_0$ vector. This translate lies in the span of $Q_{p,i}$, so the lift is a linear combination of $L_{p,i}(\psi)$ and vanishes identically.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L343}{Spanning in each class forces the lift to vanish everywhere}.}
+
+Let $v_0$ be the Fock vector of $Q_0$. Its real matrix coefficient $\langle v_0,\omega(h)v_0\rangle$ is holomorphic on the $S$ side and becomes its complex conjugate upon inversion. The principal minor formula for the holomorphic weight identifies it with $\|v_0\|^2 m_u(h)$. The finite datum is the indicator of the standard inclusion matrix, which has an integral left inverse, so the sharp finite-place condition for convolution with the squared kernel holds. The convolution vanishing criterion in the stable range $\operatorname{rk}T>2\operatorname{rk}S$ therefore passes vanishing of the lift of $Q_0$ to vanishing of convolution with $\langle v_0,\omega(h)v_0\rangle$. Dividing by $\|v_0\|^2>0$ gives $\Lambda_x(\psi)=0$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L295}{Vanishing of the lift implies vanishing of convolution with the minor quotient}.}
+
+Thus $\Lambda_x$ vanishes on the kernel of $\psi\mapsto(L_{p,i}(\psi))_{p,i}$ and factors through its image. Extend the linear functional to the finite-dimensional coordinate space to obtain the coefficients $a_{p,i}(x)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L401}{Kernel inclusion and linear representation}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{401}.}
+\begin{lemma}[A finite spanning set for the real carrier integral]
+\label{lem:c-kernel-carrier-span}
+\emitthmsource
+Let $S$ be the carrier space of signature difference $(2m,m)$, $\phi^\circ$ its carrier form (\emph{carrier form}), and $\widetilde W=W_j\oplus(E^j)^-\oplus E^{3m-j}$ the padding space. Write $P$ for the product of minors used on $S,\widetilde W$ in constructing the carrier period. Suppose $\phi^\circ$ is rapidly decreasing at all principal congruence levels and $m_1$ is the integrable quotient of principal minors of weight $(-\Delta';6m+1)$, where $\Delta'=r_0^8-(t+1)/2$. Then for any $g_1\in \Ugrp(S)(\mathbb A)$ and any finite matrix datum $\Psi$ modulo $\varpi^2$, there are coefficients $c_i$ independent of $g$ such that for each $g\in \Ugrp(W_j)(\mathbb A)$ we have
+\[
+ \sum_i c_iF_i(g)=
+ \int_{\Ugrp(S)_\infty}
+ \phi^\circ(g_1(h,1))\,\Theta_{\Psi,P}(g_1(h,1),g\oplus1)\,m_1(h)\,dh ,
+\]
+where $\Theta_{\Psi,P}$ is the theta kernel of $S,\widetilde W$, with the carrier unitary characters on both sides.
+\end{lemma}
+
+\begin{proof}
+Let $W^\flat$ be the standard positive definite space of rank $6m+1>2\operatorname{rk}S=6m$. Choose the standard coordinate embedding $e:E^{3m}\hookrightarrow W^\flat$ and let $\mathbf 1_e$ be the indicator of its matrix modulo $\varpi^2$. Index the principal congruence classes of $W^\flat$ and the row selections by $q$. At each archimedean place the polynomial $Q_q$ for index $q$ is the product of $\Delta'$ minors formed using the $2m$ selected rows from a short basis for the class. Write $\Theta_q$ for the $S,W^\flat$ kernel at the class representative with finite datum $\mathbf 1_e$, polynomial $Q_q$, and unitary character $(\upsilon^m,1)$.
+
+Apply \statementref{Lemma}{lem:c-theta-kernel-reproduction} to $S,W^\flat$, taking the highest weight polynomial to be the product over archimedean places of the $\Delta'$-th powers of the positive-sign column minors specified by $e$. This is nonzero and holomorphic of weight $(-\Delta';6m+1)$ on the $S$ side. At each class, real translations act by linear substitution on the row variables. Since the short basis is invertible, Cauchy--Binet expresses each translated minor as a linear combination of minors of the short basis rows. Expanding products places every translate in the span of $Q_q$. Thus for fixed $g_1$ there are coefficients $a_q$ such that every rapidly decreasing automorphic function $H$ of principal congruence level modulo $\varpi^2$ satisfies\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L201}{Span of the row minors}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L401}{Kernel reproduction formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L459}{Reproduction formula in this setting}.}
+\[
+ \int_{\Ugrp(S)_\infty} H(g_1(h,1))m_1(h)\,dh
+ =\sum_q a_q\int_{[\Ugrp(S)]}H(x)\Theta_q(x)\,dx .
+\]
+
+Take $H(x)=\phi^\circ(x)\Theta_{\Psi,P}(x,g\oplus1)$. Rapid decay of the carrier form and the level and growth bounds for the theta kernel ensure that $H$ satisfies the reproduction hypotheses. The product $\Theta_{\Psi,P}(x,g\oplus1)\Theta_q(x)$ is exactly the kernel of $S,\widetilde W\oplus W^\flat$, with Fock polynomial $P Q_q$ in the two separate blocks of row variables, and finite datum
+\[
+ (X_1,X_2)\longmapsto\Psi(X_1)\mathbf 1_e(X_2).
+\]
+On the matrix space modulo $\varpi^2$, the primitive additive character paired with the matrix trace gives the full family of Fourier characters $\psi_\Lambda$. Expand the finite datum as $\sum_\Lambda b_\Lambda\psi_\Lambda$. The kernel is linear in the datum. By definition, forming the kernel from $\psi_\Lambda$ on the composite space and integrating against $\phi^\circ$ gives the carrier period $F_{(\Lambda,q)}(g)$. Integrability of each term allows the finite Fourier sum inside the integral, which gives
+\[
+ \sum_q a_q\int_{[\Ugrp(S)]}H(x)\Theta_q(x)\,dx
+ =\sum_{q,\Lambda} a_q b_\Lambda F_{(\Lambda,q)}(g).
+\]
+The coefficients $a_q$ depend only on the fixed $g_1$, and $b_\Lambda$ depend only on the fixed finite datum. Take $c_{(\Lambda,q)}=a_qb_\Lambda$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L476}{Product kernel and Fourier expansion}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L491}{Rapid decay and interchanging the sum and integral}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean}{483}.}
+\begin{lemma}[Isolating Weil matrix coefficients by a finite character average]
+\label{lem:c-kernel-sparse-average}
+\emitthmsource
+Let $V,V'$ be two nonzero Hermitian spaces over the CM field $E$, $g,g'$ respective adelic unitary points, and $\mathfrak m$ a finite modulus. Translate $H=\operatorname{Hom}(V,V')$ by $(g,g')$, and let $L_H$ be the translated rational lattice with integral coordinates at the finite places. Let $\lambda_H$ be its first minimum truncated at $1$ (\emph{first minimum}). The Weil data fix a purely imaginary element $\jmath{}$ and a finite idèle $\alpha$. Suppose $c\in E^\times$ satisfies
+\[
+ c\alpha z\in\widehat{\mathcal O}_E
+ \qquad\text{for all }z\in\widehat{\mathcal O}_E
+                  \text{ and }z\equiv0\pmod{\mathfrak m},
+\]
+and $R>0$ satisfies $R|\tau(c)|\le (2\pi\operatorname{Im}\tau(\jmath{}))^{1/2}\lambda_H$ at every archimedean place $\tau$. Let $Q$ be a homogeneous Fock polynomial of degree $d$, $v$ its Fock vector, $N_0$ the number of complex variables, and $q>N_0$ an integer. Use unitary characters of the prescribed archimedean weights and finite residue characters on both sides. Let $\Omega$ be the corresponding real Weil action and put $c_Q(h,h')=\langle v,\Omega(h,h')v\rangle$. Then there is a finite matrix datum $\Psi$ modulo $\mathfrak m$ such that for every pair $h,h'$ of real unitary points,
+\[
+ \left|\Theta_{\Psi,Q}(g(h,1),g'(h',1))-c_Q(h,h')\right|
+ \le
+ \left(\frac{100(d+2q)}{R^2}\right)^q
+ (\|h\|_{\mathrm{op}}\|h'\|_{\mathrm{op}})^{3q}|c_Q(1,1)|.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $\psi_\Lambda$ be the character modulo $\mathfrak m$ given by pairing the primitive additive character with the matrix trace. Let $\mathbb E_\Lambda$ be the arithmetic mean over all indices and take
+\[
+ \Psi=\mathbb E_\Lambda\,
+          \overline{\Theta_{\psi_\Lambda,Q}(g,g')}\,\psi_\Lambda .
+\]
+The kernel is linear in its finite datum. Translation by the two real points takes $v$ to $w=\Omega(h,h')v$. The unit phases of the two unitary characters at the base point cancel against their conjugates. Thus the kernel for $\Psi$ is the average of the products of two theta values with archimedean data $w$ and $v$, the second conjugated. By the theta product identity for the Weil representation, the average is a series $\sum_y A(y)$ over rational vectors $y\in H(E)$. Its term $A(y)$ averages the inner products of Heisenberg translates of $y$ over $\Lambda$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L449}{Theta expression for the character average}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Construction/AdelicRepresentation.lean\#L1065}{Theta product identity}.}
+
+In the translated coordinates, let $x(y)$ be the adelic vector of $y$ and $\xi(y)$ its real Fock coordinates, with archimedean entries given by $x(y)_\tau$ times $(2\pi\operatorname{Im}\tau(\jmath{}))^{1/2}$. The finite vacuum vanishes unless $\alpha^{-1}x(y)_f$ is integral, so only integral vectors need be considered. Orthogonality of the primitive finite characters gives
+\[
+ \mathbb E_\Lambda\psi_\Lambda(\alpha^{-1}x(y)_f)=
+ \mathbf 1_{\alpha^{-1}x(y)_f\equiv0\ (\mathfrak m)} .
+\]
+Thus $A(y)$ contributes only when the finite coordinates are zero modulo $\mathfrak m$. There it equals $\langle v,\rho(\xi(y))w\rangle$ times a finite Weil phase of modulus $1$. The integrality condition on $c$ gives $cy\in L_H$ for each such $y$. In particular, when $y=0$ the finite phase is $1$ and the Heisenberg translation is the identity, so $A(0)=c_Q(h,h')$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L412}{Finite character orthogonality and lattice support}.}
+
+If $y\ne z$ and $cy,cz\in L_H$, then $c(y-z)$ is a nonzero lattice vector of archimedean length at least $\lambda_H$ by the first-minimum bound. Using the placewise upper bound for $R|\tau(c)|$ gives $\|\xi(y)-\xi(z)\|\ge R$. Taking $z=0$ also shows that all nonzero terms satisfy $\|\xi(y)\|\ge R$. The real dimension $2N_0$ satisfies $2N_0+2\le 2q$. Counting points in balls in this $R$-separated set gives the absolute convergence estimate\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L367}{Ball-counting bound for a sum of negative powers}.}
+\[
+ \sum_{\substack{cy\in L_H\\y\ne0}}
+       \|\xi(y)\|^{-2q}\le (5/R)^{2q}.
+\]
+
+Let $\sigma$ be the real linear unitary action of $(h,h')$ on $H$, and take the maximum of its archimedean operator norms. The bound for Heisenberg matrix coefficients of homogeneous Fock vectors gives, for each term on the support,
+\[
+ |A(y)|\le
+  \|\sigma\|^{N_0+2q}|c_Q(1,1)|
+        \bigl(4(d+N_0+q)\bigr)^q\|\xi(y)\|^{-2q}
+ \qquad (y\ne0).
+\]
+The action on $H$ is the composition of left action and inverse right action. A unitary matrix and its inverse have the same operator norm, so $1\le\|\sigma\|\le\|h\|_{\mathrm{op}}\|h'\|_{\mathrm{op}}$. Take $N_0\le q$, sum over $y\ne0$, and use $4^q(5/R)^{2q}=(100/R^2)^q$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L86}{Termwise Fock decay}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L300}{Norm on the Hom space}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L500}{Approximation by the character average}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{101}.}
+\begin{lemma}[Sparse theta-kernel bounds away from the cusps]
+\label{lem:c-kernel-sparse-specialization}
+\emitthmsource
+Fix admissible data. Let $V,V'$ be Hermitian spaces of ranks between $1$ and $t$ with unitary characters of prescribed archimedean weights and finite residue characters. Let $Q$ be a homogeneous Fock polynomial of degree $d_Q\le b\sqrt b$. If the adelic points $g,g'$ satisfy $\lambda_1(g)\lambda_1(g')\ge b^{-13}$, where $\lambda_1$ denotes the first minimum of a translated lattice truncated at $1$, then there is a finite datum $\Psi$ modulo $\varpi^2$ such that for all real unitary points $h,h'$,
+\[
+ \left|\Theta_{\Psi,Q}(g(h,1),g'(h',1))-c_Q(h,h')\right|
+ \le b^{-20n_*}
+ (\|h\|_{\mathrm{op}}\|h'\|_{\mathrm{op}})^{6n_*}
+ |c_Q(1,1)| .
+\]
+\end{lemma}
+
+\begin{proof}
+Take $c=q_1/\varpi^2$. For any integral finite adele $z\equiv0\pmod{\varpi^2}$, write it as $z=\varpi^2 z_0$ with $z_0$ integral, so $c\alpha z=(q_1\alpha)z_0$ is integral as well. By $\varpi\overline\varpi=M$, at each archimedean place we also have $|\tau(c)|=q_1/M$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/WeilData.lean\#L326}{Integrality of $q_1\alpha$}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L126}{Clearing the denominator}.}
+
+Let $N_E$ be the cyclotomic conductor of $E$, which belongs to the difference-product ideal, and set $A_E=6N_E(ft)^2t^2$. The first minimum of the translated $H=\operatorname{Hom}(V,V')$ satisfies
+\[
+ \lambda_H\ge
+ \frac{\lambda_1(g)\lambda_1(g')}{A_E}
+ \ge \frac{b^{-13}}{A_E}.
+\]
+Any nonzero integral homomorphism takes a short basis vector of the source to a nonzero target vector. When the two ranks are $n,n'$, a short source basis can be chosen with lengths at most $6N_E(fn)^2/\lambda_1(g)$, and the length estimate for matrix action introduces the factor $n'n$. Increasing the bound using $n,n'\le t$ gives the displayed inequality.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L197}{First minimum of the Hom lattice}.}
+
+The Weil data here satisfy $\operatorname{Im}\tau(\jmath{})=1/\sqrt d$, where $\mathbb Q(\sqrt{-d})$ is the underlying imaginary quadratic field. Admissibility gives $M\ge b^{20}$ and $A_E q_1d^{1/4}\le b\sqrt{2\pi}$, so
+\[
+ b^6|\tau(c)|=\frac{b^6q_1}{M}
+ \le q_1b^{-14}
+ \le \sqrt{2\pi\operatorname{Im}\tau(\jmath{})}
+        \frac{b^{-13}}{A_E}
+ \le \sqrt{2\pi\operatorname{Im}\tau(\jmath{})}\lambda_H ,
+\]
+We may therefore take $R=b^6$ in \statementref{Lemma}{lem:c-kernel-sparse-average}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/WeilData.lean\#L435}{Archimedean Weil parameter}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Magnitudes.lean\#L508}{Size of the level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L141}{Comparison of separation scales}.}
+
+Set $q=2n_*$, strictly greater than the number $fnn'\le ft^2$ of complex variables. By $d_Q\le b\sqrt b$ and the admissible-scale estimate $100(b\sqrt b+4n_*)\le b^2$, we have
+\[
+ \left(\frac{100(d_Q+2q)}{R^2}\right)^q
+ \le(b^{-10})^{2n_*}=b^{-20n_*},
+ \qquad 3q=6n_* .
+\]
+Substitute in the character-average approximation of \statementref{Lemma}{lem:c-kernel-sparse-average}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L157}{Dimension and scale of the error}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean}{798}.}
+\begin{lemma}[Weighted integrals of minor quotients with a large weight gap]
+\label{lem:c-kernel-weighted-integral}
+\emitthmsource
+Fix admissible data. Let $G_\infty$ be the product of the archimedean unitary groups, of common rank $n$ satisfying $1\le n\le t$. Let the total order $o$ place positive signs first. Suppose the weight $u,u'$ is dominant within each sign block and every negative-sign entry exceeds every positive-sign entry by at least $300n_*$, where $n_*=2ft^3$. Suppose the entries of $u$ have absolute values at most $5b$. Write $m_v$ for the quotient of principal minors of weight $v$ and $\|h\|_{\mathrm{op}}$ for the maximum of the placewise operator norms. Then
+\[
+  I_u:=\int_{G_\infty}|m_u(h)|^2\,dh>0,
+  \qquad
+  \int_{G_\infty}|m_{u'}(h)|\,\|h\|_{\mathrm{op}}^{6n_*}\,dh
+       \le b^{n_*}I_u,
+\]
+and the second integral converges absolutely.
+\end{lemma}
+
+\begin{proof}
+At each archimedean place $\tau$ put $\ell_\tau=2u_\tau+2\rho$, with component $a$ of $2\rho$ defined as the number of indices following $a$ minus the number preceding $a$ in the order $o$. Apply the same definition to $u'$ to get $\ell'_\tau$. By $2n^3\le n_*$ and $n\ge1$,
+\[
+ 500n^3+8n_*+n+1<300n_*.
+\]
+The weight gap and dominance within the blocks give the large-gap condition of $500n^3+8n_*$ for both sets of parameters. At one archimedean place the minor quotient is precisely a matrix coefficient of the corresponding holomorphic discrete series. Let $d_\tau>0$ be the formal degree of $\ell_\tau$. With the original Haar measure, the squared norm of the matrix coefficient at an archimedean place is $d_\tau^{-1}$, hence\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L686}{From weights to discrete series parameters}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L775}{Formal degree and squared integral}.}
+\[
+   I_u=\left(\prod_\tau d_\tau\right)^{-1}>0 .
+\]
+
+For $h=(h_\tau)_\tau$ choose an index $a$ such that $\|h_a\|=\|h\|_{\mathrm{op}}$. Use decay with exponent $10n^3+6n_*$ at $a$ and exponent $10n^3$ at all other places, both within the range of the large-gap bound. Write $T(g)=(2/\|g\|)^{10n^3}$. Then
+\[
+ \begin{aligned}
+ |m_{u'}(h)|\,\|h\|_{\mathrm{op}}^{6n_*}
+ &\le \bigl(2/\|h_a\|\bigr)^{6n_*}
+               \|h_a\|^{6n_*}\prod_\tau T(h_\tau)\\
+ &=2^{6n_*}\prod_\tau T(h_\tau).
+ \end{aligned}
+\]
+Since $10n^3>8n^2$, each factor $T$ is integrable, so the product on the right is integrable over $G_\infty$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/FlenstedJensen/SquareIntegrability.lean\#L297}{Decay of discrete series coefficients}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/FlenstedJensen/SquareIntegrability.lean\#L509}{Integrating negative powers on the unitary group}.}
+
+To compare the bound with $I_u$, put $L=2\lfloor5b\rfloor+n$. By $|2\rho_a|\le n$ all entries of $\ell_\tau$ have absolute value at most $L$. The product of the formal degree and the tail integral satisfies
+\[
+ \int d_\tau T(g)\,dg
+ \le 8\bigl(2000(n+L+1)^6\bigr)^{2n^2}\,2^{10n^3}
+ \le 2^{13t^3}b^{14t^2},
+\]
+where the last step uses $n\le t$, $L\le10b+t$, and the admissible-data bound $2000(n+L+1)^6\le b^7$. Rewrite $\prod_\tau T(h_\tau)=I_u\prod_\tau d_\tau T(h_\tau)$ and integrate to obtain the upper bound
+\[
+   I_u\,2^{6n_*}(2^{13t^3}b^{14t^2})^f
+   = I_u\,(2^{25})^{ft^3} b^{14ft^2}
+   \le I_u b^{2ft^3}=I_u b^{n_*},
+\]
+where the final step uses $b\ge2^{25}$ and $t\ge14$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/FlenstedJensen/SquareIntegrability.lean\#L945}{Bounding the formal degree times the tail integral}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L634}{Simplification using the scales}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L805}{Weighted integral bound}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{593}.}
+\begin{lemma}[Uniform approximation of the carrier period away from the cusps]
+\label{lem:c-kernel-choice-approx}
+\emitthmsource
+Fix admissible data and step $j$. Write $n_*=2ft^3$, where $f$ is the number of archimedean places, and $\|h\|_{\mathrm{op}}$ for the maximum of the archimedean operator norms. Then there is a bounded function $F_0$ on $\Ugrp(W_j)_\infty$ satisfying $F_0(1)\ne0$ and the following property. If the lattice obtained by translating $W_j$ by $g\in \Ugrp(W_j)(\mathbb A)$ has first minimum at least $(5b^{24})^{-1/2}$, there are complex numbers $c_i$ such that for every $h\in \Ugrp(W_j)_\infty$,
+\[
+ \left|\sum_i c_i F_i(g(h,1))-F_0(h)\right|
+ \le 2b^{-19n_*}|F_0(1)|\,\|h\|_{\mathrm{op}}^{6n_*}.
+\]
+\end{lemma}
+
+\begin{proof}
+Take the carrier space $S$ of signature difference $(2m,m)$, whose nonzero carrier form $\phi^\circ$ is holomorphic of weight $(0;3m)$ at the archimedean places and rapidly decreasing at all principal congruence levels. By \statementref{Lemma}{lem:c-peak-carrier} choose a peak $g_1$ so that the first minimum of the shifted $S$ is at least $(5b\sqrt b)^{-1/2}$, with all first minima here truncated at $1$. Put $\widetilde W=W_j\oplus(E^j)^-\oplus E^{3m-j}$ and write $\widetilde h=h\oplus1$ for $h\in \Ugrp(W_j)_\infty$. The two unit padding blocks are definite with standard lattices of first minimum at least $1$. Padding preserves the lower bound. Since the ranks of $S$ and $\widetilde W$ are both at most $t$, the product of the two shifted lattice minima satisfies
+\[
+ (5b\sqrt b)^{-1/2}(5b^{24})^{-1/2}
+ =\frac{1}{5b^{51/4}}\ge b^{-13},
+\]
+where the last step uses $b^{1/4}\ge5$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L366}{A peak of the carrier form}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L517}{Lower bound for the minima}.}
+
+Let $P$ be the fixed product of padding minors on $S,\widetilde W$ and $c_P(h',\widetilde h)$ the real Weil matrix coefficient of the corresponding Fock vector. The first unitary character has weight $m$ and the second has weight $m-d_\tau$ at archimedean place $\tau$, where $d_\tau$ is the number of columns in the positive-weight diagram for the descent pair. Since $P$ is nonzero, $c_P(1,1)\ne0$. The real Weil action is unitary, so Cauchy--Schwarz bounds $c_P$ uniformly. Let $m_i$ be the quotient of principal minors for the following carrier weight.
+\[
+ \begin{aligned}
+ u_1&=(-\Delta';6m+1), \\
+ u_{2,\tau}&=(\Delta';d_\tau+r_0+2m), \\
+ u_{3,\tau}&=(0;d_\tau+r_0+11m+1),
+ \end{aligned}
+\]
+In each pair the two entries give the positive- and negative-sign weights in order. Computation of the coefficient of the padding minors gives
+\[
+ c_P(h',1)=c_P(1,1)m_2(h')\overline{m_3(h')},
+\]
+The three sets of weights also satisfy $u_3=(0;3m)+u_1+u_2$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L194}{Boundedness and nonvanishing of the coefficient}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L284}{Factorization at the identity}.}
+
+Write $\phi_1(h')=\phi^\circ(g_1(h',1))$ and let
+\[
+ J=\int_{\Ugrp(S)_\infty}|m_3(h')|^2\,dh',
+ \qquad
+ F_0(h)=\int_{\Ugrp(S)_\infty}\phi_1(h')c_P(h',\widetilde h)m_1(h')\,dh'.
+\]
+Since $u_1,u_3$ are dominant in both sign blocks with a gap of at least $300n_*$, and $|u_3|\le 5b$, we have $J>0$ and
+\[
+ \int_{\Ugrp(S)_\infty}|m_1(h')|\,\|h'\|_{\mathrm{op}}^{6n_*}\,dh'
+ \le b^{n_*}J .
+\]
+Thus if a continuous function $A$ satisfies $|A(h')|\le C\|h'\|_{\mathrm{op}}^{6n_*}$, the estimate $|\phi_1(h')|\le2|\phi^\circ(g_1)|$ at the peak gives
+\[
+ \left|\int_{\Ugrp(S)_\infty}\phi_1(h')A(h')m_1(h')\,dh'\right|
+ \le2|\phi^\circ(g_1)|C b^{n_*}J .
+\]
+Taking $A=c_P(\cdot,\widetilde h)$ shows that $F_0$ is bounded. By the weight identities above, $\phi_1m_1m_2$ is holomorphic of weight $u_3$. Combining \statementref{Lemma}{lem:c-kernel-weighted-integral} on the weighted integral of the minor quotient with the reproduction formula gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L331}{Quantitative conditions on the weights}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L549}{Reproducing the value at the identity}.}
+\[
+ F_0(1)=c_P(1,1)\int_{\Ugrp(S)_\infty}\phi_1m_1m_2\overline{m_3}
+       =c_P(1,1)J\phi^\circ(g_1)\ne0.
+\]
+
+Fix a point $g$ satisfying the first-minimum bound. The polynomial $P$ is homogeneous of degree at most $b\sqrt b$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L221}{Homogeneity and degree of the padding polynomial}.} The lower bound for the product of first minima and the sparse kernel bound of \statementref{Lemma}{lem:c-kernel-sparse-specialization} allow us to choose a finite datum $\Psi$ modulo $\varpi^2$ such that for all $h',h$,
+\[
+ \begin{aligned}
+ &\left|\Theta_{\Psi,P}(g_1(h',1),(g\oplus1)(\widetilde h,1))
+       -c_P(h',\widetilde h)\right|\\
+ &\hspace{2em}\le b^{-20n_*}|c_P(1,1)|
+          \|h'\|_{\mathrm{op}}^{6n_*}\|h\|_{\mathrm{op}}^{6n_*},
+ \end{aligned}
+\]
+The unit padding here gives $\|\widetilde h\|_{\mathrm{op}}\le \|h\|_{\mathrm{op}}$. By \statementref{Lemma}{lem:c-kernel-carrier-span}, replacing $c_P$ in the integral over $F_0$ by this kernel produces a function of the form $\sum_i c_iF_i(g(h,1))$. Use the error term above as $A$ in the integral estimate and apply $|F_0(1)|=J|\phi^\circ(g_1)||c_P(1,1)|$ to bound the error by
+\[
+ 2b^{-20n_*}b^{n_*}|F_0(1)|\,\|h\|_{\mathrm{op}}^{6n_*}
+ =2b^{-19n_*}|F_0(1)|\,\|h\|_{\mathrm{op}}^{6n_*}.
+\]
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{768}.}
+\begin{lemma}[From vanishing of quotient kernel pairings to vanishing on the real group]
+\label{lem:c-kernel-real-vanishing}
+\emitthmsource
+Fix step $j$. Let $F$ be a good form on $W_j$, $F_i$ the carrier period, and $V^\circ$ the small-block positive definite space. Let $u^\circ$ be the weight on the $W_j$ side of the theta kernel of $W_j,V^\circ$, and $m_{u^\circ}$ the corresponding quotient of principal minors. Suppose $m_{u^\circ}$ is integrable and that for every $i$ and every small-block tuple $\zeta$,
+\[
+  \int_{[\Ugrp(W_j)]} F(x) F_i(x) K^\circ(\zeta;x)\,dx=0,
+\]
+Then for any family of complex numbers $c_i$ and each $g\in \Ugrp(W_j)(\mathbb A)$ we have
+\[
+  \int_{\Ugrp(W_j)_\infty}
+     F(g(h,1))\Bigl(\sum_i c_i F_i(g(h,1))\Bigr)m_{u^\circ}(h)\,dh=0.
+\]
+\end{lemma}
+
+\begin{proof}
+On the $W_j$ side place positive signs first. The kernel uses the indicator of the standard inclusion from $W_j$ into $V^\circ$ modulo $\varpi^2$ and the two unitary characters $\upsilon^{m-j}$ and $\upsilon^{m/2-j}$. The positive definite space $V^\circ$ has rank $t-9m-1$. By $t=5r_0$ and $100m+9<k\le r_0$,
+\[
+   \operatorname{rk}V^\circ=t-9m-1>2r_0=2\operatorname{rk}W_j .
+\]
+Substitute the small-block Weyl basis polynomials in the negative-sign variables of $W_j$, and denote the resulting family of Fock polynomials by $Q_\alpha$. The polynomial for the highest weight vector is nonzero. The descent pair parameters and highest weight formula make it holomorphic of weight $u^\circ$ on the $W_j$ side. The real definite group acts by linear substitutions of the Fock variables, so all its translates of the highest weight vector lie in the span of $Q_\alpha$. The weight $u^\circ$ is dominant within each sign block, so \statementref{Lemma}{lem:c-theta-kernel-reproduction} applies.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L789}{Parameter check and basis polynomials}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/SiegelWeil/Reproduction.lean\#L401}{Kernel reproduction formula}.}
+
+Index the classes of $V^\circ$ at principal congruence level modulo $\varpi^2$ by $c$. Let $K_{c,\alpha}$ be the kernel from the representative of class $c$ and the polynomial $Q_\alpha$. For fixed $g$ the reproduction formula gives constants $a_{c,\alpha}(g)$ such that every automorphic function $\psi$ rapidly decreasing at level $\varpi^2$ satisfies
+\[
+ \int_{\Ugrp(W_j)_\infty}\psi(g(h,1))m_{u^\circ}(h)\,dh
+ =\sum_{c,\alpha}a_{c,\alpha}(g)
+    \int_{[\Ugrp(W_j)]}\psi(x)K_{c,\alpha}(x)\,dx .
+\]
+Take the Weyl coordinate vector $v_\alpha$ for the basis polynomial $Q_\alpha$, and let the tuple $\zeta$ take value $\overline{v_\alpha}$ at class $c$ and zero elsewhere. By conjugate linearity of $K^\circ$ in the tuple, $K^\circ(\zeta;x)=K_{c,\alpha}(x)$. The hypothesis thus gives $\int F(x)F_i(x)K_{c,\alpha}(x)\,dx=0$ for all $i,c,\alpha$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L717}{Small-block pairing formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L813}{A tuple supported on one class}.}
+
+Each product $FF_i$ is rapidly decreasing at level $\varpi^2$ and is integrable on the quotient after multiplication by each $K_{c,\alpha}$. Take $\psi=F\sum_i c_iF_i$ and move the finite sum outside the integrals. Every term on the right of the reproduction formula vanishes, proving vanishing of the real group integral.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L999}{Level and decay of the product}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L832}{Interchanging the sum and integral, and integrability}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean}{966}.}
+\begin{lemma}[A circle-average bound at peaks]
+\label{lem:c-kernel-peak-mean}
+\emitthmsource
+Write $G_\infty$ for the product of the archimedean unitary groups and $\|h\|_{\mathrm{op}}$ for the maximum of their operator norms. Suppose the rank lies between $1$ and $t$ and the total order $o$ puts positive signs first. Let $u,u'$ be dominant in both sign blocks, with every negative-sign entry exceeding every positive-sign entry by at least $300n_*$, and every entry of $u$ of absolute value at most $5b$. Let $m_v$ be the quotient of principal minors of weight $v$ normalized by $m_v(1)=1$.
+
+Let $Y$ be a continuous bounded function on the adelic group, each archimedean translate holomorphic of weight $u$, and let $z$ be a peak, meaning $|Y(z)|>\frac12\sup|Y|$. Let $K_0$ be bounded on $G_\infty$, with $\delta\ge0$. Suppose that at every peak $x$ of $Y$ there is a holomorphic function $K_x$ of weight $u-u'$ satisfying
+\[
+ |K_x(h)-K_0(h)|\le\delta\|h\|_{\mathrm{op}}^{6n_*}
+ \quad\text{and}\quad
+ \int_{G_\infty}\overline{Y(x(h,1))}\,K_x(h)m_{u'}(h)\,dh=0 ,
+\]
+Then $|K_0(1)|\le(4b^{n_*}+1)\delta$.
+\end{lemma}
+
+\begin{proof}
+Write $I=\int_{G_\infty}|m_u(h)|^2\,dh$. The gap, rank, and absolute weight bound allow \statementref{Lemma}{lem:c-kernel-weighted-integral} on weighted integrals of minor quotients to give $I>0$ and the integrability estimate
+\[
+ \int_{G_\infty}\|h\|_{\mathrm{op}}^{6n_*}|m_{u'}(h)|\,dh
+ \le b^{n_*} I .
+\]
+
+With circle coordinate $\omega\in S^1$ let $r_\omega$ be $\operatorname{diag}(\omega^{o(a)})_a$ at every archimedean place and set $\chi_u(\omega)=\prod_{\tau,a}(\omega^{o(a)})^{u_{\tau,a}}$. The weight transformation law gives $Y(z(r_\omega,1))=\chi_u(\omega)Y(z)$, so $z(r_\omega,1)$ is also a peak. Let $K_\omega$ be the function for this peak and put
+\[
+ W_\omega(h)=\overline{\chi_u(\omega)^{-1}Y(z(r_\omega h,1))},
+\]
+Then $|W_\omega(h)|\le2|Y(z)|$ and $\int W_\omega K_\omega m_{u'}=0$. Write $K_1$ for the function for the original peak $z$. The sum of the two approximation errors bounds $|K_1-K_\omega|$, so for each $\omega\in S^1$,
+\[
+ \left|\int_{G_\infty}W_\omega(h)K_1(h)m_{u'}(h)\,dh\right|
+ \le 4\delta |Y(z)|b^{n_*}I .
+\]
+This integral converges absolutely since $K_0$ is bounded, $\|h\|_{\mathrm{op}}\ge1$, and $K_1$ and $K_\omega$ satisfy the growth estimate from the approximation.
+
+Give the circle $S^1$ Haar measure of total mass $1$. Because $W_\omega(h)K_1(h)m_{u'}(h)$ is continuous in $(\omega,h)$ and bounded by a constant times the integrable function just used, interchange the integrals. The circle average formula for weight $u$ gives
+\[
+ \int_{S^1}W_\omega(h)\,d\omega=\overline{Y(z)m_u(h)} .
+\]
+The product $K_1m_{u'}$ is holomorphic of weight $u$. Integrability and $m_{u'}(1)=1$ give the real group reproduction identity
+\[
+ \int_{G_\infty}K_1(h)m_{u'}(h)\overline{m_u(h)}\,dh=I K_1(1).
+\]
+This gives $I|Y(z)|\,|K_1(1)|\le4\delta|Y(z)|b^{n_*}I$. Cancel the positive factor $I|Y(z)|$ and use the error at the identity $|K_1(1)-K_0(1)|\le\delta$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/ModelFunction.lean\#L190}{Circle average formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/ModelFunction.lean\#L239}{Real group reproduction}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThetaKernelEstimates.lean\#L981}{Estimate at the peak}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/ProductsSpan.lean}{844}.}
+\begin{lemma}[Products of theta kernels separate good forms]
+\label{lem:c-kernel-separation}
+\emitthmsource
+Fix admissible data and step $j$. Let $F_i$ be the carrier period for gluing choice $i$, and $K^\circ(\zeta;g)$ the pairing of the small-block theta kernel of $W_j,V^\circ$ with the Weyl form $\zeta$ on $V^\circ$ at principal congruence level modulo $\varpi^2$. Let $F$ be a good form on $W_j$. Suppose that for every $i$ and every $\zeta$,
+\[
+ \int_{[\Ugrp(W_j)]}F(g)F_i(g)K^\circ(\zeta;g)\,dg=0,
+\]
+Then $F=0$.
+\end{lemma}
+
+\begin{proof}
+Suppose for a contradiction that $F\ne0$. Write $Y=\bar F$, let $u$ be its archimedean holomorphic weight and $u^\circ$ the weight of the small-block theta kernel on the $W_j$ side, and put $n_*=2ft^3$. First, every archimedean right translate of $Y$ is holomorphic of weight $u$. Indeed, the full principal-level lift $L$ for the trivial twist is injective, so $L^*L$ is positive definite and invertible on the finite-dimensional source. Thus $F$ is the normalized descent of some lift. The conjugate descent is a finite sum of theta kernels whose highest weight Fock polynomial is a product of joint harmonics. Equivariance gives holomorphy for every Weyl vector.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L735}{Archimedean holomorphy of the conjugate good form}.}
+
+The weights $u,u^\circ$ are dominant within each sign block, with every negative-block entry exceeding every positive-block entry by at least $300n_*$. The entries of $u$ have absolute values at most $5b$. Every archimedean translate of the carrier period $F_i$ is holomorphic of weight $u-u^\circ$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ExchangeData.lean\#L551}{Weight size, block dominance, and gap between the signs}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ThreeExchanges.lean\#L1013}{Holomorphic weight of the carrier period}.}
+
+By $\varpi\overline{\varpi}=M$, the function $Y$ is rapidly decreasing and invariant under principal congruence level modulo $p=M\sqrt{-d}$. Since $Y$ is nonzero and bounded, it has a peak, where its modulus is greater than half its supremum. Apply \statementref{Lemma}{lem:c-peak-first-minimum} at any peak $g$. If the weight gap is at least $1$, the absolute weight bound is $A\ge2$, and the imaginary part of the purely imaginary modulus generator belongs to $(0,A']$ under every selected complex embedding, then the first minimum at $g$ truncated at $1$ is at least $(AA')^{-1/2}$. By $M\le b^{22}$ and $\sqrt d\le b$, we can take $A=5b$ and $A'=b^{23}$. The first minimum is thus at least $(5b^{24})^{-1/2}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Holomorphic/PeaksAwayFromCusp.lean\#L556}{The first minimum at a peak}.}
+
+By \statementref{Lemma}{lem:c-kernel-choice-approx} there is a bounded function $F_0$ satisfying $F_0(1)\ne0$, and for each peak $g$ there is a linear combination $K_g(h)=\sum_i c_iF_i(g(h,1))$ such that
+\[
+ |K_g(h)-F_0(h)|\le \delta\,\|h\|_{\mathrm{op}}^{6n_*},
+ \qquad \delta=2b^{-19n_*}|F_0(1)|.
+\]
+The function $K_g$ is holomorphic of weight $u-u^\circ$. The assumed vanishing of the pairings and \statementref{Lemma}{lem:c-kernel-real-vanishing} give
+\[
+ \int_{\Ugrp(W_j)_\infty}
+  \overline{Y(g(h,1))}K_g(h)m_{u^\circ}(h)\,dh=0,
+\]
+where $m_{u^\circ}$ is the quotient of principal minors of the corresponding weight, integrable by the weight gap. Thus all conditions of \statementref{Lemma}{lem:c-kernel-peak-mean} hold and we get
+\[
+ |F_0(1)|\le(4b^{n_*}+1)\delta
+      =2(4b^{n_*}+1)b^{-19n_*}|F_0(1)|.
+\]
+Put $B=b^{n_*}>10$. Then $2(4B+1)<B^2\le B^{19}$, so the coefficient on the right is strictly less than $1$, contradicting $F_0(1)\ne0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{1067}.}
+\begin{lemma}[Injectivity of the period lift]
+\label{lem:c-period-injective}
+\emitthmsource
+For each step $j$ the common period lift $P^\circ$ is injective on the good forms of $W_j$.
+\end{lemma}
+
+\begin{proof}
+Suppose $P^\circ y=0$ and choose a gluing choice $i$. Put any $V^\circ$ form $\xi$ in component $i$ of a test tuple and set the other components to zero. The pairing expansion of the period lift and conjugate linearity of the small-block kernel pairing give
+\[
+ 0=a_i\int_{[\Ugrp(W_j)]} y(g)F_i(g)K^\circ(\xi;g)\,dg ,
+\]
+Here $a_i=M^\lambda w_i|\mathcal J^1|c''\ne0$ since $M>0$, the Weil scalar of the glued lattice is nonzero, $\mathcal J^1$ contains the identity, and $c''\ne0$. Thus the integrals vanish for every gluing choice $i$ and every $\xi$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L1003}{Nonzero coefficients for the gluing choices}.}
+
+Apply \statementref{Lemma}{lem:c-kernel-separation}. For the given principal congruence level and good-part projector, if the good form $y$ makes all these integrals vanish then $y=0$. Here $F_i$ is the lemma's carrier period and the finite datum for $K^\circ$ is the indicator of the standard inclusion modulo $\varpi^2$. These integrals give all the test pairings of the lemma. Hence $P^\circ$ has zero kernel.
+\end{proof}
+
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{1082}.}
+\begin{lemma}[Nonvanishing of the twist normalization coefficient]
+\label{lem:c-period-factor}
+\emitthmsource
+For each step $j$ and twist $\vartheta$, the coefficient $c_\vartheta$ normalizing the first-block theta pairing is nonzero.
+\end{lemma}
+
+\begin{proof}
+The dimension of the good forms at step $j$ is the common target dimension, which is positive. If $c_\vartheta=0$, the identity $c_\vartheta G_\vartheta^*u_\vartheta=P^\circ$ forces $P^\circ$ to vanish on this space, contrary to injectivity of $P^\circ$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Multiplicities/EqualMultiplicities.lean\#L406}{Equal dimensions of the spaces of good forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L307}{Positive target dimension}.}
+\end{proof}
+
+\section{Hyperbolic descent and orthogonality to false lifts}
+\label{sec:c-false-orthogonality}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{794}.}
+\begin{lemma}[Hyperplane sums vanish on the good part]
+\label{lem:c-false-hyperplane}
+\emitthmsource
+Fix step $j$ and twist $\vartheta$. Write $\eta_w$ for the residue character of the descent pair at the selected finite places $w$ and $\mathcal A_\vartheta$ for the action of the group algebra of their residue linear groups on the forms of $V_j$. For $v_w\in\mathbf k_w^{r_0}$ define the hyperplane sum (\emph{hyperplane sum})
+\[
+ H_w(v_w)=
+ \sum_{\substack{h\in\mathrm{GL}_{r_0}(\mathbf k_w)\\
+                  h=I+u v_w^{\mathsf t}\ \text{for some }u}}
+     \eta_w(\det h)^{-1}[h] .
+\]
+If $\Xi\in\operatorname{im}\mathcal A_\vartheta(e_0)$ and at least one selected place $w_0$ satisfies $v_{w_0}\ne0$, then
+\[
+ \mathcal A_\vartheta\left(\bigotimes_w H_w(v_w)\right)\Xi=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+The twist modulus avoids the support of $\varpi$, so the tame residue character of $\vartheta$ is trivial at the selected places. Thus $\eta_{w_0}$ is the $j$-th power of the principal-level residue character, and $\eta_{w_0}^{q_2}=1$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/ChosenPlaces.lean\#L191}{Order of the principal-level residue character}.}
+
+Expand $e_0$ as the sum of the central projectors for the good labels. Each is a tensor product of local label projectors. At $w_0$ the good label polynomial has no $q_2$-th root of unity as a root, whereas the element corresponding to the multiplicative character $\eta_{w_0}$ is a $q_2$-th root of unity in $\mathbf k_{w_0}^\times$. The local hyperplane sum theorem therefore applies, and $H_{w_0}(v_{w_0})$ times the label projector is zero. The tensor product thus gives zero against every good label projector, yielding\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/LocalGL/Green/LabelCharacters.lean\#L399}{The local hyperplane sum kills a label projector}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LabelsAndIndexTypes.lean\#L409}{Tensor products of good labels in the group algebra}.}
+\[
+ \left(\bigotimes_w H_w(v_w)\right)e_0=0.
+\]
+
+Since some $\Xi_0$ satisfies $\Xi=\mathcal A_\vartheta(e_0)\Xi_0$, multiplicativity of the group algebra action gives the claim.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{76}.}
+\begin{lemma}[From joint harmonics to polynomial data at the bottom of the tower]
+\label{lem:c-false-bottom-polynomials}
+\emitthmsource
+Suppose the descent pair of the nonzero-rank space $W$ and the standard positive definite space $I_n$ has matching archimedean parameters, and the normalized descent of $\Xi$ vanishes. Let $Y$ be the conjugate of the matrix coefficient of $\Xi$ at the highest weight vector and fix the finite block datum $\Psi_{\rm bl}$ of the descent pair. Then for every Fock polynomial $P$ the theta descent of $Y$ with datum $v_P\otimes\Psi_{\rm bl}$ vanishes. Use the descent pair's unitary character on the $W$ side. On the $I_n$ side one may use the trivial character.
+\end{lemma}
+
+\begin{proof}
+Let $v_{\rm harm}$ be the joint-harmonic vector for the highest weight vector of the descent pair, and $a_W,a_V$ the two descent characters. The normalized descent is the conjugate of the theta descent of $Y$ with datum $v_{\rm harm}\otimes\Psi_{\rm bl}$ times a fixed nonzero scalar. Hence the unnormalized descent also vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L86}{Normalized descent and joint-harmonic kernel}.}
+
+The matching parameters show that $v_{\rm harm}$ realizes the Weil edge from the conjugate $I_n$ type to the conjugate $W$ type. The conjugate of the highest weight matrix coefficient transforms under the conjugate Weyl representation at the archimedean places, so it belongs to the input type. For any polynomial $P$, the change-of-datum formula on this edge gives a continuous compactly supported function $\alpha_P$ on the real unitary group. The descent with $v_P\otimes\Psi_{\rm bl}$ is the real convolution of the descent with $v_{\rm harm}\otimes\Psi_{\rm bl}$ and $\alpha_P$, and therefore vanishes. Finally, replacing the unitary character $a_V$ on the $I_n$ side by the trivial character simply removes a nonzero determinant character factor at the evaluation point on the $W$ side. The function still vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Lift.lean\#L376}{Convolution formula for matching archimedean types}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L99}{Changing the archimedean datum and unitary characters}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/BottomOfTower.lean}{1457}.}
+\begin{lemma}[Extending the finite Weil data at the bottom of the tower]
+\label{lem:c-false-bottom-finite}
+\emitthmsource
+Let $Y$ be the conjugate of the matrix coefficient of the form $\Xi$ for the descent pair $(W,I_n)$ at any complex linear functional. Suppose the residue characters at the twisting places are nontrivial and the hyperplane sums at the selected places annihilate $\Xi$. If for each Fock polynomial $P$ the descent of $v_P$ with the finite block datum $\Psi_{\rm bl}$ vanishes, then the descent from $Y$ to $W$ vanishes for every datum with vacuum outside $\Sigma$. Here $\Sigma$ is the union of the selected and twisting places and their conjugates. Use the descent pair's unitary character for $W$ and the trivial character for $I_n$.
+\end{lemma}
+
+\begin{proof}
+Using the Schrödinger model at the level places and density of archimedean Fock polynomials, fix the evaluation points on $P$ and $W$ and show that any finite Schwartz--Bruhat datum pairs to zero in the descent of $Y$. It suffices to show this for the indicators of sufficiently small compact open congruence classes about each center $Z$, which span the locally constant compactly supported functions. The classes modulo $(i!)$ form a neighborhood basis as $i$ increases.
+
+At each level place write $Z$ in blocks, the specified square submatrix $Z'$ and the remaining rows $Z''$. First suppose each $Z'$ is invertible and $Z''(Z')^{-1}$ are all integral and reduce to zero in the residue fields at the selected places. Translate locally on the source side by $(Z')^{-1}$ to put $Z$ in the support of the translated block datum. This support is a single orbit under the finite level action and contains a sufficiently small congruence class of $Z$. Average that class indicator over its finite level orbit. Its pairing with $Y$ is unchanged, and the average is level invariant and supported on the translated block. Hence it is a scalar multiple of the translated block datum. The block descent vanishes, and moving the source translation from the datum to the evaluation point on $W$ introduces only a nonzero character factor. The congruence class therefore pairs to zero.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/BottomOfTower.lean\#L1226}{Finite-level averaging when the block ratios are integral}.}
+
+If some level place fails these conditions, there is an integral row vector $\lambda$ annihilating $Z$, with nonzero reduction on the specified square block and, at a twisting place, zero reduction on the remaining rows. For every invertible residue matrix of the form $s=1+u\lambda'$, where $\lambda'$ is the reduction of that specified component, lift $s$ to an integral row operation fixing $Z$. It preserves the congruence class of $Z$ and acts on the form by a summand of the hyperplane operator with its residue determinant character. Thus the pairing with $\Xi$ after this action equals the pairing of the class with $\Xi$. At a selected place the sum of the terms kills $\Xi$ by the hyperplane hypothesis. At a twisting place $\det(1+u\lambda')$ ranges uniformly over the nonzero residue values, so the nontrivial residue character sums to zero. In either case the order of the group times the original pairing is zero. The order is nonzero in the complex numbers, so the pairing vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/BottomOfTower.lean\#L1356}{Character cancellation at the twisting places}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/BottomOfTower.lean\#L1437}{Hyperplane sums when a block ratio fails integrality}.}
+
+Every congruence class therefore pairs to zero upon sufficient refinement. A Schwartz--Bruhat function is a finite linear combination of such indicators. Continuity extends vanishing from polynomial data to every admissible datum.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/BottomOfTower.lean\#L1466}{From local congruence classes to arbitrary data}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean}{261}.}
+\begin{lemma}[A bound for the theta kernel after removing the hyperbolic zero term]
+\label{lem:c-false-zero-term-bound}
+\emitthmsource
+Suppose $W'$ has splitting $W'=W\oplus\mathbb H$. Let $k$ be the chosen isotropic vector in the hyperbolic plane $\mathbb H$ and $V$ the standard positive definite space. Let the set $A$ of finite places be disjoint from its conjugate. Take datum $\phi=v_P\otimes\Psi\otimes\mathrm{vac}$, with Fock polynomial $P$ and Schwartz--Bruhat datum $\Psi$ on $A$. Let $\theta_0$ be the zero term given by the zero-coordinate slice of $\operatorname{Hom}(W',V)$ along $k$, and fix the unitary character $\chi$. Then there is a constant $C$ such that for every $g\in \Ugrp(W')(\mathbb A)$ there is a rational unitary point $\gamma$ satisfying, for every $h\in \Ugrp(V)(\mathbb A)$,
+\[
+  |(\theta-\theta_0)(\omega_\chi(\gamma g,h)\phi)|\le C.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $\mathcal D=\theta-\theta_0$ and write $H(g)$ for the reciprocal of the translated lattice's first minimum truncated at $1$. Averaging over the compact adelic additive quotient along the isotropic frame gives $\theta_0$. Thus for any Weil-translated datum, $\mathcal D$ is the average of the original theta value minus its Heisenberg translates. Heisenberg translation preserves the datum norm and is covariant under the Weil action. Moderate growth of theta gives a fixed integer $a\ge0$ and constant $C_a$ such that for any datum $f$,
+\[
+ |\mathcal D(\omega_\chi(\gamma g,h)f)|
+   \le C_a\|f\|\bigl(H(g)H_V(h)\bigr)^a .
+\]
+Rational translations disappear in theta, so the height term still depends only on $g$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L158}{The zero term as a translation average}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L289}{Uniform moderate growth bound}.}
+
+When $H(g)>2$ the translated lattice has a nonzero isotropic vector of length at most $2/H(g)$. By Witt's extension theorem there is a rational unitary transformation $\gamma$ taking it to $k$. On the $V$ side choose a short basis $(d_i)$ of bounded length in the translated lattice. Along translations by the isotropic subspace spanned by $d_i\langle k,\cdot\rangle$, the function $\mathcal D$ is invariant under rational translations and averages to zero modulo rational points. Invariance follows from that of theta and the slice formula for the zero term. The average vanishes because the short basis spans the target, so the translation average of theta is exactly the zero term that was subtracted.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L174}{Invariance under rational translations}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L194}{A short vector after Witt extension}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L220}{Zero average over an isotropic subspace}.}
+
+Apply these two properties and the length bounds for the short basis and $k$ to the decay bound for the Weil action on Schrödinger data. When $H(g)>2$, decay from the short vector cancels the factor $H(g)^a$ above. When $H(g)\le2$, use moderate growth directly. Taking the desired power of the height to be zero gives
+\[
+ |\mathcal D(\omega_\chi(\gamma g,h)\phi)|
+      \,\le\, C'_a\,\mathcal M_a(v_P)\,H_V(h)^{2a},
+\]
+Here $\mathcal M_a(v_P)$ is a moment of the fixed Fock vector, finite since $P$ is a polynomial. The translated lattice of the standard positive definite space has truncated first minimum $1$ for every $h$. Thus $H_V(h)=1$, and the constant is independent of $g,h$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L267}{Applying the decay bound and the target height}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean}{429}.}
+\begin{lemma}[A Hecke vanishing criterion in the hyperbolic tower]
+\label{lem:c-false-tower-step}
+\emitthmsource
+Let $W$ have rank $r$ and let $I_n$ be standard positive definite. Let $W_s$ be obtained by adjoining $s$ hyperbolic planes to $W$ using a splitting adapted to the standard integral lattice. Suppose $A$ and $\bar A$ are disjoint, let $\Sigma=A\cup\bar A$, and let $Y$ be automorphic on $I_n$. Suppose the descent of $Y$ along $W$ with character $a$ vanishes for every datum with vacuum outside $\Sigma$. Suppose $Y$ is spherical at a split place $w$ outside $\Sigma$, its Hecke polynomial at $X$ annihilates $Y$, and the base change of $a$ is unramified at $\bar w$. If $2r+2s+3<n$, $q=|\kappa(w)|$, and $|X|=q^{1-n+r/2}$, then the descent of $Y$ along $W_s$ with character $a\upsilon^s$ also vanishes for all data with the same vacuum condition.
+\end{lemma}
+
+\begin{proof}
+Induct on $s$. For $s=0$ the mixed Weil model's slice is the whole kernel and the claim is the initial condition. For the induction step it suffices to prove vanishing for data of the form $v_P\otimes\Psi\otimes\mathrm{vac}$, where $P$ is an archimedean Fock polynomial and $\Psi$ an arbitrary Schwartz--Bruhat function on $A$. The span of these data is dense, and descent is continuous. Split $W_s$ as the sum of $W_{s-1}$ and a hyperbolic plane. The zero-coordinate term of the mixed model is the theta integral one level below, zero by induction. For the other terms, reduction theory translates every point of $W_s$ by a rational group element so that the kernel difference $\theta-\theta_0$ is uniformly bounded. Since $I_n$ is definite, the quotient is compact and $Y$ is bounded. The integral gives a bounded descent function $F$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L267}{Kernel bound after removal of the zero term}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L325}{Boundedness from vanishing one level below}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L437}{Induction along the hyperbolic tower}.}
+
+Let the current rank be $m'=r+2s$, the rank difference $k'=n-m'$, and current character $\chi=a\upsilon^s$. Its base change remains unramified at $\bar w$, and the datum at $\bar w$ is the vacuum. Hecke transfer makes $F$ spherical at $w$ and transfers the equation to
+\[
+ \left(\prod_{i=0}^{k'-1}(1-q^i X_0)\right)P_{w,m'}(X')F=0,
+ \qquad
+ X_0=\chi_{m'}(\bar w)X,\qquad
+ X'=q^{k'}\frac{\chi_{m'}(\bar w)}{1_n(\bar w)}X ,
+\]
+Here $P_{w,m'}$ is the Hecke polynomial at this level. The normalized Frobenius values for the corresponding characters, including rank factors, are $\chi_{m'}(\bar w)$ and $1_n(\bar w)$ of moduli $q^{m'/2}$ and $q^{n/2}$. Thus $|X_0|=q^{m'/2}|X|$ and $|X'|=q^{k'/2}|X|$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L366}{Moduli of the Frobenius values}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L385}{The transferred Hecke equation}.}
+
+Let $D_0=2n-r-2$. Then $|X|=q^{-D_0/2}$. From $s\ge1$ we get $m'+2k'=2n-m'\le D_0$ and from $2r+2s+3<n$ we get $2(m'+1)+k'=n+m'+2\le D_0$, so $q^{k'}|X_0|\le1$ and $q^{m'+1}|X'|\le1$. The first inequality ensures that each factor in the product is nonzero, hence $P_{w,m'}(X')F=0$. The second forces the bounded spherical function $F$ to vanish. Indeed, expanding over residue-field subspaces, the zero-subspace term has coefficient $1$, while the sum of all coefficient moduli satisfies
+\[
+ \prod_{i=0}^{m'-1}(1+q^i|X'|)
+ \le \exp\!\left(|X'|\sum_{i=0}^{m'-1}q^i\right)
+ \le e^{1/2}<2 .
+\]
+The total absolute weight of the other terms is therefore strictly less than $1$. Bound the other translates by the supremum of $F$ and take the supremum over the group to obtain $\sup|F|=0$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L64}{A supremum bound for a small Hecke root}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/HyperbolicPlaneStep.lean\#L371}{Nonvanishing of the product}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{113}.}
+\begin{lemma}[Descent of false lifts vanishes along the hyperbolic tower]
+\label{lem:c-false-hyperbolic-tower}
+\emitthmsource
+Let $(W,I_n)$ be a descent pair, with $W$ of rank $r\ge1$, $I_n$ standard positive definite of rank $n$, and matching archimedean parameters. Let $A$ be the set of selected and twisting places, put $\Sigma=A\cup\bar A$, and suppose all residue characters at the twisting places are nontrivial. Suppose $\Xi$ is annihilated by the hyperplane operators at the selected places, normalized theta descent to $W$, and the Hecke polynomial of a split place $w$ outside the level evaluated at the lift root $X_w$. If $2r+2N+3<n$, then for every Weyl vector $\zeta$,
+\[
+     Y_\zeta=\overline{\operatorname{coeff}_\zeta(\Xi)}
+\]
+all theta descents along $W\oplus\mathbb H^N$ vanish, using unitary character $a_W\upsilon^N$ on the tower side and the trivial character on the $I_n$ side, with Weil data vacuum outside $\Sigma$.
+\end{lemma}
+
+\begin{proof}
+First take a highest weight vector $\zeta_0$ for the descent pair. Since normalized descent vanishes, \statementref{Lemma}{lem:c-false-bottom-polynomials} makes descent of $Y_{\zeta_0}$ zero for the fixed finite block datum and any Fock polynomial. By nontriviality of the residue characters at the twisting places and vanishing of hyperplane sums at the selected ones, \statementref{Lemma}{lem:c-false-bottom-finite} extends vanishing to every datum vacuum outside $\Sigma$. This verifies the initial condition of \statementref{Lemma}{lem:c-false-tower-step} on $W$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/BottomOfTower.lean\#L1466}{Hyperplane sums and descent at the bottom of the tower}.}
+
+Because $w$ lies outside $\Sigma$, the vector $\Xi$ is spherical at $w$, so $Y_{\zeta_0}$ has the same invariance. Taking the conjugate matrix coefficient is a conjugate-linear operation commuting with finite right translation. Thus the Hecke equation for $\Xi$ at $X_w$ becomes the equation for $Y_{\zeta_0}$ at $\overline{X_w}$. Let $q$ be the residue field size at $w$. By definition of the lift root,
+\[
+       |\overline{X_w}|=(q^{r/2}q^{n-r-1})^{-1}
+                         =q^{1-n+r/2}.
+\]
+The selected and twisting places are disjoint from their conjugates, and the base change of $a_W$ is unramified at $\bar w$. Applying the hyperbolic tower lemma to $Y_{\zeta_0}$ gives vanishing at the top.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L144}{Sphericity, the lift root, and the Hecke equation}.}
+
+Let $\rho$ be the conjugate Weyl representation on $I_n$. Invariance of the Weyl inner product gives $Y_{\rho(k)\zeta_0}(h)=Y_{\zeta_0}(h(k,1))$ for each archimedean unitary point $k$. Changing variables in the descent integral moves the real translation to the Weil datum and preserves the vacuum condition outside $\Sigma$. Thus the descents of these coefficients to the top of the tower also vanish. Regularity of the parameters makes $\rho(k)\zeta_0$ span the Weyl module. For each fixed datum and evaluation point at the top, descent is a linear functional of $\zeta$ and hence vanishes for all $\zeta$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean\#L362}{Spanning by translates of a highest weight vector}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L165}{From the highest weight vector to the full representation}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Weil/Periods/DescentVanishing.lean}{916}.}
+\begin{lemma}[Vanishing of hyperbolic descent forces the block periods to vanish]
+\label{lem:c-false-fourier-block-period}
+\emitthmsource
+Decompose the standard positive definite space $I_n$ as $I_N\oplus I_l$ and let $B$ be the block inclusion. Let $Y$ be a continuous left rational-invariant function on $\Ugrp(I_n)(\mathbb A)$, right invariant under the standard integral level supported at the set $T$ of finite places and their conjugates. Suppose the descent of $Y$ to the rank-$2N$ hyperbolic space $\mathbb H^N$ vanishes for every datum with vacuum at $T$ and their conjugates, using character $\upsilon^N$ on the hyperbolic side and the trivial character on the $I_n$ side. Then for each $h_1\in \Ugrp(I_N)(\mathbb A)$,
+\[
+       \int_{[\Ugrp(I_l)]}Y(B(h_1,h_2))\,dh_2=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $o_1$ be the standard frame of $I_N$, put $g_0=B(h_1,1)$, and write
+\[
+ x(g)=(g_0^{-1}g)^{-1}o_1,\qquad
+ I(g)=\int_{[\Ugrp(I_l)]}Y(B(h_1,h_2)g_0^{-1}g)\,dh_2 .
+\]
+The quotient $[\Ugrp(I_l)]$ is compact and $Y$ is bounded on $[\Ugrp(I_n)]$, so $I$ is continuous. Write $\omega(x)$ for the nonnegative squared modulus of the vacuum adapted to the hyperbolic slice. For each adelic matrix $u$, let $\psi_u(x)$ be the standard additive character paired with $u,x$, with the components at $T$ and their conjugates omitted and normalized by the idèle of the inverse difference-product ideal.
+
+Take the Fourier coefficient of the hyperbolic descent along the central unipotent group with frequency given by the Gram matrix of the standard frame. This frequency is nondegenerate and the stabilizer of the chosen frame orbit is exactly the second block $\Ugrp(I_l)$. For any $u$ use as test datum a Heisenberg translate of the vacuum along the adapted isotropic subspace, with translation zero at $T$ and the conjugate places. It gives $\psi_u(x)\omega(x)$ times a nonzero constant on the slice. Cancel the constant and integrate first over the rational quotient of the stabilizer to obtain
+\[
+ \int_{\Ugrp(I_l)(\mathbb A)\backslash \Ugrp(I_n)(\mathbb A)}
+           \psi_u(x(g))\omega(x(g))I(g)\,dg=0 .
+\]
+The integrals converge absolutely. Boundedness on the definite quotient and the growth bounds for the theta terms give integrability of the unfolded expression. Decomposing the measure along the stabilizer gives the formula.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L623}{Absolute convergence of the unfolding}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L643}{Characters and squared vacuum on the slice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L759}{Integrating over the second block first}.}
+
+At $\omega(x(g))\ne0$ the frame $x(g)$ has unitary representatives arbitrary at the archimedean places and integral at the finite places. On these representatives $I$ depends only on the frame's character values. Indeed, nondegeneracy of the additive pairing makes two frames with the same character values agree away from $T$ and their conjugates. At the other places the representative can be adjusted by the standard integral level without changing the period. Representatives of the same frame differ by the second block, which fixes the standard frame, and a change of variables leaves the period invariant. Compactness of the integral representative set lets $\bar I$ descend to a continuous function on the character image and extend to the compact product of circles containing that image.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L523}{Characters separate frame components}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L804}{Character fibers on the integral level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L839}{Extension of the continuous function}.}
+
+The coordinate character functions generate an algebra containing the constants, closed under conjugation, and separating points of the product of circles. Stone--Weierstrass gives uniform approximation of the extension by this algebra. Since the weighted function $\omega(x(g))I(g)$ is integrable, pass to the limit inside the integral to get
+\[
+ \int_{\Ugrp(I_l)(\mathbb A)\backslash \Ugrp(I_n)(\mathbb A)}
+              \omega(x(g))|I(g)|^2\,dg=0 .
+\]
+The integrand is continuous and nonnegative and the quotient Haar measure has full support, so it vanishes everywhere. At $g=g_0$, we have $x(g_0)=o_1$ and the vacuum weight is nonzero. Hence $I(g_0)=0$, the desired period.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L880}{Stone--Weierstrass approximation by characters}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L922}{The nonnegative integral and the standard frame}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{212}.}
+\begin{lemma}[Vanishing of periods of false lifts against small-block theta kernels]
+\label{lem:c-false-kernel-period}
+\emitthmsource
+Use the descent pair and conditions on false lifts from \statementref{Lemma}{lem:c-false-hyperbolic-tower}. Decompose $I_n$ orthogonally as $I_N\oplus I_l$ with $2r+2N+3<n$, and let $B(h_1,h_2)$ be the block inclusion. Take a Weyl vector $\zeta$, unitary character $b_2$, and points $g\in \Ugrp(W)(\mathbb A)$ and $h_1\in \Ugrp(I_N)(\mathbb A)$. Suppose the finite point $\gamma$ is supported on $A$ and the small-block kernel datum $\phi_2$ is vacuum outside $\Sigma$. Then
+\[
+ \int_{[\Ugrp(I_l)]} \overline{\Theta^{W,I_l}_{a_W,b_2}(\phi_2;g,h_2)}
+    \operatorname{coeff}_\zeta(\Xi)\bigl(B(h_1,h_2)(1,\gamma)\bigr)\,dh_2=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Put $Y=\overline{\operatorname{coeff}_\zeta(\Xi)}$ and $Y_1(h)=Y(h(1,\gamma))$. The hyperbolic tower lemma makes all admissible descents of $Y$ to $W\oplus\mathbb H^N$ vanish. The right translation $\gamma$ is the identity outside $\Sigma$, so moving it to the Weil datum preserves the vacuum condition. The same descents of $Y_1$ therefore vanish.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L75}{Descent and finite right translation}.}
+
+Choose a large-block datum $\phi_1$ vacuum outside $\Sigma$ such that $C_1=\Theta^{W,I_N}_{a_W,b_2^{-1}}(\phi_1;g,h_1)\ne0$. The Weil operator at $(g,h_1)$ takes the vacuum to a nonzero vector, which is nonzero at some purely archimedean vector. Translate by this vector in the Heisenberg action and pull the translation back through $(g,h_1)$. The theta value is the nonzero value just chosen. The pulled-back translation is still zero at all finite places, preserving the vacuum condition.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L194}{A nonzero auxiliary kernel at the given point}.}
+
+Let $\Phi=\phi_1\boxtimes\phi_2$ be the tensor datum for the target blocks and put $\theta(h)=\Theta^{W,I_n}_{a_W,1}(\Phi;g,h)$. By $b_2^{-1}b_2=1$ the second characters for the two blocks cancel. The function $Y_2=\theta Y_1$ is continuous, left rational-invariant, and right invariant under the standard integral level outside $\Sigma$. The vacuum data at those places make the kernel level invariant, $\Xi$ is fixed by that level, and the level elements commute with $\gamma$ by disjoint supports.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L251}{The level of the product function}.}
+
+Take an admissible kernel datum $\Phi'$ on $\mathbb H^N$ and tensor $\Phi'$ with $\Phi$ on the source side. The hyperbolic-space unitary characters $\upsilon^N$ and $a_W$ multiply to the character on $W\oplus\mathbb H^N$. The source-side kernel product formula identifies the descent of $Y_2$ to $\mathbb H^N$ with the top descent of $Y_1$ using these tensor data, hence it vanishes. Thus all descents of $Y_2$ to $\mathbb H^N$ vanish. The block period criterion for hyperbolic descent gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L275}{Product kernel on the source side}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Periods/DescentVanishing.lean\#L922}{From hyperbolic descent to a block period}.}
+\[
+ \int_{[\Ugrp(I_l)]}Y_2(B(h_1,h_2))\,dh_2=0 .
+\]
+
+At the block point, the target-side product formula gives $\theta(B(h_1,h_2))=C_1\Theta^{W,I_l}_{a_W,b_2}(\phi_2;g,h_2)$. Take the nonzero constant $C_1$ outside the integral and conjugate to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L297}{Target-side factorization and cancellation of the nonzero factor}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{311}.}
+\begin{lemma}[Vanishing of finite weighted periods for small-block Weyl pairings]
+\label{lem:c-false-class-period}
+\emitthmsource
+Use the descent pair and false lift conditions of \statementref{Lemma}{lem:c-false-hyperbolic-tower}, with $I_n=I_N\oplus I_l$ and $2r+2N+3<n$. Take $x\in \Ugrp(I_n)(\mathbb A_f)$ and $h_1\in \Ugrp(I_N)(\mathbb A_f)$ supported on $A$. Write $\rho_l$ for the small-block conjugate Weyl representation and $\rho_n$ for the conjugate Weyl representation on the larger space containing $\Xi$. Let $C$ be a conjugate-linear map from the small-block Weyl module to the larger one satisfying
+\[
+ \rho_n(B(1,u))Cz=C\rho_l(u)z
+ \qquad (u\in \Ugrp(I_l)_\infty).
+\]
+Let $\vartheta(h)$ be a Weyl-vector-valued function on the small block ($h\in \Ugrp(I_l)(\mathbb A_f)$). Suppose that in a fixed basis each coordinate of $\rho_l(u^{-1})\vartheta(h)$ is a constant times a conjugate theta kernel of $W,I_l$ evaluated at $(g,u,h)$. The coordinates may use different $g$, unitary characters, and data, all vacuum outside $\Sigma$. Then the function
+\[
+ f(h)=\langle C\vartheta(h),\Xi(B(h_1,h)x)\rangle_{\rm W}
+\]
+is left rational-invariant. For every subgroup $K$ of the standard level that fixes $f$ on the right, we have $\operatorname{ClSum}_{K}f=0$, where the class sum is weighted by reciprocal stabilizer orders.
+\end{lemma}
+
+\begin{proof}
+Write $(e_i)$ for the small-block basis and $v_i(u,h)=c_i\overline{\Theta_i(g_i,u,h)}$ for the given coordinates. Apply the real action of $B(1,u^{-1})$ to the large-block value $\Xi$ and that of $u^{-1}$ to the small-block vector. Equivariance of $C$ and invariance of the Weyl inner product give
+\[
+ f(h)=\left\langle
+   C\rho_l(u^{-1})\vartheta(h),
+   \rho_n(B(1,u^{-1}))\Xi(B(h_1,h)x)
+ \right\rangle_{\rm W}.
+\]
+By conjugate linearity of $C$ and of the inner product in its first variable, expansion gives
+\[
+ f(h)=\sum_i c_i\overline{\Theta_i(g_i,u,h)}
+       \operatorname{coeff}_{C(e_i)}(\Xi)
+          \bigl(B((1,h_1),(u,h))(1,x)\bigr).
+\]
+Each term is continuous and left rational-invariant on $\Ugrp(I_l)$. The theta kernel is left rational-invariant in the small-block variable and $B(1,\delta)$ maps rational points of the small block to rational points of the larger space, so the matrix coefficient is left rational-invariant as well. The formula also shows that the sum is independent of $u$, so $f$ is left rational-invariant.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L346}{Expanding the period in a Weyl basis}.}
+
+Since $I_l$ is definite, each term is integrable on the compact quotient, and its quotient integral vanishes by \statementref{Lemma}{lem:c-false-kernel-period}. Right invariance of $f$ under $K$ makes the quotient integral equal to $\operatorname{ClSum}_K f$ times the reciprocal of the finite index of $K$ in the standard level. The factor is nonzero, so the weighted class sum vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L378}{From a quotient integral to a finite class sum}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{601}.}
+\begin{lemma}[Vanishing of finite periods of false lifts against point forms]
+\label{lem:c-false-point-period}
+\emitthmsource
+Use the descent pair and false lift conditions of \statementref{Lemma}{lem:c-false-hyperbolic-tower}, with $I_n=I_N\oplus I_l$ and $2r+2N+3<n$. At each selected place $v$ give a full-column-rank residue matrix $Y_v$ and in the first block give a row inclusion $e'$ of rank $r$. Let $A_0$ be the integral unitary point for the point form. At the selected places it maps the standard columns of the descent pair to $Y_v$. At the twisting places it matches the rows selected by $e'$ to the standard rows of the pair. It is the identity outside $A$. Let $x$ be supported at the selected places and $h_1$ be a finite unitary point of the first block.
+
+Take a small-block kernel vector $\vartheta(h)$ with coordinates given by conjugate theta kernels of $W,I_l$ modulo $\mathfrak m$ with datum $\Psi$, where $\mathfrak m$ is supported inside $A$, and a conjugate-linear map $C$ equivariant for the small-block real unitary group. Let $K$ be a subgroup of the small-block standard level such that for each $k\in K$, $\Psi$ is invariant under left multiplication by $k^{-1}$ modulo $\mathfrak m$, and $x^{-1}B(1,k)x$ is integral and fixes $Y_v$ at each selected place. Then the point form $\mathcal P_h$ with value $C\vartheta(h)$ at $B(h_1,h)xA_0$ satisfies
+\[
+    \operatorname{ClSum}_{K}\bigl(h\mapsto
+             \langle\mathcal P_h,\Xi\rangle\bigr)=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+The evaluation formula for the point form writes this pairing as
+\[
+ \langle\mathcal P_h,\Xi\rangle=
+ \left\langle C\vartheta(h),\Xi\bigl(B(h_1,h)xA_0\bigr)\right\rangle_{\rm W},
+\]
+Here $xA_0$ is still supported on $A$. In the standard Weyl basis, the finite datum in small-block coordinate $i$ is exactly $\Psi$ and the real datum is basis polynomial $i$. The modulus support gives the vacuum condition outside $\Sigma$. The real Weil action on the alphabet polynomials is the corresponding Weyl action, so translating the coordinates of the kernel vector agrees with translating the real point of the theta kernel. The conditions of \statementref{Lemma}{lem:c-false-class-period} hold except for right invariance under $K$, which we now check.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L402}{The Weyl kernel vector and its real translates}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L646}{Evaluation formula for the point form}.}
+
+Take $k\in K$. Right translation of the kernel changes $\Psi(T)$ to $\Psi(k^{-1}T)$ and fixes the kernel vector. Put $Q=x^{-1}B(1,k)x$. At each selected place $Q$ fixes $Y_v$ and $A_0$ maps the standard columns to $Y_v$, so $A_0^{-1}QA_0$ fixes the standard columns. At each twisting place $x=1$ and $Q$ is block diagonal with identity in the first block. It fixes the rows specified by $e'$, hence its conjugate by $A_0$ fixes the standard rows of the descent pair. The column and row conditions together ensure that $A_0^{-1}QA_0$ fixes $\Xi$, so $h\mapsto hk$ leaves the second pairing term unchanged. Right invariance under $K$ gives vanishing of the weighted class sum.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L558}{Stability of the standard columns and rows}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L619}{Vanishing of the point-form period}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}{705}.}
+\begin{lemma}[Vanishing of periods of Cartan product forms on split lattices]
+\label{lem:c-false-divided-period}
+\emitthmsource
+Use the descent pair and false lift conditions of \statementref{Lemma}{lem:c-false-hyperbolic-tower}. Take a splitting $I_n=I_N\oplus I_l$ satisfying $2r+2N+3<n$ and suppose the standard columns of the descent pair lie in the first block. Give the split lattice $L$ at finite point $\gamma_L$. Let $\mathfrak m$ be the square of the chosen level ideal and $K$ the principal congruence level of $\Ugrp(I_l)$ modulo $\mathfrak m$. Take a large-block finite point $h_1$ and positive-weight Weyl vector $y$. Let $\vartheta(h)$ be the negative-weight conjugate theta kernel vector of $W,I_l$ modulo $\mathfrak m$ with arbitrary finite datum and small-block unitary character. Then the product form $\mathcal F_h$ supported on the class of $B(h_1,h)\gamma_L$ and taking value $y\cdot\overline{\vartheta(h)}$ there satisfies
+\[
+    \operatorname{ClSum}_K\bigl(h\mapsto
+             \langle\mathcal F_h,\Xi\rangle\bigr)=0 ,
+\]
+where $\cdot$ denotes the Cartan product.
+\end{lemma}
+
+\begin{proof}
+Define $C(z)=y\cdot\bar z$. For a real small-block unitary point $u$ the conjugate Weyl representation on the larger space acts by $\overline{B(1,u)}$. The Cartan product formula splits the action between the positive- and negative-weight Schur factors. The positive-weight factor only uses the first-block columns, so it fixes $y$. The negative-weight factor uses the second-block columns of the inverse transpose. By $u^{-1}=u^*$ we have $(\bar u)^{-\mathsf T}=u$, so the action on $\bar z$ is the conjugate of the small-block conjugate Weyl action on $z$. Hence
+\[
+     \rho_n(B(1,u))C(z)=C(\rho_l(u)z),
+\]
+The columns in the head and tail are the positive- and negative-weight columns specified by the splitting.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L738}{Archimedean equivariance of the Cartan product}.}
+
+At the finite places $\gamma_L$ is supported at the selected places. For any $k\in K$, $B(1,k)$ is the identity modulo the square of the chosen level, fixing the kernel datum modulo $\mathfrak m$. The split-lattice condition makes $\gamma_L^{-1}B(1,k)\gamma_L$ integral and the identity modulo the chosen level. At the twisting places $\gamma_L=1$, so this conjugate still fixes the first-block standard rows. Stability of the columns and rows ensures that it fixes $\Xi$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L675}{Conjugation stability on the split lattice}.}
+
+The pairing with the product form equals $\langle C\vartheta(h),\Xi(B(h_1,h)\gamma_L)\rangle_{\rm W}$, which is fixed by $K$. The kernel Weyl coordinates satisfy the vacuum and real translation conditions of \statementref{Lemma}{lem:c-false-class-period}, so the weighted class sum vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L402}{Coordinate check and right level invariance}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L718}{The split-lattice period}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{903}.}
+\begin{lemma}[Vanishing of theta slices for false lifts]
+\label{lem:c-false-slice}
+\emitthmsource
+Fix step $j$, twist $\vartheta$, and a split place $w$ outside the level, so $w$ lies outside the selected and twisting places and their conjugates. Let $\Xi$ be a false lift at $w$. Thus it belongs to the image of the good-part projector $e_0$, is orthogonal to the single-step good-form lift, and is annihilated by the Hecke polynomial operator at $w$ evaluated at the lift root.
+Write $V_j=V''\oplus V^\circ$. Take a split lattice (\emph{divided lattice}) defined by a finite unitary point $h_L$ that is the identity outside the selected places and their conjugates. At the selected places the lattice lies between $\varpi$ times the standard lattice and the standard lattice. Give $h\in \Ugrp(V'')(\mathbb A_f)$, a positive-weight Weyl vector $y$, a point $g\in \Ugrp(W_j)(\mathbb A)$, and arbitrary small-block theta data $\Psi$ modulo $\varpi^2$ with small-block character $b_1$. Let $k(g,h^\circ)$ be the conjugate theta kernel vector formed using the negative-weight Weyl basis polynomials, and put $\Theta_{g,c}=\overline{k(g,h_c^\circ)}$, where $h_c^\circ$ represents the class $c$ of $V^\circ$ at principal congruence level modulo $\varpi^2$. Then
+\[
+ \sum_c
+ \bigl\langle y\cdot\Theta_{g,c},\,
+      \Xi\bigl((h,h_c^\circ)h_L\bigr)\bigr\rangle_{\rm W}=0 ,
+\]
+where $(h,h_c^\circ)$ is the block diagonal point, $\cdot$ the Cartan product, and $\langle\ ,\ \rangle_{\rm W}$ the Weyl inner product.
+\end{lemma}
+
+\begin{proof}
+First check the descent conditions. Since $e_0$ is a self-adjoint idempotent, $e_0\Xi=\Xi$. Let $u_\vartheta^{\rm full}$ be the lift from the full principal-level space to $V_j$. For any source form $z$ at this level, compatibility of $e_0$ with the lift puts $e_0u_\vartheta^{\rm full}z$ in the image of the good-form lift. Hence
+\[
+ \langle u_\vartheta^{\rm full}z,\Xi\rangle
+ =\langle e_0u_\vartheta^{\rm full}z,\Xi\rangle=0.
+\]
+These pairings test normalized theta descent, so descent of $\Xi$ vanishes. Hyperplane sums vanish by \statementref{Lemma}{lem:c-false-hyperplane}. The Hecke condition is part of the false-lift definition. Nontriviality of each twisting residue character follows from the definition of the twist modulus.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Norms/AdjointThetaLift.lean\#L884}{Adjoint criterion for vanishing of descent}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L829}{The good-part projector, orthogonality, and descent}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L846}{Residue characters at the twisting places}.}
+
+\statementref{Lemma}{lem:c-false-fourier-block-period} requires $2r_0+2\operatorname{rk}(V'')+3<\operatorname{rk}(V_j)$. By $\operatorname{rk}(V'')=r_0+9m+1$ and $\operatorname{rk}(V_j)=6r_0$ it suffices to show $18m+5<2r_0$, which follows from $100m+9<k\le r_0$. The three vanishing conditions above allow \statementref{Lemma}{lem:c-false-hyperbolic-tower} to propagate vanishing along the hyperbolic tower (\emph{hyperbolic theta tower}) to $W_j$ with $\operatorname{rk}(V'')$ hyperbolic planes adjoined. Multiplying by the small-block theta kernel and applying \statementref{Lemma}{lem:c-false-fourier-block-period} then gives vanishing of the block periods.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ExchangeData.lean\#L442}{Ranks and scales}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L127}{Propagation of vanishing along the hyperbolic tower}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L222}{From descent to vanishing of block periods}.}
+
+Apply \statementref{Lemma}{lem:c-false-divided-period} to $h_L$, the small-block kernel modulo $\varpi^2$, and the conjugate-linear map $z\mapsto y\cdot\bar z$. Its archimedean equivariance follows from the Cartan product action, with the identity on the large block and inverse transpose, hence conjugation on the unitary group, on the small block. At the finite places the small-block kernel is invariant under principal congruence level modulo $\varpi^2$. Block conjugation by $h_L$ takes this level to one fixing $\Xi$. Outside the selected places and their conjugates the kernel data are integral vacuum and $h_L$ is the identity. Hence the weighted class sum of $h_c^\circ\mapsto\langle y\cdot\Theta_{g,c},\Xi((h,h_c^\circ)h_L)\rangle_{\rm W}$ vanishes.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean\#L718}{Period on the split lattice and principal congruence level}.}
+
+The small-block principal congruence level modulo $\varpi^2$ is contained in the kernel of the level at the selected places and the small-block rank is at most $t\le2n_m$. Thus every stabilizer in the class sum is trivial. The pairing of a product form supported on one class with $\Xi$ is the Weyl inner product at that class, so the weighted class sum is the ordinary sum in the claim.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/LiftChains.lean\#L535}{Trivial stabilizers in the kernel at the selected places}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L935}{Writing the period as a sum of slices}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{949}.}
+\begin{lemma}[Vanishing of the pairing of the gluing adjoint of a false lift with the small-block kernel]
+\label{lem:c-false-theta-pairing}
+\emitthmsource
+Fix step $j$, twist $\vartheta$, and split place $w$ outside the level. If $\Xi$ is a false lift at $w$, then for every gluing choice $i$ and every $g\in \Ugrp(W_j)(\mathbb A)$,
+\[
+ K^\circ\bigl((G_\vartheta^*\Xi)_i;g\bigr)=0 ,
+\]
+where $K^\circ$ is the small-block theta pairing in the common period lift.
+\end{lemma}
+
+\begin{proof}
+Fix $i,g$. Let $\Theta_{g,c}$ be the Weyl vector for the small-block pairing, with finite datum the indicator of the standard inclusion modulo $\varpi^2$ and small-block character $\upsilon^{m/2-j}$. Form the tuple $\eta$ with value $\eta_{i,c}=\Theta_{g,c}$ in component $i$ and zero in the other components. The small-block theta pairing is conjugate-linear in the tuple. Expanding the kernel in the negative-weight Weyl basis gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/ProductsSpan.lean\#L709}{Definition of the small-block kernel pairing}.}
+\[
+ \overline{K^\circ((G_\vartheta^*\Xi)_i;g)}
+ =\sum_c\langle\Theta_{g,c},(G_\vartheta^*\Xi)_{i,c}\rangle_{\rm W}
+ =\langle\eta,G_\vartheta^*\Xi\rangle .
+\]
+
+Expand the right side of the gluing adjoint formula and sum first over the small-block level classes $c$. For a fixed large-block representative $h$, the inner sum for component $i$ is
+\[
+ \sum_c
+ \bigl\langle \phi''_{\vartheta,i}(h)\cdot\Theta_{g,c},
+       \Xi((h,h_c^\circ)h_i)\bigr\rangle_{\rm W},
+\]
+Here $h_i$ is the glued lattice basis matrix. Apply \statementref{Lemma}{lem:c-false-slice} with positive-weight vector $\phi''_{\vartheta,i}(h)$ and the split lattice of gluing choice $i$. The inner sum vanishes, and the other components contribute zero because $\eta$ is zero there. Thus the whole adjoint pairing vanishes. Conjugating gives the claim.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L370}{Class-sum expansion of the gluing adjoint}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/ComparisonOperator/GluingMaps.lean}{1053}.}
+\begin{lemma}[The glued period lift is orthogonal to false lifts]
+\label{lem:c-false-orthogonality}
+\emitthmsource
+Fix step $j$ and twist $\vartheta$. For each good form $y$ on $W_j$, the glued period lift $G_\vartheta P^\circ y$ is orthogonal to the false lift space at every split place outside the level.
+\end{lemma}
+
+\begin{proof}
+Fix a split place $w$ outside the level and a false lift $\Xi$ there. Use $G_\vartheta^*\Xi$ as the test tuple in the period-lift pairing formula to obtain
+\[
+ \begin{aligned}
+ \langle\Xi,G_\vartheta P^\circ y\rangle
+ &=\langle G_\vartheta^*\Xi,P^\circ y\rangle\\
+ &=\sum_i a_i\int_{[\Ugrp(W_j)]}
+    y(g)F_i(g)K^\circ\bigl((G_\vartheta^*\Xi)_i;g\bigr)\,dg .
+ \end{aligned}
+\]
+By \statementref{Lemma}{lem:c-false-theta-pairing} the small-block kernel pairing in the integrand vanishes at each point $g$, so the inner product is zero. This holds for every split place $w$ outside the level and all its false lifts.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L1038}{Pairing formula for the common period lift}.}
+\end{proof}
+
+\section{The comparison operator, orthogonal compression, and single-step heights}
+\label{sec:c-compression}
+
+Equation~\eqref{eq:c-compression} uses orthogonal compression to reduce the determinant of the lift to a determinant of the comparison operator on the target. Finite-place denominators and archimedean norms enter the same height estimate through this formula.
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/LiftVolumeHeight.lean}{544}.}
+\begin{lemma}[Pairing identity, integrality, and norm of the comparison operator]
+\label{lem:c-comparison-operator}
+\emitthmsource
+Fix the lift at step $j$. Let $u_\vartheta$ be the single-step lift of good forms with twist $\vartheta$, $G_\vartheta$ its gluing map, $n_{\rm aut}$ the common multiple of the stabilizer orders, and $h_-$ the hook-length product for the negative weight, and put
+\[
+ U_\vartheta=n_{\rm aut}h_-^2G_\vartheta G_\vartheta^*,
+ \qquad
+ \rho_\vartheta=\frac{\mathcal E_j(\vartheta)}{\mathcal E_j(1)},
+ \qquad A=fmb\ell^2 .
+\]
+Then all $\rho_\vartheta$ are nonzero and there is a positive definite operator $U^\circ$ independent of the twist, satisfying $u_\vartheta^*U_\vartheta u_\vartheta=\rho_\vartheta U^\circ$. Also, $U_\vartheta$ maps the lift image into the orthogonal complement of the false lifts and preserves integrality at each finite place not dividing the twisted level norm. For each complex automorphism $\sigma$ we have
+\[
+ \|U_1 z\|_\sigma^2\le e^{6A}\|z\|_\sigma^2 .
+\]
+Here a false lift is a form orthogonal to the lift image and satisfying the same good-part projection and test Hecke polynomial conditions.
+\end{lemma}
+\begin{proof}
+\emph{Pairing identity.}
+Let $c_\vartheta$ be the gluing normalization factor, nonzero by \statementref{Lemma}{lem:c-period-factor}, and $P^\circ$ the common period lift. \statementref{Lemma}{lem:c-period-adjoint} and the formula for the modulus of the normalization factor give
+\[
+ G_\vartheta^*u_\vartheta=c_\vartheta^{-1}P^\circ,
+ \qquad
+ \rho_\vartheta=|c_1|^2/|c_\vartheta|^2 ,
+\]
+and hence
+\[
+ u_\vartheta^*U_\vartheta u_\vartheta
+  =\frac{n_{\rm aut}h_-^2}{|c_\vartheta|^2}(P^\circ)^*P^\circ
+  =\rho_\vartheta U^\circ,\qquad
+ U^\circ=\frac{n_{\rm aut}h_-^2}{|c_1|^2}(P^\circ)^*P^\circ .
+\]
+By \statementref{Lemma}{lem:c-period-injective}, every nonzero $y$ satisfies $\langle y,U^\circ y\rangle>0$. By $U_\vartheta u_\vartheta y=n_{\rm aut}h_-^2 c_\vartheta^{-1}G_\vartheta P^\circ y$ and \statementref{Lemma}{lem:c-false-orthogonality}, the image is orthogonal to the false lifts.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/LiftVolumeHeight.lean\#L218}{Adjoint gluing identity}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/ComparisonOperator/GluingMaps.lean\#L1056}{Orthogonality of the period lift to false lifts}.}
+
+\emph{Finite-place integrality.}
+Choose a tight frame $(e_a)_a$ for tuples of forms on the small space, satisfying $\sum_a\langle e_a,v\rangle e_a=h_-^2v$. Put $x_a=G_\vartheta e_a$. For any $\phi$,
+\[
+ U_\vartheta\phi=\sum_a n_{\rm aut}\langle x_a,\phi\rangle x_a .
+\]
+Fix a twist $\vartheta$ with level norm coprime to $p$. Choose class representatives integral above $p$ and take the corresponding tight frame, whose Weyl coordinates are integral. \statementref{Lemma}{lem:c-gluing-integrality} gives integrality of the gluing map, so $x_a$ is integral at $\iota$ and the conjugate place $\bar\iota$. For a form $\phi$ integral at $\iota$, compute the inner product by its class sum. The factor $n_{\rm aut}$ clears the stabilizer weight denominators. The left vector is integral at $\bar\iota$ and the right at $\iota$, so each pairing coefficient $n_{\rm aut}\langle x_a,\phi\rangle$ is integral at $\iota$. Thus the right side is an integral linear combination of integral vectors.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/LiftVolumeHeight.lean\#L349}{The tight frame and finite-place integrality}.}
+
+\emph{Conjugate norms.}
+Take the unshifted tight frame, in which the squared tuple norm of each $e_a$ under $\sigma$ is at most $h_-^2$. \statementref{Lemma}{lem:c-gluing-norm} gives $\|G_1v\|_\sigma^2\le e^{2A}\|v\|_\sigma^2$ for any tuple $v$. Let $C$ count the frame indices and $N$ the coordinate blocks of a tuple. The normalized class number and hook-length bounds give $N(Cn_{\rm aut}h_-^2)^2\le e^{2A}$. Put $c_a=n_{\rm aut}\langle G_1e_a,\phi\rangle$ and write $\sigma^\#=c\circ\sigma\circ c$, with $c$ denoting complex conjugation. Cauchy--Schwarz for the Weyl norm and the gluing bounds under all conjugations give
+\[
+ |\sigma(c_a)|\le n_{\rm aut}\|G_1e_a\|_{\sigma^\#}\|\phi\|_\sigma
+             \le n_{\rm aut}h_-e^A\|\phi\|_\sigma .
+\]
+The frame norm in each coordinate block is at most $h_-$, so the norm of $\sum_a c_a e_a$ in each block is at most $Cn_{\rm aut}h_-^2e^A\|\phi\|_\sigma$. Square and sum over the $N$ blocks to get $\|\sum_a c_a e_a\|_\sigma^2\le e^{4A}\|\phi\|_\sigma^2$. Then use $U_1\phi=G_1(\sum_a c_a e_a)$ and apply the gluing bound again.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/LiftVolumeHeight.lean\#L438}{Class number, hook-length, and gluing norm bounds}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/LiftVolumeHeight.lean}{618}.}
+\begin{lemma}[The Gram determinant and compression of the comparison operator]
+\label{lem:c-compression-identity}
+\emitthmsource
+Suppose $U_\vartheta$ satisfies the comparison operator conditions. Write $Z_j(\vartheta)=\det(u_\vartheta^*u_\vartheta)$, let $\pi_\vartheta$ be orthogonal projection onto $\operatorname{im}u_\vartheta$, and let $D_\vartheta=\pi_\vartheta U_\vartheta|_{\operatorname{im}u_\vartheta}$ and $\Delta(\vartheta)=\det D_\vartheta$. If $r$ is the dimension of the good-form space, there is a nonzero constant $c$ such that
+\begin{equation}
+ Z_j(\vartheta)\Delta(\vartheta)=c\,\rho_\vartheta^r
+ \qquad\text{for each }\vartheta .
+\label{eq:c-compression}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Injectivity of $u=u_\vartheta$ gives an isomorphism $e$ onto its image. Since $u^*$ is zero on the orthogonal complement of $\operatorname{im}u$, we have $u^*=u^*\pi_\vartheta$. Using the range condition on $u$ gives
+\[
+ u^*U_\vartheta u=(u^*u)\,e^{-1}D_\vartheta e .
+\]
+Take determinants. Invariance under conjugation makes the determinant on the left exactly $Z_j(\vartheta)\Delta(\vartheta)$. The comparison operator pairing identity also identifies the left side with $\rho_\vartheta U^\circ$. Positive definiteness of $U^\circ$ makes its kernel zero, so take $c=\det U^\circ\ne0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/OneLift/LiftVolumeHeight.lean}{722}.}
+\begin{lemma}[Height of the ratio of single-step Gram determinants]
+\label{lem:c-single-volume-height}
+\emitthmsource
+If $(\vartheta_\iota)_\iota$ is a regular $m$-tuple family of twists, then for each $1\le j\le m$,
+\begin{equation}
+ \operatorname{ht}\left(\left(\frac{Z_j(1)}{Z_j(\vartheta_\iota)}\right)_\iota\right)
+ \le rk(\ell B_0-\mathcal D),
+\label{eq:c-single-volume}
+\end{equation}
+where $Z_j(\vartheta_\iota)$ is the Gram determinant at step $j$ using $\vartheta_\iota^j$.
+\end{lemma}
+\begin{proof}
+Take the comparison operator of \statementref{Lemma}{lem:c-comparison-operator} and keep the notation $\Delta(\vartheta)$ of \statementref{Lemma}{lem:c-compression-identity}, using a single-step twist as parameter. The good-form spaces at every step have dimension $r$. Write $A=fmb\ell^2$ and fix $j$. Regularity gives logarithmic budgets $(\beta_p)_p$ such that $\sum_p\beta_p\le B_0$ on every finite set of primes, with the projection denominator condition at $\iota$ for the single-step twist $\vartheta=\vartheta_\iota^j$ holding with $\beta_p$.
+
+\emph{Determinant of the compression at finite places.}
+Fix $p$ and $\iota$. The projection denominator condition gives an operator $\Lambda$ on the lift image satisfying $|\iota(\det\Lambda)|_p\ge e^{-rr_0\beta_p}$, with determinant control from equation~\eqref{eq:c-clearing-determinant} of \chapref{chap:congruences}. On lifted vectors integral at $\iota$, the operator $U_\vartheta$ preserves integrality and puts them in the orthogonal complement of the false lifts. Thus $\Lambda D_\vartheta$ takes integral lifts to integral lifts. Let $\alpha$ be an eigenvalue of $\Lambda D_\vartheta$ and $z$ a nonzero eigenvector. Scale $z$ to have $p$-adic Weyl gauge exactly one, using class representatives integral above $p$ and normalizing the maximum coordinate absolute value to $1$. These coordinates test integrality, so integrality of $\alpha z$ in the same coordinates implies $|\iota(\alpha)|_p\le1$. Multiplying the eigenvalues with multiplicities gives $|\iota(\det(\Lambda D_\vartheta))|_p\le1$. Dividing by $\det\Lambda$ yields
+\[
+ |\iota(\Delta(\vartheta_\iota^j))|_p\le e^{rr_0\beta_p}.
+\]
+
+\emph{The determinant for the trivial twist at infinity.}
+Let $\alpha$ be an eigenvalue of $D_1$ and $z$ a nonzero eigenvector. Since $U_1 z$ is orthogonal to the false lifts, projecting it onto the genuine lift image is contractive for the squared norm under every $\sigma$. Thus
+\[
+ |\sigma(\alpha)|^2\|z\|_\sigma^2
+   =\|\pi_1 U_1 z\|_\sigma^2\le\|U_1 z\|_\sigma^2
+   \le e^{6A}\|z\|_\sigma^2 ,
+\]
+Contractivity under conjugation follows from the good-part projector and the characterization of admissible lift directions by the Hecke polynomials at split places outside the level.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/LiftVolumeHeight.lean\#L581}{Contractivity of the conjugate projection}.}
+Use $\|z\|_\sigma^2>0$ and multiply over all eigenvalues to obtain $|\sigma(\Delta(1))|\le e^{3rA}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/LiftVolumeHeight.lean\#L652}{The two determinant bounds}.}
+
+By \statementref{Lemma}{lem:c-compression-identity} all $\Delta(\vartheta)$ are nonzero. Use $\Delta(1)$ as common multiplier, $3rA$ as archimedean budget, and $rr_0\max(\beta_p,0)/\log p$ as finite-place budget for each prime $p$. The sum of $\max(\beta_p,0)$ on a finite set of primes equals the sum of $\beta_p$ over its nonnegative subset, and so is at most $B_0$. Hence the family $\Delta(\vartheta_\iota^j)/\Delta(1)$ has height at most $r(3A+r_0 B_0)$.
+
+By $\rho_1=1$, dividing the two instances of the compression identity gives
+\[
+ \frac{Z_j(1)}{Z_j(\vartheta_\iota)}
+   =\frac{\Delta(\vartheta_\iota^j)}{\Delta(1)}
+       \left(\rho_{\vartheta_\iota^j}^{-1}\right)^r .
+\]
+\statementref{Lemma}{lem:c-hecke-product-height} bounds the height of the inverse Hecke value ratio, so the displayed expression has height at most
+\[
+ r\bigl(3A+r_0 B_0+10mx_1+k(6B_0-\mathcal D)\bigr).
+\]
+Finally substitute the admissible-scale inequality $3A+(r_0+6k)B_0+10mx_1\le k\ell B_0$ to get $rk(\ell B_0-\mathcal D)$.
+\end{proof}

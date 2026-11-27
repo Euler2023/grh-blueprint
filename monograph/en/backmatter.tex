@@ -1,0 +1,89 @@
+\chapter{Background Theory}
+\label{app:lib-overview}
+
+The readable edition contains the background theory for the proof in \texttt{src/Lib/}. This appendix gives a topical account of the main inputs used in the book, cites the corresponding classical literature, and links to the Lean declarations in footnotes. The linked declarations specify the exact hypotheses and scope of each result.
+
+\section{Adelic unitary groups and trace formulas}
+
+The finite level and the archimedean discrete series type of the unitary group determine the space of automorphic forms used in \chapref{chap:spanning}. Given a cuspidal test function and a large-gap archimedean parameter, the simple trace formula compares traces on unitary groups of different signatures. It gives equality of dimensions and multiplicities for spaces of good forms on inner forms. For the simple trace formula and base change for unitary groups, see Arthur and Clozel~\cite{ArthurClozel1989}, Harris and Labesse~\cite{HarrisLabesse2004}, and Labesse~\cite{Labesse2011}.\leanfn{Lean source: \leansourcelink{src/Lib/Adelic/TraceFormula/TraceComparison.lean}{665}.}
+
+\section{Analytic number theory}
+
+Poisson summation gives the modulus inversion formula for the Dirichlet character theta series used in the final analytic argument~\cite{Davenport2000,IwaniecKowalski2004,MontgomeryVaughan2007}. See Heath-Brown~\cite{HeathBrown1995} for zero-density estimates for quadratic twists and mean-value estimates for character sums. Titchmarsh~\cite{Titchmarsh1986} gives classical background on the distribution of the zeros of $\zeta(s)$ and $L$-functions.\leanfn{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{1}; \leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/Tauberian.lean}{319}.} \chapref{chap:reduction} also uses the error term in the prime number theorem for arithmetic progressions with a fixed modulus~\cite{MontgomeryVaughan2007} to bound the remainder at the second scale $x_1$. The accompanying Tauberian estimate compares bounds on Taylor coefficients of the Laplace transform with averages of the remainder against a Gamma density.
+
+\section{Complex multiplication and formal groups}
+
+The readable edition develops the theory of periods of CM elliptic curves, normalized theta functions, and the integrality of local formal parameters. The Chowla--Selberg formula~\cite{SelbergChowla1967} normalizes the CM period. Local formal groups of Lubin--Tate type~\cite{LubinTate1965} and the calculation of exponents in the $p$-adic power series of algebraic theta functions~\cite{BannaiKobayashi2010} support the higher jet divisibility estimates of \chapref{chap:derivatives}.\leanfn{Lean source: \leansourcelink{src/Lib/CM/ChowlaSelberg.lean}{1}; \leansourcelink{src/New/Derivatives/FormalGroup/Exponent.lean}{1}.}
+
+\section{Class field theory and counting cocycles}
+
+The local congruence conditions in \chapref{chap:congruences} are expressed using Hecke characters and Galois cocycles. When the selected split places satisfy the Frobenius detection conditions and suitable central elements exist, a Greenberg--Wiles arithmetic duality formula controls the number of cocycles subject to local triviality conditions. For global class field theory and duality in Galois cohomology, see Serre~\cite{Serre1997} and Neukirch, Schmidt, and Wingberg~\cite{NSW2008}.\leanfn{Lean source: \leansourcelink{src/Lib/ClassField/GreenbergWiles/CocycleCounts.lean}{707}.}
+
+\section{Estimates for the odd part over cyclotomic fields}
+
+The bound for the length of the module of odd cocycles uses Stickelberger elements over cyclotomic fields and a Kolyvagin Euler-system argument. Classical sources are Mazur and Wiles~\cite{MazurWiles1984} and Rubin~\cite{Rubin2000}. Before using the bound to control congruence errors, \chapref{chap:congruences} verifies the required ramification and coprimality conditions.\leanfn{Lean source: \leansourcelink{src/Lib/Cyclotomic/OddSha.lean}{645}.}
+
+\section{Cohomology of functors of points and fixed-point formulas}
+
+The background library constructs cohomology of functors of points for Galois representations~\cite{Milne1980} and proves a Woods Hole trace formula for varieties with charts, following Atiyah and Bott~\cite{AtiyahBott1968}. The proof uses a vanishing consequence. If a linear combination of the correspondence maps acts by zero on a specified Hodge--Tate component, then the local terms of the corresponding weight at the coincidence points sum to zero.\leanfn{Lean source: \leansourcelink{src/Lib/Cohomology/WoodsHole.lean}{214}.}
+
+\section{Integral Shimura models and Galois representations}
+
+The background library constructs integral models of the relevant unitary Shimura varieties and establishes congruence relations at split places. The $\ell$-adic Galois representations attached to algebraic automorphic forms on definite unitary groups satisfy local compatibility at spherical places. See Shin~\cite{Shin2011}, Chenevier and Harris~\cite{ChenevierHarris2013}, and Barnet-Lamb, Gee, Geraghty, and Taylor~\cite{BLGGT2014} for the classical constructions. The hypotheses for attaching these representations in \chapref{chap:congruences} are given by the formal definitions in the readable edition.\leanfn{Lean source: \leansourcelink{src/Lib/GaloisRep/Main/AllRanks.lean}{465}.}
+
+\section{Period rings and Breuil--Kisin modules}
+
+The quantitative analysis of local crystalline conditions uses $p$-adic period rings and Breuil--Kisin comparison theory~\cite{Kisin2006,BhattScholze2023}. The frame theorem gives nine structural properties of selected lattices on Kummer charts. These are used to lift crystalline extension classes and control local losses in the maximal-weight case.\leanfn{Lean source: \leansourcelink{src/Lib/PadicHodge/Kisin/FrameTheorem.lean}{735}.}
+
+\section{The Weil representation and theta inner product formulas}
+
+The adelic Weil representation~\cite{Weil1964,Howe1989} gives the group action used to construct theta kernels. When the target rank is strictly greater than twice the source rank and the test data satisfy the sharpness conditions, the readable edition proves a Rallis-type formula for the relevant Petersson pairing. For the classical versions, see Li~\cite{Li1992}, Kudla and Rallis~\cite{KudlaRallis1994}, and Gan, Qiu, and Takeda~\cite{GQT2014}. If the source data satisfy the appropriate edge conditions, the same result gives injectivity of the theta lift on the specified type space.\leanfn{Lean source: \leansourcelink{src/Lib/SiegelWeil/RallisInner/SharpData.lean}{367}.}
+
+\chapter{The Readable and Compact Editions}
+\label{app:edition-comparison}
+
+The upstream repository's
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh}{readable edition \texttt{grh/}}
+and
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact}{compact edition \texttt{grh-compact/}}
+formalize and prove the same five public theorems. Table~\ref{tab:app-editions} lists the main objects with corresponding roles in the two editions. Their exact definitions appear in the respective Lean sources.
+
+\begin{table}[htbp]
+\centering
+\caption{Notation and proof steps in the readable and compact editions}
+\label{tab:app-editions}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.23\textwidth}
+                  >{\raggedright\arraybackslash}p{0.31\textwidth}
+                  >{\raggedright\arraybackslash}p{0.37\textwidth}@{}}
+\toprule
+Object & Readable edition & Compact edition\\
+\midrule
+Basic and cyclotomic moduli & $q_0,q_1$ & $N_0,N_1$\\
+Selected sets of infinite places & \hyperref[def:a-places]{$\Phi_a$}, \hyperref[def:admissible-data]{$\Phi_b$}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L127}{tops},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L26}{thick}\\
+Source and target forms
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L760}{SourceForm},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Rows.lean\#L296}{targetForms}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Columns/ColumnDefs.lean\#L71}{Column},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Trace/GoodIdempotent.lean\#L118}{rows}\\
+Main amount and total two-scale remainder
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L62}{mainAmount},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L73}{totalRemainder}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/ShortAndEnough.lean\#L32}{mainHeight},
+   \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/ShortAndEnough.lean\#L42}{remainder}\\
+Error unit
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L255}{errorUnit}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Data/AdmissibleData.lean\#L143}{budget}\\
+Weighted prime remainder
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L65}{primeRemainder}
+ & \leanlink{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Endgame/PrimeError.lean\#L38}{primeError}\\
+Second-scale error & Prime number theorem in progressions of fixed modulus & One-sided Laplace transform estimate in a specified window\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The two editions decouple the two-scale remainder in slightly different ways. The readable edition chooses a second scale $x_1$ satisfying the scale constraints and directly applies the prime number theorem in arithmetic progressions for a fixed modulus there. See \secref{sec:one-sided-bound}. The compact edition uses a window lemma to choose $\log x_1$ in $[t,t^2]$, so that the difference of the two relevant remainders is bounded above uniformly by $e^{-t}$.\leanfn{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{1}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Main.lean\#L149}{The one-sided bound in the compact edition}.}
+
+\printbibliography[heading=monographbib,title={Bibliography}]

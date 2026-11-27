@@ -1,4 +1,4 @@
-# RH 与 GRH 的 Lean 证明蓝图与中文专著
+# RH 与 GRH 的 Lean 证明蓝图与中英文专著
 
 **简体中文** · [English](README.en.md)
 
@@ -10,12 +10,17 @@
 - [下载 HTML 阅读包](https://github.com/Euler2023/grh-blueprint/releases/latest/download/grh-blueprint-html.zip)
 - [查看发布版本](https://github.com/Euler2023/grh-blueprint/releases)
 
-## 中文专著
+## 中英文专著
 
-《从 Theta 提升到广义 Riemann 猜想》以蓝图为基础，详述 Theta 提升和主不等式的证明，并说明如何由主不等式推出 Riemann 猜想与 Dirichlet $L$ 函数的广义 Riemann 猜想。正文中的 Lean 链接指向上游源码的固定提交和行号。
+《从 Theta 提升到广义 Riemann 猜想的证明》（*From Theta Lifts to the Proof of the Generalized Riemann Hypothesis*）以蓝图为基础，详述 Theta 提升和主不等式的证明，并说明如何由主不等式推出 Riemann 猜想与 Dirichlet $L$ 函数的广义 Riemann 猜想。正文中的 Lean 链接指向上游源码的固定提交和行号，现同时提供中文版与英文版。
 
-- [在 GitHub 预览专著 PDF](monograph/GRH_Monograph.pdf)
+- [在 GitHub 预览中文专著 PDF](monograph/GRH_Monograph.pdf)
+- [在 GitHub 预览英文专著 PDF](monograph/GRH_Monograph_EN.pdf)
 - [LaTeX 源码与编译说明](monograph/README.md)
+
+## Updates
+
+- **2026-11-27**：新增完整英文版专著（`monograph/GRH_Monograph_EN.pdf` 及 `monograph/en/` 源码）；更新中文版专著修订内容与中英文书名；重绘中英文共用的全矢量 TikZ 封面插图（含 50 位精度 Hardy $Z(t)$ 曲线、前六个非平凡零点与可点击跳转的证明路线图）。
 
 ## 本地阅读 HTML
 

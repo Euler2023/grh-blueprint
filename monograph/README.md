@@ -1,23 +1,38 @@
-# 从 Theta 提升到广义 Riemann 猜想
+# 从 Theta 提升到广义 Riemann 猜想的证明
 
-这部中文专著以配套蓝图和上游可读版 Lean 证明为依据。阅读成品见 [GRH_Monograph.pdf](GRH_Monograph.pdf)。PDF 内的章、节、定理、图表和公式引用可跳转。Lean 源码链接固定到上游提交和行号。 [上游可读版](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh)
+这部专著以配套蓝图和上游可读版 Lean 证明为依据，提供中文版与英文版两份成品，共享统一的矢量封面插图：
+
+- 中文版 PDF：[GRH_Monograph.pdf](GRH_Monograph.pdf)
+- 英文版 PDF：[GRH_Monograph_EN.pdf](GRH_Monograph_EN.pdf)
+
+PDF 内的章、节、定理、图表、封面路线图和公式引用均可跳转，Lean 源码链接固定到上游提交和行号：[上游可读版](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh)。
 
 ## 编译
 
-需要 XeLaTeX、latexmk、biber、ctex、biblatex、tcolorbox、TikZ，以及 Noto CJK 和 AR PL UKai CN 字体。在本目录运行
+需要 XeLaTeX、latexmk、biber、ctex、biblatex、tcolorbox、TikZ，以及 Noto CJK、AR PL UKai CN、TeX Gyre Pagella 与 TeX Gyre Heros 字体。
 
-    latexmk -xelatex -interaction=nonstopmode -halt-on-error GRH_Monograph.tex
+编译中文版（在本目录运行）：
+
+```bash
+latexmk -xelatex -interaction=nonstopmode -halt-on-error GRH_Monograph.tex
+```
+
+编译英文版（在 `en/` 目录运行）：
+
+```bash
+cd en && latexmk -xelatex -interaction=nonstopmode -halt-on-error GRH_Monograph_EN.tex
+```
+
+如需重新生成临界带零点与 Hardy $Z(t)$ 曲线数据（需 `mpmath`）：
+
+```bash
+python3 figures/plot_critical_strip.py
+```
 
 ## 源码结构
 
-- [GRH_Monograph.tex](GRH_Monograph.tex) 组装全书，版式、脚注与链接宏在 [preamble.tex](preamble.tex)，参考文献数据库见 [references.bib](references.bib)。
-- [frontmatter.tex](frontmatter.tex) 放置封面、内容提要和目录。[preface.tex](preface.tex) 收录整篇前言。
-- [ch01.tex](chapters/ch01.tex) 定义容许数据、扭转格和五类 Theta 提升，证明主不等式和解析归约。
-- [ch02.tex](chapters/ch02.tex) 处理 CM 形式群、Theta 导数整除性和系数估值。
-- [ch03.tex](chapters/ch03.tex) 证明 Seesaw 恒等式及定理 A(a)、A(b)。
-- [ch04.tex](chapters/ch04.tex) 证明 Poincaré 映射的二阶矩估计和定理 B。
-- [ch05.tex](chapters/ch05.tex) 分解链行列式，合成定理 C 的余体积估计。
-- [ch06.tex](chapters/ch06.tex) 建立单步比较算子、伪提升正交性和高度界。
-- [ch07.tex](chapters/ch07.tex) 构造正则 Selmer 扭转族并控制同余分母。
-- [ch08.tex](chapters/ch08.tex) 证明离散序列周期的量化模长估计。
+- [GRH_Monograph.tex](GRH_Monograph.tex) 组装中文全书，版式、脚注与链接宏在 [preamble.tex](preamble.tex)，参考文献数据库见 [references.bib](references.bib)。
+- [frontmatter.tex](frontmatter.tex) 放置中文封面、内容提要和目录，[preface.tex](preface.tex) 收录前言，正文分八章放在 `chapters/`，附录见 [backmatter.tex](backmatter.tex)。
+- `en/` 收录完整英文版源码（[GRH_Monograph_EN.tex](en/GRH_Monograph_EN.tex)、[preamble.tex](en/preamble.tex)、[frontmatter.tex](en/frontmatter.tex)、[preface.tex](en/preface.tex)、`en/chapters/` 与 [backmatter.tex](en/backmatter.tex)）。
+- `figures/` 收录中英文共用的 TikZ 封面插图 [cover-illustration.tex](figures/cover-illustration.tex)、高精度数据生成脚本 [plot_critical_strip.py](figures/plot_critical_strip.py) 与生成的坐标数据 [critical-strip-data.tex](figures/critical-strip-data.tex)。
 - [来源与核对范围](work/source-ledger.md) 和 [数学复核提要](work/content-review-guide.md) 记录正文、蓝图与形式化源码的对应。

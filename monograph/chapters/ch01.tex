@@ -1,4 +1,4 @@
-\chapter{核心定理与GRH的证明}
+\chapter{核心定理与广义 Riemann 猜想的证明}
 \label{chap:reduction}
 
 \begin{chapterguide}
@@ -498,7 +498,7 @@ $F_q(z)=\sum_{1\le n\le a}\lambda_q(n)(a/n-a/z)_+$，则
 \section{由三组估计推出主不等式}
 \label{sec:main-inequality}
 
-定理~\ref{thm:short-forms} 与定理~\ref{thm:index-bound} 分别控制短整源形式的范数以及归一化像的局部格指数；定理~\ref{thm:enough-forms} 进而保证可从这些像中抽取出维数接近 $r$ 的线性无关向量族. 对该向量族应用定理~\ref{thm:long-forms}，即可将余体积的上下界相比较. 这一比较需要用到主量 $H$ 的非负性，下面先建立一个更强的下界.
+定理~\ref{thm:short-forms} 与定理~\ref{thm:index-bound} 分别控制短整源形式的归一化像在平凡扭转下的提升平方范数，以及归一化像族的局部格指数；定理~\ref{thm:enough-forms} 进而保证可从这些像中抽取出维数接近 $r$ 的线性无关向量族. 对该向量族应用定理~\ref{thm:long-forms}，即可将余体积的上下界相比较. 这一比较需要用到主量 $H$ 的非负性，下面先建立一个更强的下界.
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/PrimeSums.lean}{204}.}
 \begin{lemma}[带权素数和的截断估计]
@@ -1380,7 +1380,7 @@ $\operatorname{Re}s\ge1-l^{-25}$、$|s|\le e^l$ 内，这些特征对应的去�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{197}.}
-\begin{theorem}[素数余项的单侧上界]
+\begin{theorem}[加权素数幂余项的单侧上界]
 \label{thm:one-sided}
 \emitthmsource
 对任意 $\varepsilon>0$ 与固定参数 $P$，一切充分大的实数 $y$ 均满足
@@ -1496,9 +1496,12 @@ Gauss 衰减保证了左右两端的绝对收敛，整理系数即得所求公�
  \sum_{n\in\mathbb Z} e^{2\pi ian/q}w_j(n/(qu))
  =i^jqu\sum_{h\in\mathbb Z}w_j((qh+a)u).
 \]
-两端同乘 $\chi(a)/q$ 并对 $a\bmod q$ 求和，左端即化为 $\sum_{n\in\mathbb Z}\check\chi(n)w_j(n/(qu))$，
-右端化为 $i^j u\sum_{n\in\mathbb Z}\chi(n)w_j(nu)$；
-因系数有界且权函数具 Gauss 衰减，求和次序可自由交换.
+两端同乘 $\chi(a)/q$ 再对 $a\bmod q$ 求和，得到
+\[
+ \sum_{n\in\mathbb Z}\check\chi(n)w_j(n/(qu))
+   =i^j u\sum_{n\in\mathbb Z}\chi(n)w_j(nu).
+\]
+系数有界且权函数具 Gauss 衰减，故可交换求和次序.
 
 显然 $\chi(0)=0$；又因非主特征在单位群上的和为零（任取单位 $b$ 使 $\chi(b)\ne1$，将指标乘以 $b$ 即知该和等于自身的 $\chi(b)$ 倍），故 $\check\chi(0)=0$.
 代换 $a\mapsto-a$ 给出 $\check\chi(-n)=(-1)^j\check\chi(n)$.
@@ -1878,7 +1881,7 @@ $\chi_d(2)=1$，故 $\chi_d(n)=\chi_d(v)$.
  \frac{F^{(k)}(x)(\sigma-x)^k}{k!}
    =\int_0^\infty e^{-xv}\frac{((x-\sigma)v)^k}{k!}u(v)\,dv.
 \]
-由于该 Taylor 级数收敛于有限值，由单调收敛定理知右端各项之和等于有限积分 $\int_0^\infty e^{-\sigma v}u(v)\,dv$，这与 $a>\beta$ 时 $a$ 为实收敛横坐标矛盾. 由此必有 $a=\beta$，故 $\Psi$ 在 $\operatorname{Re}s>\beta$ 内全纯；又 $K/(s-\beta)$ 在此亦全纯，从而 $\Phi$ 在半平面 $\operatorname{Re}s>\beta$ 内的留数恒为零.
+该 Taylor 级数的和有限. 由单调收敛定理，右端各项之和为积分 $\int_0^\infty e^{-\sigma v}u(v)\,dv$. 这与 $a>\beta$ 时 $a$ 为实收敛横坐标矛盾. 由此必有 $a=\beta$，故 $\Psi$ 在 $\operatorname{Re}s>\beta$ 内全纯；又 $K/(s-\beta)$ 在此亦全纯，从而 $\Phi$ 在半平面 $\operatorname{Re}s>\beta$ 内的留数恒为零.
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/Zeros/Criterion.lean}{31}.}
@@ -1900,7 +1903,7 @@ $\chi_d(2)=1$，故 $\chi_d(n)=\chi_d(v)$.
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{237}.}
-\begin{theorem}[右半平面无零点]
+\begin{theorem}[Dirichlet $L$ 函数在 $\RePart s>1/2$ 内的非零性]
 \label{thm:half-plane}
 \emitthmsource
 对任意模 $q\ge1$ 的 Dirichlet 特征 $\chi$，若 $\operatorname{Re}\rho>1/2$ 且当 $\chi$ 为主特征时 $\rho\ne1$，则 $L(\rho,\chi)\ne0$.
@@ -1985,7 +1988,7 @@ Riemann $\zeta$ 函数的所有非平凡零点（\emph{nontrivial zeros}）均�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/Main.lean}{7}.}
-\begin{theorem}[Riemann $\zeta$ 函数零点的实部]
+\begin{theorem}[Riemann $\zeta$ 函数的非平凡零点在临界线上]
 \label{thm:zeta-zeros}
 \emitthmsource
 若 $\zeta(s)=0$、$s\ne1$ 且 $s$ 不是负偶整数，则 $\operatorname{Re}s=1/2$.
@@ -1995,7 +1998,7 @@ Riemann $\zeta$ 函数的所有非平凡零点（\emph{nontrivial zeros}）均�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/Main.lean}{10}.}
-\begin{theorem}[Dirichlet $L$ 函数在右半平面的非零性]
+\begin{theorem}[广义 Riemann 猜想的半平面形式]
 \label{thm:right-nonvanishing}
 \emitthmsource
 对任意模数 $q\ge1$ 及模 $q$ 的 Dirichlet 特征 $\chi$，在 $\operatorname{Re}s>1/2$ 且排除主特征极点 $s=1$ 时，恒有 $L(s,\chi)\ne0$.
@@ -2005,7 +2008,7 @@ Riemann $\zeta$ 函数的所有非平凡零点（\emph{nontrivial zeros}）均�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/Main.lean}{15}.}
-\begin{theorem}[Dirichlet $L$ 函数在临界带内的零点实部]
+\begin{theorem}[广义 Riemann 猜想的临界带零点形式]
 \label{thm:l-zeros}
 \emitthmsource
 任意 Dirichlet $L$ 函数在临界带 $0<\operatorname{Re}s<1$ 内的零点均满足 $\operatorname{Re}s=1/2$.
@@ -2015,7 +2018,7 @@ Riemann $\zeta$ 函数的所有非平凡零点（\emph{nontrivial zeros}）均�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/Main.lean}{19}.}
-\begin{theorem}[本原特征的 GRH]
+\begin{theorem}[本原 Dirichlet 特征的广义 Riemann 猜想]
 \label{thm:primitive}
 \emitthmsource
 若 $\chi$ 为本原特征，则 $L(s,\chi)$ 在临界带（\emph{critical strip}）内的所有零点均满足 $\operatorname{Re}s=1/2$.

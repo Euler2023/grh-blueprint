@@ -1,0 +1,217 @@
+\chapter{Large-Gap Discrete Series and Periods at the Real Place}
+\label{chap:discrete-series}
+\label{chap:appendix-ds}
+
+\begin{chapterguide}
+This chapter gives a quantitative lower bound for the absolute value of a discrete series period integral on a real unitary group. The proof combines the Gaussian approximation of Flensted--Jensen matrix coefficients near the identity, their rapid decay in operator norm away from the identity, and a volume comparison for operator-norm balls on the unitary group. The final section applies the period bound to the Bessel test in \statementlink{thm:enough-forms}{Theorem~B} and to the spanning by auxiliary forms in \statementlink{thm:long-forms}{Theorem~C}.
+\end{chapterguide}
+
+\section{Discrete series coefficients and steep parameters}
+\label{sec:ch8-steep-params}
+
+Let $I$ be a nonempty finite index set and $\varepsilon\colon I\to\{1,-1\}$ a sign function. Write $D_\varepsilon=\operatorname{diag}(\varepsilon)$ and set
+\[
+\Ugrp(\varepsilon)=\bigl\{g\in\operatorname{GL}(\CC^I)\mid g^*D_\varepsilon g=D_\varepsilon\bigr\},
+\qquad
+K_\varepsilon=\Ugrp(\varepsilon)\cap \Ugrp(|I|).
+\]
+We take Haar measure of total mass $1$ on the maximal compact subgroup $K_\varepsilon$. In this chapter $g^*$ denotes conjugate transpose, $\|\cdot\|_{\mathrm{op}}$ the operator norm for the standard positive definite Hermitian inner product, and $\|\cdot\|_{\mathrm F}$ the Frobenius norm.
+
+\thmsource{Lean source: \leansourcelink{src/Lib/DiscreteSeries/FlenstedJensen/Defs.lean}{159}.}
+\begin{definition}[Doubled parameters and large gaps]
+\label{def:ch8-large-gap}
+\emitthmsource
+Let $n=|I|$ and $l=2\lambda\in\ZZ^I$, and let $h$ be a nonnegative integer. Suppose that the entries of $l$ are distinct, each has the parity of $n-1$, and
+\[
+ |\lambda_i-\lambda_j|\ge 500n^3+h
+ \qquad(\varepsilon_i\ne\varepsilon_j),
+\]
+Then $l$ is said to have large gaps with margin $h$. Let $\rho_l$ be the half-sum of the positive roots $e_i-e_j$ selected by $l_i>l_j$, and let $\rho_{\mathrm c,l}$ be the half-sum of the compact positive roots among them, those with $\varepsilon_i=\varepsilon_j$. The highest weight of the corresponding lowest $K_\varepsilon$-type is $\mu_l=\lambda+\rho_l-2\rho_{\mathrm c,l}$.
+\end{definition}
+
+Write $c_l$ for the normalized Flensted--Jensen matrix coefficient for the parameter $l$. Flensted--Jensen~\cite{FlenstedJensen1980} originally introduced these explicit functions for semisimple symmetric spaces and the lowest $K$-types of discrete series. For an integral weight vector $w$, define $M_w(A)$ as the product of the principal minors $\det A_{\{i:w_i\ge t\},\{i:w_i\ge t\}}$ over all positive integer thresholds $t$, multiplied by the product over all thresholds $t\le0$ of the corresponding principal minor divided by $\det A$. The minor of the empty index set is $1$. If $A$ is invertible, only finitely many factors can differ from $1$. Write $a$ for the block-diagonal part of $g$ obtained by retaining its same-sign blocks and put $z=a^{-1}g$. The identity $g^*D_\varepsilon g=D_\varepsilon$ gives $a_{\pm\pm}^*a_{\pm\pm}=1+g_{\mp\pm}^*g_{\mp\pm}$ for each same-sign block $a_{\pm\pm}$, so $a$ is invertible. The integral expression for the matrix coefficient is
+\begin{equation}
+\label{eq:ch8-dscoeff}
+c_l(g)=
+\frac{
+ \displaystyle\int_{K_\varepsilon}
+ \frac{M_{\mu_l}(au)\,\overline{M_{\mu_l}(u)}}
+ {M_{-\lambda-\rho_l}(u^*zu)}\,du
+}{
+ \displaystyle\int_{K_\varepsilon}|M_{\mu_l}(u)|^2\,du
+}.
+\end{equation}
+For $g=1$ we have $a=z=1$, and the product of principal minors $M_{-\lambda-\rho_l}(u^*zu)$ is identically $1$. The numerator and denominator then agree, and the denominator integrand is strictly positive near the identity, so $c_l(1)=1$. The decay and local approximation estimates below use this normalization. Their proofs use quantitative estimates for the principal minors in~\eqref{eq:ch8-dscoeff}. We cite the corresponding Lean input at each use.\leanfn{Lean source: \leansourcelink{src/Lib/DiscreteSeries/FlenstedJensen/Defs.lean}{180}.}
+
+Let $J$ be another nonempty finite index set, with $m=|J|$ and sign function $\eta\colon J\to\{1,-1\}$. Let $k$ be the doubled parameter for $\Ugrp(\eta)$, and write $\mu=\mu_l$ and $\mu'=\mu_k$. Let $S$ be a group with a topology and its Borel $\sigma$-algebra, with measurable multiplication. Consider a homomorphism
+\[
+j\colon S\longrightarrow \Ugrp(\varepsilon)\times \Ugrp(\eta),\qquad
+s\longmapsto (g_s,g'_s).
+\]
+The following definition describes the phase matching of the two discrete series matrix coefficients.
+
+\thmsource{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/SteepParameters.lean}{101}.}
+\begin{definition}[Laplace data]
+\label{def:ch8-laplace-datum}
+\emitthmsource
+Let $X$ be a finite set, $e\colon X\sqcup\{0,\ldots,M-1\}\xrightarrow{\sim} I$ a bijection, $\tau\colon X\to J$ a map, and $B$ a real number. Laplace data satisfy the following four conditions.
+\begin{enumerate}
+\item The parameter $l$ is steep with respect to $e$ and $B$. On indices corresponding to $X$ the signs are all $+1$ and $\mu$ has value $0$. On the remaining indices the signs alternate as $(-1)^i$, and $\mu$ decreases strictly with $i$ and lies in $[-3B,-B]$.
+\item For every $x\in X$, we have $\eta_{\tau(x)}=1$ and $\mu'_{\tau(x)}=0$. All $\mu'_i$ are nonnegative, and $\mu'_i\le 3B$ whenever there exists an $i'$ such that $\eta_i\ne\eta_{i'}$.
+\item We have $\operatorname{tr}(g_s-1)=\operatorname{tr}(g'_s-1)$, and the phase function
+\begin{equation}
+\label{eq:ch8-phase}
+\varphi(s)=\operatorname{tr}\bigl(\operatorname{diag}(\mu)(g_s-1)\bigr)
+           -\operatorname{tr}\bigl(\operatorname{diag}(\mu')(g'_s-1)\bigr)
+\end{equation}
+takes values on the imaginary axis $i\RR$ and satisfies $\varphi(st)=\varphi(s)+\varphi(t)$.
+\item Let $I_e\colon\CC^X\to\CC^I$ and $I_\tau\colon\CC^X\to\CC^J$ be the linear embeddings sending the standard basis vector indexed by $x$ to the standard basis vectors indexed by $e(x)$ and $\tau(x)$, respectively. For every $u\in \Ugrp(|X|)$ there exists $s\in S$ such that
+\[
+ g_s-1=I_e(u-1)I_e^*,\qquad
+ g'_s-1=I_\tau(u-1)I_\tau^* .
+\]
+\end{enumerate}
+\end{definition}
+
+Given Laplace data, define the period integrand by
+\begin{equation}
+\label{eq:ch8-integrand}
+  \theta(s)=c_l(g_s)\,\overline{c_k(g'_s)}\,\exp(-\varphi(s)).
+\end{equation}
+Since $\varphi(s)$ is purely imaginary, $|\theta(s)|=|c_l(g_s)|\,|c_k(g'_s)|$. The additivity of the phase also enters the localization and the logarithmic phase identity in the next section.
+
+\section{Localization and Gaussian approximation}
+\label{sec:ch8-gaussian}
+
+Suppose $l,k$ both have large gaps with margin $h$ and their entries have absolute values at most the integer $L$. Choose $\beta\ge 3$ with $n+m+L\le\beta$ and set
+\[
+Q=(n+m)^2,\qquad T=Q\log\beta,\qquad
+r=10^{-13}/T,\qquad t_0=\exp(-100T).
+\]
+In this section assume $B\ge1$ and $h\ge10^{30}T^3$. For $g\in \Ugrp(\varepsilon)$, let $g_{\mathrm{nc}}$ denote its noncompact part, obtained by keeping only the entries joining indices of opposite signs. Define $g'_{\mathrm{nc}}$ similarly.
+
+\begin{lemma}[Real-part and decay bounds for the integrand]
+\label{lem:ch8-pointwise}
+Write $J_s=g_s\oplus g'_s$ and $G(s)=(2/\|J_s\|_{\mathrm{op}})^{9Q}$. Then for every $s\in S$,
+\begin{align}
+|\theta(s)|&\le 2\operatorname{Re}\theta(s)+12t_0,
+\label{eq:ch8-cone-bound}\\
+|\theta(s)|&\le G(s),&
+|\theta(s)|&\le 2\operatorname{Re}\theta(s)+6\beta^{-50Q}G(s).
+\label{eq:ch8-decay}
+\end{align}
+\end{lemma}
+\begin{proof}
+We first prove~\eqref{eq:ch8-cone-bound}. If $\|(g_s)_{\mathrm{nc}}\|_{\mathrm F}^2+\|(g'_s)_{\mathrm{nc}}\|_{\mathrm F}^2\ge r^2$, apply the fourth-power estimate for Flensted--Jensen coefficients to each matrix coefficient to obtain
+\[
+ |\theta(s)|^4
+ \le \bigl((1+\|(g_s)_{\mathrm{nc}}\|_{\mathrm F}^2)
+           (1+\|(g'_s)_{\mathrm{nc}}\|_{\mathrm F}^2)\bigr)^{-h}
+ \le (1+r^2)^{-h}.
+\]
+Since $T\ge1$, we have $r^2\le1$ and $\log(1+r^2)\ge r^2/2$, so $h\log(1+r^2)\ge 5000T$. Thus $|\theta(s)|\le t_0$ and immediately $|\theta(s)|-2\operatorname{Re}\theta(s)\le3t_0$.\leanfn{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{163}.}
+
+If the sum of the squared norms of the noncompact parts is at most $r^2$, the localization lemma gives $s_1\in S$ such that $\theta(s)=\theta(s_1)$ and the Frobenius distances of $g_{s_1}$ and $g'_{s_1}$ to the identity are both at most $4r$. In this neighborhood the logarithmic phase identity for the Laplace data allows us to replace the matrix differences in~\eqref{eq:ch8-phase} by matrix logarithms without changing the phase $\varphi(s_1)$. Each logarithm lies in the corresponding unitary Lie algebra, so its diagonal entries and weighted trace are purely imaginary. Remove the logarithmic phase from each of the matrix coefficients in~\eqref{eq:ch8-integrand}. Write $u$ for the resulting first term and $v$ for the conjugate of the second. The phase identity gives $\theta(s_1)=uv$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Periods.lean\#L293}{Cancellation of the logarithmic phase}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Localization.lean\#L317}{The logarithmic phase identity}.}
+
+In this application $4rT\le10^{-12}$, and $d^2\le T$ and $d^2\log(d+L+1)\le T$ hold for both $d\in\{n,m\}$. Thus the Gaussian approximation lemma gives $a_1,a_2\in[0,1]$ with $|u-a_1|\le a_1/10+t_0$ and $|v-a_2|\le a_2/10+t_0$. Expanding $uv-a_1a_2$ and using $t_0\le1$ gives
+\[
+ |uv-a_1a_2|\le \frac{21}{100}a_1a_2+4t_0.
+\]
+Since $a_1a_2\ge0$, we obtain
+\[
+ |uv|-2\operatorname{Re}(uv)
+ \le -a_1a_2+3|uv-a_1a_2|\le12t_0,
+\]
+This completes the proof of~\eqref{eq:ch8-cone-bound}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Localization.lean\#L664}{Localization lemma}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/GaussianShape.lean\#L332}{Gaussian approximation lemma}.}
+
+Finally, decay in operator norm gives $|\theta(s)|\le (2/\|J_s\|_{\mathrm{op}})^c$ for each integer $0\le c\le h$. Since $h\ge18Q$, taking $c=9Q$ and $c=18Q$ gives $|\theta(s)|\le G(s)$ and $|\theta(s)|\le G(s)^2$, respectively. Put $\Delta=\max\bigl(0,|\theta(s)|-2\operatorname{Re}\theta(s)\bigr)$. Combining~\eqref{eq:ch8-cone-bound} with $|\operatorname{Re}\theta(s)|\le|\theta(s)|$ gives
+\[
+ 0\le\Delta\le12t_0,\qquad \Delta\le3G(s)^2.
+\]
+Multiplying the two inequalities and taking square roots gives $\Delta\le6t_0^{1/2}G(s)=6\beta^{-50Q}G(s)$, which is~\eqref{eq:ch8-decay}.\leanfn{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{358}.}
+\end{proof}
+
+\section{A lower bound for the absolute value of the period}
+\label{sec:ch8-laplace-theorem}
+
+\thmsource{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{493}.}
+\begin{theorem}[Quantitative Laplace period estimate]
+\label{thm:ch8-laplace}
+\emitthmsource
+Take Laplace data as in \statementref{Definition}{def:ch8-laplace-datum}. Suppose $B\ge1$ and both $l,k$ have large gaps with margin $h$ and entries of absolute value at most a nonnegative integer $L$. Assume the parameters satisfy
+\[
+ \beta\ge10^{12},\qquad n+m+L\le\beta,\qquad
+ h\ge10^{30}\bigl((n+m)^2\log\beta\bigr)^3.
+\]
+Let $s\mapsto g_s$ be proper and $s\mapsto g'_s$ continuous. Let $\nu$ be a right-invariant Borel measure on $S$, finite on compact sets. Then the integrand~\eqref{eq:ch8-integrand} is integrable on $S$ with respect to $\nu$. For the set
+\[
+ \mathcal A=\bigl\{s\in S\mid \|g_s\|_{\mathrm{op}}\le\beta+1,\
+                           \|g'_s\|_{\mathrm{op}}\le\beta+1\bigr\}
+\]
+the absolute value of the period satisfies
+\begin{equation}
+\label{eq:ch8-laplace-lower}
+  \nu(\mathcal A)\le
+  \beta^{20(n+m)^2}\left|\int_S\theta(s)\,d\nu(s)\right|.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Retain the notation $Q=(n+m)^2$ and $J_s=g_s\oplus g'_s$. The operator norm of the direct sum is the larger of the norms of its two blocks, so $\mathcal A=\{s\in S:\|J_s\|_{\mathrm{op}}\le\beta+1\}$. The map $s\mapsto J_s$ is continuous, and the inverse image of any compact set is a closed subset of the inverse image of its compact first projection. It is therefore proper. Put
+\[
+ \mathcal N=\bigl\{s\in S:\|J_s-1\|_{\mathrm{op}}\le(200\beta^5)^{-1}\bigr\},
+ \qquad
+ \mathcal U=\bigl\{s\in S:\|J_s-1\|_{\mathrm{op}}\le1\bigr\}.
+\]
+Since the unitary group is closed in the matrix space, all three sets are compact. The triangle inequality gives $\mathcal U\subseteq\mathcal A$.
+
+Applying the volume covering estimate for operator-norm balls in the unitary group and its corollary on integration over shells to this proper homomorphism and right-invariant measure gives, respectively,
+\begin{equation}
+\label{eq:ch8-cover}
+ \nu(\mathcal A)\le\beta^{16Q}\nu(\mathcal N),\qquad
+ \int_S G(s)\,d\nu(s)\le16^{9Q}\nu(\mathcal U).
+\end{equation}
+The decay exponent $9Q$ in the second formula is strictly above the threshold $8Q$ for shell integration. By~\eqref{eq:ch8-decay}, $\theta$ is dominated by the integrable function $G$. The matrix coefficients are continuous, and~\eqref{eq:ch8-phase} gives continuity of the phase. Hence $\theta$ is integrable on $S$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Periods.lean\#L470}{Covering comparison for the large and small balls}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/DiscreteSeries/Haar/TotalMass.lean\#L427}{Integration of the decay bound over shells}.}
+
+On the small ball $\mathcal N$ the operator-norm distance from each block to the identity is at most $(200\beta^5)^{-1}$. The lower bound for coefficients on the small ball about the identity gives an absolute value of at least $1/2$ for each matrix coefficient, so~\eqref{eq:ch8-integrand} gives $|\theta(s)|\ge1/4$. Integrate the real-part estimate~\eqref{eq:ch8-decay} over all of $S$ and use~\eqref{eq:ch8-cover} to obtain\leanfn{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/Periods.lean}{235}.}
+\[
+ \frac{\nu(\mathcal N)}4
+ \le 2\left|\int_S\theta\,d\nu\right|
+     +6\beta^{-50Q}16^{9Q}\nu(\mathcal A).
+\]
+Write $V=\nu(\mathcal A)$ and $P=\bigl|\int_S\theta\,d\nu\bigr|$. Combining the preceding inequality with the first formula in~\eqref{eq:ch8-cover} gives
+\[
+ V\le 8\beta^{16Q}P
+    +24\beta^{-34Q}16^{9Q}V.
+\]
+By $\beta\ge16$ and $Q\ge1$, the coefficient of the second term on the right satisfies $24\beta^{-34Q}16^{9Q}\le 24\beta^{-25Q}\le 1/2$. Rearranging and using $16\beta^{16Q}\le\beta^{20Q}$ gives~\eqref{eq:ch8-laplace-lower}.
+\end{proof}
+
+\begin{remark}
+It follows from~\eqref{eq:ch8-laplace-lower} that $\int_S\theta\,d\nu\ne0$ whenever $\nu(\mathcal A)>0$. In applications with nonzero Haar measure on the position group, $\mathcal A$ contains an open neighborhood of the identity and hence has positive volume. The theorem retains the quantitative form~\eqref{eq:ch8-laplace-lower} for a general right-invariant measure, which may be zero.
+\end{remark}
+
+\section{Stationary position groups and applications}
+\label{sec:ch8-stationary-position}
+
+Suppose the ranks of the two unitary groups differ by $2d+1$. Choose linearly independent vectors $v_1,\ldots,v_{d+1}\in\CC^I$ whose pairings for the sign form $D_\varepsilon$ are all zero except for the self-pairing of $v_{d+1}$, which is $\pm1$. Choose also an isometric embedding $i_0\colon(\CC^J,D_\eta)\to(\CC^I,D_\varepsilon)$ whose image is orthogonal to these vectors. Let $A_j=\operatorname{span}(v_1,\ldots,v_j)$, with $A_0=0$. Define the position group by
+\[
+ R=\bigl\{g\in \Ugrp(\varepsilon)\mid (g-1)A_j\subseteq A_{j-1},\
+                   1\le j\le d+1\bigr\}.
+\]
+Let $\sigma(g)$ be the sum over $1\le a\le d$ of the coefficients of $v_a$ in $(g-1)v_{a+1}$. The linear independence of $v_1,\ldots,v_{d+1}$ makes the coefficients unique. In expanding $g_1g_2-1$, the cross term $(g_1-1)(g_2-1)$ lowers the flag by at least two steps, so $\sigma$ is an additive homomorphism.\leanfn{Lean source: \leansourcelink{src/New/Appendix/DiscreteSeries/PositionGroup.lean}{91}.}
+
+The stationary condition further requires $\operatorname{diag}(\mu)v_a=v_{a+1}$ for $1\le a\le d$, and $i_0^\dagger\operatorname{diag}(\mu)i_0=\operatorname{diag}(\mu')$. It also requires $i_0$ to be the identity embedding on coordinates indexed by the common set $X$. Here $i_0^\dagger=D_\eta^{-1}i_0^*D_\varepsilon$ is the adjoint for the two sign forms. The group $R$ acts naturally on the quotient $A_d^\perp/A_d$, and the subspace corresponding to $i_0$ is stable under this action. In the $i_0$ coordinates the homomorphism is $g\mapsto g'=i_0^\dagger g i_0\in \Ugrp(\eta)$. The stationary data lemma shows that under the weight conditions of \statementref{Definition}{def:ch8-laplace-datum} the phase function corresponding to $j(g)=(g,g')$ is exactly
+\begin{equation}
+\label{eq:ch8-stationary-phase}
+ \varphi(g)=\sigma(g)-\overline{\sigma(g)},
+\end{equation}
+It also verifies the trace condition and the diagonal embedding condition for the common compact unitary group. The weighted trace identity uses the action of $g-1$ and $g^{-1}-1$ on the flag together with the shift relation for the lowest-type weights.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/Positions.lean\#L76}{Definition of a stationary position}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L309}{Stationary data lemma}.}
+
+On the position group $R$, substitute~\eqref{eq:ch8-stationary-phase} into~\eqref{eq:ch8-integrand} to get the stationary period integrand. The inclusion of the closed subgroup $R$ in $\Ugrp(\varepsilon)$ is proper, and the induced homomorphism in the second component is continuous. These maps satisfy the hypotheses of \statementref{Theorem}{thm:ch8-laplace}. Another common case has the first component a proper surjection from $S$ onto $R$, with the second component and coefficients determined by the image point. Push $\nu$ forward along the surjection. For each $r\in R$, take a preimage $s\in S$. Invariance under right translation by $r$ follows from invariance under right translation by $s$, and properness makes the pushforward finite on compact sets. The integrand and norm constraint pull back from $R$, so~\eqref{eq:ch8-laplace-lower} also holds for the original period integral.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L373}{Periods on the position group}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L426}{Period estimate under a proper surjection}.}
+
+The period estimate has two direct applications in the main proof.
+\begin{itemize}
+\item \emph{The Bessel test in \statementlink{thm:enough-forms}{Theorem~B}.} Choose a real-place frame of controlled size and map the Bessel graph group to the corresponding position group by its first component. The second component lies in the compact unitary group. The subset where the first component is at distance at most $1$ from the identity is contained in the large ball used in~\eqref{eq:ch8-laplace-lower}. The period estimate for a proper surjection thus gives the local lower bound for the test.\leanfn{Lean source: \leansourcelink{src/New/Spanning/Bessel/LargeFunction.lean}{427}.}
+\item \emph{Spanning by auxiliary forms in \statementlink{thm:long-forms}{Theorem~C}.} This application uses the restriction period for rank difference $1$. When $d=0$, the position group fixes $v_1$, its action on the orthogonal complement identifies it with the smaller unitary group, and the phase~\eqref{eq:ch8-stationary-phase} is identically zero. At each infinite place the Lean proof uses this case to choose a point giving a lower bound for the pairing of real-place matrix coefficients. The points at all infinite places combine into a real adelic translate $g$. The identity-coset approximation to the deep-level Poincaré period gives the spanning criterion: a form of principal congruence level on $Y_0$ that is Petersson orthogonal to all restrictions $x\mapsto\phi((x\oplus1)g)$ must vanish, where $\phi$ ranges over forms on $Y_0\oplus\langle1\rangle$ of the prescribed type and deep level.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Appendix/DiscreteSeries/PositionGroup.lean\#L678}{Restriction period for rank difference one}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/DeepLevelVanishing.lean\#L694}{Restriction of auxiliary forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/AuxiliaryForms/DeepLevelPoincarePeriod.lean\#L634}{Approximation by the identity coset}.}
+\end{itemize}

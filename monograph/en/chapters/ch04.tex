@@ -1,0 +1,2689 @@
+\chapter{The Second Moment and Theorem B}
+\label{chap:spanning}
+
+\begin{chapterguide}
+Starting from the Petersson expansion of the scaled Poincaré map, we estimate the main and remainder terms of the amplitudes separately. Combining the two yields the second-moment bound~\eqref{eq:b-second-moment}. Selecting translates in the finite group then gives the dimension bound~\eqref{eq:b-spanning}.
+\end{chapterguide}
+
+\section{Petersson unfolding and bad types}
+\label{sec:b-amplitude}
+
+The second moment uses the Hilbert--Schmidt norms of the amplitude matrices for the translates. At infinity the Bessel test function requires a normalized period lower bound. See \chapref{chap:discrete-series} for its role and~\eqref{eq:ch8-laplace-lower} for the period estimate.
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{158}.}
+\begin{lemma}[Petersson unfolding for the scaled Poincaré map]
+\label{lem:b-amplitude-blocks}
+\emitthmsource
+Fix admissible data $D$. Let $\mathcal P$ be the scaled
+Poincaré map and $\rho$ the unitary action of the residue linear group $G$ on principal-level forms.
+Write $e_{c,i}$ for the standard basis vector in full source Euclidean coordinates indexed by the double coset $c$ and Bessel coordinate $i$.
+Let $h_c$ be a double-coset representative, $\beta_c$ its cutoff function, and $W_i$ the
+$i$-th coordinate of the untruncated Bessel function. For $s\in G$ let $\mathcal T(c,s,c')$ be the set of
+rational elements $\gamma$ for which $h_c^{-1}\gamma_f h_{c'}$ belongs to the finite lattice stabilizer and reduces to $s$.
+Define the matrix entries of the \emph{amplitude sum} by
+\[
+ A(c,s,c')_{i,i'}
+ =\sum_{\gamma\in\mathcal T(c,s,c')}\!
+   \int \beta_c(y)\beta_{c'}(\gamma_\infty^{-1}y)
+     W_i(y)\overline{W_{i'}(\gamma_\infty^{-1}y)}\,dy .
+\]
+where the integral is over the archimedean unitary group of the source space. If $\nu>0$ is the common \emph{unipotent covolume} of the rational unipotent subgroups of the classes, then
+\[
+ \langle \rho(s)\mathcal P e_{c',i'},\mathcal P e_{c,i}\rangle
+ =\nu^{-1} A(c,s,c')_{i,i'} .
+\]
+Here the \emph{Petersson inner product} is conjugate linear in the first argument, so the same equality gives the
+$(c,c')$ block of $\mathcal P^*\rho(s)\mathcal P$
+$\overline{A(c,s,c')}/\nu$.
+\end{lemma}
+\begin{proof}
+Let $V$ be the Hermitian space on $Y_0$, $\mathcal G$ its adelic unitary group, $\Gamma$ the rational point group, and
+$J$ the principal level at the chosen places. Let $x_c$ denote the class point corresponding to $h_c$ in the finite adelic model of $V$,
+including the central translation chosen for the \emph{filling datum}. The measure-preserving homeomorphism between the archimedean models is
+$x\mapsto y(x)$. Write $F_{c,i}=P_0e_{c,i}$, where $P_0$ is the unscaled Poincaré map in full source coordinates.
+The dual formula for the Bessel period expresses $P_0$ as the series
+\[
+ F_{c,i}(g)=\sum_{\gamma\in\Gamma} f_{c,i}(\gamma g),\qquad
+ f_{c,i}(g)
+ =\beta_c(y(g_\infty))W_i(y(g_\infty))\,
+       \mathbf 1_{x_cJ}(g_f).
+\]
+The dual formula expresses the original Poincaré map as source change of coordinates followed by amplitude expansion.
+In defining $P_0$ in coordinates, first apply the inverse change of source coordinates.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SeriesPeriod.lean\#L692}{Bessel periods and source coordinates}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L588}{Class points and cutoff functions}.}
+
+Choose a lift $\widetilde s$ integral at the finite places with reduction $s$ at the selected places, and put $z(g)=F_{c',i'}(g\widetilde s)$.
+Because $J$ is the kernel of reduction, the right translate $z$ remains left $\Gamma$-invariant and right $J$-invariant.
+The orbit sum of absolute values of the cutoff has a uniform bound, and $\Gamma\backslash\mathcal G$ has finite volume.
+Thus $f_{c,i}$ is absolutely integrable on $\mathcal G$ and remains so after multiplication by the bounded form $\overline z$.
+Apply the orbit integration formula to unfold $F_{c,i}$, obtaining
+\[
+ \langle z,F_{c,i}\rangle
+ =\int_{\Gamma\backslash\mathcal G}
+     \sum_{\gamma\in\Gamma}\overline{z(\gamma g)}f_{c,i}(\gamma g)\,dg
+ =\int_{\mathcal G}\overline{z(g)}f_{c,i}(g)\,dg .
+\]
+The finite integral is supported in $x_cJ$, where $z(x,g_f)$ is identically
+$z(x,x_c)$. By the product measure and left invariance of Haar measure, the expression becomes\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L349}{Absolute integrability and orbit integration}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L619}{Integration over a principal-level coset}.}
+\[
+ \operatorname{vol}(J)\int
+    \beta_c(y(x))W_i(y(x))\,\overline{z(x,x_c)}\,dx.
+\]
+
+Next expand $z(x,x_c)$ into a sum over rational points using $\gamma^{-1}$ as summation index.
+Keep the notation $\widetilde s$ after conversion to the finite model. The finite indicator of a summand is $1$ exactly when
+$h_{c'}^{-1}\gamma_f^{-1}h_c\widetilde s\in J$, that is, $(h_c^{-1}\gamma_f h_{c'})^{-1}\widetilde s\in J$.
+As $\widetilde s$ is integral with reduction $s$, this is equivalent to
+$h_c^{-1}\gamma_f h_{c'}$ being integral with the same reduction.
+Thus $z(x,x_c)$ retains only terms with $\gamma\in\mathcal T(c,s,c')$, with
+archimedean factor $\beta_{c'}(\gamma_\infty^{-1}y(x))
+W_{i'}(\gamma_\infty^{-1}y(x))$.
+Change variables by $x\mapsto y(x)$. The integrable majorant for the amplitudes ensures absolute summability,
+so we may exchange the rational sum and integral to obtain
+$\langle \rho(s)P_0e_{c',i'},P_0e_{c,i}\rangle=\operatorname{vol}(J)A(c,s,c')_{i,i'}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/PoincareSeries.lean\#L677}{The reduction condition for rational terms and the Petersson formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/AmplitudeSums.lean\#L578}{An integrable majorant for the amplitudes}.}
+
+The principal level $J$ is compact open, so $\operatorname{vol}(J)>0$.
+Substitute $\mathcal P=(\operatorname{vol}(J)\nu)^{-1/2}P_0$ into both arguments of the inner product.
+The square of the real scaling factor times $\operatorname{vol}(J)$ is exactly $\nu^{-1}$.
+The definition of the adjoint and conjugate symmetry give the matrix block formula.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{239}.}
+\begin{lemma}[An upper bound for the share of bad types]
+\label{lem:b-bad-types}
+\emitthmsource
+Fix admissible data $D$. For $i=0,1$ let $G_i$ be the product of residue linear groups at the selected places above $p_i$,
+and write $g_i$ for the sum of the central idempotents of all good tuples of labels.
+Then each $g_i$ is a central idempotent, and $g_0\otimes g_1$ acts on principal-level forms as the projection $e_0$ onto good forms.
+The coefficient of the bad types at the identity satisfies
+\[
+ \operatorname{Re}\bigl((1-g_i)(1)\bigr)\le \frac{b^{-8}}2
+ \qquad(i=0,1),
+\]
+where $(1)$ extracts the identity coefficient of the group-algebra element in parentheses.
+\end{lemma}
+\begin{proof}
+Write $n_0=r_0$ and let $M_0=(q_0d)^{s+6}$, where $s$ is the tower exponent satisfying $2^s=m^{22}$.
+Fix $i$ and write $q=p_i$. Each chosen residue field $\mathbf k_w$ has order $q$, and the number of chosen places is $f$.
+Over a single residue field an allowed label is a monic squarefree polynomial of degree $n_0$, with nonzero constant term
+and no root at a $M_0$-th root of unity in $\mathbf k_w$.
+A good tuple has all labels allowed and includes at least one primitive label.
+A primitive label is an irreducible polynomial with a root of order $q^{n_0}-1$.
+The Green idempotents at a place are central and pairwise orthogonal, as in Green's character theory of finite general linear groups~\cite{Green1955}.
+The idempotents for tuples are tensor products, so those of distinct tuples multiply to zero.
+The sum $g_i$ over the good tuples is therefore a central idempotent.
+The global good tuples are the product of those at the two level primes. On expanding $g_0\otimes g_1$,
+the coefficient of each group element agrees with that of the global good idempotent,
+so it acts by $e_0$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/LocalGL/Green/LabelCharacters.lean\#L490}{Tensor idempotents for local labels}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L184}{The good projection at the two level primes}.}
+
+Give each monic polynomial of degree $n_0$ counting weight
+$\omega=(1-n_0/q)/q^{n_0}$. The admissible data ensure $1<n_0<q$.
+For an allowed label $c$, the corresponding identity coefficient is at least $\omega$.
+Specifically, if $\Xi_c$ is the Green character for the label, the coefficient is
+$|\Xi_c(1)|^2/|\operatorname{GL}_{n_0}(\mathbf k_w)|$.
+The local degree formula gives
+\[
+ \Xi_c(1)=
+ \frac{|\operatorname{GL}_{n_0}(\mathbf k_w)|}
+      {q^{n_0(n_0-1)/2}\prod_{P\mid c}(q^{\deg P}-1)} ,
+\]
+where the product runs over the monic irreducible factors.
+The product factor in the denominator is at most $q^{n_0}$.
+Substitution of the order of the finite general linear group gives an identity coefficient at least
+$q^{-n_0}\prod_{j=1}^{n_0}(1-q^{-j})\ge\omega$,
+The last step uses $\prod_j(1-a_j)\ge1-\sum_j a_j$ and $q^{-j}\le q^{-1}$.
+Thus every good tuple has identity coefficient at least $\omega^f$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/LocalGL/Green/TauFunctions.lean\#L727}{Computing the Green label degrees in the pairing}.}
+
+There are $q^{n_0}$ monic polynomials of degree $n_0$.
+If one has a root at zero or at a $M_0$-th root of unity, it can be written as $(X-a)B$.
+There are at most $(1+M_0)q^{n_0-1}$ such polynomials.
+If a polynomial has a repeated factor, it can be written $P^2B$, with $P,B$ monic and $\deg B=d<n_0$.
+For fixed $d$ the number of such factor pairs is at most
+$q^{\lfloor(n_0-d)/2\rfloor+d}\le q^{n_0-1}$.
+Summing over $d$ and including the polynomials having a forbidden root gives at most
+$(1+M_0+n_0)q^{n_0-1}$.
+disallowed polynomials. Therefore, with counting weight $\omega$, the allowed polynomials have total weight at least $1-\varepsilon$,
+where $\varepsilon=(1+M_0+2n_0)/q\le1$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L47}{Counting disallowed labels}.}
+
+On the other hand, $\mathbf F_{q^{n_0}}^\times$ has $\varphi(q^{n_0}-1)$ generators.
+The minimal polynomial of each has degree $n_0$. Otherwise the generator lies in a proper subfield,
+and its order is less than $q^{n_0}-1$. One minimal polynomial has at most $n_0$ such roots,
+so there are at least $\varphi(q^{n_0}-1)/n_0$ primitive polynomials.
+If a positive integer $N$ has exactly $j$ distinct prime divisors, then $2^j\le N$. The $a$-th prime divisor is at least $a+1$, so
+\[
+ \frac{\varphi(N)}{N}\ge
+   \prod_{a=1}^j\left(1-\frac1{a+1}\right)=\frac1{j+1}
+   \ge\frac1{2\log N+1}.
+\]
+Take $N=q^{n_0}-1$ and combine with $q^{n_0}\le2N$ and $\log N\le n_0\log q$.
+Writing $A=2n_0(2n_0\log q+1)$ gives at least $q^{n_0}/A$ primitive polynomials.
+The total weight of nonprimitive polynomials is thus at most
+$(q^{n_0}-q^{n_0}/A)q^{-n_0}\le e^{-1/A}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L105}{Primitive labels and total weight}.}
+
+The tuples with every coordinate allowed therefore have total weight at least $(1-\varepsilon)^f$,
+and the tuples with no primitive coordinate have total weight at most $e^{-f/A}$.
+The identity coefficient summed over good tuples is at least the difference.
+Bernoulli's inequality $(1-\varepsilon)^f\ge1-f\varepsilon$ gives
+\[
+ \operatorname{Re}\bigl((1-g_i)(1)\bigr)\le f\varepsilon+e^{-f/A}.
+\]
+The admissible scales ensure $f\ge9A\log b$ and
+$f\varepsilon+b^{-9}\le b^{-8}/2$, which gives the claimed upper bound for the coefficient.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/BadTypes.lean\#L228}{Tuple weights}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L221}{Substituting the scale bounds}.}
+\end{proof}
+
+\section{Lattice decomposition and discriminant sums for the remainder}
+\label{sec:b-remainder}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Cut.lean}{528}.}
+\begin{lemma}[Orthogonal decomposition of the common link]
+\label{lem:b-link-splitting}
+\emitthmsource
+Let $\gamma$ be a term of cell rank $j$ for the class pair $(c,c')$, with reduction $s$ modulo $M$ compatible with the unipotent character.
+Let the nonnegative integer $z$ be at most the product of norms of the frame-intersection places of $s$. Allow $z\ne1$ only when $j=\varrho+1$ and the links coincide.
+In $\operatorname{link}(\gamma)$ one can choose a complement of $\operatorname{link}(\gamma)\cap\operatorname{link}(\gamma')$ whose rank is the corank of the two links, with a lattice having integral lifts. The common lattice has full rank in $\operatorname{commonLink}(\gamma,\gamma')$. Write $D$ for the squared discriminant of the complementary lattice in the link metric, $d$ for the discriminant of the common lattice, $t$ for the torsion index of $\gamma$ in the class lattice basis, and $g$ for the level gauge of the term. Then
+\[
+ (tdz)^2D\le g^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Choose a basis $B_0$ in the link intersection for the common kernel of the two last-coordinate linear forms. With respect to the positive definite link metric, extend it by $B_1$ to a basis of the intersection and then by $B_2$ to a basis of the entire link. Take the link lattice with integral lifts and write $D_0,D_1,D_2$ for the squared discriminants of its successive pieces on these blocks. The lattice basis change is block upper triangular, so its diagonal blocks control the projected lattices. The rational subspaces are pairwise orthogonal, giving original squared discriminant $D_0D_1D_2$. The projected lattice for $B_2$ still has integral lifts and gives the required complement, with $D=D_2$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L543}{A three-block basis and the decomposed discriminants}.}
+
+The image of $B_0$ under projection to the first side $X_0$ is exactly the common link. Comparing the common lattice with the projected lattice for this block gives full rank and $d^2\le D_0$. The two last-coordinate linear forms are jointly injective on the image of $B_1$, so its rank is at most $1+(j-\varrho)_+$. When $z\ne1$, at the highest cell rank with coincident links, it is exactly $2$. The bound for minors in the last coordinates of the integral lifts gives
+\[
+ z^2\mathfrak m^2\le D_1G^2,\qquad
+ G=\max(\operatorname{termDiscNorm}(\gamma),N^f\mathfrak m),
+\]
+Here $\mathfrak m$ is the norm of a minor of rank $j$. The original link-lattice bound also gives
+\[
+ t^2D_0D_1D_2\le
+ \left(M^{2f\min(j,\varrho)}\operatorname{minorGauge}(\gamma)/N^f\right)^2 .
+\]
+Multiply the estimates and substitute $d^2\le D_0$ to obtain $(tdz)^2D_2\mathfrak m^2\le g^2\mathfrak m^2$. By definition $g$ contains factor $G/\mathfrak m$. Since $\mathfrak m>0$, cancel $\mathfrak m^2$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L594}{Rank and gain in the last-coordinate block}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L623}{Combining the three block estimates}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Discriminants.lean}{509}.}
+\begin{lemma}[Sublattice indices and discriminants]
+\label{lem:b-discriminant-index}
+\emitthmsource
+Let $E$ be a CM field containing a primitive $5040$-th root of unity. Let $L$ be the rank-$r$ finite adelic lattice generated by the columns of the full-column-rank matrix $B=xa$, with $x$ over $E$ and $a$ invertible finite adelic. If $M\subseteq L$ is a finite-index sublattice, then
+\[
+ \operatorname{disc}M=\operatorname{disc}L\,[L:M].
+\]
+\end{lemma}
+\begin{proof}
+Elementary divisors describe the finite-index submodule over each valuation ring, with identity change at almost all places. Assemble these changes into an invertible finite adelic matrix $A$ such that the columns of $BA$ generate $M$. In the original column coordinates the index is $[\det A]_f$. The discriminant is the square root of the generalized index of the Gram determinant. By $(BA)^*(BA)=A^*(B^*B)A$ this index is multiplied by $[\det A]_f^2$. Take the positive square root.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L475}{A basis for a finite-index sublattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L514}{Change in the Gram discriminant}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Discriminants.lean}{720}.}
+\begin{lemma}[A Dirichlet-series bound for sublattice indices]
+\label{lem:b-sublattice-index-zeta}
+\emitthmsource
+Retain the CM field $E$ and write $R=\widehat{\mathcal O}_E$. For a rank-$r$ finite adelic lattice $L$ and $\mu\in\mathbb N$,
+\[
+ \sum_{\substack{M\subseteq L\\ \left[L:M\right]<\infty}} [L:M]^{-(r+\mu)}
+       \le \zeta_R(\mu)^r,\qquad
+ \zeta_R(\mu)=\sum_{[R:I]<\infty}[R:I]^{-\mu}.
+\]
+where the sum on the right is over finite-index ideals $I$ and both sides take extended nonnegative real values.
+\end{lemma}
+\begin{proof}
+Choose a column basis to define a map from $R^r$ to $L$. It is an isomorphism at full rank, identifying the finite-index submodules and their indices.
+Any finite-index ideal $I$ contains a nonzero integer $[R:I]$. It is thus a finitely generated extension of an ideal of $\mathcal O_E$, and finitely generated ideals of $R$ are principal.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L695}{Finite-index ideals are principal}.}
+
+For a finite-index submodule of $R\oplus R^h$, its first projection is a finite-index ideal $I$ and its intersection with the second summand is a finite-index submodule $M'$. Fix a generator of $I$ and choose a lift in the submodule. Its second coordinate is well defined modulo $M'$ and, together with $(I,M')$, determines the submodule. Its index is $[R:I][R^h:M']$, and summing over the possible residue classes reduces the absolute value of the negative exponent of $[R^h:M']$ by $1$. Write $Z_h(s)$ for the index series of the free rank-$h$ module. The count gives $Z_{h+1}(s+1)\le \zeta_R(s+1) Z_h(s)$. Set $s=h+\mu$ and use $\zeta_R(h+\mu+1)\le\zeta_R(\mu)$ and the initial value $Z_0(\mu)=1$ to conclude by induction.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L172}{A product recursion for the index Dirichlet series}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Gain.lean}{814}.}
+\begin{lemma}[Congruence gain for the discriminant of the common lattice]
+\label{lem:b-pair-discriminant-gain}
+\emitthmsource
+Let the base CM field contain a primitive $5040$-th root of unity. Take two terms $\gamma,\gamma'$ in the same \emph{agreeing block} $(c,s,c')$, with \emph{cell rank} $j,j'$ and \emph{level gauge} $G,G'$, respectively.
+Let $i$ be the codimension of the intersection of the two \emph{link} in either link, and let $d$ be the discriminant of the \emph{common lattice}.
+Let the nonnegative integer $x$ be at most the \emph{product of meeting-place norms} of the reduction $s$, and put
+\[
+ X=\begin{cases}
+ x,& j>\varrho\ \text{and}\ i=0,\\
+ 1,&\text{otherwise}.
+ \end{cases}
+\]
+Then
+\[
+ (dX)^2\le (2/M)^{2if}GG'.
+\]
+\end{lemma}
+\begin{proof}
+Let $L_1,L_2$ be the parts of the two lattices in the common link space and put $D_a=\operatorname{disc}L_a$.
+Write $T_1,T_2$ for the \emph{isotropic torsion index} of the two terms.
+For the first term, let $k$ be its matrix in class coordinates and let $A$ be the standard isotropic space.
+Define $T_1$ to be the index of $(\Lambda\cap A)+k(\Lambda\cap A)$ in $\Lambda\cap(A+kA)$,
+and define $T_2$ for the second term in the same way.
+The common lattice $L_{12}$ is the intersection of $L_1$ with the lattice of the second term.
+By the definition of the second lattice, the pairing from $X_0$ coordinates to the second frame comes from $M$ times the standard isotropic row lattice.
+The pairing maps $L_1$ into $M$ times the saturated isotropic row lattice.
+Thus $[L_1:L_{12}]$ divides $T_2$. Interchanging the two terms similarly gives
+$[L_2:L_{12}]\mid T_1$. Since the indices are finite, \statementref{Lemma}{lem:b-discriminant-index} gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L712}{Divisibility for indices of the common lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L756}{Change of discriminant with the index}.}
+\[
+ d\le D_1T_2,\qquad d\le D_2T_1,\qquad d^2\le (T_1D_1)(T_2D_2).
+\]
+
+Decompose each link along their intersection and write the squared discriminants of the complementary lattices as
+$\Delta_1,\Delta_2$. If $X\ne1$, the links coincide and the first term has maximal cell rank.
+The nonvanishing discriminant condition then depends only on the link, so the second term also has maximal rank.
+Thus both decompositions can use the same $X$. Applying \statementref{Lemma}{lem:b-link-splitting} twice yields\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L85}{Discriminant vanishing for equal links}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Cut.lean\#L543}{Lattice decomposition of a link and its level gauge}.}
+\[
+ (T_1D_1X)^2\Delta_1\le G^2,\qquad
+ (T_2D_2X)^2\Delta_2\le (G')^2.
+\]
+
+The difference between the two coordinate Hermitian forms gives a nondegenerate pairing on the complements.
+The two terms reduce to the same element in the block. The pairing matrix of the complementary lattices divided by $M$ is therefore integral,
+and the common-space vectors added in the decomposition contribute nothing to the pairing.
+In source coordinates of the two links the pairing is $a^*Q(1-v)b$,
+where $Q$ is positive definite and $v$ is the ratio of the two link isometries.
+At every infinite place $v$ is an isometry, so $1-v$ has operator norm at most $2$.
+Apply Cauchy--Schwarz to the rank-$i$ determinant and take the global norm.
+The determinant index lower bound from finite-place integrality now gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L212}{A determinant estimate for the integral pairing}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L316}{Integrality of the pairing of complementary lattices}.}
+\[
+ 1\le (2/M)^{4if}\Delta_1\Delta_2.
+\]
+
+Combining the preceding three inequalities gives
+\[
+ \bigl((T_1D_1)(T_2D_2)X^2\bigr)^2
+ \le (2/M)^{4if}G^2(G')^2.
+\]
+Take square roots and substitute $d^2\le (T_1D_1)(T_2D_2)$ to get the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L373}{Combining the congruence and the link decomposition}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L826}{A squared discriminant bound for the common lattice}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{86}.}
+\begin{lemma}[Discriminants and coranks for pairs of near representatives]
+\label{lem:b-pair-corank}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with a primitive $5040$-th root of unity and $f$ infinite places.
+Write $k_0=\dim_E X_0$ and $n=\varrho+1$, let $b$ be the large scale, and let $M$ be the congruence level.
+Fix classes $c,c'$. A pair $(\gamma,\gamma')$ consists of \emph{near representative}s if both are chosen unipotent double-coset near representatives
+with a cell rank and the same compatible reduction $s$. Compatibility means that whenever $\bar u s=s\bar u'$,
+the integral unipotents $u,u'$ on the two sides have the same unipotent character value.
+Write $L_{12}$ for the common lattice of the two terms, the vectors in the common link that lie in both term lattices,
+and put $d=\operatorname{disc}L_{12}$ and $l=k_0-\dim_E(\operatorname{span}L_{12})$.
+Then
+\[
+  l\le n^3,\qquad 1\le d\le b^{n^3 f}.
+\]
+\end{lemma}
+\begin{proof}
+Let $j,j'$ be their respective cell ranks, $G,G'$ their respective level gauges,
+and $i$ the codimension of the intersection in either link, each link having dimension $k_0+1$.
+Take the norm lower bound $1$ for intersection places in \statementref{Lemma}{lem:b-pair-discriminant-gain}. Since the common lattice lies in the integral lattice, we obtain
+\[
+ 1\le d,\qquad
+ d^2\le (2/M)^{2if}GG'.
+\]
+The near-representative gauge bound gives $G,G'\le b^{n^3 f}$.
+Also $M\ge b^{19}$ and $b\ge2$ imply $2/M\le b^{-18}$, hence
+\[
+  b^{18if}d\le b^{n^3 f}.
+\]
+Since $d\ge1$, $b>1$, and $f\ge1$, this gives $18i\le n^3$ and $d\le b^{n^3 f}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L793}{A lower bound for the common lattice discriminant}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L867}{Level gauges of near representatives}.}
+
+The first link has domain in $X_0$ of dimension $k_0-(j-\varrho)_+$.
+Restricting to the link intersection loses at most $i$ dimensions, so
+$l\le i+(j-\varrho)_+\le i+1$.
+Combining $18i\le n^3$ and $\varrho\ge10^5$ gives $l\le n^3$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L74}{Dimension of the common link}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L89}{Corank range for pairs of near representatives}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/FramesOverLattice.lean}{573}.}
+\begin{lemma}[Counting terms for a fixed label and common lattice]
+\label{lem:b-frames-over-lattice}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Fix classes $c$, a residual Bessel label $t$, and a lattice $L\subseteq L_c$ of rank $r$,
+with $r+l=k_0$ and $\operatorname{disc}L\le b^{n^3 f}$.
+Consider the $(c',\gamma)$ such that $\gamma$ is a chosen near representative from $c'$ to $c$, has a cell rank,
+and its reduction $s$ has chosen factorization $s=s_0t$ with label $t$, and $L\subseteq L_\gamma$.
+There are at most $b^{2000n^6(l+1)f}$ such $(c',\gamma)$.
+\end{lemma}
+\begin{proof}
+First we show that the image frame determines these terms up to an admissible unipotent translation.
+Let $U_c^0$ be the rational unipotent group fixing the standard frame pointwise at level $M$.
+If some $u,u'\in U_c^0$ makes the image frames of $u\gamma$ and $u'\gamma'$ equal,
+the reductions of the two terms are still the original reductions $s,s'$.
+Equality of the image frames puts $s'^{-1}s$ in the residual Bessel subgroup, so $s,s'$ have the same coset representative.
+The labels also coincide, giving $s=s'$. Two terms with the same reduction and image frame
+have the same right class and $(u\gamma)^{-1}(u'\gamma')\in U_{c'}^0$.
+Thus $\gamma,\gamma'$ belong to the same $U_c^0$--$U_{c'}^0$ double coset.
+Uniqueness of the chosen representative gives $\gamma=\gamma'$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Terms.lean\#L586}{Reduction cosets of terms with equal image frames}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Terms.lean\#L599}{The right class and the unipotent group}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FrameCount.lean\#L121}{Injectivity of the frame for a fixed label}.}
+
+Group by cell rank $j$ and frame pairing matrix $Z$. The near-representative bounds give
+at most $b^{2f}$ and $b^{270n^3 f}$ possible values of the two parameters, respectively.
+Fix a group and express a basis matrix of $L$ as $ya$, with $y$ having $r$ independent rational columns
+and $a$ finite adelic invertible. Let $\delta_j(Z)$ be the specified nonzero leading principal minor.
+Put $d=M\delta_j(Z)$ and $d'=M\det(YY^*)$, with $Y$ obtained by completing $Z$ using identity rows for cell rank $j$.
+Write $[d]$ for the generalized index of $d$. Count within the group using the following three lattice quotients.
+
+First, condition $L\subseteq L_\gamma$ supplies lifts of the lattice columns orthogonal to the translated frame.
+Group the $\varrho$ rows of the lift matrix by their classes in the row lattice of the Gram matrix of $L$.
+The index per row is $(\operatorname{disc}L)^2$, giving at most $(\operatorname{disc}L)^{2\varrho}$ groups.
+Within a group translation by $U_c^0$ makes the pairing of the $X_0$ component with $y$ constant.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L435}{Counting lifts of the common lattice}.}
+
+Second, once the pairing is fixed, the columns of the difference between the $X_0$ components of the frames lie in
+the class lattice $P$ in the orthogonal complement of $y$, of rank $l$.
+Group further by the classes in $P/dP$. Across the $n$ columns there are at most $[d]^{ln}$ groups.
+Within a group the differences lie in $dP$, so another unipotent translation fixes the $X_0$ component to a common value.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L360}{Counting anisotropic components}.}
+
+Third, with the $X_0$ component fixed, the shared vectors have at most $b^{366n^4 f}$ matrix values.
+Fix that matrix and record the $\varrho$ isotropic rows of the moved frame in class coordinates modulo $d'$,
+with at most $[d']^n$ values per row.
+If all those rows agree for two terms, one more unipotent translation makes their image frames coincide.
+By the first uniqueness argument the two terms are the same.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L201}{Counting shared vectors}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L275}{Congruent rows determine the frame}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L337}{Counting isotropic components}.}
+
+The product bound from the three groupings is
+\[
+ (\operatorname{disc}L)^{2\varrho}[d]^{ln}\,
+       b^{366n^4 f}[d']^{n\varrho}.
+\]
+The near-representative estimates give $[d],[d']\le b^{2n^3 f}$ and
+$(\operatorname{disc}L)^2\le b^{2n^3 f}$.
+After multiplying by the number of values of $j,Z$, the total exponent divided by $f$ is at most
+\[
+  2+270n^3+366n^4+2n^3(\varrho+ln+n\varrho)
+  \le 2000n^6(l+1),
+\]
+Here $\varrho=n-1$. This gives the asserted count.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L485}{Combining the constants from the three groupings}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L528}{Summing over cell ranks and pairing matrices}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/FramesOverLattice.lean\#L585}{Counting labeled terms on the lattice}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{408}.}
+\begin{lemma}[A specified row that vanishes modulo $\pi_N$ on a given sublattice]
+\label{lem:b-vanishing-rows}
+\emitthmsource
+Assume the base CM field contains a primitive $5040$-th root of unity and write $\widehat{\mathcal O}_E$ for the finite adelic integers.
+Take a finite adelic unitary element $u$. Let $\mathcal A$ be the coset family of the integral unitary group modulo the preimage of the lattice stabilizer.
+For each $\phi\in\mathcal A$ choose a representative $y_\phi$ and let $\ell_\phi$ be the specified row of $y_\phi^{-1}u^{-1}$.
+Let $L\subseteq u\widehat{\mathcal O}_E^{\,k_0}$ be a lattice of rank $r$ satisfying $r+l=k_0$.
+There is a rational subspace $V$ of dimension $r$ such that $L$ has
+\[
+ L_V=(V\otimes_E\mathbb A_{E,f})\cap u\widehat{\mathcal O}_E^{\,k_0}
+\]
+finite index $i$ in
+\[
+ \operatorname{disc}L=i\operatorname{disc}L_V,\qquad
+ \#\{\phi\in\mathcal A:\ell_\phi(L)\subseteq\pi_N\widehat{\mathcal O}_E\}
+ \le i(N^f)^l.
+\]
+\end{lemma}
+\begin{proof}
+Take $V$ to be the rational span of $L$, that is, of the rational columns of a full-rank representation of $L$.
+Take a basis matrix $m$ for $L_V$. Then $L$ is the column lattice $mA$,
+where $A$ is an integral matrix invertible over the finite adeles with generalized determinant index $i=[\det A]$.
+Computing the discriminant from the Gram determinant of $mA$ gives
+$\operatorname{disc}L=i\operatorname{disc}L_V$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Discriminants.lean\#L659}{A saturated lattice basis and the discriminant}.}
+
+Write $R=\widehat{\mathcal O}_E$ and $d=\pi_N$,
+and let $v_\phi$ be the specified row of $y_\phi^{-1}$. If $v_\phi\equiv v_{\phi'}\pmod{d}$,
+then the difference of the two rows applied to each integral column of $y_{\phi'}$ is still divisible by $d$.
+Thus the specified row of $y_\phi^{-1}y_{\phi'}$ agrees with the corresponding identity row modulo $d$.
+It follows that $y_\phi^{-1}y_{\phi'}$ belongs to the preimage of the lattice stabilizer, so $\phi=\phi'$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L99}{The inverse matrix row determines the coset}.}
+
+The columns of $u^{-1}m$ span a primitive sublattice, so they extend to an integral basis of $R^{k_0}$.
+For each $\phi$ satisfying the vanishing condition, record
+\[
+  w_\phi=d^{-1}v_\phi u^{-1}m A\in R^r
+\]
+its class in the row lattice of $A$, and the values of $v_\phi$ modulo $d$ on the other $l$ basis vectors.
+The first entry has $[\det A]=i$ possible values. Also $[d]=N^f$,
+so there are $(N^f)^l$ possibilities for the second entry.
+If two $\phi$ give the same records, $w_\phi-w_{\phi'}$ is the product of an integral row and $A$.
+Cancel $A$ to see that $v_\phi,v_{\phi'}$ agree modulo $d$ on every column of $u^{-1}m$.
+The second record gives agreement on the other $l$ basis vectors.
+Since these vectors form an integral basis, $v_\phi\equiv v_{\phi'}\pmod d$,
+and the previous argument gives $\phi=\phi'$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L319}{Two sets of residue classes from the completed basis}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L373}{Substitution of the specified residue row}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L417}{Counting rows on the saturated lattice}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/SiegelLemma.lean}{516}.}
+\begin{lemma}[Discriminants of orthogonal saturated lattices and short vectors of bounded product]
+\label{lem:b-siegel-short-basis}
+\emitthmsource
+Let $E$ be a CM field containing a primitive $5040$-th root of unity. Let $f$ be the number of infinite places and $\mathrm{rd}_E$ the root discriminant.
+Let $u$ be a finite adelic unitary matrix and $T\subset E^{k_0}$ a subspace of corank $s$. Let $d$ be the discriminant
+of its saturated lattice $T_{\mathbb A_f}\cap u\widehat{\mathcal O}_E^{k_0}$. There are $s$ nonzero rational lattice vectors $X_i\in E^{k_0}\cap u\widehat{\mathcal O}_E^{k_0}$ spanning $T^\perp$ such that
+\[
+ \left(\prod_i\|X_i\|_\infty\right)^{2f}\le (8fs\,\mathrm{rd}_E)^{fs}d,
+\]
+where $\|\cdot\|_\infty$ is the Euclidean norm combining the Euclidean lengths at the infinite places.
+\end{lemma}
+
+\begin{proof}
+Choose rational column bases $x,y$ for $T,T^\perp$ and write the saturated lattices using column bases $m=xb$ and $ya$.
+Now $u^{-1}m$ and $u^{-1}ya$ are primitive integral matrices, each with an integral left inverse. Hermitian orthogonality gives $m^*ya=0$. Jacobi's complementary minor identity on the standard lattice gives equal generalized indices for the two Gram determinants. Using unitarity of $u^{-1}$ and the fact that the finite generalized index $[\ \cdot\ ]_f$ of a nonzero rational element is its absolute field norm, we obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L357}{The discriminant identity for primitive orthogonal lattices}.}
+\[
+ d^2=[\det(m^*m)]_f=[\det a]_f^2\,|\operatorname{Nm}_{E/\mathbb Q}\det(y^*y)|.
+\]
+
+At each infinite place choose $r_v$ so that $\Phi_v(y)r_v$ has orthonormal columns. Combine $(r_v)_v$ and $a$ into an adelic matrix $R$. The preceding identity and the local identities $\det(r_v^*\Phi_v(y)^*\Phi_v(y)r_v)=1$ give idelic absolute value $|\det R|_{\mathbb A}d\ge 1$ for its determinant.
+Minkowski's second theorem gives an invertible rational matrix $B$ with $a^{-1}B^\top$ integral, such that the $2f$-th power of the product of the lengths of its rows $B_i$ under $R$ is at most $(2fs\,\mathrm{rd}_E)^{fs}/|\det R|_{\mathbb A}$. See Bombieri and Vaaler~\cite{BombieriVaaler1983} for the product form of Siegel's lemma over adeles and number fields. Put $X_i=yB_i$. Since $u^{-1}ya$ and $a^{-1}B^\top$ are integral, $X_i$ lies in the corresponding rational lattice. Since $y$ has a left inverse and $B$ is invertible, $X_i$ form a basis for $T^\perp$. The choice of $r_v$ makes the Euclidean length of $X_i$ equal to the length of $B_i$ under $R$. Substitute $|\det R|_{\mathbb A}^{-1}\le d$ and enlarge $2$ to $8$ to get the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L495}{Minkowski's second theorem in an adelic basis}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/SiegelLemma.lean}{626}.}
+\begin{lemma}[A discriminant series for subspaces of fixed codimension]
+\label{lem:b-subspace-height-zeta}
+\emitthmsource
+Assume the base CM field contains a primitive $5040$-th root of unity, with $f$ infinite places and root discriminant $\mathrm{rd}_E$.
+Take a finite adelic unitary element $u$. Let $T$ range over rational subspaces of $E^{k_0}$ of codimension $l$,
+and let $L_T$ be the saturation of $T$ in the unimodular lattice $u\widehat{\mathcal O}_E^{\,k_0}$. Then
+\[
+ \sum_{\operatorname{codim}T=l}
+        (\operatorname{disc}L_T)^{-(k_0+1)}
+ \le (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l}.
+\]
+\end{lemma}
+\begin{proof}
+Put $\mathcal L=E^{k_0}\cap u\widehat{\mathcal O}_E^{\,k_0}$.
+Write $\|\,\cdot\,\|_\infty$ for its Euclidean norm in all infinite coordinates,
+and put $s=f(k_0+1)$. \statementref{Lemma}{lem:b-siegel-short-basis} gives $l$ nonzero vectors of $\mathcal L$,
+$x_1,\dots,x_l$, whose Hermitian orthogonal complement is $T$, with
+\[
+ \left(\prod_{a=1}^l\|x_a\|_\infty\right)^{2f}
+     \le (8 f l\,\mathrm{rd}_E)^{fl}\operatorname{disc}L_T.
+\]
+Enlarge the constant using $l\le k_0$, raise both sides to power $k_0+1$, and rearrange to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L520}{The product form of Siegel's lemma}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L590}{The discriminant weight of one term}.}
+\[
+ w(x)=(8 f k_0\,\mathrm{rd}_E)^s\|x\|_\infty^{-2s},
+ \qquad
+ (\operatorname{disc}L_T)^{-(k_0+1)}\le\prod_{a=1}^l w(x_a).
+\]
+
+A nonzero lattice vector has norm at least $1$, so any two distinct lattice vectors are separated by at least $1$.
+The real coordinate space has dimension $2fk_0$, with $2s\ge 2fk_0+2$. A sphere packing estimate gives
+$\sum_{x\in\mathcal L\setminus\{0\}}\|x\|_\infty^{-2s}\le5^{2s}$;
+Using $5^2\cdot8=200$ gives
+\[
+ \sum_{x\in\mathcal L\setminus\{0\}}w(x)\le (200 f k_0\,\mathrm{rd}_E)^s.
+\]
+Choose such an ordered tuple for each subspace $T$. The orthogonality condition recovers $T$, so this correspondence is injective.
+The series over $T$ is therefore bounded by the total weight of all $l$-tuples.
+The tuple weight is the product of the component weights, so the total is at most
+$\bigl(\sum_{x\in\mathcal L\setminus\{0\}}w(x)\bigr)^l$,
+Substitution gives the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L484}{A length lower bound in the integral lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Analysis/PackingAndSobolev.lean\#L88}{An inverse power sum over separated points}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/SiegelLemma.lean\#L630}{Summing the subspace series}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{587}.}
+\begin{lemma}[Vanishing rows on a unimodular lattice and the total lattice weight]
+\label{lem:b-row-lattice-sum}
+\emitthmsource
+Keep the notation of \statementref{Lemma}{lem:b-vanishing-rows} and suppose the coset family $\mathcal A$ is finite.
+Assume $r+l=k_0$. Put $H=b^{n^3 f}$ and write $\mathrm{rd}_E$ for the root discriminant. Then
+\[
+ \sum_{\phi\in\mathcal A}\ \
+ \sum_{\substack{L\subseteq u\widehat{\mathcal O}_E^{\,k_0}\\
+          \operatorname{rk}L=r,\ \operatorname{disc}L\le H\\
+          \ell_\phi|_L\equiv0\bmod\pi_N}}(\operatorname{disc}L)^{-k_0}
+ \le
+ (N^f)^l H^{2\varrho+6}
+        (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l} 2^{k_0}.
+\]
+\end{lemma}
+\begin{proof}
+Nonnegativity lets us fix $L$ first and sum over $\phi$.
+Let $L_V$ be the saturated lattice from \statementref{Lemma}{lem:b-vanishing-rows},
+and write $d=\operatorname{disc}L_V$ and $i=[L_V:L]$.
+As $u$ is unitary, the Gram matrix of $L_V$ can be computed in integral coordinates, so $d\ge1$.
+Also $i\ge1$, and \statementref{Lemma}{lem:b-discriminant-index} gives $di=\operatorname{disc}L\le H$.
+The contribution for fixed $L$ is at most $(N^f)^l i(di)^{-k_0}$.
+Put $\mu=2\varrho+4$. From $r\le k_0$ we obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L452}{Comparing weights under the discriminant cutoff}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L469}{A discriminant lower bound for the saturated lattice}.}
+\[
+ i(di)^{-k_0}
+ =\frac{i(di)^{\mu+1}}{d^{k_0+\mu+1}i^{k_0+\mu+1}}
+ \le H^{\mu+2}d^{-(k_0+1)}i^{-(r+\mu)}.
+\]
+
+Group $L$ by $V$, then sum over finite-index sublattices of $L_V$.
+By \statementref{Lemma}{lem:b-sublattice-index-zeta}, at $r+\mu$ the sublattice index series of a rank-$r$ lattice is bounded by
+the $r$-th power of the integral adelic ideal series at $\mu$.
+That series at $\mu=2\varrho+4$ is at most $2$,
+so the total sublattice index weight is at most $2^r\le 2^{k_0}$.
+Finally sum over the rational subspaces $V$ of codimension $l$. \statementref{Lemma}{lem:b-subspace-height-zeta} gives
+\[
+ \sum_{\operatorname{codim}V=l}
+           (\operatorname{disc}L_V)^{-(k_0+1)}
+ \le (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l}.
+\]
+Multiply the two bounds by $(N^f)^l H^{\mu+2}$ to get the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L570}{The series for finite-index sublattices}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L597}{Joint summation over rows and lattices}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/LatticesOfCorank.lean}{765}.}
+\begin{lemma}[Inverse discriminant weights for lattices of fixed corank]
+\label{lem:b-corank-lattices}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Put $\tau=b^{k_0 f/4}$ and $H=b^{n^3f}$. Let $N$ be the auxiliary prime of the filling data and $\mathcal C$ the class set.
+For $r+l=k_0$, let $\mathcal L_r(c)$ be the sublattices of rank $r$ in the class lattice $L_c$
+of discriminant at most $H$. Then
+\[
+ \sum_c\ \sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}
+ \le \frac{|\mathcal C|}{N^{k_0f}}\tau^{l+1}.
+\]
+\end{lemma}
+\begin{proof}
+Write $F(c)=\sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}$,
+and let $\mathcal A$ denote the cosets of the integral unitary group modulo the preimage of the lattice stabilizer.
+Let $\pi_N$ be the specified split factor at level prime $N$, of generalized index $N^f$.
+For each coset $\phi$ choose a representative $\dot\phi$ in the integral unitary group.
+For any finite adelic unitary $u$, since the source level lies in the lattice stabilizer,
+the chosen representative of class $[u\dot\phi]$ has the form
+$\eta u y_\phi$ with $\eta$ rational unitary and $y_\phi$ an integral unitary element of $\phi$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L251}{Factorization of the class representative}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L269}{The generalized index of the level factor}.}
+
+Translation by $\eta^{-1}$ preserves the ranks and discriminants of the class lattices.
+The class condition requires $(y_\phi^{-1}u^{-1})v$ to be integral, with the specified row zero modulo $\pi_N$,
+so $F([u\dot\phi])$ is at most
+\[
+ \sum_{\substack{L\subseteq u\widehat{\mathcal O}_E^{\,k_0}\\
+         \operatorname{rk}L=r,\ \operatorname{disc}L\le H\\
+         \ell_\phi|_L\equiv 0\bmod \pi_N}}(\operatorname{disc}L)^{-k_0},
+\]
+where $\ell_\phi$ is the specified row of $y_\phi^{-1}u^{-1}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L174}{The row constraint from the class lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L210}{Isometric embeddings preserve the weights}.}
+
+Let $\mathrm{rd}_E$ be the root discriminant. By \statementref{Lemma}{lem:b-row-lattice-sum} the sum over $\phi$ of the preceding bound is at most
+\[
+ (N^f)^l H^{2\varrho+6}
+     (200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)l} 2^{k_0}.
+\]
+
+This constant is at most $\tau^{l+1}/b^f$. Indeed,
+\[
+ b^f H^{2\varrho+6}2^{k_0}\le \tau,
+ \qquad
+ N^f(200 f k_0\,\mathrm{rd}_E)^{f(k_0+1)}\le\tau.
+\]
+the first inequality expands $H$ and uses $2^{k_0}\le b^f$ to compare the powers of $b$.
+For the second, raise both sides to the $1000$-th power and use
+$N\le b^{60n}$, $(200 f k_0\,\mathrm{rd}_E)^{1000}\le b$, and
+$60000n+k_0+1\le250k_0$.
+The lower index bound for the admissible filling data gives $|\mathcal A|\ge(N^{k_0}/b)^f$,
+so for each $u$ we have\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L688}{The discriminant cutoff constant}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L708}{The root discriminant constant}.}
+\[
+ \sum_{\phi\in\mathcal A}F([u\dot\phi])
+ \le |\mathcal A|\,\frac{\tau^{l+1}}{N^{k_0f}}.
+\]
+
+Integrate the inequality over the adelic quotient by the rational unitary group.
+Right translation preserves the integrals of the class functions. The source-level stabilizers are trivial, so the integral normalized by that level equals the sum of the class values.
+Thus the left integral is $|\mathcal A|\sum_c F(c)$,
+and the right integral is $|\mathcal A||\mathcal C|\tau^{l+1}/N^{k_0f}$.
+Cancel $|\mathcal A|$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L40}{From the translate average to the class average}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/LatticesOfCorank.lean\#L774}{Lattice count for fixed corank}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Count.lean}{177}.}
+\begin{lemma}[Inverse discriminant weights for pairs of near representatives of fixed corank]
+\label{lem:b-pair-disc-count}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Let $\mathcal C$ be the class set and $\overline R$ the residual image of the Bessel subgroup.
+Let $N$ be the auxiliary prime of the filling data, let $\tau=b^{k_0 f/4}$, and put
+\[
+ n_{\mathrm p}=\frac{|\overline R|\cdot|\mathcal C|}{N^{k_0 f}},
+ \qquad H=b^{n^3 f}.
+\]
+For $0\le l\le n^3$ let $\mathcal P_l(c,c')$ be the pairs of near representatives whose common lattice has corank $l$
+and discriminant $d$ at most $H$. Then
+\[
+  \sum_{c,c'}\sum_{(\gamma,\gamma')\in \mathcal P_l(c,c')}
+        d(\gamma,\gamma')^{-k_0}\le \tau^{l+2}n_{\mathrm p}.
+\]
+\end{lemma}
+\begin{proof}
+If $l>k_0$ the sum is empty. Assume $r=k_0-l$ from now on.
+Fix the first class $c$. Let $\mathcal L_r(c)$ be the rank-$r$ sublattices of $L_c$ of discriminant at most $H$.
+Each pair has a common reduction $s$, written as $s=s_0t$,
+where $s_0$ is a chosen representative of $s\overline R$ and $t\in\overline R$.
+Thus the two terms have the same label $t$. By the construction of the common lattice,
+\[
+ L_{12}\subseteq L_\gamma\cap L_{\gamma'}\subseteq L_c,
+ \qquad L_{12}\in\mathcal L_r(c),
+\]
+where $L_\gamma$ is the lattice of vectors in $L_c$ that become orthogonal to the $\gamma$ frame after adding an integral frame vector of level $M$.
+Since $L_{12}$ is full rank in the common link space, mapping the pairings into $(t,L_{12})$
+gives the weight $(\operatorname{disc}L_{12})^{-k_0}$ of the corresponding lattice.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L84}{The common label and lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Gain.lean\#L784}{Rank of the common lattice}.}
+
+Fix $(t,L)$. Each pair is determined by two ordered terms $(c',\gamma),(c',\gamma')$,
+both with label $t$ and term lattices containing $L$.
+\statementref{Lemma}{lem:b-frames-over-lattice} bounds the number of choices for each term by
+$b^{2000n^6(l+1)f}$, so each fiber has cardinality at most
+\[
+ b^{4000n^6(l+1)f}\le b^{10^5n^9f}\le \tau,
+\]
+The first comparison of exponents uses $l+1\le2n^3$, and the second uses the admissible lower bound for $k_0/4$.
+Summing over the fibers, the contribution for $c$ is at most
+$|\overline R|\tau\sum_{L\in\mathcal L_r(c)}(\operatorname{disc}L)^{-k_0}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L125}{Counting pairs for a fixed first class}.}
+
+Finally \statementref{Lemma}{lem:b-corank-lattices} gives
+\[
+ \sum_{c\in\mathcal C}\sum_{L\in\mathcal L_r(c)}
+     (\operatorname{disc}L)^{-k_0}
+ \le \frac{|\mathcal C|}{N^{k_0 f}}\tau^{l+1}.
+\]
+Multiplying by the preceding factor $|\overline R|\tau$ gives the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Count.lean\#L187}{Total weight of pairs of fixed corank}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{242}.}
+\begin{lemma}[A weighted sum over pairs of near representatives]
+\label{lem:b-weighted-near-pairs}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Keep $\tau,n_{\mathrm p},k_0$ as in \statementref{Lemma}{lem:b-pair-disc-count},
+and let $\mathcal P(c,c')$ be any set of pairs of near representatives, with $B\ge0$.
+For a pair let $l,d$ be its common lattice corank and discriminant, and $G,G'$ its two level gauges.
+Suppose each pair admits $\eta>0$ and $D$ such that both cells have second-moment constants at most $D$ and
+\[
+   (d\eta)^2\le GG',\qquad \tau^{l+6}D/\eta^{k_0}\le B.
+\]
+If $a(\gamma),a(\gamma')$ are the sizes of its two terms, then
+\[
+  \sum_{c,c'}\sum_{(\gamma,\gamma')\in\mathcal P(c,c')}
+        a(\gamma)a(\gamma')\le \tau B.
+\]
+\end{lemma}
+\begin{proof}
+By definition of the individual sizes,
+\[
+   a(\gamma)^2\le \frac{\tau^4 D}{n_{\mathrm p}G^{k_0}},
+   \qquad
+   a(\gamma')^2\le \frac{\tau^4 D}{n_{\mathrm p}(G')^{k_0}} .
+\]
+The denominators are positive. Multiply the two bounds, take the square root, and use $(d\eta)^2\le GG'$ to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L173}{Product of the sizes for one pair}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L208}{Substituting the budget}.}
+\[
+  a(\gamma)a(\gamma')\le
+  \frac{\tau^4 D}{n_{\mathrm p}(d\eta)^{k_0}}
+  \le \frac{B}{\tau^{l+2}n_{\mathrm p}}d^{-k_0}.
+\]
+
+By \statementref{Lemma}{lem:b-pair-corank} only coranks $0\le l\le n^3$ occur,
+and the discriminants all meet the cutoff in \statementref{Lemma}{lem:b-pair-disc-count}.
+Sum the inequality by corank $l$. By nonnegativity, enlarge each group to $\mathcal P_l(c,c')$.
+The inverse discriminant bound for pairs gives contribution at most $B$ from each group.
+Thus the total is at most $(n^3+1)B$.
+The admissible data give $n\le b$, $2\le b$, and $b^4\le\tau$,
+so $n^3+1\le 2b^3\le b^4\le\tau$ and the result follows.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L233}{Bounding the number of corank groups}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{A weighted sum over pairs of near representatives}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{744}.}
+\begin{lemma}[Frame-intersection places control the square sum for equal links]
+\label{lem:b-link-meet}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Choose a set $\Omega$ of residual elements and a positive integer $z$ such that, for each $s\in\Omega$,
+the product of the norms of the finite places where the frame span and its image under $s$ intersect nontrivially after reduction is at least $z$.
+In each block take only the terms of nonzero discriminant, sum truncated amplitudes with the same link, and square the absolute value.
+The resulting sum of squares over blocks and links, divided by $\nu^2$, is at most
+\[
+ \left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}},
+\]
+where $k_0$ is the rank of $X_0$, $f$ the number of infinite places, $\nu$ the unipotent covolume, and
+$D_{\mathrm{main}}$ the square of the full source dimension divided by the product of the Bessel degrees times the mass of the standard lattice.
+\end{lemma}
+\begin{proof}
+Fix classes $c,c'$ and $s\in\Omega$. For each link $\Lambda$,
+let $\mathcal T_\Lambda$ consist of the terms of nonzero discriminant with link $\Lambda$.
+This set is stable under left and right unipotent actions and lies in the remainder set $\Gamma_*$.
+By the block amplitude bound for near representatives, the squared absolute value of its truncated sum divided by $\nu^2$
+is bounded by the sum of the size products for ordered pairs of near representatives in $\mathcal T_\Lambda$.
+A near representative is a chosen unipotent double-coset representative whose two reduced regions intersect at infinity.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L538}{Pairs of near representatives from the same block}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L566}{A product bound for near representatives}.}
+
+Any such pair has the same link, nonzero discriminants, and a compatible reduction.
+The first term already determines the reduction $s$ and link $\Lambda$.
+Thus each ordered pair occurs at most once when summing over $s$ and $\Lambda$.
+It remains to bound the weight of equal-link pairs for which the frame-intersection product is at least $z$.
+
+Write $\tau=b^{k_0 f/4}$. For such pairs the common link has corank at most $1$.
+The equal links and nonzero discriminants make both cells have maximal rank,
+so the corank is at most the difference between the maximal rank and the isotropic frame dimension, namely $1$.
+The two cell constants are at most $D_{\mathrm{main}}$.
+Let $d$ be the pair discriminant and $g,g'$ the two level gauges.
+\statementref{Lemma}{lem:b-pair-discriminant-gain} gives $(zd)^2\le gg'$.
+In \statementref{Lemma}{lem:b-weighted-near-pairs} we may therefore use gain $\eta=z$,
+cell constant bound $D_{\mathrm{main}}$, and budget
+$B=\tau^7D_{\mathrm{main}}/z^{k_0}$, since the common corank $l$ satisfies $l+6\le7$.
+Thus the weight of the pairs is at most
+\[
+ \tau B=\frac{\tau^8}{z^{k_0}}D_{\mathrm{main}}
+       =\left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}}.
+\]
+Substitute this into the block square sum to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{A weighted sum over pairs of near representatives}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L454}{Gain for pairs with equal links}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/RemainingTerms/Sum.lean}{676}.}
+\begin{lemma}[Collecting the square sum of the remainder]
+\label{lem:b-off-link-square}
+\emitthmsource
+Let $S$ be admissible filling data and assume the CM field contains a primitive $5040$-th root of unity.
+Let $\Omega$ be any residual set and $\Gamma_*$ the union of two sets of rational terms:
+terms of nonzero discriminant, and terms of zero discriminant whose two unipotent characters are compatible and which change the isotropic frame span.
+Write $A_*$ for the truncated amplitude sum of $\Gamma_*$. Suppose the nonzero-discriminant terms, summed by link,
+have total squared absolute value over blocks in $\Omega$ at most $C\nu^2$, with $C\ge0$. Then
+\[
+ \frac1{\nu^2}\sum_{c,c'}\sum_{s\in\Omega}
+       \|A_*(c,s,c')\|_{\mathrm{HS}}^2
+ \le C+b^{-k_0f} D_{\mathrm{id}},
+ \qquad D_{\mathrm{id}}=|\overline R|u_0 ,
+\]
+Here $\nu$ is the unipotent covolume, $k_0$ the rank of $X_0$, $f$ the number of infinite places,
+$\overline R$ the residual Bessel subgroup, and $u_0$ the full source dimension.
+\end{lemma}
+\begin{proof}
+Fix a block $(c,s,c')$. Put all zero-discriminant terms in one group
+and group the nonzero-discriminant terms by link. Both the link and discriminant are invariant under left and right unipotent actions,
+so the groups are stable, and the truncated group sums can be added absolutely.
+By the triangle inequality, the squared absolute value of the block is at most the sum of norm products over all ordered group pairs.
+For two identical nonzero-discriminant groups, retain the squared absolute value of their sum.
+The remaining products are cross-products of distinct groups and the square of the zero-discriminant group.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L504}{Stable groups by discriminant and link}.}
+
+A near representative is a chosen unipotent double-coset representative in the block with a cell rank,
+for which some archimedean point and its inverse image both lie in the bounded reduced region.
+Near representatives occur only in blocks whose reduction makes the two characters compatible.
+For any two groups, the near-representative estimate on each gives the following bound for the product of norms:
+\[
+ \nu^2\sum_{\gamma,\gamma'}d_{c,c'}(\gamma)d_{c,c'}(\gamma'),
+\]
+here $d_{c,c'}(\gamma)$ is the size of one term and the two indices range over the two groups' near representatives.
+Each ordered pair determines its group pair. If the product was excluded from the retained square sum,
+the links differ or at least one discriminant vanishes.
+The upper bounds can therefore be summed directly over pairs of that type.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L566}{Bounding the product of two group amplitudes}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L606}{Expanding the squared absolute value by groups}.}
+
+When also summing over $s$, each representative $\gamma$ lies only in the block with reduction
+$h_c^{-1}\gamma_f h_{c'}$. Thus pairs from different blocks are distinct.
+We show that the total weight of these pairs is at most $b^{-k_0 f}D_{\mathrm{id}}$.
+Write $\tau=b^{k_0 f/4}$.
+\statementref{Lemma}{lem:b-weighted-near-pairs} takes the following data for each pair:
+common link corank $l$, pair discriminant $d$, positive gain $\eta$,
+and an upper bound $D$ for both cell constants.
+If $(d\eta)^2$ is at most the product of the two level gauges and
+$\tau^{l+6}D/\eta^{k_0}\le B$, then the total weight is at most $\tau B$.
+The proof groups by common link corank and applies inverse discriminant counting in each group.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L248}{A uniform weighted sum over pairs of near representatives}.}
+
+Here we may take $B=D_{\mathrm{id}}/\tau^{10}$ throughout.
+If the links agree but the pair is outside the retained square terms,
+both discriminants vanish. The common link has corank $l=0$,
+and both cell constants equal $D_{\mathrm{id}}/\tau^{16}$.
+Taking $\eta=1$ gives $\tau^6D=B$.
+If the links differ, let $i\ge1$ be their link corank.
+\statementref{Lemma}{lem:b-pair-discriminant-gain} gives gain $\eta=(M/2)^{if}$, and the proof of \statementref{Lemma}{lem:b-pair-corank} gives $l\le i+1$.
+Take $D=D_{\mathrm{main}}$ and put $u=\tau(2/M)^{k_0 f}$.
+Using $\tau^4=b^{k_0f}$, $\tau\ge1$, and $M\ge 2b$ gives $u\le1$.
+Combining with $D_{\mathrm{main}}\le(M/b^6)^{k_0f}D_{\mathrm{id}}$ gives
+\[
+ \frac{\tau^{l+6}D_{\mathrm{main}}}{(M/2)^{ik_0f}}
+ \le \tau^7 u^iD_{\mathrm{main}}
+ \le \tau^8(2/b^6)^{k_0f}D_{\mathrm{id}}
+ \le \tau^{-12}D_{\mathrm{id}}\le B.
+\]
+Thus the total weight is at most
+$\tau B=\tau^{-9}D_{\mathrm{id}}\le b^{-k_0f}D_{\mathrm{id}}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L384}{Gains and constants for distinct links and zero discriminants}.}
+
+By hypothesis the retained groups contribute at most $C\nu^2$ in total.
+Add the bound for the pair weights multiplied by $\nu^2$ and divide by $\nu^2$ to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/SquareExpansion.lean}{635}.}
+\begin{lemma}[The Bessel remainder with one reduction fixed]
+\label{lem:b-bessel-remainder}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with a primitive $5040$-th root of unity.
+Let $\overline R$ be the image of the Bessel subgroup in the residual group $G_0\times G_1$.
+For $i=0,1$ put
+\[
+ \Omega_i=\{s:\ s_i=t_i\ \text{for some }t\in\overline R\}.
+\]
+Use the amplitude notation of \statementref{Lemma}{lem:b-amplitude-blocks}.
+Let $A_{\mathrm{off}}$ be the amplitude sum over rational terms outside the Bessel subgroup, and put
+
+\[
+ E(s)=\frac{1}{\nu^2}\sum_{c,c'}\|A_{\mathrm{off}}(c,s,c')\|_{\mathrm{HS}}^2 .
+\]
+If $u_0$ is the full source dimension, then
+\[
+ \sum_{s\in\Omega_i}E(s)\le b^{-12}|\overline R|u_0.
+\]
+\end{lemma}
+\begin{proof}
+Put $M=p_0p_1$ and let $f$ count the infinite places of the base CM field. Let $k_0$ be the rank of the
+definite space $X_0$ in the Bessel construction and let $D_{\mathrm{id}}=|\overline R|u_0$.
+Put $D_{\mathrm{main}}=u_0^2/(d_{\mathrm{Bes}}\mu)$,
+where $d_{\mathrm{Bes}}$ is the product of the local Bessel degrees and $\mu$ the weighted class sum for the standard lattice.
+
+First check the two reduction conditions. Bessel subgroup elements fix the first frame vector.
+Hence elements of $\Omega_i$ fix that vector at each chosen place above $p_i$.
+If $s\in\Omega_i$ also belongs to a coset obtained from an integral scalar
+$\zeta$ of norm one times $\overline R$, comparison of coordinates at the first frame vector shows that
+$\zeta$ reduces to $1$ at each of those places.
+Regard $\zeta$ as a rational automorphism of the standard rank-one lattice.
+Freeness at this level gives $\zeta=1$, so $\Omega_i$ avoids all nontrivial scalar cosets.
+At each selected place above $p_i$ and its conjugate, elements of $\overline R$
+have a nonzero frame-intersection vector, a condition that depends only on $s_i$.
+Thus the frame-intersection product for each $s\in\Omega_i$ is at least
+$z=p_i^{2f}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L599}{The product of the norms of the intersection places}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L612}{Excluding nontrivial scalar cosets}.}
+
+For nonzero discriminants, in each block $(c,s,c')$
+sum truncated amplitudes with the same link, then square their absolute values.
+Let $X$ be the span of the first $\varrho$ isotropic frame vectors.
+The link of the rational element $\gamma$ is the subspace in two copies of $X^\perp/X$ given by
+\[
+ \bigl([v],[\gamma^{-1}v]\bigr),\qquad v\in X^\perp\cap(\gamma X)^\perp,
+\]
+Let $\mathcal L(\Omega_i)$ be the square sum over all blocks and links, divided by $\nu^2$.
+Use the frame-intersection lower bound $z$ in \statementref{Lemma}{lem:b-link-meet} to obtain
+$\mathcal L(\Omega_i)\le C$, where
+\[
+ C=\left(\frac{b^{2f}}{z}\right)^{k_0}D_{\mathrm{main}} .
+\]
+The admissible scales give $p_i^2\ge M/b$,
+$D_{\mathrm{main}}\le(M/b^6)^{k_0 f}D_{\mathrm{id}}$
+and $k_0 f\ge40$. Hence\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L759}{The link square-sum estimate}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L626}{Scale comparison at the level primes}.}
+\[
+ C\le\left(\frac{b^3}{M}\right)^{k_0 f}
+        \left(\frac{M}{b^6}\right)^{k_0 f}D_{\mathrm{id}}
+   =b^{-3k_0 f}D_{\mathrm{id}}
+   \le b^{-30}D_{\mathrm{id}} .
+\]
+
+In blocks avoiding nontrivial scalar cosets, the amplitude of all terms outside the subgroup equals that of the following remainder terms:
+those with nonzero discriminant and those with zero discriminant having compatible characters and moving the isotropic frame span.
+Indeed the removed terms with incompatible characters vanish under unipotent averaging.
+Any other removed term would come from a scalar translate of the Bessel subgroup,
+excluded by the condition on $\Omega_i$.
+Write $A_{\mathrm{rem}}$ and $A_{\mathrm{cut}}$ for the untruncated and truncated amplitude blocks of these terms.
+Use the normalized two-norm on the blocks, taking the sum of squared absolute values, dividing by $\nu^2$, then taking the square root.
+The truncation estimate and the cross-term bound of \statementref{Lemma}{lem:b-off-link-square} give, respectively,
+\[
+ \|A_{\mathrm{rem}}-A_{\mathrm{cut}}\|^2
+ \le b^{-40}D_{\mathrm{id}},\qquad
+ \|A_{\mathrm{cut}}\|^2\le C+b^{-k_0f}D_{\mathrm{id}},
+\]
+where the equal-link terms in the second bound are controlled by $\mathcal L(\Omega_i)$ and the unequal links contribute the second error.
+The triangle inequality, $k_0f\ge40$, and $b\ge1000$ give
+\[
+ \begin{aligned}
+ \left(\sum_{s\in\Omega_i}E(s)\right)^{1/2}
+ &=\|A_{\mathrm{rem}}\|\\
+ &\le \sqrt C+2b^{-20}\sqrt{D_{\mathrm{id}}}\\
+ &\le \sqrt C+b^{-15}\sqrt{D_{\mathrm{id}}}
+ \le 2b^{-15}\sqrt{D_{\mathrm{id}}}.
+ \end{aligned}
+\]
+Squaring and using $4b^{-30}\le b^{-12}$ gives the conclusion.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L519}{Collecting terms outside the subgroup}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Size.lean\#L184}{Truncation error}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L682}{Square sum of the cross-terms for different links}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{468}.}
+\begin{lemma}[The Gram operator at the identity]
+\label{lem:b-unit-moment}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with a primitive $5040$-th root of unity.
+Let $\mathcal P$ map the full source Euclidean space $U_0$ to a finite-dimensional complex inner product space, with $\rho$ the
+residual group action. Suppose $\mathcal P^*\rho(s)\mathcal P$
+satisfies the amplitude block formula of \statementref{Lemma}{lem:b-amplitude-blocks}.
+Write $u_0=\dim_{\mathbb C}U_0$. Then
+\[
+ \|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2\le b^{-12}u_0 .
+\]
+\end{lemma}
+\begin{proof}
+Write $P_s=\mathcal P^*\rho(s)\mathcal P$ and let $R(s)$ be the normalized amplitude operator formed only from
+rational terms in the Bessel subgroup, with residual image $\overline R$.
+The amplitude difference comes from outside the subgroup. Summing squared absolute values by block in the standard orthonormal basis gives
+$\|P_s-R(s)\|_{\mathrm{HS}}^2=E(s)$,
+where $E(s)$ is the single-point remainder second moment of \statementref{Lemma}{lem:b-bessel-remainder}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L404}{Squared absolute value of the amplitude difference}.}
+
+For every $t\in\overline R$ the operator $R(t)$ is unitary, and $R(1)=I$.
+Indeed, for each source class $d$ choose $\delta$ in the Bessel subgroup
+and a class $d'$ so that $\delta$ is in the rational sum for block $(d,t^{-1},d')$.
+When $W(\delta y)=MW(y)$ the corresponding block formula gives
+\[
+ R(t)e_{d,j}=\sum_k M_{jk}e_{d',k},
+\]
+where $M$ is unitary. Thus $R(t)$ is a class permutation composed with unitary maps on the individual classes.
+Right multiplication by $\delta$ bijects the rational terms of blocks $(c,st,d)$ and $(c,s,d')$.
+The orbit sums of the translated cutoffs over the corresponding unipotent lattices are still $1$,
+so they compute the same amplitude sum. Together with $W(\delta y)=MW(y)$ this gives
+\[
+ A(c,st,d)_{i,j}
+   =\sum_k \overline{M_{jk}}\, A(c,s,d')_{i,k}.
+\]
+Conjugate and divide by the unipotent covolume to give $P_{st}=P_s R(t)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L191}{The representation of the Bessel action on the source}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/AmplitudeSums.lean\#L806}{The translated cutoff orbit sum}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L298}{Right equivariance of the full amplitude}.}
+
+Put $s=1$. For every $t\in\overline R$,
+$P_t-R(t)=(\mathcal P^*\mathcal P-I)R(t)$.
+Right multiplication by a unitary preserves the Hilbert--Schmidt norm, so all $E(t)$ coincide.
+Their common value is the squared norm required.
+Also $\overline R$ is contained in the set $\Omega_i$ for either level prime.
+By \statementref{Lemma}{lem:b-bessel-remainder} and nonnegativity we have
+\[
+ |\overline R|\|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2
+ =\sum_{t\in\overline R}E(t)
+ \le\sum_{s\in\Omega_i}E(s)
+ \le b^{-12}|\overline R|u_0 .
+\]
+Divide by the positive integer $|\overline R|$ to conclude.
+\end{proof}
+
+\section{Local correlation integrals, shells, and projections}
+\label{sec:b-local-mass}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/Depth.lean}{883}.}
+\begin{lemma}[Reconstructing relative position matrices from stable pairings]
+\label{lem:b-frame-matrix-reconstruction}
+\emitthmsource
+Let $\Gamma$ and $\Gamma'$ be two gauges for one local frame. Each gives bounded sets filtered by powers of the scale, with matrix size controlled by the layers of all entries. Let $M$ be the layer scale.
+Suppose $x,xy$ have unipotent representatives in the frame box and the difference divided by $M$ has size at most $2$ in $\Gamma$.
+Suppose $0\le j\le\varrho$. There are two sequences $p,q$ of prefix coordinates of length $j$ adapted to $\Gamma'$, with $w_p^{-1}x$ and $w_q^{-1}xy$ in the near zone of layer $j$.
+If $j>0$, suppose also that $M^{-1}$ has size at most $1$ in $\Gamma'$ and that any scalar of size at most $10n$ in $\Gamma'$ has size at most $1$ in $\Gamma$.
+Suppose further that for every $a\ge j$ the stable pairing set contains a unit with inverse of size at most $1$ in $\Gamma$. Then
+\[
+  \operatorname{size}_{\Gamma}\bigl(M^{-1}(y-I)\bigr)\le 99n,
+  \qquad n=\varrho+1.
+\]
+\end{lemma}
+
+\begin{proof}
+For each $a<j$ the adapted prefix coordinates bound the coordinate lengths of the standard dual vector $e_a^\ast$ at both points by $8\varrho+7$. Both points can be moved into the box, the prefix coordinates bound the dual columns of the move, and the inverse matrix in the box pulls the column back. Choose a unit $c$ scaling both vectors so that $c e_a^\ast$ is a near pair. It is orthogonal to the previous layers, so the vector is stable and its pairing at layer $a$ is $c$. In this choice $c^{-1}$ has size at most $8\varrho+9\le10n$ in $\Gamma'$, hence at most $1$ in $\Gamma$. Thus each layer admits a stable pairing whose inverse has size at most $1$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L851}{Prefix coordinates control stable pairings at lower layers}.}
+
+Divide each stable vector by its pairing unit to obtain a short dual vector common to both points, with length budget $5$. On the top quotient the difference of the box representatives bounds the difference of gauges by $9$. Reconstruct downward. The short dual vector separates the one-dimensional pairing coordinate of the current layer from the remaining quotient. The balanced frames on the two sides and the common dual vector add at most $4\cdot5+12$ to the gauge difference at each step. This gives full-space budget $9+32\varrho$, which converts back to the claimed entry bound $99n$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/TwoGauges.lean\#L162}{Reconstructing the gauges layer by layer}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L821}{The matrix bound on the full space}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/OneFrame.lean}{661}.}
+\begin{lemma}[A weighted square integral for a single frame]
+\label{lem:b-one-frame-weighted-integral}
+\emitthmsource
+Give a local frame $F$, a gauge $\Gamma$, and a kernel $K$ satisfying the pairing-kernel conditions at layer $j\le\varrho$.
+Let $B_\Gamma$ be the position ball and $\mathcal W_j(K;x)$ the integral of the depth-weighted sum of the squared partial correlations of the layers.
+Let $\mu$ be Haar measure on the group, $\mu_0$ the quotient integration measure at layer zero, and $C_a$ the integration cost at layer $a$. Then
+\[
+ \int_{B_\Gamma}\mathcal W_j(K;x)\,d\mu(x)
+ \le (\varrho+1)\left(\prod_{a<\varrho}C_a\right)
+      \iint |K(g,y)|^2\,d\mu_0(g)\,d\mu_0(y).
+\]
+\end{lemma}
+
+\begin{proof}
+Fix layer $l$ with $j\le l\le\varrho$. Factor the group measure using Heisenberg convolution measures below layer $l$ and a $s$-finite measure $\rho_l$, a countable sum of finite measures. Write the variable as $x=g^{-1}\nu y$, with $\nu$ in the lower unipotent group. By the kernel transformation rule the absolute correlation is independent of $\nu$. On fibers where the ball has zero mass, the weighted integral is zero. On the other fibers the depth-weight integral estimates bound the weighted square integral by the truncated square integral times the product of lower-layer costs. The truncation multiplies the squared correlation by the indicator of positive fiber mass, equal to $1$ on positive mass and $0$ on zero mass.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L618}{Change of variables and fiber integration on the position ball}.}
+
+Bound the truncated square by descending induction from the top layer. Its correlation kernel is $K$, with both variables using the layer-zero quotient measure. When descending a layer, convolve the new Heisenberg measure into $\rho_l$ and use that layer's Cauchy--Schwarz bound for the truncated square to introduce its cost. Lower unipotent invariance and the measure factorization remove the translation of the second variable from the simultaneous translation of both variables. Thus the product of lower costs and the truncated square integral remains at most $\prod_{a<\varrho}C_a$ times $\|K\|_{L^2(\mu_0\otimes\mu_0)}^2$. Every $l$ has the same bound, and the weighted square integral has at most $\varrho+1$ terms $l$. Sum these bounds.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L559}{Heisenberg measure decomposition and recursion}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L665}{Summing the layers for one frame}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{126}.}
+\begin{lemma}[Denominator ideals and depths of stable pairings]
+\label{lem:b-ideal-depth}
+\emitthmsource
+Let $R$ be the integers of the semilocal algebra $A$ and let $g$ be the unitary level element for the large lattice data.
+Let $Z$ be the intermediate group. Choose a local \emph{local gauge} $\Gamma$ of scale $\alpha\in R\cap A^\times$,
+with $\bar\alpha=\alpha$, and write $\Lambda=2/|\alpha|$ for its loss.
+Let $0\le j\le\varrho$ and take $p,q$ to be a length-$j$ prefix coordinate sequence under $\Gamma$.
+When $j>0$, assume $\alpha g^{-1}\in R$. Put $n=\varrho+1$.
+Let $I_x$ be the \emph{common denominator ideal} of the position $x$, the ideal of multipliers making all entries of $g^{-1}(x-I)$ integral.
+If $0\le\sigma<1$ and
+\[
+  \Lambda^{990n^2}\le \sigma^{400n^2}[R:I_x],
+\]
+then at each active point $y$ at least one $j\le a<\varrho$ satisfies
+\[
+  \operatorname{vol}\bigl(\mathfrak d_a(y,x)\bigr)\le \sigma^2,
+\]
+Here $\mathfrak d_a(y,x)$ is the \emph{set of stable products}, formed by the values in $e_a$ dual coordinates of vectors stable at both $y$ and $yx$.
+A point is active if the correlation of the intermediate-group Bessel vector at $y,yx$ is nonzero and
+$w_p^{-1}y$ and $w_q^{-1}(yx)$ both lie in the layer-$j$ near zone.
+\end{lemma}
+\begin{proof}
+Write $I_x=cR$, with $c\in R\cap A^\times$ and $[R:I_x]=|c|^{-1}$. Then
+\[
+ |c|\Lambda^{990n^2}\le \sigma^{400n^2}.
+\]
+Fix an active point $y$. Suppose $\operatorname{vol}(\mathfrak d_a(y,x))>\sigma^2$ for each $a\ge j$.
+From each set choose an integral element $d_a\in A^\times$ of modulus at least its volume.
+Put
+\[
+ C=\prod_{j\le a<\varrho} d_a\overline{d_a}.
+\]
+Then $C\in R\cap A^\times$ and $\bar C=C$, and each $C/d_a$ is integral.
+Multiplicativity and conjugation invariance of the modulus give
+\[
+ |C|=\prod_{j\le a<\varrho}|d_a|^2\ge \sigma^{4n},
+\]
+The last step uses $0\le\sigma<1$ and the fact that the product has at most $n$ terms.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L112}{A generator for the common denominator ideal}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L168}{Generators of the stable pairing sets}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L445}{A self-conjugate common multiple}.}
+
+Choose scale $\alpha'=\alpha^{10n}C$ for the new gauge.
+For each $a\ge j$ the product $\alpha'(d_a)^{-1}=\alpha^{10n}(C/d_a)$ is integral.
+An old-gauge element $z$ of size $10n$ satisfies $\alpha^{10n}z\in R$,
+so $z$ has size at most $1$ in the new gauge.
+The nonzero correlation at the active point gives two unipotent translations moving $y$ and $yx$ into the lattice box
+so that their matrix difference divided by $g$ is integral, of new-gauge size at most $2$.
+Apply \statementref{Lemma}{lem:b-frame-matrix-reconstruction} with these properties and the prefix-coordinate and near-zone assumptions to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L192}{Nonzero correlation supplies translations into the lattice box}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L890}{The matrix reconstruction estimate}.}
+\[
+  (\alpha')^{99n}g^{-1}(x-I)\in\operatorname{Mat}(R).
+\]
+
+Thus $(\alpha')^{99n}\in I_x$, equivalently
+$c^{-1}(\alpha')^{99n}\in R$.
+Expanding $\alpha'$ shows that $c^{-1}C^{99n}$ has old-gauge size at most $990n^2$,
+hence $\lvert c^{-1}C^{99n}\rvert\le\Lambda^{990n^2}$.
+Put $X=|C|^{99n}$, so $0<X<\infty$. By $400n^2\ge 396n^2+1$,
+\[
+ X=|c|\,\lvert c^{-1}C^{99n}\rvert
+ \le |c|\Lambda^{990n^2}
+ \le \sigma^{400n^2}
+ \le \sigma(\sigma^{4n})^{99n}
+ \le \sigma X
+ < X.
+\]
+The contradiction proves the required volume bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L483}{Comparing moduli}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L133}{The depth criterion for denominator ideals}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/OneFrame.lean}{697}.}
+\begin{lemma}[A correlation integral over one position ball]
+\label{lem:b-position-ball}
+\emitthmsource
+Let $W$ be the \emph{truncated Bessel function} and let $\mu$ be Haar measure on the group.
+Put $0\le j\le\varrho$ and $n=\varrho+1$. For the gauges $\Gamma,\Gamma'$,
+write $\Lambda,\Lambda'$ for the respective losses and $B_{\Gamma'}$ for the \emph{position ball} of $\Gamma'$.
+Take unit sequences $p,q$, with $q$ prefix coordinate sequences of length $j$ for $\Gamma$.
+Let $\Delta_j$ be the corresponding prefix density and $\mathcal W_j(x)$ the product of weighted second moments for $\Gamma$,
+with shell normalizing factor $\mathcal N(W)$.
+Let $S\subseteq B_{\Gamma'}$ and $f$ be nonnegative functions satisfying on $S$
+$f(x)^2\le e^2\mathcal W_j(x)$ with $e\ge0$. Then
+\[
+ \Delta_j\int_S f\,d\mu
+ \le e\,\Lambda^{1500000 n^3+1}(\Lambda')^{25000 n^2}\mathcal N(W).
+\]
+\end{lemma}
+\begin{proof}
+Let $\theta_a(u)$ be the modulus at unipotent layer $a$ and write $\theta_a$ for its value at the layer element.
+Let $\nu$ denote Bessel quotient measure and put
+\[
+ P_W=\iint \lvert\langle W(v),W(z)\rangle\rvert^2\,d\nu(v)\,d\nu(z),
+ \qquad
+ C=\Bigl(\prod_{a<\varrho}\theta_a\Bigr)c_{\mathrm{Pl}}^{h\varrho},
+\]
+where $c_{\mathrm{Pl}}$ is the Plancherel constant and $h$ the dimension of the free coordinate space $X'$,
+with $\mathcal N(W)=CP_W$. Let $d$ be the Weyl diagonal element scaling frame vector $a<j$ by
+$p_a/q_a$, and take the correlation kernels
+\[
+ k_1(v,z)=\langle W(v),W(z)\rangle,\qquad
+ k_2(v,z)=\langle W(v),W(dz)\rangle .
+\]
+Write $N_1(x),N_2(x)$ for the weighted second moments of kernel $k_1,k_2$ at layers $0$ and $j$
+using the corresponding depth weights and layer measures.
+The weighted product is
+\[
+ \mathcal W_j(x)=D\Lambda^{3\cdot10^6 n^3}N_1(x)N_2(x),
+ \qquad
+ D=\Bigl(\prod_{a<j}\theta_a(p_a^{-1})\Bigr)^2 .
+\]
+Since $N_1,N_2$ is measurable, even if $f$ is given only pointwise we can first use the square root of the right side
+to bound $f$ and then enlarge the domain to $B_{\Gamma'}$. Cauchy--Schwarz gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Correlations.lean\#L98}{Weighted square sums at the layers}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L130}{The weighted product}.}
+\[
+ \left(\int_S f\,d\mu\right)^2
+ \le e^2D\Lambda^{3\cdot10^6n^3}E_1E_2,\qquad
+ E_i=\int_{B_{\Gamma'}}N_i(x)\,d\mu(x).
+\]
+
+Truncation and Bessel equivariance give the hypotheses of the one-frame estimate for both kernels.
+Let $V=C(\Lambda')^{4900n\varrho}$ be the product of the layer constants.
+\statementref{Lemma}{lem:b-one-frame-weighted-integral} gives
+\[
+ E_1\le nVP_W,\qquad E_2\le nV JP_W,\qquad
+ J=\prod_{a<j}|p_a/q_a|^{k+2(\varrho-a)},
+\]
+where $k$ is the dimension outside the frame hyperbolic pairs. The second formula uses the integral change of variables $z\mapsto dz$.
+$\int \Phi(dz)\,d\nu(z)=J\int\Phi(z)\,d\nu(z)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L388}{Equivariance and truncation of the correlation kernels}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L665}{The one-frame estimate}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Levels.lean\#L547}{Change of variables by the Weyl diagonal element}.}
+
+The prefix density cancels most of the moduli. Put $r_a=k+1+2(\varrho-a-1)$. Then
+factor $a$ of $\Delta_j^2D J$ is
+\[
+ |p_aq_a|^{r_a}|p_a|^{-2r_a-1}|p_a/q_a|^{r_a+1}
+ = |q_a|^{-1}.
+\]
+so $\Delta_j^2D J=\lvert(\prod_{a<j}q_a)^{-1}\rvert\le \Lambda^2$,
+because that inverse has size at most $1$ under $\Gamma$, hence at most $2$.
+Also $\Lambda'\ge2$ gives
+\[
+ nV\le C(\Lambda')^{n+4900n\varrho}
+ \le C(\Lambda')^{25000n^2}.
+\]
+Substitute the bounds into $\Delta_j^2(\int_S f\,d\mu)^2$ and take the square root.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L677}{The density identity}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/OneFrame.lean\#L705}{The correlation integral over the position ball}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/Shells.lean}{86}.}
+\begin{lemma}[Covering a single shell by position balls]
+\label{lem:b-shell-cover}
+\emitthmsource
+Keep \statementref{Lemma}{lem:b-position-ball}'s notation, with $q$ prefix coordinate sequences for gauge $\Gamma$.
+Let $S$ be a shell of height $1\le H<\infty$.
+Suppose it is covered by at most $2H^{9n}$ position balls each of gauge loss at most $\Lambda H^2$.
+If $f(x)^2\le e^2\mathcal W_j(x)$ for each $x\in S$, then
+\[
+ \Delta_j\int_S f\,d\mu\le
+ e\,\Lambda^{2\cdot10^6n^3}H^{10^5n^2}\mathcal N(W).
+\]
+\end{lemma}
+\begin{proof}
+Intersect $S$ with each covering ball. By \statementref{Lemma}{lem:b-position-ball} the integral on each intersection
+multiplied by the prefix density is at most
+\[
+ e\,\Lambda^{1500000n^3+1+25000n^2}H^{50000n^2}\mathcal N(W).
+\]
+The integrand is nonnegative, so we can add over the intersections.
+The number of balls is at most $2H^{9n}$. The factor $2$ is absorbed by $\Lambda\ge2$.
+Since also
+\[
+ 1500000n^3+25000n^2+2\le2\cdot10^6n^3,\qquad
+ 50000n^2+9n\le 10^5n^2,
+\]
+substitution gives the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L92}{The integral estimate for the shell cover}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{264}.}
+\begin{lemma}[Summing finite-place dyadic shells]
+\label{lem:b-dyadic-shells}
+\emitthmsource
+Consider the semilocal unitary group with large lattice data. Let $J\subseteq Z\subseteq K$ be the principal congruence, 
+intermediate, and integral groups. Let $W_Z$ be the truncated Bessel vector on the intermediate group and $\mu$ the group measure.
+Use gauge $\Gamma$ of scale $\alpha$, a self-conjugate integral element, with $\alpha$ invertible in the semilocal algebra.
+Write $\Lambda$ for the gauge loss. For $j\le\varrho$ take two length-$j$ prefix sequences in this gauge.
+If $j>0$, assume the inverse of the level element $g$ has gauge size $1$.
+Let $M_j(x)$ be the pointwise integrable majorant for the orbital forms and $\Delta_j$ the prefix density.
+Write $\mathcal W_j(x)$ for the product of the weighted second moments and its normalization,
+and $s_0$ for the volume exponent for depth.
+
+Suppose $0\le f(x)\le M_j(x)$, and when $e<1$ suppose for every position $x$
+$f(x)^2\le e^{2s_0}\mathcal W_j(x)$.
+If the nonnegative integer $r$ satisfies $r+10^8 n^4\le k_0$, where $n=\varrho+1$, then
+\[
+ \Delta_j\int f\,d\mu
+ \le \min(1,e^r)\,\mathcal R(Z)\,\Lambda^{10^9 n^4},
+ \qquad
+ \mathcal R(Z)=\frac{\mu(Z)\mu(J)}{\mathfrak m_U^2},
+\]
+where $\mathfrak m_U$ is the unipotent mass.
+\end{lemma}
+\begin{proof}
+For each integration position $x$ the matrix $g^{-1}(x-I)$ has a common denominator ideal
+\[
+ I_x=\{c\in R:\ c\,g^{-1}(x-I)\text{ whose entries belong to }R\},
+\]
+where $R$ is the ring of integers of the semilocal algebra.
+Take a common divisor of the vector consisting of $1$ and the matrix entries.
+The ideal is generated by an integral $c$ invertible in the semilocal algebra,
+with $[R:I_x]=|c|^{-1}$. Thus each position lies in a unique shell.
+Take $H=2^i$ to be the least power of $2$ at least $[R:I_x]$.
+The support of $f$ lies in the position set and is covered by these shells.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L75}{The common denominator ideal}.}
+
+First prove two properties of the shell of height $H$.
+First, if $I_x=cR$, then in the gauge of scale $\bar c c$,
+$\bar c c\,g^{-1}(x-I)$ is integral, so the shell lies in this gauge's position ball,
+with loss $2|c|^{-2}=2[R:I_x]^2\le\Lambda H^2$.
+The ideal series of the large lattice data at some $m<9n$ is at most $2$,
+and each ideal of index at most $H$ contributes at least $H^{-m}$.
+There are thus at most $2H^{9n}$ such ideals, bounding the number of covering position balls.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L161}{Position balls from denominator ideals}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L203}{Shell height and the number of ideals}.}
+
+Second, if $\sigma<1$ and
+$\Lambda^{1200n^2}\le \sigma^{400n^2}H$,
+then every active point on the shell has depth at least $\sigma^{-2}$ at some frame layer from $j$ onward.
+Indeed $H\le2[R:I_x]$ and $\Lambda\ge2$ give
+$\Lambda^{990n^2}\le \sigma^{400n^2}[R:I_x]$,
+and \statementref{Lemma}{lem:b-ideal-depth} bounds some stable pairing set by volume $\sigma^2$.
+
+We now estimate the integral on the shell of height $H$.
+Let $V=2^{99\cdot 13 n}$ bound the mass of layer $j$ at scale $1$.
+Write $\mathcal N(W_Z)$ for the shell normalization, the squared correlation integral times
+the prescribed powers of the unipotent layer moduli and the Plancherel constant.
+The norm estimate for the large lattice Bessel vector gives $\mathcal N(W_Z)\le\mathcal R(Z)$.
+Put $\eta=\min(1,e)$ and apply the hypothesis and the weighted second moment bound for the mass at layer $j$.
+This gives $f^2\le V^2\eta^{2s_0}\mathcal W_j$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/QuadricPlancherel.lean\#L113}{Mass of layer $j$}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L44}{Shell normalization}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/BesselVector.lean\#L632}{An upper bound for the normalization}.}
+
+The first shell property permits \statementref{Lemma}{lem:b-shell-cover}.
+When $f^2\le V^2 u^{2s_0}\mathcal W_j$, the shell integral times the prefix density is at most
+\[
+ V u^{s_0}\Lambda^{2\cdot10^6n^3}H^{10^5n^2}\mathcal N(W_Z).
+\]
+
+For $H\le\Lambda^{2400n^2}$ take $u=\eta$.
+Otherwise put $\sigma=H^{-1/(800n^2)}$ and take $u=\min(\eta,\sigma)$.
+In the latter case $\sigma^{400n^2}H=H^{1/2}>\Lambda^{1200n^2}$, so the depth criterion applies.
+The depth gain gives the same integrated majorant bound with $\sigma$ in place of $\eta$.
+We can therefore take the smaller bound.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L143}{Additional decay on far shells}.}
+
+The rank assumptions give $s_0\ge r+9\cdot10^7n^4$ for the large lattice volume exponent.
+Since $u\le\eta$, use $\eta^r u^{9\cdot10^7n^4}$ to bound $u^{s_0}$.
+On near shells $H\le\Lambda^{2400n^2}$ gives by direct comparison of powers $u^{9\cdot10^7n^4}H^{1+10^5n^2}\le
+\Lambda^{29\cdot10^7n^4}$;
+On far shells $u^{9\cdot10^7n^4}\le H^{-112500n^2}$ makes the same left-hand side at most $1$.
+Thus the bound for each shell integral is
+\[
+ H^{-1}V\eta^r\Lambda^{3\cdot10^8n^4}\mathcal N(W_Z).
+\]
+Sum over $H=2^i$ using $\sum_i 2^{-i}=2$, $\Lambda\ge2$, $V\le\Lambda^{99\cdot13n}$, and
+$4\cdot10^8n^4+99\cdot13n\le10^9n^4$ to conclude.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Shells.lean\#L174}{Absorbing powers for one shell}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L271}{Sum of the dyadic shells}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{660}.}
+\begin{lemma}[Finite-place shell decay outside the principal congruence group]
+\label{lem:b-local-shell}
+\emitthmsource
+Consider the semilocal unitary group with large lattice data. Let $R$ be the ring of integers, $K$ the integral group,
+$J=K(g)$ the principal congruence group at level element $g$, and $\mu$ the corresponding group measure.
+Given intermediate group $J\subseteq Z\subseteq K$, let $W_Z$ be the truncated Bessel vector of $Z$,
+and let $M_0(x)$ be the pointwise integrable majorant for the bottom orbital forms with no prefix coordinates.
+Write $\mathcal R(Z)=\mu(Z)\mu(J)/\mathfrak m_U^2$, with $\mathfrak m_U$ the unipotent mass.
+Suppose $Q\ge2$ and that every invertible semilocal element $c$ that is integral in $R$ but has nonintegral inverse
+satisfies the multiplicative modulus bound $|c|\le Q^{-1}$.
+If the nonnegative integer $t$ satisfies $t+2\cdot10^9 n^4\le k_0$,
+where $n$ is the number of frame vectors and $k_0$ the rank of the definite part, then
+\[
+ \int_{x\notin J} M_0(x)\,d\mu(x)\le Q^{-t}\mathcal R(Z).
+\]
+\end{lemma}
+\begin{proof}
+Put $e=Q^{-1}$. At position $x$, if the Bessel correlation of $y$ with $yx$ is nonzero,
+then $y$ is active at the bottom layer.
+At each frame layer $a$, let $\mathfrak d_a$ be the pairings with frame vector $a$ of vectors stable at both points of $y,yx$.
+Its depth is $\operatorname{vol}(\mathfrak d_a)^{-1}$.
+The integral lattice description of stable pairings gives $\mathfrak d_a=c_aR$,
+where $c_a\in R$ is invertible in the semilocal algebra and has modulus equal to the volume of the set.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Levels.lean\#L213}{Stable pairings and their depth}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L168}{The pairing ideal at an active point}.}
+
+If every $\operatorname{vol}(\mathfrak d_a)>e$, then each $c_a^{-1}$ is integral,
+since otherwise the assumed modulus bound contradicts the volume inequality.
+Nonzero Bessel correlation also gives integral positions on both sides after unipotent translation,
+and their difference divided by $g$ is an integral matrix.
+Use the unit inverses of $c_a$ and these two conditions in the layerwise matrix reconstruction estimate.
+In the gauge of scale $1$ this puts every entry of $g^{-1}(x-I)$ in the integer ring.
+Unimodularity of the integral unitary lattice and integrality of the level element then give $x\in J$.
+Thus when $x\notin J$, each active point has depth at least $e^{-1}$ at some layer.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L192}{Integral positions from nonzero correlation}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Depth.lean\#L890}{Matrix reconstruction from stable pairings}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteShells.lean\#L596}{Depth of positions outside the group}.}
+
+Put $f(x)=\mathbf 1_{J^{\mathrm c}}(x)M_0(x)$.
+Depth controls the bottom-layer correlation integral. If every active point has depth at least $e^{-1}$ at some layer,
+then $M_0(x)^2$ is bounded by the product of the two weighted second moments for the gauge of scale $1$,
+times $e^{2s_0}$, where $s_0$ is the depth volume exponent.
+With no prefix coordinates the two pivot correlation integrals agree, so both square estimates can use the same depth.
+Within $J$ we have $f=0$, so $f^2$ satisfies the pointwise gain required for shell summation everywhere.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Gains.lean\#L435}{The depth gain for the bottom-layer majorant}.}
+
+Set $L=10^9 n^4$ and use exponent $t+L$ in \statementref{Lemma}{lem:b-dyadic-shells}.
+The scale condition follows from $t+L+10^8 n^4\le k_0$.
+The bottom prefix density is $1$ and the gauge of scale $1$ has loss $2$. Hence
+\[
+ \int f\,d\mu
+ \le e^{t+L}\mathcal R(Z)2^L
+ =Q^{-t}\mathcal R(Z)(2/Q)^L
+ \le Q^{-t}\mathcal R(Z).
+\]
+If $Q=+\infty$ is allowed, the extended nonnegative real power convention gives
+the same inequality.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/FiniteShells.lean}{685}.}
+\begin{lemma}[The main term and shell error for local conjugation mass]
+\label{lem:b-local-mass}
+\emitthmsource
+Keep the large lattice data, $J\subseteq Z\subseteq K$, and $Q,t$ of \statementref{Lemma}{lem:b-local-shell}.
+Let $\widetilde\chi$ be the function given by extending the integral unipotent Bessel character to $U J$ and by zero outside, and write
+\[
+ a_Z(x)=\int_Z\widetilde\chi(yxy^{-1})\,d\mu(y),
+ \qquad
+ \mathcal M(Z)=\int |a_Z(x)|^2\,d\mu(x).
+\]
+Then
+\[
+ \mathcal M(Z)\le\mu(Z)\mu(J)\bigl(\mu(Z)+Q^{-t}\bigr).
+\]
+\end{lemma}
+\begin{proof}
+If $x\in J$, normality of $J$ in $K$ puts all $yxy^{-1}$ in $J$.
+The extended character equals $1$ on $J$, so $a_Z(x)=\mu(Z)$ and the mass inside $J$ equals $\mu(Z)^2\mu(J)$.
+
+Outside $J$, use the relation between the conjugation integral and the bottom partial correlation.
+In detail, the bottom partial correlation is evaluated at endpoints $1,x$. Its modulus times the unipotent mass $\mathfrak m_U$
+equals $|a_Z(x)|$. Express it by the integral one layer down.
+Its modulus is at most the integral of the absolute correlation at that layer.
+Without prefix coordinates, the product of these equal absolute-value integrals is $M_0(x)$,
+giving $|a_Z(x)|^2\le\mathfrak m_U^2M_0(x)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/BesselVector.lean\#L663}{The partial correlation formula for the conjugation integral}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Gains.lean\#L423}{The majorant without prefix coordinates}.}
+
+\statementref{Lemma}{lem:b-local-shell} bounds the mass outside $J$ by
+$\mathfrak m_U^2 Q^{-t}\mathcal R(Z)$.
+By the mass ratio definition $\mathfrak m_U^2\mathcal R(Z)=\mu(Z)\mu(J)$,
+add the contribution from inside $J$ to get the claimed bound.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{984}.}
+\begin{lemma}[Conjugation averaging of the unipotent character]
+\label{lem:b-conjugation-l2}
+\emitthmsource
+Let $S$ be admissible filling data with Weil data for the CM field. Let $G$ be the product of residue linear groups at the chosen places.
+Let $\chi_U$ be the Bessel character of the integral unipotent group on its residual image and zero off that image.
+Put $\chi_U^\natural(s)=|G|^{-1}\sum_{g\in G}\chi_U(gsg^{-1})$.
+Then
+\[
+ \sum_{s\in G}|\chi_U^\natural(s)|^2\le2.
+\]
+\end{lemma}
+\begin{proof}
+Let $T$ consist of the chosen places above both level primes and their conjugates, and put $M=p_0p_1$.
+In the local product over $T$, let $K$ be the integral unitary group of the standard lattice and $J=K(M)$ the principal congruence group modulo $M$.
+Since $T$ contains all places where $M^{-1}$ is nonintegral and is stable under conjugation,
+the filling data induce large lattice data on this local product with level element $M$.
+Write $dx$ for local Haar measure, giving finite positive measure to $K$ and $J$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L968}{The inverse level element is integral elsewhere}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FillingLevel.lean\#L532}{Local filling data}.}
+
+Reduction $K\to G$ is surjective with kernel $J$.
+Each local integral point extends to an element of the lattice stabilizer, so global reduction suffices to verify this.
+At a chosen place and its conjugate the two unitary components are inverse transposes for the Hermitian pairing,
+so only the reductions at the chosen places need to be checked. Let $\widetilde\chi$ be the extended local Bessel character.
+On $K$ it is precisely the pullback of $\chi_U$ by reduction. Indeed on
+$uJ$ it has value $\psi(\sigma(u)/M)$, with $\sigma(u)$ the sum of simple-root coordinates of the unipotent element and
+$\psi$ the additive character normalized by the Weil data.
+This agrees with the character of the integral unipotent before reduction. Conversely, nonvanishing on an integral coset
+gives a unipotent representative. Extend by the identity away from $T$ to obtain an integral unipotent lift,
+so the reduction belongs to the residual image of the integral unipotent subgroup.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L791}{Compatibility of the local and residual characters}.}
+
+Define the following function on the local group.
+\[
+ a(x)=\int_K\widetilde\chi(yxy^{-1})\,dy.
+\]
+If $k_s\in K$ lifts $s$, every $K/J$ coset has the same volume.
+Partition the inner integral by $K/J$ to obtain
+$a(k_s)=\operatorname{vol}(K)\chi_U^\natural(s)$.
+Since $K$ normalizes $J$ and $\widetilde\chi$ is right $J$-invariant, $a$ is constant on $k_sJ$.
+Disjointness of the cosets gives
+\[
+ \operatorname{vol}(J)\operatorname{vol}(K)^2
+       \sum_{s\in G}|\chi_U^\natural(s)|^2
+ =\int_K |a(x)|^2\,dx
+ \le\int |a(x)|^2\,dx ,
+\]
+where the final integral is over the whole local unitary group.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L840}{The local integral formula for conjugation averaging}.}
+
+To bound the last integral let $n$ be the frame size and $k_0$ the rank of $X_0$,
+and apply \statementref{Lemma}{lem:b-local-mass} to $Z=K$. The multiplicative modulus of an integral element with nonintegral inverse
+is at most $1/2$ in the local integer ring, and the scales satisfy $n+2\cdot10^9 n^4\le k_0$,
+so take decay exponent $n$ to obtain
+\[
+ \int |a(x)|^2\,dx\le
+ \operatorname{vol}(K)\operatorname{vol}(J)
+             \bigl(\operatorname{vol}(K)+2^{-n}\bigr).
+\]
+
+A nonunit of the integer ring of $T$ has some component in the corresponding maximal ideal.
+The nonunits therefore have volume at most $\sum_{w\in T}|\mathbf k_w|^{-1}\le b^{-9}$,
+where $|T|\le b$ and the residue fields at the chosen places have size at least $b^{10}$.
+The integer ring has volume $1$, so the units have volume at least $1/2$.
+The lower bound for the integral group's box in the large lattice data then gives $\operatorname{vol}(K)\ge2^{-n}$.
+Thus the integral over the full group is bounded by
+$2\operatorname{vol}(K)^2\operatorname{vol}(J)$,
+Divide by the common positive volume factor to obtain the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L105}{Volume of the nonunits}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L63}{A lower bound for the volume of the integral unitary group}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/Moments.lean}{1091}.}
+\begin{lemma}[A projection bound at one level prime]
+\label{lem:b-one-level-moment}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field equipped with Weil data.
+Let $\mathcal P$ and $\rho$ be the map and residual action of \statementref{Lemma}{lem:b-unit-moment},
+with $\rho$ unitary and residual group $G_0\times G_1$.
+Let $x\in\mathbb C[G_i]$ be a central idempotent with coefficient $x(t)$ at $t$,
+and suppose $\operatorname{Re} x(1)\le b^{-8}/2$.
+Let $\rho(x)$ be the group algebra action induced by embedding $G_i$ in the product group. Then
+\[
+ \|\rho(x)\mathcal P\|_{\mathrm{HS}}^2\le 2b^{-4}u_0.
+\]
+\end{lemma}
+\begin{proof}
+Keep the notation $P_s=\mathcal P^*\rho(s)\mathcal P$, $R(s)$, and $\overline R$.
+Put $D_s=P_s-R(s)$ and write $\widehat t$ for the image of $t\in G_i$ in the product group.
+A central idempotent in the complex group algebra is self-adjoint, acting as $0$ or $I$ in each irreducible block.
+Hence $\rho(x)$ is an orthogonal projection, and
+\[
+ \|\rho(x)\mathcal P\|_{\mathrm{HS}}^2
+ =\operatorname{Re}\operatorname{tr}
+       \left(\sum_{t\in G_i}x(t)R(\widehat t)\right)
+  +\operatorname{Re}\operatorname{tr}
+       \left(\sum_{t\in G_i}x(t)D_{\widehat t}\right).
+\]
+We bound the two terms separately.
+
+\emph{The Bessel subgroup contribution.}
+Let $\chi_U$ be the character of the integral unipotent subgroup on its residual image, extended by zero.
+When the component of $s$ at the other level prime is $1$,
+$\operatorname{tr}R(s)=u_0\chi_U(s)$.
+Indeed each nonzero diagonal class block comes from $h_c^{-1}\gamma_f h_c$, with $\gamma$ in the rational Bessel subgroup.
+Decompose $\gamma$ into its unipotent and definite
+$\Ugrp(X_0)$ parts. The finite components of the latter are integral and reduce to $1$ at the chosen places of the other level prime.
+Freeness at that level makes the rational $\Ugrp(X_0)$ part equal to $1$, so only the unipotent part contributes.
+On the unipotent image, translation by the unipotent character gives a diagonal block equal to $\chi_U(s)$ times the identity.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L696}{The integral decomposition and freeness of the level}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L751}{The trace of the Bessel operator}.}
+
+Let $\chi_U^\natural$ be the average of $\chi_U$ over all conjugates.
+Since $x(t)$ is a class function, rearranging $t$ gives
+\[
+ \sum_{t\in G_i}x(t)\chi_U(\widehat t)
+ =\sum_{t\in G_i}x(t)\chi_U^\natural(\widehat t).
+\]
+\statementref{Lemma}{lem:b-conjugation-l2} gives $\sum_s|\chi_U^\natural(s)|^2\le 2$.
+Comparing the identity coefficient of $x^2=x$ and using self-adjointness gives
+$\sum_t|x(t)|^2=\operatorname{Re}x(1)\le b^{-8}/2$.
+Cauchy--Schwarz thus bounds the absolute value above by $b^{-4}$.
+Multiplying by $u_0$ bounds the first trace by $b^{-4}u_0$.
+
+\emph{The remainder outside the subgroup.}
+Unitarity and right equivariance in the proof of \statementref{Lemma}{lem:b-unit-moment} give
+$P_{vs}=R(v)P_s$ for every $v\in\overline R$.
+Indeed put $w=\rho(v)\mathcal P a-\mathcal P R(v)a$.
+Right equivariance gives, for each $s$,
+$\mathcal P^*\rho(s^{-1})w=0$. Thus $w$ is orthogonal to all $\rho(s)\mathcal P U_0$.
+But $w$ lies in the sum of these subspaces, so $w=0$.
+Taking the adjoint gives the required left equivariance. Using $R(vs)=R(v)R(s)$ then gives
+$D_{vs}=R(v)D_s$. This holds also when $s\notin\overline R$,
+because $R$ vanishes off the subgroup.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L220}{The left action of the Bessel operator}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/Moments.lean\#L347}{The left action of the amplitude operator}.}
+
+Use the Hilbert--Schmidt inner product on operators.
+Define $F(s)=\mathbf 1_{\Omega_{1-i}}(s)D_s$,
+and consider right convolution on square-summable functions with these operator values.
+\[
+ (C_xF)(s)=\sum_{t\in G_i}x(t)F(s\widehat t).
+\]
+Right translations form a unitary representation. The self-adjoint idempotent $x$ induces an orthogonal projection.
+Hence $\sum_s\|(C_xF)(s)\|_{\mathrm{HS}}^2\le\sum_s\|F(s)\|_{\mathrm{HS}}^2$.
+If $s\in\overline R$ then $s\widehat t\in\Omega_{1-i}$,
+hence $(C_xF)(s)=R(s)\sum_t x(t)D_{\widehat t}$.
+and all these norms agree by the unitarity of $R(s)$.
+Sum over $s\in\overline R$ alone and apply \statementref{Lemma}{lem:b-bessel-remainder} to get
+\[
+ |\overline R|\left\|\sum_t x(t)D_{\widehat t}\right\|_{\mathrm{HS}}^2
+ \le \sum_s\|F(s)\|_{\mathrm{HS}}^2
+ \le b^{-12}|\overline R|u_0 .
+\]
+Since $\|I\|_{\mathrm{HS}}=\sqrt{u_0}$,
+the absolute value of the remainder trace is at most $b^{-6}u_0\le b^{-4}u_0$.
+Add the two estimates to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{252}.}
+\begin{lemma}[A near-isometry estimate for projection to good forms]
+\label{lem:b-near-isometry}
+\emitthmsource
+Fix admissible data $D$ and let $U_0$ be the Euclidean coordinate space of all source forms.
+Put $u_0=\dim_{\mathbb C}U_0$ and let $\mathcal P$ be the scaled Poincaré map.
+Let $e_0$ be the orthogonal projection from principal-level forms to good forms. For any subspace $F\subseteq U_0$,
+its orthogonal projection $\pi_F$ satisfies
+\[
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2\geq \dim F-5b^{-4}u_0.
+\]
+\end{lemma}
+\begin{proof}
+By \statementref{Lemma}{lem:b-amplitude-blocks},
+the $(c,c')$ block of $\mathcal P^*\rho(g)\mathcal P$ is the amplitude sum $\overline{A(c,g,c')}/\nu$.
+\statementref{Lemma}{lem:b-unit-moment} then gives
+\[
+ \|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}^2\le b^{-12}u_0 .
+\]
+Thus
+\begin{align*}
+ \|\mathcal P\pi_F\|_{\mathrm{HS}}^2-\dim F
+ &=\operatorname{Re}\operatorname{tr}\bigl(\pi_F(\mathcal P^*\mathcal P-I)\bigr)\\
+ &\ge -b^{-6}\sqrt{u_0\dim F}\ge -b^{-4}u_0 ,
+\end{align*}
+where the first inequality is Cauchy--Schwarz for the Hilbert--Schmidt inner product
+and the second uses $\dim F\le u_0$ and $b\ge 1$.
+
+For $i=0,1$ let $g_i$ be the central good-type idempotent for level prime $p_i$ in the finite group algebra,
+and let $E_i$ be its action on principal-level forms.
+By \statementref{Lemma}{lem:b-bad-types},
+We have $e_0=E_0E_1$, and the real part of the identity coefficient of $1-g_i$ is at most $b^{-8}/2$.
+Each $g_i$ is self-adjoint, so the unitary action realizes $E_i$ as an orthogonal projection.
+Apply \statementref{Lemma}{lem:b-one-level-moment} to the central projection $1-g_i$
+to get $\|(I-E_i)\mathcal P\|_{\mathrm{HS}}^2\le 2b^{-4}u_0$.
+From
+\[
+ (I-E_0E_1)\mathcal P=(I-E_0)\mathcal P+E_0(I-E_1)\mathcal P
+\]
+and orthogonality of the images of the two terms on the right, we obtain
+\[
+ \|(I-e_0)\mathcal P\|_{\mathrm{HS}}^2
+ \le \|(I-E_0)\mathcal P\|_{\mathrm{HS}}^2
+     +\|(I-E_1)\mathcal P\|_{\mathrm{HS}}^2
+ \le 4b^{-4}u_0 .
+\]
+Right multiplication by $\pi_F$ on the domain does not increase Hilbert--Schmidt norm.
+Thus the orthogonal decomposition of $\mathcal P\pi_F$ by $e_0$ gives the bound.
+\[
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ =\|\mathcal P\pi_F\|_{\mathrm{HS}}^2
+   -\|(I-e_0)\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ \ge \dim F-5b^{-4}u_0 .
+\]
+\end{proof}
+
+\section{Finite-place sieving and square sums at fixed coordinates}
+\label{sec:b-finite-sieve}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/SecondMoment/PositiveType.lean}{147}.}
+\begin{lemma}[Singular matrices under positive-type weights]
+\label{lem:b-positive-type-determinant}
+\emitthmsource
+Let $k$ be a finite field of size $q$ and $\pi:G\to\mathrm{GL}_n(k)$ a representation of a finite group $G$.
+Suppose $\pi^\vee(s)=\pi(s)^{-{\mathsf T}}$ and $A_0,A_1\in\operatorname{Mat}_{n\times m}(k)$.
+Let $\Theta:G\to\mathbb R_{\ge0}$ be of \emph{function of positive type}, so that there are inner-product-space vectors $(u_a)_{a\in G}$ with
+$\Theta(a^{-1}b)=\langle u_a,u_b\rangle$.
+Write $\Theta(E)=\sum_{s\in E}\Theta(s)$. Suppose each $v\in k^m\setminus\{0\}$ satisfies the following condition:
+the $\Theta$-mass of the stabilizer of $A_0v$ under $\pi$ and of $A_1v$ under $\pi^\vee$ is at most $Y\ge0$. Then
+\[
+ q\,\Theta\{s:\det(A_1^{\mathsf T}\pi(s)A_0)=0\}
+ \le 2\Theta(G)+q^{m+n/2}Y.
+\]
+\end{lemma}
+\begin{proof}
+Take a nontrivial additive character $\psi$ of $k$. In $\ell^2(k^n)$ with counting measure,
+for $z,x\in k^n$ let $e_z$ be the point masses at $z$, respectively.
+$c_x(\xi)=q^{-n/2}\psi(-x^{\mathsf T}\xi)$.
+Character orthogonality makes both families orthonormal bases. In particular, as the inner product is conjugate linear in the first argument,
+\[
+ \langle c_{\pi^\vee(a)x},e_{\pi(b)z}\rangle
+ =q^{-n/2}\psi\bigl(x^{\mathsf T}\pi(a^{-1}b)z\bigr).
+\]
+Take $x=A_1y$ and $z=A_0v$ with $y,v\ne0$, and put
+\[
+ X_1=\sum_{a\in G}c_{\pi^\vee(a)x}\otimes u_a,\qquad
+ X_0=\sum_{b\in G}e_{\pi(b)z}\otimes u_b .
+\]
+Expanding $\|X_1\|^2$ retains only terms satisfying $\pi^\vee(a)x=\pi^\vee(b)x$, that is,
+$\pi^\vee(a^{-1}b)x=x$. For fixed $a$ the map $b\mapsto a^{-1}b$ is bijective,
+so $\|X_1\|^2$ equals $|G|$ times the $\Theta$-mass of the stabilizer of $x$.
+Similarly, $\|X_0\|^2$ equals $|G|$ times the $\Theta$-mass of the stabilizer of $z$.
+By hypothesis both are at most $|G|Y$. Expanding $\langle X_1,X_0\rangle$ gives
+\[
+ \sum_{s\in G}\psi\bigl(x^{\mathsf T}\pi(s)z\bigr)\Theta(s)
+    =q^{n/2}|G|^{-1}\langle X_1,X_0\rangle ,
+\]
+so the left-hand side has absolute value at most $q^{n/2}Y$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/PositiveType.lean\#L105}{A character sum bound from the two stabilizers}.}
+
+Put $Z_s=A_1^{\mathsf T}\pi(s)A_0$. Average over $v$ to get
+$\mathbb E_{v\in k^m}\psi(y^{\mathsf T}Z_s v)=\mathbf 1_{y^{\mathsf T}Z_s=0}$.
+When $Z_s$ is singular, its left kernel contains all multiples of some nonzero vector and hence at least $q$ elements.
+Weight by $\Theta$ and exchange the sums to obtain
+\[
+ q\,\Theta\{s:\det Z_s=0\}
+ \le \sum_{y\in k^m}\mathbb E_{v\in k^m}
+              \operatorname{Re}\sum_{s\in G}\psi(y^{\mathsf T}Z_s v)\Theta(s).
+\]
+where row $y=0$ contributes $\Theta(G)$ and column $v=0$ contributes at most $\Theta(G)$.
+When $y,v\ne0$, each term is at most $q^{n/2}Y$ by the character sum bound.
+Their total weight in the outer sum and average is at most $q^m$.
+Add the three contributions to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/MomentBounds.lean}{322}.}
+\begin{lemma}[Vanishing of leading principal minors under fixed-vector bounds]
+\label{lem:b-leading-minor}
+\emitthmsource
+Let $S$ be admissible filling data, $G$ its residual group, $\Gamma\subseteq G$ a subgroup, and $w$ a chosen place above
+the first level prime $p_0$. Let $k_0$ be the rank of $X_0$ and $n$ the number of Bessel frame vectors.
+Let $\beta:G\to[0,\infty)$ be of positive type, with vectors $u_s$ in a complex inner product space
+satisfying $\beta(a^{-1}c)=\langle u_a,u_c\rangle$, and put $Y=\sum_{s\in\Gamma}\beta(s)$.
+Suppose at the residue field of $w$ or its conjugate that the stabilizer in $\Gamma$ of each nonzero frame vector
+has $\beta$-mass at most $b^{-6k_0}Y$.
+For every proper leading principal minor $\delta_j$ of the frame pairing matrix with $0\le j<n$,
+\[
+ \sum_{\substack{s\in\Gamma\\\delta_j(s)=0}}\beta(s)\le 3b^{-10}Y .
+\]
+\end{lemma}
+\begin{proof}
+Put $q=p_0$ and let $d_0=k_0+2n-1$ be the rank of the reduced Hermitian space.
+Let $\pi$ be the $d_0$-dimensional representation of $\Gamma$ at $w$ and $J_w$ the pairing matrix in the lattice basis.
+The leading principal minor of order $j$ uses only the first $j$ frame vectors.
+Take them as columns of $E_j$. Then
+\[
+ \delta_j(s)=\det\bigl((J_w E_j)^{\mathsf T}\pi(s)E_j\bigr).
+\]
+Indeed entry $(a,c)$ of $(J_w E_j)^{\mathsf T}\pi(s)E_j$
+is the pairing of frame vector $a$ with the image of frame vector $c$ under $s$.
+The empty minor is $1$, so assume $j\ge1$.
+
+We check the two finite-field positive-type counting conditions for $\pi$ and matrices
+$A_0=E_j$ and $A_1=J_wE_j$.
+For every nonzero $v\in\mathbf F_q^j$, the vector $A_0v$ is a nonzero frame vector at $w$.
+Hence the elements of $\pi(s)$ fixing $A_0v$ have mass at most $b^{-6k_0}Y$.
+Similarly the elements of $\pi(s)^{-\mathsf T}$ fixing $A_1v$ have mass at most $b^{-6k_0}Y$.
+The Hermitian unitary condition identifies action at the conjugate place with the dual action.
+The form $J_wE_jv$ is induced by the frame vector at that place.
+Both matrices have full column rank, so both types of vectors are nonzero.
+Apply \statementref{Lemma}{lem:b-positive-type-determinant} to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/PositiveType.lean\#L153}{Counting minors over a finite field under positive-type weights}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L330}{The two fixed-vector conditions}.}
+\[
+ q\sum_{\substack{s\in\Gamma\\\delta_j(s)=0}}\beta(s)
+   \le 2Y+q^{j+d_0/2}b^{-6k_0}Y .
+\]
+
+The scales give $b^{10}\le q\le b^{11}$ and $2000n\le k_0$.
+Using $j<n$ yields
+$11(2j+d_0)\le11(k_0+4n-3)\le12k_0$,
+hence $q^{j+d_0/2}\le b^{6k_0}$.
+so the right-hand side above is at most $3Y$. Divide by $q\ge b^{10}$ to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Frames/FixedLines.lean}{374}.}
+\begin{lemma}[The gain from a fixed vector at one chosen place]
+\label{lem:b-fixed-one-place}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with Weil data.
+Equip a conjugation-stable set $T$ of local places with the filling data, and let $J\subseteq K$ be its principal congruence and integral groups.
+Assume $T_0$ contains all places where the inverse level parameter is nonintegral.
+Among the chosen places above the first level prime $p_0$, take a subset $A$.
+For each $w\in A$ specify a nonzero frame vector over the residue field at $w$ or its conjugate.
+One may leave the place unspecified, or specify some $w\in A$ and assume $T=T_0\cap\{w,\bar w\}$.
+Then there is an intermediate group $J\subseteq Z\subseteq K$
+containing the components at $T$ of every integral element fixing all specified vectors,
+and for the mass $\mathcal M$ of \statementref{Lemma}{lem:b-local-mass},
+\[
+  \mathcal M(Z)\mu(K)\,B_*
+     \le \mathcal M(K)\mu(Z),
+ \qquad B_*=
+ \begin{cases}
+  1,&\text{no place specified},\\
+  b^{6k_0},&\text{place specified } w,
+ \end{cases}
+\]
+where $k_0$ is the rank of $X_0$.
+\end{lemma}
+\begin{proof}
+If no place is specified take $Z=K$.
+Otherwise the inverse level parameter is nonintegral at $w$ and $w\in T_0$, so $w\in T$.
+The integral adelic lattice stabilizer projects surjectively onto the integral group $K$ at $T$.
+Let $H$ be the subgroup of the adelic stabilizer whose reduction fixes the specified vector at $w$.
+Use the conjugate-place action for a vector from $\bar w$. Take $Z$ to be the image of $H$ in $K$.
+Under this projection the preimage of $J$ reduces to $1$ at $w$,
+and acts by $1$ at $\bar w$. Thus it lies in $H$, so $J\subseteq Z$.
+This also puts the kernel of the projection inside $H$,
+so $[K:Z]$ equals the index of $H$ in the integral adelic lattice stabilizer.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L241}{Reduction of the principal congruence group}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L383}{Constructing the local fixed-vector group}.}
+
+Let $d_0=k_0+2n-1$ be the rank of the reduced Hermitian space and $n$ the number of frame vectors.
+Reduction surjects onto $\operatorname{GL}_{d_0}(\mathbf F_{p_0})$,
+as does the inverse-transpose action at a conjugate place.
+This linear group is transitive on nonzero vectors, so the index of a nonzero-vector stabilizer is
+$p_0^{d_0}-1$, hence\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L266}{The index of the fixed-vector group}.}
+\[
+ [K:Z]=p_0^{d_0}-1,\qquad
+ \mu(Z)=\mu(K)/(p_0^{d_0}-1).
+\]
+
+Put $B=b^9$ and choose the integer $\tau=k_0-10^{10}n^4$.
+By $10^{10}n^4\le n^6$ and $3n^6+12\le n^7\le k_0$,
+\[
+ \tau+1+n+2\cdot10^9n^4\le k_0,\qquad
+ 6k_0\le9\tau,\qquad \tau+1<d_0 .
+\]
+and because $B\le p_0$ we have $B^{\tau+1}\le p_0^{d_0}-1$.
+The index formula then gives $\mu(Z)\le B^{-(\tau+1)}\mu(K)$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L286}{Choosing the shell exponent}.}
+
+In the local integer ring of $T$, nonunits have volume at most $B^{-1}$.
+If $c$ is integral and invertible in the semilocal algebra with nonintegral inverse,
+then $cR$ contains no unit of the integer ring, so $|c|=\operatorname{vol}(cR)\le B^{-1}$.
+The units have volume at least $1/2$, giving the following box volume lower bound for the integral group.
+$\mu(K)\ge2^{-n}\ge B^{-n}$.
+Take $Q=B$ and $t=\tau+1+n$ in \statementref{Lemma}{lem:b-local-mass} to get
+\[
+ \begin{aligned}
+ \mathcal M(Z)
+ &\le \mu(Z)\mu(J)
+       \bigl(\mu(Z)+B^{-(\tau+1+n)}\bigr)\\
+ &\le 2B^{-(\tau+1)}\mu(Z)\mu(J)\mu(K)
+ \le B^{-\tau}\mu(Z)\mu(J)\mu(K),
+ \end{aligned}
+\]
+The last step uses $B\ge2$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L105}{Volume of the nonunits}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FiniteDepth.lean\#L63}{A lower bound for the volume of the integral box}.}
+
+In the mass integral for the integral group $K$ keep only the contribution from $x\in J$.
+$\mathcal M(K)\ge\mu(K)^2\mu(J)$.
+By $B^\tau=b^{9\tau}\ge b^{6k_0}$, multiplying by $\mu(K)b^{6k_0}$
+gives the required comparison. The containment of $Z$ follows directly from the definition of $H$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L309}{From the index to the mass gain}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/FiniteSieveSystem.lean}{262}.}
+\begin{lemma}[Finite-place sieve data for fixed frame vectors]
+\label{lem:b-finite-sieve}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with Weil data and $T$ a finite conjugation-stable set of places.
+Suppose the inverse of level element $M$ is integral off $T$. Take the local filling data on $T$ and let $K$ be the integral unitary group
+and $J$ its principal congruence group at level $M$.
+Choose a subset $A$ of the selected places above $p_0$ and a nonzero frame vector at each place or its conjugate.
+There is an intermediate group $J\subseteq Z\subseteq K$ containing the components on $T$ of all integral elements fixing those vectors.
+Take the orbital forms at each layer for the Bessel vector of $Z$, using the last-coordinate density at the top,
+and divide all of them by the mass ratio of $Z$. The resulting forms satisfy the local sieve axioms, and the bottom-layer mass bound is
+\[
+ (1+b^{-6})b^{-6k_0|A|},
+\]
+where $k_0$ is the rank of $X_0$. The frequency decay and coordinate weights are given in the proof.
+\end{lemma}
+\begin{proof}
+Write $\mathfrak m_U$ for the local unipotent mass and define for the intermediate group $Y$
+\[
+ \mathcal M(Y)=\int\left|\int_Y\widetilde\chi(yxy^{-1})\,dy\right|^2dx,
+ \qquad
+ \mathcal R(Y)=\frac{\operatorname{vol}(Y)\operatorname{vol}(J)}
+                       {\mathfrak m_U^2},
+\]
+where $\widetilde\chi$ is the extended local Bessel character.
+Group $T$ by each chosen place of $A$ and its conjugate, with all other places in one group.
+For each chosen pair, \statementref{Lemma}{lem:b-fixed-one-place} gives an intermediate group satisfying the fixed-vector conditions.
+Its $\mathcal M(Y)/\operatorname{vol}(Y)$ is at most $b^{-6k_0}$ times the corresponding ratio for the integral group,
+and it contains the local components of integral elements fixing the vector. Use the integral group elsewhere.
+The local unitary group is the product of these groups, and the extended character factors accordingly.
+If the given Haar measure differs from the product measures by a positive factor $c$,
+the outer integral and squared inner integral together put a factor $c^3$ in $\mathcal M$, and volume gains factor $c$.
+The common factor $c^2$ cancels upon comparing the two mass-to-volume ratios.
+Take $Z$ to be the product of the intermediate groups. It has the required containment $Z$ and\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/FixedLines.lean\#L827}{Multiplying over the chosen places}.}
+\[
+ \frac{\mathcal M(Z)}{\operatorname{vol}(Z)}
+ \le b^{-6k_0|A|}\frac{\mathcal M(K)}{\operatorname{vol}(K)} .
+\]
+
+Let $n=\varrho+1$ be the number of frame vectors. The shell estimate outside the principal congruence group gives
+\[
+ \mathcal M(K)\le\operatorname{vol}(K)\operatorname{vol}(J)
+ \bigl(\operatorname{vol}(K)+2^{-n}\bigr).
+\]
+In this normalization $\operatorname{vol}(K)\le1+2^{-n}$, and
+$2^{-\varrho}\le b^{-6}$, so
+$\mathcal M(K)\le\operatorname{vol}(K)\operatorname{vol}(J)(1+b^{-6})$.
+The bottom orbital form is the local integral of the squared partial correlation,
+with absolute value at most $\mathcal M(Z)/\mathfrak m_U^2$.
+Dividing by $\mathcal R(Z)$, the bottom form has absolute value at most
+$(1+b^{-6})b^{-6k_0|A|}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L64}{An upper bound for the integral-group mass}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L147}{The bottom layer and the conjugation integral}.}
+
+Let $J_j(p,q)$ be the normalized layer-$j$ form. For $0\le j\le\varrho$ use the orbital form,
+and for $j=\varrho+1$ use the last-coordinate density.
+Here $p,q$ is a sequence of parameters invertible in every coordinate of the local product algebra.
+Let $\psi$ be the $\psi(0)=1$.
+In position $j$ set both coordinates to $x$ and integrate $J_{j+1}$ over $x$.
+For $j<\varrho$, descent of orbital forms gives $J_j$.
+For $j=\varrho$, the integral identity for the last-coordinate density also gives $J_j$.
+The integral with factor $\psi(\xi x)$ remains integrable and equals the matching weighted orbital form.
+Define its value as $1$ on the null set of noninvertible parameters.
+The top layer is positive semidefinite on families with a fixed last coordinate.
+It integrates the pairing on the same last-coordinate fiber.
+For a linear combination of weighted vectors on that fiber the quadratic form is the integral of its squared norm.
+Continuity at the top follows from continuity of the last-coordinate density.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L244}{Positive semidefiniteness on last-coordinate fibers}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L303}{Descent and recursion for the last coordinate}.}
+
+It remains to verify the two frequency estimates. Let $\mathcal O_T$ be the integer ring of the local product.
+For an invertible $\xi$ let $I(\xi)=[\mathcal O_T:\xi\mathcal O_T]$ be its generalized index,
+and $D(\xi)=[\mathcal O_T:\mathcal O_T\cap\xi^{-1}\mathcal O_T]$ its denominator index.
+Let $H_j(p)$ be the product of the $n^6/2$-th powers of the indices of the first $j$ partial products.
+Set it to $H_j(p)=0$ if any partial product is nonintegral.
+The recursion integral with factor $\psi(\xi x)$ has absolute value at most
+\[
+ b^{n^9 f}\frac{I(\xi)^{(k_0-n^7)/2}}{D(\xi)^3}\,
+     H_j(p)H_j(q)
+\]
+where $f$ is the number of infinite places.
+For $j<\varrho$, if $\xi=M^{-1}(p_j^{-1}-q_j^{-1})$ is invertible,
+then $J_{j+1}(p,q)$ has the same form of bound with weight $H_{j+1}$.
+Both bounds come from the weighted orbital forms. The original denominator index is $D(\xi)^6$,
+which is bounded by the cube using $D(\xi)\ge1$.
+The remaining layer factor is at most
+$(2M^{2f})^{n^6}\le b^{n^9f}$ by $M\le b^{23}$ and $46f+1\le n^3f$.
+This verifies all the local sieve axioms.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L43}{The scale bound on layer factors}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L110}{Frequency decay for both orbital forms}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/SiegelTopBound.lean}{829}.}
+\begin{lemma}[A Siegel square sum with fixed last coordinate]
+\label{lem:b-siegel-last-entry}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with Weil data. Choose a conjugation-stable finite set $T$ of places
+such that the inverses of the level parameter and auxiliary prime $N$ and the lattice basis matrices and their inverses are integral outside $T$.
+Take the local filling data on $T$ and intermediate group $Z$ with mass ratio $\mathcal R(Z)$.
+Choose a finite nonempty family $(c_i,c_i',s_i,\sigma_i)$ of distinct quadruples.
+Assume $\sigma_i$ fixes the first $\varrho$ hyperbolic pairs,
+the translate $h_{c_i}^{-1}\sigma_i h_{c_i'}$ is integral off $T$,
+and $s_i$ has an integral lift whose $T$-component belongs to $Z$.
+Suppose the last frame pairing coordinate of every $\sigma_i$ is the same element $t\in E^\times$,
+with $|t|_v^2>N^2$ at each infinite place $v$. Put
+\[
+ F_t=\left(\prod_v (|t|_v^2-N^2)\right)^{k_0-1},
+\]
+where $k_0$ is the rank of $X_0$.
+
+Choose finitely many sequences $p$, with their first $\varrho$ coordinates and inverses integral off $T$.
+Let their coordinate at position $\varrho$ be $t$ and $w_p$ the Weyl element determined by the prefix.
+Let $V_i(p)$ be the archimedean orbital integral tensor of the Bessel function or its truncation at $w_p\sigma_i$.
+Let $L_i(p)$ also denote the unipotent double-coset amplitude sum of the corresponding rational element in block $(c_i,s_i,c_i')$.
+Let $\rho_p$ be a real scalar such that for every $i$, the Gram matrix of the vectors $\rho_pV_i(p)$
+is the same matrix $R$. If each $\rho_p$ times its finite prefix density
+equals $r_*\sqrt{F_t}$ with $r_*\in\mathbb R$, then
+\[
+ r_*^2\sum_i\left\|\sum_p L_i(p)\right\|^2
+ \le (1+b^{-6})C_{\mathrm S}
+       \operatorname{Re}\sum_{p,q}
+           R_{pq}\,\frac{\mathcal D_{Z,t}(p,q)}{\mathcal R(Z)},
+\]
+where $\mathcal D_{Z,t}$ is the finite last-coordinate density and $C_{\mathrm S}$ the scaled Siegel constant of the filling data.
+\end{lemma}
+\begin{proof}
+Put $y_i=r_*^2\|\sum_p L_i(p)\|^2$ and let
+$Q_t=\operatorname{Re}\sum_{p,q}R_{pq}\mathcal D_{Z,t}(p,q)$.
+as a Gram matrix, $R$ is positive semidefinite.
+Let $z_0$ be the last frame vector and $x_i$ the component of $\sigma_i z_0$ in $X_0$.
+Group by $g_i=(c_i,x_i)$. Since $\sigma_i$ fixes the first $\varrho$ hyperbolic pairs and is unitary,
+\[
+ N\langle x_i,x_i\rangle=t\bar t-N^2 ,
+\]
+the right-hand side is strictly positive at every infinite place.
+The lattice basis and translate are integral off $T$,
+so the finite component of $h_{c_i}^{-1}x_i$ is integral off $T$ as well.
+At finite places consider the image of the last frame vector under the translated $\sigma_i^{-1}$.
+The data $g_i$ and $t$ uniquely determine that point $e(g_i)$ on the last-vector quadric.
+Specifically, using the fixed $\pi_N$ and $t$, insert
+the $T$ component of $h_{c_i}^{-1}x_i$ into the last vector.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L707}{Coordinates of the last-vector point}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L818}{Integrality of the definite component}.}
+
+At a last-vector point $e$ let $\mathcal K_Z(p,q;e)$ be the finite fiber pairing,
+and assign $e$ the following weight on the quadric.
+\[
+ \operatorname{Re}\sum_{p,q}R_{pq}\mathcal K_Z(p,q;e).
+\]
+Positive semidefiniteness of $R$ makes this weight nonnegative. The step-function construction for local fiber pairings extends it to
+a compactly supported nonnegative function $\Psi$, invariant under translation by a sufficiently small common additive neighborhood
+and under the principal congruence group of the definite factor.
+Let $J$ be the principal congruence group, $\mu$ the local unitary group measure, and $\mu_H$ the measure of its definite factor.
+For fixed $g$ use the fiber-pairing square-sum estimate at one last-vector point.
+Group first by right class and rational element, and use disjointness of the cosets for distinct groups in the principal congruence group.
+The quadruples within each group are distinct, and each $\rho_p$ times its finite prefix density equals $r_*\sqrt{F_t}$. This gives\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L516}{A compactly supported function of the fiber pairing}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L637}{The square sum at one last-vector point}.}
+\[
+ \Psi(e(g))\ge
+   \mu_H(J)\mu(J)^2[Z:J]\,F_t\!\sum_{i:g_i=g} y_i.
+\]
+
+Let $\mathcal C$ be the full source class set and $c_{\mathrm S}$ the constant in the Siegel mass formula.
+The mass normalization gives a positive $D$ with
+\[
+ \mathcal R(Z)\le D\,\mu_H(J)\mu(J)^2[Z:J],
+ \qquad C_{\mathrm S}=D\,|\mathcal C|\,c_{\mathrm S}.
+\]
+Summing over all $g$ then gives
+$F_t\mathcal R(Z)\sum_i y_i/D\le\sum_g\Psi(e(g))$.
+The upper bound in the Siegel mass formula~\cite{Siegel1935} bounds the right-hand side by
+$(1+b^{-6})|\mathcal C|c_{\mathrm S}F_t$
+times the integral of $\Psi$ over the norm sphere divided by the finite modulus of $\pi_N$.
+Positivity of the norm and integrality off $T$ ensure that every $g$ is counted by this formula.
+The last-coordinate density is precisely the normalized sphere integral.
+Substituting the expression for $\Psi$ on the quadric,
+each term becomes $\mathcal D_{Z,t}(p,q)$ and the total is $Q_t$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L249}{Normalization by the mass ratio}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L738}{The Siegel formula on the norm sphere}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean\#L935}{The sphere integral and last-coordinate density}.}
+
+Combining the estimates,
+\[
+ F_t\,\mathcal R(Z)\sum_i y_i/D
+ \le (1+b^{-6})|\mathcal C|c_{\mathrm S}F_t Q_t .
+\]
+Since $F_t>0$ and $\mathcal R(Z)>0$, cancel the common positive factor to get the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/EnergyEstimate.lean}{462}.}
+\begin{lemma}[Passing from the Siegel square sum to band-limited pairings]
+\label{lem:b-siegel-modal-sum}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with Weil data and $T$ a finite conjugation-stable set of places.
+Assume the inverses of the level element and $N$ and the lattice basis matrices and their inverses are integral off $T$.
+Take local filling data on $T$ and intermediate group $Z$.
+Choose finitely many distinct quadruples $(c_i,c_i',s_i,\sigma_i)$.
+Suppose $\sigma_i$ fixes the first $\varrho$ hyperbolic pairs and is integral off $T$ after translation by the class representatives.
+Its last frame pairing coordinate $t_i\in E^\times$ satisfies $|t_i|_v^2>N^2$ at all infinite places.
+Each $s_i$ has an integral lift lying in $Z$ on $T$.
+
+Let $\mathcal A\subset E^\times$ be a finite set whose elements and inverses are integral off $T$.
+For $p\in\mathcal A^\varrho$ let $L_i(p)$ be the truncated double-coset amplitude sum of $w_p\sigma_i$
+in block $(c_i,s_i,c_i')$. Let $\lambda_{v,a}$ be the square scale.
+Let $p^v_t$ be the archimedean image of the sequence with prefix $p$ and last coordinate $t$, scaled by $\lambda_{v,a}$.
+Let $J_{v,n}$ be the highest-layer Bessel \emph{band-limited Bessel pairing} at the infinite place $v$, with $n=\varrho+1$.
+Write $\mathcal D_{Z,t}(p,q)$ for the last-coordinate density of the same sequences placed unscaled in $T$,
+and $\mathcal R(Z)$ for the mass ratio. Put
+\[
+ r_{\mathrm{norm}}=\frac{\displaystyle\prod_v\left(
+     \sqrt{c_{\mathrm{cell}}}
+      \prod_{a=0}^{\varrho}\lambda_{v,a}^{k_0-1+2(\varrho-a)}\right)}
+                    {d_{\mathrm{coord}}},
+\]
+where $c_{\mathrm{cell}}$ is the open-cell volume constant and $d_{\mathrm{coord}}$ the number of Bessel coordinates.
+Here $k_0$ is the rank of $X_0$. Then
+\[
+ \begin{aligned}
+ r_{\mathrm{norm}}^2\sum_i\left\|\sum_{p\in\mathcal A^\varrho}L_i(p)\right\|^2
+ &\le (1+b^{-6})C_{\mathrm S}
+       \operatorname{Re}\sum_{t\in\{t_i\}}
+            \sum_{p,q\in\mathcal A^\varrho}
+          \left(\prod_v J_{v,n}(p^v_t,q^v_t)\right)
+             \frac{\mathcal D_{Z,t}(p,q)}{\mathcal R(Z)} .
+ \end{aligned}
+\]
+\end{lemma}
+\begin{proof}
+Group by $t_i=t$, fix a nonempty group, and put
+$R_{pq}(t)=\prod_v J_{v,n}(p^v_t,q^v_t)$.
+At the infinite place $v$ write $x_a=(p^v_t)_a$.
+By definition the highest-layer band-limited pairing is the inner product of the normalized orbital integrals at $w_p\sigma_i$ and
+$w_q\sigma_i$,
+with the following scalar normalizing the first integral.
+\[
+  \frac{\sqrt{c_{\mathrm{cell}}}}{d_{\mathrm{coord},v}}\,
+  (|x_\varrho|^2-1)^{(k_0-1)/2}
+  \prod_{a<\varrho}|x_a|^{k_0-1+2(\varrho-a)},
+\]
+Here $d_{\mathrm{coord},v}$ is the number of Bessel coordinates at that place.
+The formula applies because $\sigma_i$ fixes the first $\varrho$ hyperbolic pairs and both sequences have last coordinate
+equal to the scaled pairing value $\Phi_v(t)/N$ there.
+Take the product over all infinite places. Fubini identifies the orbital integral of the product Bessel function with the tensor product of the
+orbital integrals at the places. Let $\rho_{t,p}$ be the product of the normalizing scalars.
+Then for each $i$ in the group, $R(t)$ is the Gram matrix of the vectors
+given by the archimedean orbital integral tensors multiplied by $\rho_{t,p}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Bessel/Basic.lean\#L924}{Normalized orbital integrals}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L422}{The Gram formula for band-limited pairings}.}
+
+Now multiply by the finite prefix density. For each $a<\varrho$,
+as $p_a$ and its inverse are integral off $T$ the product formula gives
+$|p_a|_T^{1/2}\prod_v|\Phi_v(p_a)|=1$,
+where $|\cdot|_T$ is the multiplicative modulus of the local product.
+Term $a$ in the finite prefix density is
+$|p_a|_T^{(k_0-1+2(\varrho-a))/2}$,
+and cancels all unscaled prefix coordinates in the archimedean scalar.
+At the last coordinate $\lambda_{v,\varrho}=1/N$, so
+\[
+ (|\Phi_v(t)/N|^2-1)^{(k_0-1)/2}
+ =N^{-(k_0-1)}(|\Phi_v(t)|^2-N^2)^{(k_0-1)/2}.
+\]
+Absorbing the leading factor and the scaling powers of the earlier coordinates into $r_{\mathrm{norm}}$,
+we find that $\rho_{t,p}$ times the finite-place density of the earlier coordinates is exactly $r_{\mathrm{norm}}\sqrt{F_t}$,
+where $F_t=(\prod_v(|t|_v^2-N^2))^{k_0-1}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Frames/Densities.lean\#L63}{Density of the earlier coordinates}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L368}{Scales and the product formula}.}
+
+Each group now satisfies the common Gram matrix and density conditions of \statementref{Lemma}{lem:b-siegel-last-entry}.
+The integrality of the family, the integral lifts, and the distinctness of the quadruples give the remaining conditions.
+Apply the lemma to each group and sum over all $t$ that occur to obtain the desired estimate.
+\end{proof}
+
+\section{The Poisson Sieve and the Main Term of the Second Moment}
+\label{sec:b-poisson}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{409}.}
+\begin{lemma}[From a Product of Local Factors to an Adelic Poisson Upper Bound]
+\label{lem:b-poisson-transfer}
+\emitthmsource
+Let $T$ be a set of finite places, $\lambda_v>0$ an archimedean scale, and $\varpi$ the generator of the difference-product ideal in the filling datum.
+Write $\mathcal X=(\prod_v\mathbb C)\times\prod_{w\in T}E_w$ and take a nonnegative integrable function $F$.
+For $t\in E$, let $x(t)$ be the image of $t$ in $\mathcal X$ with archimedean components multiplied by $\lambda_v$.
+Take a finite set $\mathcal V$ of nonzero rational elements integral outside $T$ and suppose $F$ is lower semicontinuous at each $x(t)$.
+Write $\widehat F(\xi)$ for the Fourier integral with respect to the product of the local characters. Suppose that for each invertible frequency $\xi$ we have
+$|\widehat F(\xi)|\le H\beta(\xi)$, where $H\ge0$.
+For $y\in E$, let $\xi(y)$ have the image of $y$ on $T$
+and the component $\frac{2\pi i}{\Phi_v(\varpi)\lambda_v}\Phi_v(y)$ at the archimedean place $v$.
+Suppose that for any finite collection of nonzero $y$ integral outside $T$, the sum of the corresponding $\beta(\xi(y))$ is at most $\epsilon$. Then
+\[
+ \sum_{t\in\mathcal V} F(x(t))
+  \le \frac{\operatorname{vol}(\widehat{\mathcal O}_E)}
+              {\prod_v\lambda_v^2}\left(\int_{\mathcal X}F+H\epsilon\right).
+\]
+\end{lemma}
+\begin{proof}
+Define $\widetilde F(z)$ on the adelic space as follows.
+If the components of $z$ outside $T$ are integral, evaluate $F$ at the $T$ components of $z$ and at
+$(\lambda_v z_v)_v$. Otherwise set the value to zero.
+Integrality outside $T$ is a clopen condition, so the extension is still lower semicontinuous at every selected rational point.
+Integrating out the integer components outside $T$ and changing variables by scaling at each complex place extracts a common positive factor
+\[
+ P=\operatorname{vol}(\widehat{\mathcal O}_E)\left(\prod_v\lambda_v^2\right)^{-1}.
+\]
+In particular, $\widetilde F$ is integrable and $\int\widetilde F=P\int_{\mathcal X}F$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L344}{Integrability and lower semicontinuity of the extension}.}
+
+Take the Fourier transform of $\widetilde F$ with respect to the standard adelic character.
+Since $\widetilde F$ is invariant under integer translations outside $T$,
+its transform at frequency $y/\varpi$ vanishes if $y$ fails to be integral outside $T$.
+Indeed, some integer translation outside $T$ then multiplies the character by a nontrivial scalar,
+and translation invariance of the integral forces the transform to vanish.
+If $y$ is integral outside $T$, every character factor outside $T$ is identically $1$ on the integer ring.
+Rewrite the remaining finite and archimedean characters using the convention for $\mathcal X$
+and make the same scaling change of variables to obtain\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L369}{The Fourier integral and the scales at each place}.}
+\[
+ \widehat{\widetilde F}(y/\varpi)=P\,\widehat F(\xi(y)).
+\]
+
+The modulus at zero frequency is $P\int_{\mathcal X}F$.
+For a nonzero $T$-integer $y$, its image at every selected place is nonzero,
+so $\xi(y)$ is invertible. By hypothesis the sum of absolute values over any finite set of nonzero frequencies is at most
+$PH\epsilon$. Multiplication by $\varpi$ reindexes all rational dual frequencies by $y$,
+so every finite partial sum of the Fourier absolute values is at most
+$P(\int_{\mathcal X}F+H\epsilon)$.
+Apply the one-sided Poisson summation formula on the dual adelic lattice (\emph{one-sided Poisson summation formula}).
+The required nonnegative integrability, lower semicontinuity at the selected rational points, and uniform bound on the dual absolute partial sums have all been verified.
+Since $\widetilde F(t)=F(x(t))$ for $t\in\mathcal V$, the conclusion follows.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/StrongApproximation.lean\#L661}{One-sided Poisson summation on the dual adelic lattice}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/Frequencies.lean}{250}.}
+\begin{lemma}[Summing the Inverse Cubes of Heights]
+\label{lem:b-inverse-height-sum}
+\emitthmsource
+Let $E$ be a totally imaginary number field with $f$ archimedean places, and choose one complex embedding $\Phi_v$ in each conjugate pair.
+For $y\in E$ write $\mathfrak d(y)=\{a\in\mathcal O_E:ay\in\mathcal O_E\}$.
+Then for any finite set $Y\subset E$ we have
+\[
+ \sum_{y\in Y}
+  \left(\prod_v\max(1,|\Phi_v(y)|)^{-6}\right)
+        (\mathrm N\mathfrak d(y))^{-3}
+ \le (64\cdot38e^4)^f .
+\]
+\end{lemma}
+\begin{proof}
+First consider frequencies in one coset modulo $\mathcal O_E$.
+Partition each complex coordinate plane into half-open squares of side length $1/2$.
+If two points lie in the same square at every archimedean place, their integral difference has modulus less than $1$ at every complex embedding.
+The absolute field norm of a nonzero integer is at least $1$, so the points coincide. Thus each tuple of squares contains at most one point.
+Let $q(z)$ be the lower left corner of the square containing $z$. Then $|z-q(z)|<1$, hence\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L132}{Distance within one square}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L149}{Comparison of the lattice-point weights}.}
+\[
+ \max(1,|q(z)|)\le 2\max(1,|z|),\qquad
+ \max(1,|z|)^{-6}\le64\max(1,|q(z)|)^{-6}.
+\]
+
+These corners are pairwise at distance at least $1/2$.
+For $R\ge1$, a disk of radius $R$ contains at most $(1+4R)^2$ corners,
+since the open disks of radius $1/4$ centered at the corners are disjoint and lie in a disk of radius $R+1/4$.
+Set $u(q)=\max(1,|q|)$ and use the identity
+$u(q)^{-6}=\int_{u(q)}^\infty 6R^{-7}\,dR$ to obtain
+\[
+ \sum_q u(q)^{-6}\le
+ \int_1^\infty 6R^{-7}(1+4R)^2\,dR
+ \le \int_1^\infty 150R^{-5}\,dR=\frac{75}{2}<38.
+\]
+The complex coordinates can be summed independently, so the total archimedean weight of each coset of the integers is at most $(64\cdot38)^f$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L177}{Sum of the corner weights}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L198}{Sum of the weights in a single coset of the integers}.}
+
+Now fix a nonzero denominator ideal $\mathfrak d$.
+All numbers satisfying $\mathfrak d\subseteq\mathfrak d(y)$ belong to $\mathfrak d^{-1}$.
+Take a nonzero element $a\in\mathfrak d$ and write $(a)=\mathfrak d\mathfrak c$.
+Multiplication by $a$ identifies $\mathfrak d^{-1}/\mathcal O_E$ with $\mathfrak c/(a)$,
+which has order $\mathrm N(a)/\mathrm N\mathfrak c=\mathrm N\mathfrak d$.
+Frequencies with denominator ideal exactly $\mathfrak d$ therefore lie in at most $\mathrm N\mathfrak d$ cosets of the integers.
+Multiply the coset estimate by $(\mathrm N\mathfrak d)^{-3}$ and sum over the denominator ideals to get the upper bound
+\[
+ (64\cdot38)^f
+      \sum_{\mathfrak d\ne0}(\mathrm N\mathfrak d)^{-2}.
+\]
+The sum over ideals is the value of the Dedekind zeta function at $2$, namely $\zeta_E(2)$.
+Above each rational prime there are at most $[E:\mathbb Q]$ prime ideals, each of norm at least that prime.
+Thus the local factor is bounded by the corresponding factor of $\zeta(2)^{[E:\mathbb Q]}$.
+It follows that $\zeta_E(2)\le\zeta(2)^{[E:\mathbb Q]}\le e^{2[E:\mathbb Q]}=e^{4f}$,
+as required.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L68}{Number of cosets of the integers for a denominator ideal}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L102}{Sum of inverse squares of ideal norms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/Frequencies.lean\#L253}{Summing the Inverse Cubes of Heights}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{174}.}
+\begin{lemma}[The Frequency Sum at General Dual Scales]
+\label{lem:b-frequency-sum}
+\emitthmsource
+Let $S$ be a filling datum whose CM base field has $f$ archimedean places. Let $T$ be the set of finite places and $O_T$ the associated semilocal integer ring.
+For a nonzero $T$-integer $y$, let $y_T$ be its image in $T$ and set
+\[
+ I_T(y)=[O_T:y_TO_T],\qquad
+ D_T(y)=[O_T:O_T\cap y_T^{-1}O_T],
+\]
+where the first index is taken in the generalized sense. Let
+$\mathcal D_m(r)=r^m\min(1,r)^6$, with $m\ge0$ an integer.
+Take $B\ge1$ and choose $s_v\in\mathbb C$ and $x_v\in\mathbb R$ at each archimedean place
+satisfying $|s_v|^{-1}\le |x_v|\le B$, with reciprocals defined as in $0^{-1}=0$.
+Then for every finite set $Y$ of nonzero $T$-integers we have
+\[
+ \sum_{y\in Y}\frac{I_T(y)^{m/2}}{D_T(y)^3}
+      \prod_v\mathcal D_m\!\left(|s_v\Phi_v(y)|^{-1}\right)
+ \le \prod_v |x_v|^m(bB^2)^3 .
+\]
+\end{lemma}
+\begin{proof}
+Write $\mathfrak d(y)=\{a\in\mathcal O_E:ay\in\mathcal O_E\}$.
+Since $y$ is integral outside $T$, $\mathfrak d(y)$ is exactly
+the preimage of $O_T\cap y_T^{-1}O_T$ in $\mathcal O_E$.
+Thus $\mathcal O_E/\mathfrak d(y)$ embeds in $O_T/(O_T\cap y_T^{-1}O_T)$,
+hence $\mathrm N\mathfrak d(y)\le D_T(y)$.
+and integrality outside $T$ together with the product formula gives
+\[
+ I_T(y)^{1/2}\le\prod_v|\Phi_v(y)|.
+\]
+More precisely, the generalized index equals $\prod_{w\in T}|y|_w^{-1}$,
+and the factor $|y|_w^{-1}$ at each finite place outside $T$ is at least $1$.
+The product over all finite-place factors is the square of the product of the archimedean absolute values.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L112}{Index of the denominator ideal}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/SemilocalProducts.lean\#L351}{The generalized index and the product formula}.}
+
+Put $a_v=|\Phi_v(y)|>0$. Comparing $a_v$ and $1$ gives
+\[
+ \min(1,|s_v|^{-1}/a_v)\le B\max(1,a_v)^{-1}.
+\]
+The left-hand side is at most $|s_v|^{-1}/a_v\le B/a_v$ when $a_v\ge1$,
+and at most $1\le B$ when $a_v\le1$. Canceling the powers of $m$ gives
+\[
+ \mathcal D_m(|s_v\Phi_v(y)|^{-1})\,a_v^m
+ \le |x_v|^m B^6\max(1,a_v)^{-6},
+\]
+The inequality also holds when $s_v=0$. Multiply over all archimedean places and apply the two finite-place index bounds
+to obtain the termwise upper bound\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L140}{Height bound for the decay factors}.}
+\[
+  \left(\prod_v |x_v|^m B^6\right)
+  \left(\prod_v\max(1,|\Phi_v(y)|)^{-6}\right)
+  (\mathrm N\mathfrak d(y))^{-3}.
+\]
+
+By \statementref{Lemma}{lem:b-inverse-height-sum}, the sum of the product of the last two factors over $Y$ is at most $(64\cdot38e^4)^f$.
+The admissible parameter $b$ satisfies $b\ge1000$, so $64\cdot38e^4\le b^3$.
+Combining $B^6$ and $b^3$ place by place gives the conclusion.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L177}{Frequency estimate at general scales}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{810}.}
+\begin{lemma}[The Nonzero Frequency Sum for the Poisson Sieve]
+\label{lem:b-global-frequency-decay}
+\emitthmsource
+Let $S$ be an admissible filling, take $n=\varrho+1$ and $m=k_0-n^7$, and let $\Theta$ be the scaled volume ratio.
+Let $\varpi$ be the generator of the difference-product ideal, and set $\kappa_v=M\Phi_v(\varpi)/(2\pi i)$.
+$\lambda_{v,a}=\kappa_v^{2(\varrho-a)_+}/N$.
+On the product of $T$ and all archimedean places, take the decay function
+\[
+ \beta(\xi)=
+ \left(\prod_v\Theta b^{2000n^9}\mathcal D_m(|\xi_v|^{-1})\right)
+ \frac{[O_T:\xi_TO_T]^{m/2}}{[O_T:O_T\cap\xi_T^{-1}O_T]^3}\,b^{n^9 f},
+\]
+where $\mathcal D_m$ is as in \statementref{Lemma}{lem:b-frequency-sum} and the finite-place indices are computed at invertible frequencies.
+Let $a\ge0$ and take scales $c_v$ satisfying $|c_v|^{-1}\le|\kappa_v|/M$.
+For any finite set $Y$ of nonzero $T$-integers, put
+$\xi(y)_v=(c_v/\lambda_{v,a})\Phi_v(y)$ and $\xi(y)_T=y_T$. Then
+\[
+ \sum_{y\in Y}\beta(\xi(y))
+ \le C_{\mathrm{dec}}\,b^{2002n^9 f},\qquad
+ C_{\mathrm{dec}}=\prod_v\Theta
+          \left(\frac{|\kappa_v|^{2\varrho+1}}{MN}\right)^m .
+\]
+\end{lemma}
+\begin{proof}
+By $1\le|\kappa_v|\le b^{23}$ we have
+\[
+ |c_v/\lambda_{v,a}|^{-1}
+ \le \frac{|\kappa_v|}{M}\lambda_{v,a}
+ \le \frac{|\kappa_v|^{2\varrho+1}}{MN}.
+\]
+In \statementref{Lemma}{lem:b-frequency-sum} take
+$x_v=\kappa_v^{2\varrho+1}/(MN)$ and $B=(b^{23})^{2\varrho+1}$.
+By $|\kappa_v|\le b^{23}$ and $MN\ge1$ we have $|x_v|\le B$. Moreover,
+\[
+ (bB^2)^3=b^{3+138(2\varrho+1)}\le b^{n^9},
+\]
+where $\varrho\ge10^5$ ensures that the exponent is at most $n^2$.
+Thus, omitting the constant factors in $\beta$, the frequency sum is at most
+$\prod_v \bigl(|x_v|^m\,b^{n^9}\bigr)$.
+Restore the constant $\Theta b^{2000n^9}$ at each archimedean place and the combined finite-place factor
+$b^{n^9f}$ to obtain $C_{\mathrm{dec}}b^{2002n^9f}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L773}{Upper bounds for the squared frame scales}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L818}{Poisson frequency sum}.}
+
+In particular, the Poisson dual scales $c_v=2\pi i/\Phi_v(\varpi)$ satisfy the required reciprocal-scale bound,
+and the scales $c_v=M$ used for the difference of the last coordinates also satisfy this bound by $|\kappa_v|\ge1$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L514}{A common condition for the two dual scales}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{1097}.}
+\begin{lemma}[The Sum of Squared Sequence Weights in the Poisson Sieve]
+\label{lem:b-poisson-head-weights}
+\emitthmsource
+Let $S$ be an admissible filling and $\mathcal A\subset E^\times$ a finite set of elements integral outside $T$.
+Retain the local squared scales $\lambda_{v,a}=\kappa_v^{2(\varrho-a)_+}/N$ and take $0\le i\le\varrho$.
+For $p\in\mathcal A^i$ use
+$\delta_j=\prod_{a<j}p_a$ and $c_{v,j}=\prod_{a<j}\lambda_{v,a}$ for the product of the first $j$ entries and its scale, respectively.
+Define the weight $\Lambda_i(p)$ of $p$ as the product over $1\le j\le i$ of the following factors.
+At the archimedean place $v$ the factor is $\max(1,|c_{v,j}\Phi_v(\delta_j)|^{-1})^{n^6}$,
+with value zero if $|c_{v,j}\Phi_v(\delta_j)|>b^{60n^2}$.
+At the finite places the factor is $[O_T:(\delta_j)_TO_T]^{n^6/2}$,
+again with value zero if $(\delta_j)_T\notin O_T$.
+Put $P_a=\operatorname{vol}(\widehat{\mathcal O}_E)/\prod_v\lambda_{v,a}^2$.
+Then
+\[
+ \left(\sum_{p\in\mathcal A^i}\Lambda_i(p)\right)^2
+ \le b^{400n^9f}\prod_{a<i}P_a .
+\]
+\end{lemma}
+\begin{proof}
+If $\Lambda_i(p)>0$, every $\delta_j$ is integral both inside and outside $T$.
+By $|\kappa_v|\ge1$ and $N\le b^{60n}$,
+\[
+ |c_{v,j}|^{-1}
+ =\frac{N^j}{\prod_{a<j}|\kappa_v|^{2(\varrho-a)}}
+ \le b^{60n^2}.
+\]
+Together with the cutoff on the archimedean weights, this gives $|\Phi_v(\delta_j)|\le b^{120n^2}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L947}{Local factors of the weight}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L974}{Cutoff conditions for nonzero weight}.}
+
+For fixed $j$ the product formula gives
+$[O_T:(\delta_j)_TO_T]^{1/2}\le\prod_v|\Phi_v(\delta_j)|$.
+Absorbing this into the base of the archimedean weight at each place gives
+\[
+ |\Phi_v(\delta_j)|\max(1,|c_{v,j}\Phi_v(\delta_j)|^{-1})
+ =\max(|\Phi_v(\delta_j)|,|c_{v,j}|^{-1})
+ \le b^{120n^2}.
+\]
+Thus each $j$ contributes at most $b^{120n^8 f}$ and each sequence has weight at most
+$b^{120n^8fi}$, a bound that also holds for weight zero.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L894}{Local weights and the product formula}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1006}{The weight of a single sequence}.}
+
+Since $p_a=\delta_{a+1}/\delta_a$, the tuple $(\delta_1,\dots,\delta_i)$ determines the sequence $p$.
+Let $R=b^{120n^2}$. The tuples of products with nonzero weight then lie in the sup-norm ball in $\mathbb C^{if}$
+of radius $\|z\|_{\max}\le R$. Any two distinct tuples have distance at least $1$,
+since a nonzero integral difference has product of archimedean absolute values at least $1$.
+The open balls of radius $1/2$ centered at the tuples are disjoint and all lie in the ball of radius $R+1/2$.
+Comparing $2if$-dimensional volumes gives at most $(1+2R)^{2if}$ such tuples.
+By $b\ge1000$ and $R\ge1$ we have $1+2R\le b^{120n^2+1}$.
+Multiply by the bound for the weight of each sequence and use $i\le n$ and $\varrho\ge10^5$ to compare the exponents, giving\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Box.lean\#L77}{Counting bounded integral tuples}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1043}{Sum of the sequence weights}.}
+\[
+ \sum_{p\in\mathcal A^i}\Lambda_i(p)
+ \le b^{(2(120n^2+1)+120n^8)if}
+ \le b^{130n^9 f}.
+\]
+
+Finally, by $\lambda_{v,a}\le b^{46\varrho}$ and
+$\operatorname{vol}(\widehat{\mathcal O}_E)=(2/\mathrm{rd}_E)^f\ge b^{-f}$ with $\mathrm{rd}_E\le b$, we have
+\[
+ \prod_{a<i}P_a\ge b^{-i(1+92\varrho)f}\ge b^{-100n^2f}.
+\]
+To bound the square of the sum of sequence weights, multiply it by a factor at least $1$,
+namely $b^{100n^2f}\prod_{a<i}P_a$, and apply $260n^9+100n^2\le400n^9$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1076}{Lower bound for the product of the Poisson constants}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1103}{Square of the weight sum}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/GlobalSieve.lean}{1124}.}
+\begin{lemma}[The Coordinatewise Poisson Sieve]
+\label{lem:b-poisson-sieve}
+\emitthmsource
+Let $S$ be an admissible filling and $T$ the local set of finite places, with $M^{-1}$ integral outside $T$.
+Let $\mathcal A\subset E^\times$ be a finite set whose elements and their inverses are integral outside $T$,
+and take $\mathcal U\subseteq\mathcal A$.
+Suppose that on $T$ a family of pairings $J_{T,j}$ satisfies the local sieve axioms with base mass bound $m_T$.
+Use the coordinate weights and frequency decay of \statementref{Lemma}{lem:b-finite-sieve}.
+Let $n=\varrho+1$ be the number of frame vectors and $\lambda_{v,i}>0$ the squared scale of frame vector $i$ at the archimedean place $v$.
+For a sequence whose first $\varrho$ entries are $p\in\mathcal A^\varrho$ and last entry is $t\in\mathcal U$,
+let $p^v_t$ be its archimedean sequence scaled by $\lambda_{v,i}$ and
+$p^T_t$ its unscaled finite-place sequence. Unspecified entries are set to $1$ before scaling.
+Write $J_{v,n}$ for the band-limited Bessel pairing at the archimedean place $v$ and $d_v$ for its degree.
+Then
+\[
+ \begin{aligned}
+ &\operatorname{Re}\sum_{t\in\mathcal U}
+      \sum_{p,q\in\mathcal A^\varrho}
+      \left(\prod_v J_{v,n}(p^v_t,q^v_t)\right)J_{T,n}(p^T_t,q^T_t)\\
+ &\qquad\le
+ \left(\prod_{i=0}^{n-1} P_i\right)
+ \left(m_T\prod_v\frac{1+b^{-10}}{d_v}
+                 +b^{2403n^9f}C_{\mathrm{dec}}\right),
+ \end{aligned}
+\]
+Here $f$ is the number of archimedean places and $P_i=\operatorname{vol}(\widehat{\mathcal O}_E)/\prod_v\lambda_{v,i}^2$
+is the corresponding Poisson constant, while
+\[
+ C_{\mathrm{dec}}=\prod_v \Theta\left(
+      \frac{|\kappa_v|^{2\varrho+1}}{MN}\right)^{k_0-n^7}.
+\]
+Here $\Theta$ is the scaled volume ratio for the Hermitian space, $k_0$ is the rank of $X_0$,
+and $\kappa_v=M\Phi_v(\varpi)/(2\pi i)$, with $\varpi$ the fixed generator of the difference-product ideal.
+\end{lemma}
+\begin{proof}
+For each level $i$, let $J_i$ be the product of the finite-place form $J_{T,i}$ and the archimedean forms $J_{v,i}$.
+By Fubini's theorem, the recurrence for integration in the common coordinate and the absolute value bounds with a character persist under products.
+Positive semidefiniteness at the top level also persists, since the entrywise product of positive semidefinite matrices is the Gram matrix of tensor products of vectors.
+Continuity follows from taking a finite product. Thus $J_i$ satisfies the sieve axioms on the product space,
+with base mass bound $m_*=m_T\prod_v(1+b^{-10})/d_v$.
+The coordinate weights $\Lambda_i$ and frequency decay $\beta$ are also products of the corresponding local factors.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/SieveSystem.lean\#L149}{The sieve axioms under finite products}.}
+
+Let $S_i$ be the sum of the real parts of $J_i$ over pairs of rational sequences of length $i$ having the same last coordinate.
+Set $S_0$ equal to the real part of $J_0$ on the empty sequences. For sequences of length $i$, write $W_i$ for the sum of the weights
+$\Lambda_i$. Consider the common coordinate $i$ to be adjoined.
+Append the same variable $x$ to both sequences and sum $J_{i+1}$ over all earlier pairs to obtain the common-last-coordinate density $F_i(x)$.
+Positive semidefiniteness at the top level passes to each lower level by integration.
+Thus $F_i$ is a nonnegative real-valued function and is lower semicontinuous at the chosen rational points.
+The recurrence axiom of the sieve gives $\int F_i$ as the sum of the real parts of $J_i$ over all earlier sequence pairs,
+and the Fourier transform at nonzero frequency has modulus at most $\beta(\xi)W_i^2$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L580}{Nonnegativity and lower semicontinuity of the density}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L620}{Integral and Fourier bound in one coordinate}.}
+
+Apply \statementref{Lemma}{lem:b-poisson-transfer} to $F_i$.
+Extending by the indicator of the integer ring outside $T$ gives the zero-frequency factor
+$\operatorname{vol}(\widehat{\mathcal O}_E)$,
+and the archimedean scaling Jacobian divides it by $\prod_v\lambda_{v,i}^2$.
+Thus the common multiplier is exactly $P_i$. If the sum of the decay factors at nonzero frequencies is at most $\epsilon$, then
+we have
+\[
+ S_{i+1}\le P_i\left(\int F_i+\epsilon W_i^2\right),
+\]
+where the frequencies are the local images of nonzero $T$-integers, with the scales above and the dual scale supplied by the difference-product ideal.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L416}{Adelic Poisson upper bound}.}
+
+Next separate from $\int F_i$ the sequence pairs with different last coordinates.
+If the two last coordinates $t\ne s$, the difference frequency comes from a nonzero $T$-integer
+$M^{-1}(t^{-1}-s^{-1})$:
+via its ordinary image at the finite places and its image multiplied by $M/\lambda_{v,i-1}$ at the archimedean places.
+The off-diagonal frequency bound of the sieve bounds the real part for each pair by $\epsilon$ times the product of the two weights.
+Summing and using nonnegativity of the weights gives $\int F_i\le S_i+\epsilon W_i^2$
+which also holds when $i=0$ because then there are no pairs with different last coordinates. Hence\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L653}{Frequency from two distinct last coordinates}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L731}{One step of the recurrence}.}
+\[
+ S_{i+1}\le P_i(S_i+2\epsilon W_i^2).
+\]
+
+\statementref{Lemma}{lem:b-global-frequency-decay} applies to both the dual scales above and the difference-frequency scales
+and gives $\epsilon=C_{\mathrm{dec}}b^{2002n^9f}$.
+\statementref{Lemma}{lem:b-poisson-head-weights} gives
+$W_i^2\le b^{400n^9f}\prod_{a<i}P_a$.
+Write $B=b^{400n^9 f}$. Induction using $S_0\le m_*$ and the recurrence gives
+\[
+ S_i\le\left(\prod_{a<i}P_a\right)(m_*+2iB\epsilon),
+\]
+The induction step factors the same product of Poisson constants out of the previous error term and $2\epsilon W_i^2$.
+By $2n\le k_0\le b\le b^{n^9f}$,
+$2nB\epsilon\le b^{2403n^9f}C_{\mathrm{dec}}$.
+retaining only last coordinates in $\mathcal U$ at level $n$ can only decrease the sum of the nonnegative densities.
+The desired sum is therefore at most $S_n$, as required.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L818}{Sum of the decay factors at nonzero frequencies}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1103}{Sum of squared sequence weights}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/MainTerm/EnergyEstimate.lean}{617}.}
+\begin{lemma}[The Same-Link Sum of Squares on Open Elements]
+\label{lem:b-open-link}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field with Weil data.
+Choose a subset $A$ of the selected places over the first level prime and, at each $w\in A$, specify a nonzero frame vector over the residue field of $w$ or of its conjugate place.
+Call a residue element \emph{open} (\emph{open element}) if it fixes all specified vectors and all nonempty proper leading principal minors of its frame-pairing matrix are nonzero at some selected place.
+In each block of such elements, keep only the nonzero-discriminant terms and take the squared modulus of the sum of the truncated amplitudes for each link.
+Then the sum of these squares over the blocks and links, divided by $\nu^2$, is at most
+\[
+ (1+b^{-4})b^{-6k_0|A|}D_{\mathrm{main}},
+\]
+where $k_0$ is the rank of $X_0$ and $\nu$ is the unipotent covolume,
+$D_{\mathrm{main}}$ the square of the full source dimension divided by the product of the Bessel degrees times the mass of the standard lattice.
+\end{lemma}
+\begin{proof}
+let $n=\varrho+1$ be the number of frame vectors and $f$ the number of archimedean places, and set $a_0=|A|$.
+It suffices to prove the same bound for the sum of squares of any finite collection of nonzero blocks.
+Each block is indexed by a quadruple $(c,s,c',\Lambda)$, with link $\Lambda$.
+Let $\mathcal A$ be the finite set of frame coordinates from the filling datum
+and choose a conjugation-stable set $T$ of finite places such that the elements of $\mathcal A$ and their inverses, the inverse of the level parameter,
+the inverse of the auxiliary prime $N$, and the lattice basis matrices and their inverses are integral outside $T$.
+
+In any nonzero block, the nonzero principal minors at the selected place ensure that every contributing rational term has the corresponding big-cell decomposition.
+Take any such term and write it as $u w_p\sigma u'^{-1}$,
+where $u,u'$ is unipotent, $w_p$ is the Weyl element determined by the first $\varrho$ frame coordinates,
+and $\sigma$ fixes the first $\varrho$ hyperbolic pairs. The link is uniquely determined by $\sigma$,
+and all other rational terms in the same link share the same $\sigma$ in their decomposition.
+Let $t$ be the last frame-pairing coordinate of $\sigma$. The nonzero-discriminant condition ensures that $t\bar t-N^2$
+is strictly positive at every archimedean place. Nonvanishing of the truncated amplitude forces the coordinates of $t$ and every contributing $p$ to lie in
+$\mathcal A$. By uniqueness of the big-cell decomposition, summing first over $u,u'$ and then over $p\in\mathcal A^{\varrho}$
+gives exactly the block sum for the link.
+The construction also gives an integral lift of $s$ and integrality of the translated $\sigma$ outside $T$.
+Furthermore, two blocks with the same $(c,c',s,\sigma)$ have the same link and hence coincide.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L90}{Lifting nonzero minors from the reduction}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalToLocal.lean\#L383}{The big cell and the double coset decomposition}.}
+
+Let $I$ be the sum of squares for the chosen finite collection of blocks, $r_{\mathrm{norm}}>0$ the main-term normalization constant,
+and $C_{\mathrm{S}}>0$ the scaling constant for the Siegel estimate.
+By \statementref{Lemma}{lem:b-finite-sieve}, on the product of local groups at $T$, fixing the specified vectors defines a subgroup between the principal congruence group and the integral group.
+It contains the components of the integral lifts at $T$, and its normalized last-coordinate density satisfies the sieve axioms
+with mass at most $(1+b^{-6})b^{-6k_0a_0}$.
+Group by the common last coordinate $t$ and apply \statementref{Lemma}{lem:b-siegel-modal-sum} to obtain
+\[
+ r_{\mathrm{norm}}^2 I
+ \le (1+b^{-6}) C_{\mathrm{S}}\mathcal H ,
+\]
+where $\mathcal H$ is the sum of real parts over the common last coordinate and the two sets of $\varrho$ preceding coordinates.
+Each term is the product of the archimedean band-limited Bessel pairings times the last-coordinate density normalized at $T$.
+The integrality of the double coset decomposition and the injectivity for the blocks above verify all the hypotheses of this sum-of-squares estimate.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean\#L280}{Local sieve data on the vector stabilizer}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L479}{The Siegel sum-of-squares estimate}.}
+
+Let $\Pi_{\mathrm P}$ be the product of the coordinatewise Poisson constants and $C_{\mathrm{dec}}$ the decay constant,
+and let $d_{\mathrm{Bes}}$ be the product of the Bessel degrees. \statementref{Lemma}{lem:b-poisson-sieve} gives
+\[
+ \mathcal H\le \Pi_{\mathrm P}
+ \left(\frac{(1+b^{-10})^f}{d_{\mathrm{Bes}}}(1+b^{-6})b^{-6k_0a_0}
+          +b^{2403n^9 f}C_{\mathrm{dec}}\right),
+\]
+where the mass bound at each archimedean place is $(1+b^{-10})$ divided by the local Bessel degree.
+Integrality outside $T$ allows the sieve to be applied to all common last coordinates and preceding coordinates.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/GlobalSieve.lean\#L1145}{Main term and error of the coordinatewise sieve}.}
+
+Set $P=\Pi_{\mathrm P}/r_{\mathrm{norm}}^2$, let $d_{\mathrm{coord}}$ be the number of Bessel coordinates, and set
+$D_{\mathrm{id}}=|\overline R|u_0$. The identity for the product of the Poisson constants and the admissible lattice mass bound yield
+\[
+ C_{\mathrm S}P\le(1+b^{-9})D_{\mathrm{main}}d_{\mathrm{Bes}}\nu^2 ,
+\]
+and the decay constant estimate gives
+$C_{\mathrm S}PC_{\mathrm{dec}}\le b^{n^9f}d_{\mathrm{coord}}D_{\mathrm{id}}\nu^2$.
+Combining $d_{\mathrm{coord}}\le b^{2k_0f}$, $k_0\ge512000n^9$, and $a_0\le f$ gives
+$2404n^9f+2k_0f+6k_0a_0+10\le11k_0f$.
+Then $b^{11k_0f}D_{\mathrm{id}}\le D_{\mathrm{main}}$ shows that the sieve error, multiplied by
+$C_{\mathrm S}P$, is at most $b^{-10}\cdot b^{-6k_0a_0}D_{\mathrm{main}}\nu^2$.
+By $f\le b/1000$ we also have $(1+b^{-10})^f\le1+b^{-9}$.
+Therefore $I$ is at most $b^{-6k_0a_0}D_{\mathrm{main}}\nu^2$ times
+\[
+ (1+b^{-6})\bigl((1+b^{-9})^2(1+b^{-6})+b^{-10}\bigr)\le1+b^{-4}.
+\]
+For the last inequality, put $x=b^{-1}$, increase each $x^6,x^9,x^{10}$ to $x^4/100$, and expand.
+Taking the supremum over all finite collections of blocks gives the total sum-of-squares estimate.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L150}{Product of the Poisson constants}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L183}{Decay constant}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean\#L273}{Simplifying the main-term and error constants}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/Unfolding/MomentBounds.lean}{437}.}
+\begin{lemma}[The Total Second Moment of the Positive-Type Amplitude]
+\label{lem:b-global-moment}
+\emitthmsource
+Let $S$ be admissible filling data over a CM field equipped with Weil data.
+Let $\beta(s)$ be the second moment of the single-point amplitude of all rational terms at a point of the residue group $G$.
+Suppose there are vectors $u_s$ in a complex inner product space satisfying
+$\beta(a^{-1}c)=\langle u_a,u_c\rangle$ and $\beta(1)\le 2u_0$,
+where $u_0$ is the dimension of the full source. Put
+$D_{\mathrm{main}}=u_0^2/(d_{\mathrm{Bes}}\mu)$,
+where $d_{\mathrm{Bes}}$ is the product of the local Bessel degrees and $\mu$ the weighted class sum for the standard lattice.
+Then
+\[
+ \sum_{s\in G}\beta(s)\le(1+9b^{-4})D_{\mathrm{main}}.
+\]
+\end{lemma}
+\begin{proof}
+Let $k_0$ be the rank of $X_0$, $f$ the number of archimedean places, and $n$ the number of Bessel frame vectors.
+Let $d_0$ be the rank of the Hermitian space being reduced, and set $B=b^{6k_0}$ and $D_{\mathrm{id}}=|\overline R|u_0$.
+Choose a subset $A$ of the selected places over $p_0$ and at each $w\in A$ specify a nonzero frame vector $v_w$ over the residue field at $w$ or its conjugate place.
+Let $\Gamma(A,v)$ be the subgroup of the residue group fixing these vectors,
+and set $Y(A,v)=\sum_{s\in\Gamma(A,v)}\beta(s)$ and $C_A=B^{-|A|}D_{\mathrm{main}}$.
+As before, an element is open if all nonempty proper leading principal minors of its frame-pairing matrix are nonzero at some selected place over $p_0$.
+
+First establish two estimates on the subgroup. By $|A|\le f$ the admissibility condition
+$b^{11k_0f}D_{\mathrm{id}}\le D_{\mathrm{main}}$
+implies $b^{5k_0f}D_{\mathrm{id}}\le C_A$.
+Open elements lie in no scalar coset of $\overline R$, so their second moment comes entirely from the contribution outside the Bessel subgroup.
+On open elements in $\Gamma(A,v)$, \statementref{Lemma}{lem:b-open-link} shows that summing all nonzero-discriminant terms within each link,
+taking the square, and summing over links gives, after division by $\nu^2$, at most $(1+b^{-4})C_A$.
+By the estimates for truncation and distinct links, if the normalized same-link sum of squares is at most $C$,
+the normalized \(\ell^2\)-norm of all terms outside the subgroup is at most
+$\sqrt C+b^{-15}\sqrt{D_{\mathrm{id}}}$.
+Take $x=b^{-4}$. The \(\ell^2\)-norm on the open elements is then at most
+\[
+ \sqrt{(1+x)C_A}+b^{-15}\sqrt{D_{\mathrm{id}}}
+ \le (1+x)\sqrt{C_A},
+\]
+where we used $\sqrt{1+x}\le1+x/2$ and $b^{-15}\le x/2$.
+Squaring gives a total mass of at most $(1+4x)C_A$ on the open elements.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SquareExpansion.lean\#L559}{From the link sum of squares to all remaining terms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L264}{Total mass on the open elements}.}
+
+When $A$ contains all $f$ selected places, we have the stronger estimate $Y(A,v)\le C_A$.
+Indeed, the positive-type hypothesis gives $\|u_s\|^2=\beta(1)$, so $\beta(s)\le\beta(1)\le2u_0$.
+An element in a scalar coset is determined by the residue scalar and an element of $\overline R$.
+There are at most $M^f|\overline R|$ such elements, where $M=p_0p_1$,
+and their total mass is at most $2M^f D_{\mathrm{id}}\le C_A/4$
+by $M\le b^{23}$, $8\le b$, $23f+1\le5k_0f$, and the preceding scale conditions.
+For the other elements in $\Gamma(A,v)$, each specified fixed vector supplies a place of frame intersection,
+so the product of the norms at the intersection places is at least $p_0^f$.
+By \statementref{Lemma}{lem:b-link-meet} and $p_0\ge b^{10}$, the normalized link sum of squares is at most
+\[
+ \left(\frac{b^{2f}}{p_0^f}\right)^{k_0}D_{\mathrm{main}}
+ \le b^{-2k_0f}C_A\le C_A/8.
+\]
+We also have $b^{-30}D_{\mathrm{id}}\le C_A/8$.
+Combining the preceding remainder norm formula with $(a+c)^2\le2(a^2+c^2)$
+shows that the mass outside the scalar cosets is at most $C_A/2$,
+and adding the two parts gives at most $C_A$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L89}{Counting scalar cosets}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/RemainingTerms/Sum.lean\#L759}{Intersection places and the link sum of squares}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/MomentBounds.lean\#L202}{Estimate with fixed vectors at all places}.}
+
+Choose $(A,v)$ maximizing $B^{|A|}Y(A,v)$, and write $Y=Y(A,v)$.
+The possible choices form a finite set, so the maximum is attained. Comparing with $A=\varnothing$ shows that
+it suffices to prove $Y\le(1+9x)C_A$. If $A$ includes all the selected places, this follows from the preceding paragraph.
+Otherwise choose $w\notin A$. For any nonzero frame vector $d$ at $w$ or its conjugate place,
+add $d$ to the fixed-vector conditions and use maximality to get
+\[
+ \sum_{\substack{s\in\Gamma(A,v)\\s\ \text{Fix }d}}\beta(s)\le Y/B.
+\]
+
+Apply \statementref{Lemma}{lem:b-leading-minor} to the subgroup $\Gamma(A,v)$ and the selected place $w$.
+With the new fixed-vector mass bound $Y/B$ as input, the mass on which any given proper leading principal minor vanishes is at most $3Y/b^{10}$.
+Every non-open element has at least one such vanishing minor at $w$. Take the union over at most $n$ conditions
+and use $3n\le b^6$ to bound the total mass of the non-open elements by $xY$.
+
+The masses of the open and non-open elements together give $Y\le(1+4x)C_A+xY$.
+Since $0\le x\le1/10$, we have
+$(1+4x)/(1-x)\le1+9x$. The claim now follows from the definition of the maximum.
+\end{proof}
+
+\section{The Second-Moment Bound and a Small Set of Translates}
+\label{sec:b-translate}
+
+We first select translates on the full source space. Restricting the map to the ramified source space reduces the dimension of each image by at most the codimension of the ramified source. The total dimension loss is thus bounded by this codimension times the number of translates.
+
+\thmsource{Lean source: \leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{283}.}
+\begin{lemma}[The Second-Moment Bound for the Scaled Poincaré Map]
+\label{lem:b-second-moment}
+\emitthmsource
+Fix admissible data $D$ and let $U_0$ be the Euclidean coordinate space of all source forms.
+Let $u_0=\dim_{\mathbb C}U_0$, let $W$ be the good-form space, and let $r=\dim_{\mathbb C}W$.
+Let $\mathcal P$ be the scaled Poincaré map and $\rho$ the unitary action of the finite group
+$G$ on the principal-level space of forms. Then
+\begin{equation}
+ r\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ \le |G|(1+9b^{-4})u_0^2 .
+\label{eq:b-second-moment}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Grouping the selected places by the two level primes identifies $G$ with the residue linear group in the amplitude expansion.
+Put
+\[
+ \beta(g)=\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2,
+ \qquad
+ K_g=\rho(g)\mathcal P\mathcal P^*\rho(g)^* .
+\]
+\statementref{Lemma}{lem:b-amplitude-blocks}
+gives the block formula for the amplitude of $\mathcal P^*\rho(g)\mathcal P$.
+Taking squared moduli block by block and summing shows that $\beta(g)$ is exactly the second moment on the singleton $\{g\}$
+of the full amplitude sum.
+By unitarity of $\rho$ and cyclicity of the trace,
+\[
+ \langle K_a,K_c\rangle_{\mathrm{HS}}
+ =\operatorname{tr}(K_a^*K_c)
+ =\|\mathcal P^*\rho(a^{-1}c)\mathcal P\|_{\mathrm{HS}}^2
+ =\beta(a^{-1}c),
+\]
+so $\beta$ is of positive type. At the identity, \statementref{Lemma}{lem:b-unit-moment} gives
+\[
+ \sqrt{\beta(1)}
+ \le \|I\|_{\mathrm{HS}}+\|\mathcal P^*\mathcal P-I\|_{\mathrm{HS}}
+ \le (1+b^{-6})\sqrt{u_0}.
+\]
+and $b\ge1000$ implies $\beta(1)\le 2u_0$. Apply \statementref{Lemma}{lem:b-global-moment} to the admissible unfolding data.
+The single-point second moment has the Gram representation above, and its value at the identity is at most $2u_0$. This gives
+\[
+ \sum_{g\in G}\beta(g)
+ \le (1+9b^{-4})\frac{u_0^2}{d_{\mathrm{Bes}}\mu},
+\]
+where $d_{\mathrm{Bes}}>0$ is the product of the local Bessel degrees and
+$\mu>0$ is the sum of the reciprocals of the stabilizer orders of the standard lattice classes.
+
+On the other hand, the inner-form exchange from the simple trace formula comparison~\cite{HarrisLabesse2004,Labesse2011} gives equality of the dimensions of the good-form space $W$ and the corresponding space for the definite space
+$W_m$. The latter is a subspace of the principal-level space of forms on $W_m$.
+The level action on that definite space is free, so the dimension of the principal-level space of forms is
+the class number $|G|\mu$ times the product of the archimedean formal degrees.
+The Weyl dimension formula identifies that product with $d_{\mathrm{Bes}}$.
+Hence $r\le |G|\mu d_{\mathrm{Bes}}$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean\#L65}{Dimension bound for the good-form space}.}
+Multiply the total second-moment estimate by this dimension bound and cancel the positive factor $\mu d_{\mathrm{Bes}}$ to obtain the claim.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/ShortAndEnough.lean}{443}.}
+\begin{theorem}[B: A Small Set of Translates Spans Most of the Target Space]
+\label{thm:enough-forms}
+\emitthmsource
+We have $r>0$, and there exists a finite set $T\subset G$ such that
+\begin{equation}
+  |T|\dim_{\mathbb C}U\le 5r\log(1+2b^2),\qquad
+  \dim_{\mathbb C}\sum_{g\in T}\operatorname{im}P_g
+        \ge (1-4/b^2)r.
+\label{eq:b-spanning}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{Two estimates for the full-source map.}
+Write $U_0$ for the full source space and put $u_0=\dim_{\mathbb C}U_0>0$. In isometric coordinates for the full source, let $\mathcal P$ be the scaled Poincaré map, $e_0$ the orthogonal projection onto $W$, and $\rho(g)$ the unitary action by translation. Then $e_0$ commutes with each $\rho(g)$. Write $\pi_F$ for the orthogonal projection onto a subspace $F$ and $\|\cdot\|_{\mathrm{HS}}$ for the Hilbert--Schmidt norm. \statementref{Lemmas}{lem:b-near-isometry} and~\ref{lem:b-second-moment} respectively give
+\begin{align*}
+ \|e_0\mathcal P\pi_F\|_{\mathrm{HS}}^2
+ &\ge \dim F-5b^{-4}u_0 &&(F\subseteq U_0),\\
+ r\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ &\le |G|(1+9b^{-4})u_0^2.
+\end{align*}
+Take $\eta=(8b^2)^{-1}$. The admissible scales ensure $b\ge10$, so
+$5b^{-4},9b^{-4}\le\eta$ and $0<16\eta<1$. Setting $F=U_0$ in the first inequality gives a strictly positive right-hand side. Thus $e_0\mathcal P$ is nonzero and in particular $r>0$.
+
+\emph{Selecting a translate with sufficient dimension gain using the second moment.}
+Put $Q_g=e_0\rho(g)\mathcal P:U_0\to W$.
+Fix a subspace $F\subseteq W$, put $\alpha=\dim F/r$, and let
+\[
+ M=\frac{1}{|G|}\sum_{g\in G}\rho(g)\mathcal P\mathcal P^*\rho(g)^* .
+\]
+In the double sum for $\|M\|_{\mathrm{HS}}^2=\operatorname{tr}(M^2)$,
+cyclicity of the trace makes the trace term with indices $(g,h)$ equal to
+$\|\mathcal P^*\rho(g^{-1}h)\mathcal P\|_{\mathrm{HS}}^2$.
+Each $g^{-1}h$ occurs exactly $|G|$ times, so the second-moment estimate gives
+\[
+ \|M\|_{\mathrm{HS}}^2
+ =\frac{1}{|G|}\sum_{g\in G}\|\mathcal P^*\rho(g)\mathcal P\|_{\mathrm{HS}}^2
+ \le \frac{(1+\eta)u_0^2}{r}.
+\]
+Cyclicity of the trace also shows that $\operatorname{tr}(\pi_F M)$ is exactly the average of
+$\|\pi_F\rho(g)\mathcal P\|_{\mathrm{HS}}^2$ over $g$.
+Cauchy--Schwarz for the Hilbert--Schmidt inner product gives
+\[
+ \operatorname{tr}(\pi_F M)
+ \le \sqrt{\dim F}\,\|M\|_{\mathrm{HS}}
+ \le u_0\sqrt{\alpha(1+\eta)}
+ \le \tfrac12(1+\alpha+\eta)u_0.
+\]
+Hence for some $g\in G$ this squared norm is at most the upper bound. Let $F'=Q_g^{-1}F$. On $F'$,
+$e_0\rho(g)\mathcal P$ and $\pi_F\rho(g)\mathcal P$ agree
+because $e_0\rho(g)\mathcal P$ takes values in $F$ and the other part is orthogonal to $W$.
+Commute $e_0$ with $\rho(g)$ and use unitarity of $\rho(g)$ to get
+\[
+ \|e_0\mathcal P\pi_{F'}\|_{\mathrm{HS}}^2
+ =\|\pi_F\rho(g)\mathcal P\pi_{F'}\|_{\mathrm{HS}}^2
+ \le\|\pi_F\rho(g)\mathcal P\|_{\mathrm{HS}}^2.
+\]
+Applying the near-isometry estimate to $F'$ now gives
+\[
+ \dim F'\le \tfrac12(1+\alpha+3\eta)u_0 .
+\]
+
+\emph{Greedy selection of translates.}
+Use a greedy covering argument, as in the classical analysis of submodular set cover~\cite{Wolsey1982}. If the current sum space $F$ has codimension $c=r-\dim F$ satisfying $c>16\eta r$,
+then $1-\alpha>16\eta$. By the quotient space isomorphism
+$(F+Q_g(U_0))/F\simeq U_0/Q_g^{-1}F$, the translate selected above increases the dimension by at least
+\[
+ u_0-\dim F'\ge \tfrac12(1-\alpha-3\eta)u_0
+ \ge \tfrac{13}{32}(1-\alpha)u_0
+ \ge \tfrac25(1-\alpha)u_0.
+\]
+Thus the new codimension is at most $(1-\tau)c$, where $\tau=2u_0/(5r)>0$.
+The codimension after the first step from $F=0$ is nonnegative, so this bound also gives $\tau\le1$.
+Stop adding translates once the codimension is at most $16\eta r$.
+Otherwise iterate using $1-\tau\le e^{-\tau}$, starting at $F=0$. It takes at most
+\[
+ k=\Bigl\lceil\tau^{-1}\log\bigl((16\eta)^{-1}\bigr)\Bigr\rceil
+\]
+steps to reach a codimension of at most $16\eta r=2r/b^2$. Since $k\tau\le1+\log((16\eta)^{-1})$,
+the resulting finite set $T$ satisfies
+\[
+ |T|u_0\le ku_0
+ \le \tfrac52\bigl(1+\log((16\eta)^{-1})\bigr)r
+ \le 5r\log(1+2b^2),
+\]
+The last step uses $(16\eta)^{-1}=b^2/2\le1+2b^2$ and $1\le\log(1+2b^2)$.
+
+\emph{Restricting the translates to the ramified source space.}
+By \statementref{Lemmas}{lem:a-ramified-dimension} and~\ref{lem:a-ramified-loss-scale} we have
+\[
+ u_0-\dim U\le \frac{f}{N-1}u_0\le b^{-8}u_0.
+\]
+
+The quotient space $\bigl(\sum_{g\in T}Q_g(U_0)\bigr)\big/\bigl(\sum_{g\in T}Q_g(U)\bigr)$ is
+a quotient of $\bigoplus_{g\in T}U_0/U$. Thus restricting from the sum of the full-source images to the sum of the ramified-source images
+costs at most
+\[
+ |T|(u_0-\dim U)
+ \le 5r b^{-8}\log(1+2b^2)
+ \le 2r/b^2 ,
+\]
+in dimension. The last step follows from $1+2b^2\le b^3$, $\log b\le b$, and $b\ge10$.
+Under the identification by isometric source coordinates, $Q_g(U)$ is exactly the image of the normalized map $P_g$,
+since the scaled Poincaré map and the normalized map differ by nonzero scalar factors.
+Combining the two dimension losses gives a codimension at most $4r/b^2$, with $|T|\dim U\le |T|u_0$ satisfying the required bound on the number of translates.
+\end{proof}

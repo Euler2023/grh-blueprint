@@ -1,0 +1,2025 @@
+\chapter{The Core Theorems and the Proof of GRH}
+\label{chap:reduction}
+
+\begin{chapterguide}
+The proof first bounds the total remainder $S$ for given admissible data and then constructs admissible data for every sufficiently large primary scale. This gives a one-sided upper bound for the prime remainder and ultimately implies nonvanishing of the $L$-functions. This chapter gives the full analytic reduction. Theorems~\statementlink{sec:a-conclusions}{A}, \statementlink{thm:enough-forms}{B}, and~\statementlink{thm:long-forms}{C} are proved in \chapref{chap:upperbound}, \chapref{chap:spanning}, and \chapref{chap:determinant}, respectively.
+\end{chapterguide}
+
+\section{Fixed parameters and admissible data}
+\label{sec:admissible-data}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{58}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L97}{Imaginary quadratic fields in the authors' library}.}
+\begin{definition}[Fixed parameters]
+\label{def:parameters}
+\emitthmsource
+The fixed parameters $P=(q_0,d)$ consist of a positive integer $q_0$ and a prime $d$ satisfying
+\begin{equation}
+ 18480\mid q_0,\qquad d\equiv q_0/2-1\pmod{q_0}.
+\label{eq:fixed-parameters}
+\end{equation}
+In the Lean formalization, the second congruence condition is equivalently expressed as $q_0\mid 2(d+1)$ and $q_0\nmid d+1$.
+Since $16\mid q_0$, we have $d\equiv7\pmod8$. Write $K=\mathbb Q(\sqrt{-d})$ for the imaginary quadratic field.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{193}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/FieldsAndPlaces.lean\#L102}{Tower degree and moduli}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/Cyclotomic/Basic.lean\#L652}{Cyclotomic extensions in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean\#L78}{Root discriminant in Mathlib}.}
+\begin{definition}[Cyclotomic extension and auxiliary moduli]
+\label{def:cyclotomic-field}
+\emitthmsource
+Given fixed parameters $P$ and a positive integer $s$, called the tower exponent, set
+\[
+ d_s=3^{\lfloor\log_3s\rfloor+5}2^s,\qquad
+ q_1=q_0d_s,\qquad q_2=(q_0d)^{s+6}.
+\]
+Choose a primitive $q_1$-th root of unity $\zeta_{q_1}$ and put $E=K(\zeta_{q_1})$.
+The \emph{root discriminant} of this \emph{CM field} is denoted by
+$\mathrm{rd}_E=|\mathrm{Disc}(E)|^{1/[E:\mathbb Q]}$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{280}. See also \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean\#L56}{Infinite places in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/Cyclotomic/Gal.lean\#L77}{The cyclotomic Galois group in Mathlib}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/FieldsAndPlaces.lean\#L276}{Galois coordinates and the map from integers to infinite places}.}
+\begin{definition}[Cyclotomic coordinates on the infinite places]
+\label{def:infinite-place-coordinates}
+\emitthmsource
+Let $\Phi$ be the set of infinite places (also called archimedean places) of $E$, and write $f=|\Phi|$.
+Fix a complex embedding of $K$. Exactly one of the two conjugate embeddings associated with each infinite place of $E$ extends it.
+The action of this unique representative on $\zeta_{q_1}$ gives the coordinate identification
+\[
+ \Phi\simeq\operatorname{Gal}(E/K)\simeq(\mathbb Z/q_1\mathbb Z)^\times.
+\]
+We use these coordinates to give $\Phi$ a multiplicative structure. For each divisor $q'\mid q_1$, let $c_{q'}(\tau)$ be the unit residue class obtained by reducing the coordinate of $\tau$ modulo $q'$.
+Given an integer $n$, if $n$ is coprime to $q_1$, let $\nu_n\in\Phi$ be the infinite place with coordinate $-n$. Otherwise, let $\nu_n$ be the place corresponding to the identity.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{71}.}
+\begin{definition}[Admissible data]
+\label{def:admissible-data}
+\emitthmsource
+A set of \emph{admissible data} $D$ for the fixed parameters $P$ consists of the following quantities subject to the stated constraints.
+\begin{itemize}
+\item The positive integer scales $x,x_1,b$ satisfy
+\begin{equation}
+ (\log b)^{100}\le x,\quad x^{10^6}\le x_1,\quad x_1^{10^6}\le b,\quad
+ (\log x_1)^6\le\log b,\quad \log\log b\ge 10^{12}C(P),
+\label{eq:admissible-scales}
+\end{equation}
+Here $C(P)$ depends only on $P$ and incorporates the bound for the conjugates of the integral vacuum, derivative terms from the cyclotomic polynomial, and the Chowla--Selberg constant.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L50}{The parameter constant}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Vacuum/IntegralVacuum.lean\#L280}{Bound for the conjugates of the integral vacuum}.}
+\item The number $m$ of steps in the \emph{theta lift} chain is a positive power of $2$ with $\sqrt x\le m\le2\sqrt x$. The common rank $r_0$ of the single-step descents is a positive power of $3$ with $x^5\le r_0\le3x^5$. The tower exponent $s$ is determined by $2^s=m^{22}$ and satisfies $s\le32\log x$. We also require $q_1x_1\mid b$.
+\item Write $a=xb$ for the \emph{long order} and set $k=r_0+1-m$ and $t=5r_0$. Choose a set of $b$-places $\Phi_b\subseteq c_{q_0}^{-1}(-1)$ satisfying the cardinality bound $d_s\le|\Phi_b|\log b$ and the following \emph{sparseness} condition. For every prime $p\le kt$, let $q'_p$ be the largest divisor of $q_1$ coprime to $p$. Then there are no $\sigma,\tau,\rho\in\Phi_b$ and integers $0<i<j<3^{\lfloor\log_3s\rfloor+4}$ for which
+\[
+ c_{q'_p}(\tau/\sigma)\equiv\pm p^i,\qquad
+ c_{q'_p}(\rho/\sigma)\equiv\pm p^j\pmod{q'_p}
+\]
+hold simultaneously (the two signs may be chosen independently). Define the weight $\kappa_\tau$ of a place by
+\begin{equation}
+ \kappa_\tau=
+ \begin{cases}
+ b, &\tau\in\Phi_b,\\
+ a/x_1,&\tau\notin\Phi_b.
+ \end{cases}
+\label{eq:admissible-place-weights}
+\end{equation}
+Since $x_1\mid b$, both possible weights are integers.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L58}{The sparseness condition}.}
+\item Choose distinct primes $p_0,p_1\in[b^{10},b^{11}]$ for the \emph{principal congruence level}, set $M=p_0p_1$, and choose the ramification level prime $N$ with $p_0,p_1,N\equiv1\pmod{q_2^2}$. Write $\bar\kappa=(\prod_{\tau\in\Phi}\kappa_\tau)^{1/f}$ for the geometric mean of the place weights and impose
+\[
+ N_-=\bar\kappa^m\left(\frac{M\mathrm{rd}_E}{2\pi}\right)^{m-1}b^{-15/2},
+ \qquad \log N_-\le\log N\le\log N_-+\sqrt{\log b}.
+\]
+The data also include an algebraic integer $\pi_M$ in $K$ and an algebraic integer $\pi_N$ in $E$ satisfying
+$\pi_M\overline{\pi_M}=M$ and $\pi_N\overline{\pi_N}=N$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L139}{Level primes and their integral factorizations}.}
+\end{itemize}
+\end{definition}
+
+For given admissible data $D$, the ranks at the steps of the upper chain of definite spaces are $n_j=k+j(t+1)$. Theorems~\statementlink{sec:a-conclusions}{A}, \statementlink{thm:enough-forms}{B}, and~\statementlink{thm:long-forms}{C} are formulated in terms of these quantities with $D$ fixed. \statementref{Lemmas}{lem:admissible-construction}, \ref{lem:admissible-fields}, and~\ref{lem:data-existence} give the explicit construction and existence of admissible data at large scales. See \secref{sec:data-construction}.
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{237}.}
+\begin{definition}[$a$-places]
+\label{def:a-places}
+\emitthmsource
+Let $D$ be admissible data. The set of $a$-places is $\Phi_a=\{\tau\in\Phi:c_{q_0}(\tau)=1\}$.
+\end{definition}
+
+Since $q_1/q_0=d_s$ and $q_1$ and $q_0$ have the same prime factors, the reduction map $(\mathbb Z/q_1\mathbb Z)^\times\to(\mathbb Z/q_0\mathbb Z)^\times$ is surjective. The fiber over each residue class has exactly $d_s$ elements. Hence $|\Phi_a|=d_s$ and $f=\varphi(q_0)|\Phi_a|$, where $\varphi$ is \emph{Euler's totient function}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L75}{Cardinality of the fiber over $1$ and the number of infinite places}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Data/Nat/Totient.lean\#L37}{Euler's totient function in Mathlib}.}
+
+\section{Prime-power weights and remainders}
+\label{sec:prime-remainders}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean}{67}. See also \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/DirichletCharacter/Basic.lean\#L39}{Dirichlet characters in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L60}{Dirichlet $L$-functions in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L337}{Continuation for principal characters in Mathlib}.}
+\begin{definition}[Dirichlet $L$-functions with the pole removed]
+\label{def:entire-l}
+\emitthmsource
+Let $q\ge1$ and let $\psi$ be a \emph{Dirichlet character} modulo $q$, that is, a complex character of $(\mathbb Z/q\mathbb Z)^\times$ extended by zero on nonunit residue classes.
+If $\psi$ is identically $1$ on the units, it is called the \emph{principal character}.
+Define the entire function $\widetilde L(s,\psi)$ by taking $L(s,\psi)$ when $\psi$ is nonprincipal and the entire continuation of $(s-1)L(s,\psi)$ across $s=1$ when $\psi$ is principal.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{43}. See also \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean\#L66}{The von Mangoldt function in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LegendreSymbol/Basic.lean\#L109}{The Legendre symbol in Mathlib}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L56}{The quadratic character in the authors' library}.}
+\begin{definition}[Prime-power weights on residue classes]
+\label{def:prime-weight}
+\emitthmsource
+For a positive integer $q$, let $\chi_d(n)=(n/d)$ be the \emph{Legendre symbol} modulo $d$. Let $\Lambda$ be the \emph{von Mangoldt function}, which takes the value $\log p$ on prime powers $p^j$ with $j\ge1$ and is zero on all other positive integers.
+Define
+\[
+ \lambda_q(n)=\mathbf 1_{n\equiv1\pmod q}\Lambda(n)\bigl(1-\chi_d(n)\bigr).
+\]
+When $q=1$, the congruence condition holds trivially for all integers. The quadratic character of the imaginary quadratic field $K=\mathbb Q(\sqrt{-d})$ is $\chi_K=\chi_d$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{52}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L62}{The quadratic twist in the authors' library}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Analysis/Calculus/LogDeriv.lean\#L32}{The logarithmic derivative in Mathlib}.}
+\begin{definition}[Mean logarithmic derivative and constant term]
+\label{def:log-derivative-mean}
+\emitthmsource
+Let $q\ge1$ and let $\psi$ be a Dirichlet character modulo $q$. Lift $\psi$ and $\chi_d$ to modulus $qd$ and write $\psi\chi_d$ for their product, the \emph{quadratic twist}.
+For a function $F$, write $\mathcal D F=F'/F$ for its \emph{logarithmic derivative}, with division following Lean's convention that it is defined everywhere.
+Define
+\[
+ G_{d,q}(s)=\frac1{\varphi(q)}
+ \left(
+   \sum_{\psi\bmod q}\left[
+      (\mathcal D\widetilde L(\,\cdot\,,\psi\chi_d))(s)
+       -(\mathcal D\widetilde L(\,\cdot\,,\psi))(s)
+   \right]-1
+ \right),\qquad C_{d,q}=\operatorname{Re}G_{d,q}(1),
+\]
+The sum is over all complex Dirichlet characters modulo $q$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{60}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L60}{Definition of the remainder in Lean}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Zeros/PrimeError.lean\#L198}{Rewriting the remainder as a positive-part sum}.}
+\begin{definition}[Weighted prime remainder]
+\label{def:prime-remainder}
+\emitthmsource
+For a positive integer $q\ge1$ and a real number $z>0$, define the weighted \emph{prime remainder} by
+\begin{equation}
+ R_{d,q}(z)
+ =\sum_{1\le n\le z}\lambda_q(n)\left(\frac1n-\frac1z\right)
+ -\frac{\log z}{\varphi(q)}-C_{d,q}.
+\label{eq:ch1-Rdq}
+\end{equation}
+Here $n$ runs over all positive integers at most $z$, so the sum includes contributions from general prime powers. Throughout the book, $u_+=\max(u,0)$ denotes the \emph{positive part} of a real number $u$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/FieldsAndPlaces.lean}{202}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/NumberTheory/ImaginaryQuadraticField.lean\#L71}{The Chowla--Selberg constant}.}
+\begin{definition}[CM period]
+\label{def:cm-period}
+\emitthmsource
+Let $\gamma_{\mathrm E}$ be the Euler--Mascheroni constant. The normalized \emph{CM period} used in the admissible data is
+\begin{equation}
+ \Omega=\frac{2\pi}{\mathrm{rd}_E}
+       \exp\!\left(\gamma_{\mathrm E}-\operatorname{Re}
+                       \frac{L'}{L}(1,\chi_K)\right),
+\label{eq:cm-period}
+\end{equation}
+The exponent is the \emph{Chowla--Selberg constant} in the authors' library. See the classical formula of Selberg and Chowla for complex multiplication periods and $L$-derivative values~\cite{SelbergChowla1967}.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{257}.}
+\begin{definition}[Size of the derivatives at infinity]
+\label{def:jet-size}
+\emitthmsource
+For each degree $j\ge0$, write $s_\infty(j)=\log(j!)+j\log(M/\Omega)$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{248}.}
+\begin{definition}[Weighted prime sum at a place]
+\label{def:weighted-prime-sum}
+\emitthmsource
+For a real number $y$ and an infinite place $\tau\in\Phi$, define
+\begin{equation}
+ s_{\rm fin}(y,\tau)
+ =\sum_{1\le n\le a}\lambda_1(n)
+       \bigl(y/n-\kappa_{\nu_n\tau}\bigr)_+ ,
+\label{eq:weighted-prime-sum}
+\end{equation}
+Here $\nu_n$ acts by translation on $\Phi$ as in \statementref{Definition}{def:infinite-place-coordinates}, and $\kappa$ is the two-valued place weight of \statementref{Definition}{def:admissible-data}.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{64}.}
+\begin{definition}[Average main term of the weighted prime sum]
+\label{def:prime-sum-main-term}
+\emitthmsource
+Write
+\[
+ s_{\rm main}
+ =a\left(\log a-\frac1f\sum_{\tau\in\Phi}\log\kappa_\tau+C_{d,1}\right).
+\]
+This is the main term in the average of $s_{\rm fin}(a,\tau)$ over $\Phi_a$. \statementref{Lemma}{lem:cancel-prime-sum-main-term} computes it explicitly.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{59}.}
+\begin{definition}[Main amount]
+\label{def:main-amount}
+\emitthmsource
+Define the \emph{main amount} by
+\begin{equation}
+ H=mk\sum_{\tau\in\Phi}
+       \bigl(s_\infty(\kappa_\tau)-s_{\rm fin}(\kappa_\tau,\tau)\bigr),
+\label{eq:main-amount}
+\end{equation}
+Here $m$ is the number of lifts and $k$ is the initial rank of the upper chain. Throughout, write
+$\ell=\log b$, $B=fa\ell^3$, and $L=fa\ell^4$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{71}.}
+\begin{definition}[Total remainder]
+\label{def:total-remainder}
+\emitthmsource
+Define the \emph{total remainder} by
+\[
+ S=\sum_{\tau\in\Phi_a}\bigl(s_{\rm fin}(a,\tau)-s_{\rm main}\bigr).
+\]
+We first apply \statementref{Theorem}{thm:star} to bound $mS$ from above. We then use the two-scale identity of \statementref{Lemma}{lem:remainder} to isolate the remainder $R_{d,q_0}(x)$ at the smaller scale $x$.
+\end{definition}
+
+\section{The two-scale identity}
+\label{sec:two-scale-identity}
+
+Truncating positive-part sums expresses the place-weighted prime sums in terms of sums over prime powers classified modulo $q_0$. We count the number of translates by each integer $n$ that land in each of the two weight regions. Exact cancellation of the average main terms then gives the two-scale identity~\eqref{eq:ch1-remainder-eq}.
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{43}.}
+\begin{lemma}[Truncated positive-part sums]
+\label{lem:positive-part-cutoff}
+\emitthmsource
+Let $a$ be a positive integer and let $0<z\le a$ be real. Put
+$F_q(z)=\sum_{1\le n\le a}\lambda_q(n)(a/n-a/z)_+$. Then
+\[
+ F_q(z)=a\left(R_{d,q}(z)+\varphi(q)^{-1}\log z+C_{d,q}\right).
+\]
+\end{lemma}
+\begin{proof}
+The positive part is zero for $n>z$, and the expression in parentheses is also zero for $n=z$. Thus we can truncate the sum to $1\le n\le z$. Factoring out $a$ and using \statementref{Definition}{def:prime-remainder} gives the identity.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{99}.}
+\begin{lemma}[Counting translates into the high-weight places]
+\label{lem:count-weighted-places}
+\emitthmsource
+For every positive integer $n$, we have
+\[
+ \bigl|\{\tau\in\Phi_a:\nu_n\tau\in\Phi_b\}\bigr|=
+ \begin{cases}
+ |\Phi_b|,&n\equiv1\pmod{q_0},\\
+ 0,&n\not\equiv1\pmod{q_0}.
+ \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+Suppose $n\equiv1\pmod{q_0}$. Since $q_1$ and $q_0$ have the same prime divisors, $n$ and $q_1$ are coprime, so $c_{q_0}(\nu_n)=-1$. Multiplication by $\nu_n$ bijects the fiber $\Phi_a$ over $1$ with the fiber $c_{q_0}^{-1}(-1)$ over $-1$. As $\Phi_b\subseteq c_{q_0}^{-1}(-1)$, the set $\Phi_b$ has exactly $|\Phi_b|$ preimages in $\Phi_a$.
+If $n\not\equiv1\pmod{q_0}$ and $(n,q_1)=1$, then $c_{q_0}(\nu_n\tau)=-n\not\equiv-1\pmod{q_0}$ for every $\tau\in\Phi_a$. If $(n,q_1)>1$, then $\nu_n$ is the identity place, so $c_{q_0}(\nu_n\tau)=1\not\equiv-1\pmod{q_0}$. In both cases there is no $\tau\in\Phi_a$ satisfying $\nu_n\tau\in\Phi_b$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{132}.}
+\begin{lemma}[Weighted prime sums over the $a$-places]
+\label{lem:sum-weighted-prime-sums}
+\emitthmsource
+Write $A=|\Phi_a|$ and $J=|\Phi_b|$. Then
+\[
+\begin{aligned}
+ \sum_{\tau\in\Phi_a}s_{\rm fin}(a,\tau)
+ &=a\bigl[A R_{d,1}(x_1)+J(R_{d,q_0}(x)-R_{d,q_0}(x_1))\bigr]\\
+ &\quad+a\left[A(\log x_1+C_{d,1})
+           +\frac{J}{\varphi(q_0)}(\log x-\log x_1)\right].
+\end{aligned}
+\]
+\end{lemma}
+\begin{proof}
+Exchange the finite sums over $n$ and $\tau$. For fixed $n$, first assign the baseline weight $a/x_1$ to all $A$ places. Then for every $\tau\in\Phi_a$ satisfying $\nu_n\tau\in\Phi_b$, replace $(a/n-a/x_1)_+$ by $(a/n-a/x)_+$, since $b=a/x$. By \statementref{Lemma}{lem:count-weighted-places} this correction occurs only when $n\equiv1\pmod{q_0}$, in which case it occurs $J$ times. The sum is therefore
+\[
+ A F_1(x_1)+J\bigl(F_{q_0}(x)-F_{q_0}(x_1)\bigr).
+\]
+Since $0<x\le x_1\le a$, apply \statementref{Lemma}{lem:positive-part-cutoff} at the two cut-offs $x,x_1$. The constant terms $C_{d,q_0}$ cancel in the difference. Collecting the remainders and logarithms gives the result.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/PrimeSums.lean\#L110}{The summation over integers in Lean}.}
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{161}.}
+\begin{lemma}[Computing the average main term]
+\label{lem:cancel-prime-sum-main-term}
+\emitthmsource
+With the notation $A,J$ as above, we have
+\[
+ A s_{\rm main}=a\left[A(\log x_1+C_{d,1})
+                    +\frac{J}{\varphi(q_0)}(\log x-\log x_1)\right].
+\]
+\end{lemma}
+\begin{proof}
+Sum the logarithms using the two place weights. Take $\log(a/x_1)$ as the baseline for all $f$ infinite places and subtract $\log x-\log x_1$ at each of the $J$ high-weight places. This gives
+\[
+ \sum_{\tau\in\Phi}\log\kappa_\tau
+ =f(\log a-\log x_1)-J(\log x-\log x_1).
+\]
+Substitute this into \statementref{Definition}{def:prime-sum-main-term} and simplify using $f=\varphi(q_0)A$ to obtain the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{175}.}
+\begin{lemma}[The two-scale remainder identity]
+\label{lem:remainder}
+\emitthmsource
+The total remainder $S$ satisfies the two-scale identity
+\begin{equation}
+ S=a\left[|\Phi_b|\bigl(R_{d,q_0}(x)-R_{d,q_0}(x_1)\bigr)
+                  +|\Phi_a|R_{d,1}(x_1)\right].
+\label{eq:ch1-remainder-eq}
+\end{equation}
+\end{lemma}
+\begin{proof}
+By \statementref{Definition}{def:total-remainder}, the total remainder $S$ is the left-hand side of \statementref{Lemma}{lem:sum-weighted-prime-sums} minus $|\Phi_a|s_{\rm main}$. The expression from \statementref{Lemma}{lem:cancel-prime-sum-main-term} cancels the main term exactly, leaving the required two-scale identity.
+\end{proof}
+
+\section{Adelic unitary groups, spaces of forms, and twisted lattices}
+\label{sec:automorphic-spaces}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Adelic/Adeles/Basic.lean}{98}. See also \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/RingTheory/DedekindDomain/FiniteAdeleRing.lean\#L95}{The ring of finite adeles in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/NumberField/AdeleRing.lean\#L56}{The adele ring in Mathlib}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Adeles/Basic.lean\#L94}{Finite adeles and the adele ring}.}
+\begin{definition}[The adele ring and finite adeles]
+\label{def:adele-ring}
+\emitthmsource
+Let $E$ be a CM field with ring of integers $\mathcal O_E$. For each finite place $w$, viewed as a nonzero prime ideal of $\mathcal O_E$, write $E_w$ for the completion of $E$ at $w$ and $\mathcal O_w$ for its ring of integers.
+The ring of \emph{ring of finite adeles} $\mathbb A_f=\mathbb A_{E,f}$ is the restricted product of the local fields $E_w$ with respect to the subrings $\mathcal O_w$. Its integral subring is $\widehat{\mathcal O}_E=\prod_w\mathcal O_w$.
+Since $E$ is totally imaginary, its \emph{adele ring} is
+\[
+ \mathbb A=\mathbb A_E=\Bigl(\prod_{\tau\in\Phi}\mathbb C\Bigr)\times\mathbb A_f ,
+\]
+The chosen infinite-place embeddings give the diagonal embedding of $E$ into $\mathbb A$ (and $\mathbb A_f$).
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Adelic/Unitary/Defs.lean}{496}. See also \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/LinearAlgebra/UnitaryGroup.lean\#L105}{Unitary matrix groups in Mathlib}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/General/Groups/CongruenceSubgroups.lean\#L302}{The unitary group of a general Hermitian matrix}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Unitary/Defs.lean\#L185}{Finite adelic and adelic unitary groups}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/Unitary/Defs.lean\#L498}{Hermitian spaces with a base point}.}
+\begin{definition}[Hermitian spaces and adelic unitary groups]
+\label{def:unitary-space}
+\emitthmsource
+Let $R$ be a commutative ring with involution and let $J\in\mathrm M_n(R)$ be a Hermitian matrix. Its \emph{unitary group} is
+\[
+ \Ugrp(J)(R)=\bigl\{g\in\mathrm{GL}_n(R): g^* J g=J\bigr\}.
+\]
+Take $R=\mathbb A_f$ and $J=I_n$ to get the finite adelic unitary group $G_f=\Ugrp(I_n)(\mathbb A_f)$, whose standard compact open level is $K_0=G_f\cap\mathrm{GL}_n(\widehat{\mathcal O}_E)$. For a sign configuration $s\colon I\to\{\pm1\}$, write $G_\infty=\prod_{\tau\in\Phi}\Ugrp(\operatorname{diag}(s))(\mathbb C)$ and define the adelic unitary group $G=G_\infty\times G_f$.
+A \emph{Hermitian space with a point} $V=(J,x)$ consists of a Hermitian matrix $J$ over $E$ and a point $x\in\mathrm{GL}_n(\mathbb A)$. At each infinite place $x^*Jx$ equals $\operatorname{diag}(s)$, and at each finite place it equals $I_n$. Conjugation $g\mapsto xgx^{-1}$ gives the isomorphism $G\simeq \Ugrp(J)(\mathbb A)$ and embeds the rational unitary group as a discrete subgroup $\Gamma=x^{-1}\Ugrp(J)(E)x\le G$. Its projection to the finite adelic group is $\Gamma_f\le G_f$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean}{109}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/Basic.lean\#L104}{Adelic automorphic forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean\#L112}{Smooth algebraic automorphic forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/SmoothAlgebraicForms.lean\#L126}{The Weyl gauge}.}
+\begin{definition}[Automorphic forms and algebraic automorphic forms]
+\label{def:algebraic-form}
+\emitthmsource
+On a Hermitian space with base point $V$, a continuous function $F\colon G\to\mathbb C$ is an \emph{automorphic form} if it is left $\Gamma$-invariant and right invariant under a compact open subgroup $K\le G_f$, called its level.
+When $V$ is the standard definite Hermitian space of rank $n$, a \emph{algebraic modular form} of weight $(\kappa,e)$ is a function $\varphi\colon G_f\to\mathbb C^{\operatorname{Weyl}(n,\kappa)}$ with values in the coordinate space of the corresponding Weyl representation. It satisfies left equivariance $\varphi(\gamma g)=\rho_{\kappa,e}(\gamma)\varphi(g)$ for $\gamma\in\Gamma$ and has an open right-translation stabilizer. Gross develops this theory in~\cite{Gross1999}.
+For each $p$-adic place $\iota$, the \emph{Weyl gauge} of a form at $g$ is the maximum $p$-adic absolute value among the coordinates of $g^{-1}\cdot\iota(\varphi(g))$. The form is integral at $\iota$ if this gauge is at most $1$ at every point.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Lattices/TwistedLattice.lean}{105}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L109}{Definition of a twisted lattice}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L159}{Local lattice index upper bound}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Lattices/TwistedLattice.lean\#L275}{Covolume upper bound}.}
+\begin{definition}[Twisted lattices, local lattice indices, and covolumes]
+\label{def:twisted-lattice}
+\emitthmsource
+A \emph{twisted lattice} $L$ on a complex vector space $V$ for a set of twists $T$ containing the trivial twist $1$ consists of the following data. For each $\xi\in T$ there is a complex inner product space $H_\xi$, a linear map $\Theta_\xi\colon V\to H_\xi$, and a predicate for admissibility at each prime $p$. For each $p$-adic isomorphism $\iota\colon\mathbb C\simeq\overline{\mathbb Q}_p$ there is an integral lattice submodule $\mathcal L_{\xi,\iota}\subset H_\xi$, and we write $\bar\iota(z)=\iota(\bar z)$. For each twist admissible at $p$ the pairing between $\mathcal L_{\xi,\bar\iota}$ and $\mathcal L_{\xi,\iota}$ is required to be integral at $\iota$. Finally the trivial-twist space $H_1$ has coordinates in which the pairing is represented by a rational positive definite matrix.
+Write $V_\iota^{\mathrm{int}}=\{y\in V:\forall\xi\text{ admissible at }p,\ \Theta_\xi y\in\mathcal L_{\xi,\iota}\}$ for the submodule of vectors integral at $\iota$. For a finite family $y\colon S\to V$ we make the following definitions.
+\begin{itemize}
+\item The family $y$ satisfies the logarithmic local lattice index bound $\mathcal I_\delta(y)$ (\emph{IndexLe}) if there exist nonnegative local losses $(j_p)$ with $\sum_p j_p\log p\le\delta$ for every finite set of primes, and if for each $\iota$ there is an integral matrix $u\in\mathrm M_S(\mathcal O_\iota)$ independent of the twist whose determinant satisfies $v_p(\det u)\le j_p$ and which sends $y$ into $V_\iota^{\mathrm{int}}$.
+\item The family $y$ satisfies the covolume upper bound $\mathcal V_V(y)$ (\emph{CovolumeLe}) if for each complex automorphism $\sigma\in\operatorname{Aut}(\mathbb C)$, applying $\sigma$ to the coordinates of each $\Theta_1(y_i)$ and then forming the Gram matrix with the original rational pairing matrix gives a determinant of absolute value at most $e^V$.
+\end{itemize}
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/ShortAndEnough.lean}{183}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Size/ShortColumns.lean\#L741}{The space of ramified source forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Rows.lean\#L296}{The space of good target forms}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Spanning/Unfolding/SeriesPeriod.lean\#L743}{The Poincaré series map}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L185}{The normalized Poincaré map}.}
+\begin{definition}[Ramified source forms, good target forms, and the normalized Poincaré map]
+\label{def:source-target-poincare}
+\emitthmsource
+For admissible data $D$, let $X_0$ be the standard definite space of rank $k$ and $Y_0$ the Hermitian space of rank $r_0$. Let $G=\prod_{w\mid\pi_M}\mathrm{GL}_{r_0}(\mathbf k_w)$ be the product of general linear groups over the residue fields at the selected principal-level places.
+\begin{itemize}
+\item The space $U$ of \emph{ramified source forms} consists of algebraic forms on $X_0$ of weight $(a,0,\ldots,0)$ at the $a$-places that satisfy the principal congruence level and bottom-row conditions modulo $\pi_N$ and have zero average over scalar translations at every prime dividing $\pi_N$.
+\item The space $W$ of \emph{good target forms} is the image of the space of principal congruence level forms on $Y_0$ under the central idempotent $e_0\in\mathbb C[G]$ for the good labels. Write $r=\dim_{\mathbb C}W$.
+\item Let $\mathcal P\colon U\to\operatorname{principalForms}(Y_0)$ be the Poincaré series map, and let $\rho$ be the translation representation of $G$ on the space of principal congruence level forms. For $g\in G$, use $e_0$ as well for the projection induced by the central idempotent, and define the normalized Poincaré map $P_g\colon U\to W$ by
+\begin{equation}
+ P_g\phi=c_B c_{\mathrm{ss}}^{-1}|G|\,e_0\rho(g)\mathcal P\phi,
+ \label{eq:normalized-poincare}
+\end{equation}
+Here $c_B$ is the rational normalization factor for the local gains, and $c_{\mathrm{ss}}\ne0$ comes from~\eqref{eq:a-seesaw}. Centrality of $e_0$ gives $P_g\phi=\rho(g)P_1\phi$.
+\end{itemize}
+\end{definition}
+
+\section{Definitions and normalizations of the theta lifts}
+\label{sec:theta-lifts}
+
+Fix a CM field $E$ and admissible data $D$. A theta lift is specified by its source and target spaces, its kernel and test data, and the normalization of the integration measure. We define the adelic and algebraic lifts first, then describe the three restrictions and compositions used in the argument.
+
+\subsection{Adelic integration}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{291}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Adelic/AutomorphicForms/Basic.lean\#L84}{Definition of the theta kernel}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/DualPair/ThetaLiftConvergence.lean\#L293}{Adelic theta lift}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/Lift.lean\#L767}{Theta lifting between spaces of automorphic forms}.}
+\begin{definition}[Adelic theta lifts]
+\label{def:adelic-theta-lift}
+\emitthmsource
+Let $S,T$ be two Hermitian spaces over the CM field $E$, and let $\Gamma_S,\Gamma_T$ be the rational points of their unitary groups $\Ugrp(S),\Ugrp(T)$, respectively.
+A \emph{theta kernel} $K=(\omega,\theta)$ for $(S,T)$ consists of a jointly continuous linear action $\omega$ of the product group $\Ugrp(S)(\mathbb A)\times \Ugrp(T)(\mathbb A)$ on a Banach space $X$ and a continuous linear functional $\theta\colon X\to\mathbb C$ with left $\Gamma_S\times\Gamma_T$-invariance:
+\[
+ \theta\bigl(\omega(\gamma g,\gamma' h)\varphi\bigr)=\theta\bigl(\omega(g,h)\varphi\bigr)
+ \qquad (\gamma\in\Gamma_S,\ \gamma'\in\Gamma_T).
+\]
+For test data $\varphi\in X$ and a function $y$ on $\Ugrp(S)(\mathbb A)$, define the \emph{adelic theta lift} of $y$ as the function on $\Ugrp(T)(\mathbb A)$ given by
+\begin{equation}
+ (\operatorname{lift}_K(\varphi,y))(h)
+ =\int_{\Gamma_S\backslash \Ugrp(S)(\mathbb A)}
+   \theta\bigl(\omega(g,h)\varphi\bigr)\,y(g)\,dg ,
+\label{eq:adelic-theta-integral}
+\end{equation}
+The integral uses the quotient measure on $\Gamma_S\backslash \Ugrp(S)(\mathbb A)$. When $y$ is rapidly decreasing on $S$ and the lift lies in the required target type space, this construction gives a bilinear lifting map between the automorphic form spaces.
+\end{definition}
+
+In~\eqref{eq:adelic-theta-integral} we fix $h$ and test data $\varphi$ and integrate in $g$ over the source quotient. When $y$ is automorphic, both $y$ and the kernel are left invariant under the rational source group, so the integrand descends to the quotient. The kernels used here have at most polynomial growth in the source variable, ensuring absolute convergence for rapidly decreasing source forms.\leanfn{Lean source: \leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{428}.}
+
+For every $\delta\in\Gamma_T$ the kernel has the same value at $h$ and $\delta h$. Hence the lift is left invariant under the rational target group $\Gamma_T$. If a compact open subgroup $K_T$ of the finite adelic target group fixes $\varphi$ through $k\mapsto\omega(1,k)$, then $\omega(g,hk)\varphi=\omega(g,h)\varphi$, so the lift is right $K_T$-invariant. Linearity of integration makes~\eqref{eq:adelic-theta-integral} linear in both the test data $\varphi$ and the source form $y$. When using Petersson pairings we specify which argument is conjugated.
+
+\subsection{Algebraic integration on definite unitary groups}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{186}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/CompactLift/ThetaKernelDefs.lean\#L133}{Algebraic theta kernel}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Weil/CompactLift/ThetaKernelDefs.lean\#L189}{Algebraic theta lift}.}
+\begin{definition}[Algebraic theta lifts on definite unitary groups]
+\label{def:algebraic-theta-lift}
+\emitthmsource
+Let $G_f,G'_f$ be the groups of finite adelic points of the standard definite unitary groups over the CM field $E$ of ranks $n,n'$, respectively. Write $\Gamma,\Gamma'$ for their rational point groups.
+An algebraic theta kernel $k=(\omega,\operatorname{jetMap})$ of level $K\le G_f$ with data space $S$ consists of a smooth representation $\omega$ of $G_f\times G'_f$ on $S$, in which each datum has an open stabilizer, and a \emph{jet map} $\operatorname{jetMap}$ that satisfies weight $(\kappa,e)\to(\kappa,e')$ equivariance with respect to $\Gamma\times\Gamma'$.
+For test data $\Phi\in S$ and an algebraic automorphic form $\varphi$ of weight $(\kappa,e)$, its \emph{algebraic theta lift} is the algebraic automorphic form of weight $(\kappa,e')$ given by
+\begin{equation}
+ h\longmapsto
+ \int_{\Gamma\backslash G_f}
+   \operatorname{jetMap}\bigl(\omega(g,h)\Phi\bigr)\bigl(\varphi(g)\bigr)\,dg ,
+\label{eq:algebraic-theta-integral}
+\end{equation}
+The Haar measure for the finite class integral is normalized by $\operatorname{vol}(K)=1$.
+\end{definition}
+
+Equation~\eqref{eq:algebraic-theta-integral} integrates only over the finite adelic variable. The Weyl representations encode the archimedean weights, and the kernel's jet map takes values from the source weight space to the target weight space. Equivariance of the jet map absorbs the factor from the rational source action on $\varphi(g)$ and converts the rational target action into the target weight representation, giving equivariance on both sides.\leanfn{Lean source: \leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{157}.}
+
+In particular, when the integrand is invariant under right translation by the level $K$, take representatives $g_i$ for the double cosets $\Gamma\backslash G_f/K$. Then~\eqref{eq:algebraic-theta-integral} becomes the finite sum
+\begin{equation}
+ \sum_i
+ \frac{\operatorname{jetMap}\bigl(\omega(g_i,h)\Phi\bigr)\bigl(\varphi(g_i)\bigr)}
+ {\lvert\Gamma\cap g_i K g_i^{-1}\rvert},
+ \label{eq:finite-theta-sum}
+\end{equation}
+The denominator comes from the quotient measure normalized by $\operatorname{vol}(K)=1$. The torsion-free level criterion used here is given in \secref{sec:a-short-basis}. When it holds, every stabilizer-order denominator in~\eqref{eq:finite-theta-sum} equals $1$.
+
+\subsection{The lower chain, upper chain, and single-step descent pairs}
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Chain/NormOfChain.lean}{90}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/RowChain.lean\#L120}{A step of the lower chain}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/RowChain.lean\#L178}{Lower-chain theta lift}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Chain/NormOfChain.lean\#L95}{$\Theta_\vartheta$ on good target forms}.}
+\begin{definition}[Lower-chain theta lifts on good target forms]
+\label{def:target-theta-lift}
+\emitthmsource
+Given admissible data $D$ and an $m$-fold twist $\vartheta$, consider the chain of Hermitian spaces $Y_0\to\cdots\to Y_m$, where $Y_j$ has rank $r_0+jt$ and the last term $Y_m$ is definite. Let $\mathcal F_j$ be the space of automorphic forms on $Y_j$ of the prescribed archimedean type. For $1\le j\le m$, let $\mathcal L_{\vartheta,j}\colon\mathcal F_{j-1}\to\mathcal F_j$ be the adelic theta lift with character $\mu_j^0\vartheta^j$, the corresponding joint harmonic polynomial, and the finite data. Write $K_{\vartheta,j}$ for the level of the data at this step and put $T_{\vartheta,j}=[K_0:K_{\vartheta,j}]\mathcal L_{\vartheta,j}$.
+
+Let $\operatorname{toAlg}_{Y_m}$ be the identification of automorphic and algebraic automorphic forms on the definite space $Y_m$. Define the lower-chain map $T_\vartheta$ as the following composition restricted to the space of principal congruence level forms on $Y_0$:
+\begin{equation}
+ T_\vartheta=\operatorname{toAlg}_{Y_m}\circ T_{\vartheta,m}\circ\cdots\circ T_{\vartheta,1}.
+ \label{eq:lower-theta-chain}
+\end{equation}
+Further restrict $T_\vartheta$ to the space $W$ of good target forms and denote the resulting map by $\Theta_\vartheta$. In particular, $\Theta_1$ corresponds to the trivial twist, and $Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta)$ is the Gram determinant for the chosen inner product.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/UpperBound/Objects/Columns.lean}{990}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L986}{Pairwise lifts on the definite chain}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Objects/Columns.lean\#L992}{Composite theta lift}.}
+\begin{definition}[The composite theta lift along the upper chain]
+\label{def:composite-theta-lift}
+\emitthmsource
+Consider the chain of standard definite spaces $X_0\to X_1\to\cdots\to X_m$, with $X_j$ of rank $n_j=k+j(t+1)$. Given a tame character $\vartheta$ and chain data $\Psi$, construct a glued tensor from $\Psi$ and compose the adjacent algebraic theta lifts in pairs. This takes $\varphi$ to an algebraic form on $X_m$. Restrict this form at the finite adelic points along $h\mapsto\operatorname{diag}(h,1)$, then apply the branching matrix and multiply by the scalar $\prod_{\tau\in\Phi}\tau(\bar\pi_N)^{-n_\tau}$, where $n_\tau$ is the branching exponent. The resulting algebraic form on $Y_m$ is the composite theta lift, denoted by $\operatorname{Comp}_{\vartheta,\Psi}\varphi$.\leanfn{Lean source: \leansourcelink{src/New/UpperBound/Objects/Columns.lean}{777}.}
+\statementref{Theorem}{thm:a-seesaw}, the seesaw identity, identifies the composition of the Poincaré map and the lower-chain lift with this composite theta lift up to the stated scalar.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/FitTwists.lean}{102}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Norms/AdjointThetaLift.lean\#L256}{Single-step theta lift}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Determinant/Twist/FitTwists.lean\#L108}{Single-step lift on good forms}.}
+\begin{definition}[The single-step theta lift on good forms]
+\label{def:good-theta-lift}
+\emitthmsource
+For $1\le j\le m$ and a tame character $\vartheta$, let $W_j$ be a Hermitian space of rank $r_0$ with $m-j$ negative signs at every infinite place, and let $V_j$ be a definite space of rank $r_0+t$.
+The restriction to the good forms on $W_j$ of the single-step adelic theta lift for $\vartheta$ on the descent pair $(W_j,V_j)$ is the \emph{single-step theta lift on good forms}.
+\statementlink{thm:long-forms}{Theorem~C} uses its Gram determinant $Z_j(\vartheta)$ to express the covolume of the full lower chain in terms of $m$ single-step height estimates.
+\end{definition}
+
+Retain the notation $U$, $W$, $P_g$ and the finite translation group $G$ from \statementref{Definition}{def:source-target-poincare}. The following diagram compares the two lifting paths for a single source vector.
+\begin{equation}
+\label{eq:lift-comparison}
+\begin{aligned}
+ U &\xrightarrow{\ \mathcal P\ }\operatorname{principalForms}(Y_0)
+     \xrightarrow{\ T_\vartheta\ }\operatorname{AlgForms}(Y_m),\\
+ U &\lhook\joinrel\longrightarrow \operatorname{AlgForms}(X_0)
+     \xrightarrow{\ \operatorname{Comp}_{\vartheta,\Psi_\vartheta}\ }
+        \operatorname{AlgForms}(Y_m).
+\end{aligned}
+\end{equation}
+The first row uses $T_\vartheta$ of~\eqref{eq:lower-theta-chain}, and $\Theta_\vartheta$ is its restriction to the good target space $W$. The composite lift in the second row includes the final restriction and normalization factor. For the chain data $\Psi_\vartheta$ of \statementref{Theorem}{thm:a-seesaw}, the second row equals the first multiplied by $c_{\rm ss}^{-1}$, where $c_{\rm ss}$ is the fixed nonzero seesaw scalar. The choice of sections, the level indices, and the determination of $c_{\rm ss}$ are given in \chapref{chap:upperbound}. Equation~\eqref{eq:normalized-poincare} also uses this scalar.
+
+The third comparison uses the successive descent pairs $(W_j,V_j)$. Here $W$ is the fixed space of good target forms, and $W_j$ is the source Hermitian space at step $j$. The dimension $r=\dim_{\mathbb C}W$ is the dimension of the good target space, while $r_0$ is the Hermitian rank of $W_j$. \chapref{chap:determinant} uses the single-step Gram determinants to control the full lower chain, and \chapref{chap:onelift} constructs the comparison operator for the single-step ratios. The character theta series used in the analytic conclusion are defined in \statementref{Definition}{def:char-theta-series}. Their variable is a positive real number, and they give the tail integral estimates for quadratic twists.
+
+\section{The main inequality from the three sets of estimates}
+\label{sec:main-inequality}
+
+\statementref{Theorems}{thm:short-forms} and~\ref{thm:index-bound} control the norms of the short integral source forms and the local lattice index of the normalized images, respectively. \statementref{Theorem}{thm:enough-forms} provides a linearly independent family of such images whose span has dimension close to $r$. Applying \statementref{Theorem}{thm:long-forms} to this family lets us compare the upper and lower bounds for its covolume. The comparison needs nonnegativity of the main amount $H$, for which we first prove a stronger lower bound.
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{204}.}
+\begin{lemma}[Truncation estimate for the weighted prime sum]
+\label{lem:main-prime-bound}
+\emitthmsource
+For $0\le y\le a$ and $\tau\in\Phi$, we have
+\[
+ 0\le s_{\rm fin}(y,\tau)\le 4y\log x_1 .
+\]
+\end{lemma}
+\begin{proof}
+The summands are nonnegative. Since $\kappa_{\nu_n\tau}\ge a/x_1$, for $n>x_1$ we have
+$y/n\le a/x_1\le\kappa_{\nu_n\tau}$, so the positive part vanishes. Also $1-\chi_d(n)\le2$, hence
+\[
+ s_{\rm fin}(y,\tau)\le 2y\sum_{1\le n\le x_1}\frac{\Lambda(n)}{n}.
+\]
+Put $N_1=\lfloor x_1\rfloor\ge1$. Sum the identity $\log v=\sum_{n\mid v}\Lambda(n)$ over $1\le v\le N_1$ and apply $\lfloor t\rfloor\ge t/2$ when $t\ge1$ to get
+\[
+ \log(N_1!)=\sum_{1\le n\le N_1}\Lambda(n)\left\lfloor\frac{N_1}{n}\right\rfloor
+ \ge\frac{N_1}{2}\sum_{1\le n\le N_1}\frac{\Lambda(n)}{n}.
+\]
+Combining $\log(N_1!)\le N_1\log N_1$ and $N_1\le x_1$ gives the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/PrimeSums.lean}{285}.}
+\begin{lemma}[Lower bound for the main amount]
+\label{lem:main-amount-lower}
+\emitthmsource
+The main amount for admissible data satisfies $H\ge x^4fa$. In particular, $H\ge0$.
+\end{lemma}
+\begin{proof}
+Both principal congruence level primes lie in $[b^{10},b^{11}]$, and the CM period satisfies $0<\Omega\le1$ and
+$\Omega^{-1}\le x^{13}\le b$, so $b^{20}\le M/\Omega\le b^{23}$.
+Since $a=xb\le b^2$, for every integer $0\le y\le a$ we have $1\le y!\le b^{2y}$.
+Substitution into the definition of $s_\infty$ gives $20y\ell\le s_\infty(y)\le25y\ell$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/Sizes.lean\#L210}{Scale bounds for the principal level and the CM period}.}
+
+Apply \statementref{Lemma}{lem:main-prime-bound} to $y=\kappa_\tau$ and use $4\log x_1\le\ell$ to get
+\[
+ s_\infty(\kappa_\tau)-s_{\rm fin}(\kappa_\tau,\tau)\ge\kappa_\tau\ell .
+\]
+Keep only the nonnegative terms for $\tau\in\Phi_b$ in Definition~\eqref{eq:main-amount}. Use $\kappa_\tau=b$ on $\Phi_b$ and the admissibility condition $|\Phi_b|\ell\ge d_s=|\Phi_a|$ to get
+\[
+ H\ge mk\, b|\Phi_b|\ell\ge mk\, b|\Phi_a|.
+\]
+Finally $r_0\ge x^5$, $\sqrt x\le m\le2\sqrt x$, and $x\ge2$ give
+$k=r_0+1-m\ge x^5/2$.
+Further, $x\ge\ell^{100}$, $\log\ell\ge10^{12}c_P$, and $c_P\ge\varphi(q_0)$ imply $\sqrt x\ge 2\varphi(q_0)$,
+so $mk\ge x^5\varphi(q_0)$. Substituting $f=\varphi(q_0)|\Phi_a|$ and $a=xb$
+gives $H\ge x^5 b f=x^4fa$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/MainInequality.lean}{82}.}
+\begin{theorem}[The main inequality]
+\label{thm:star}
+\emitthmsource
+For every set of admissible data $D$,
+\begin{equation}
+  mS\le fa(\log b)^5.
+\tag{$\star$}\label{eq:ch1-star}
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{Choosing a family of nearly full span.}
+Put $h=H-mS+L$ and write $I_h\subseteq I$ for the integral source forms satisfying $\|\Theta_1P_g\phi\|_\sigma^2\le e^h$ for every $g,\sigma$. \statementref{Theorem}{thm:short-forms} gives $\operatorname{span}_{\mathbb C} I_h=U$. Take the finite subset $T$ from \statementref{Theorem}{thm:enough-forms}. By linearity of $P_g$, the set $P_g(I_h)$ spans $P_g(U)$, so
+\[
+ \operatorname{span}_{\mathbb C}\bigcup_{g\in T}P_g(I_h)
+ =\sum_{g\in T}\operatorname{im}P_g.
+\]
+Extract a basis $y=(y_1,\ldots,y_n)$ from the spanning set on the left. The dimension bound on the right and inclusion in $W$ give
+\[
+ (1-4/b^2)r\le n\le r.
+\]
+
+\emph{Bounding the covolume and local lattice index of the family.}
+For each $\sigma$, let $G_\sigma$ be the Gram matrix of the conjugated images $\Theta_1y_i$. Since each $y_i$ belongs to some $P_g(I_h)$, Hadamard's inequality gives
+\[
+ |\det G_\sigma|\le\prod_{i=1}^{n}\|\Theta_1y_i\|^2_\sigma
+ \le(e^h)^n=e^{nh},
+\]
+Hence $\mathcal V_V(y)$ holds for $V=nh$. Since $I_h\subseteq I$, \statementref{Theorem}{thm:index-bound} applies to $y$. Combining the bound on $|T|$ from \statementref{Theorem}{thm:enough-forms} with $B\ge0$ gives the local lattice index budget
+\[
+ 2|T|\dim_{\mathbb C}(U)B\le 10r\log(1+2b^2)B=:\delta.
+\]
+Monotonicity in the budget for the local lattice index gives $\mathcal I_\delta(y)$.
+
+\emph{Applying the lower bound and canceling the common main term.}
+The dimension, linear independence, covolume, and index conditions of \statementref{Theorem}{thm:long-forms} now hold. Substitute $V$ and $\delta$ to get
+\[
+ r(H-3L)\le n(H-mS+L)+20r\log(1+2b^2)B.
+\]
+By \statementref{Lemma}{lem:main-amount-lower}, $H\ge0$. Also $L>0$, so $n(H+L)\le r(H+L)$, and hence
+\[
+ rH-3rL\le rH+rL-nmS+20r\log(1+2b^2)B.
+\]
+Canceling $rH$ and rearranging gives $nmS\le r(4L+20\log(1+2b^2)B)$.
+
+\emph{Dividing by the number of vectors and absorbing errors.}
+Admissibility gives $\log\ell\ge 10^{12}c_P$, where $c_P\ge64$ depends only on $P$. In particular, $\ell\ge128$ and $b=e^\ell\ge3$. Thus $4/b^2\le1/2$, and $r>0$ together with $n\ge(1-4/b^2)r$ yields $n\ge r/2>0$. The quantity in parentheses in the error term is nonnegative. Divide by $n$ and use $r/n\le2$, $1+2b^2\le3b^2\le b^3$, and $L=\ell B$ to get
+\[
+\begin{aligned}
+ mS &\le \frac rn\bigl(4L+20\log(1+2b^2)B\bigr)\\
+    &\le 2(4+60)\ell B
+     =128\ell B\le \ell^2B=fa\ell^5 .
+\end{aligned}
+\]
+This is the main inequality.
+\end{proof}
+
+\section{Constructing admissible data and prime windows}
+\label{sec:data-construction}
+
+Equation~\eqref{eq:ch1-star} holds for any given admissible data. For an asymptotic estimate at scale $x$, we must construct data satisfying all the scale, place-set, and level conditions for every sufficiently large integer $x$. Here we use pole removal to prove a prime-window theorem for power moduli, and construct sparse sets of places to control collisions between place weights.
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean}{175}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean\#L177}{Regularized Dirichlet $L$-functions}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L60}{Dirichlet $L$-functions in Mathlib}.}
+\begin{definition}[Pole-removed regularization of Dirichlet $L$-functions]
+\label{def:regular-l}
+\emitthmsource
+For a Dirichlet character $\chi$ modulo $q\ge1$ and $\operatorname{Re}s>0$, define the \emph{regularized Dirichlet $L$-function} (with the pole removed from the Dirichlet $L$-function) by
+\[
+ f_\chi(s)=
+ \begin{cases}
+  \widetilde L(s,\chi)/s,&\chi\text{ is principal},\\
+  \widetilde L(s,\chi),&\chi\text{ is nonprincipal},
+ \end{cases}
+\]
+Here $\widetilde L(s,\chi)$ is given by \statementref{Definition}{def:entire-l}. For a principal character, dividing by $s$ retains the growth order of $L(s,\chi)$ for large $|s|$ and preserves holomorphy on $\operatorname{Re}s>0$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/AdmissibleData.lean}{54}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/Data/AdmissibleData.lean\#L58}{The sparseness condition}.}
+\begin{definition}[Sparse sets of infinite places]
+\label{def:sparse-places}
+\emitthmsource
+Given fixed parameters $P$, a tower exponent $s$, a prime bound $L$, and a subset $T\subseteq\Phi$ of the infinite places of the cyclotomic tower field $E$, let $l_0=3^{\lfloor\log_3 s\rfloor+4}$. We call $T$ an $(s,L)$-\emph{sparse set} if for each prime $p\le L$, writing $q'_p$ for the largest divisor of $q_1$ coprime to $p$, there are no $\sigma,\tau,\rho\in T$ and integers $0<i<j<l_0$ for which
+\[
+ c_{q'_p}(\tau/\sigma)\equiv\pm p^i,\qquad c_{q'_p}(\rho/\sigma)\equiv\pm p^j\pmod{q'_p}
+\]
+hold simultaneously (the signs may be chosen independently). In constructing admissible data, we use a Behrend set without three-term arithmetic progressions to obtain a set $\Phi_b$ of $b$-places satisfying this condition.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean}{294}.}
+\begin{lemma}[Growth bounds for pole-removed regularized Dirichlet $L$-functions]
+\label{lem:regular-l-growth}
+\emitthmsource
+Let $q\ge1$ and let $\chi$ be a Dirichlet character modulo $q$. Write $f_\chi$ for the pole-removed regularization in \statementref{Definition}{def:regular-l}: $(z-1)L(z,\chi)/z$ for a principal character and $L(z,\chi)$ for a nonprincipal character, understood by holomorphic continuation on $\Re z>0$. If $\ell\ge10^{10}$ and $q\le e^\ell$, then
+\[
+ \Re s\ge 1-\ell^{-1},\quad |s|\le3e^\ell
+ \quad\Longrightarrow\quad |f_\chi(s)|\le\ell^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $\delta=1$ when $\chi$ is principal and $\delta=0$ otherwise. Write $\kappa=q^{-1}\sum_{j=1}^q\chi(j)$, so $|\kappa|\le1$, and $\kappa=0$ when $\delta=0$. Periodicity gives, for $t\ge1$,
+\[
+ \sum_{1\le j\le t}\chi(j)=\kappa t+r(t),\qquad |r(t)|\le2q .
+\]
+More precisely, write $\lfloor t\rfloor=kq+a$ with $0\le a<q$. Then
+$r(t)=\sum_{j=1}^a\chi(j)-\kappa(a+t-\lfloor t\rfloor)$, which has absolute value at most $2q$.
+Partial summation for $\Re z>1$ gives
+\[
+ L(z,\chi)
+ =z\left(\frac{\kappa}{z-1}+\Phi(z)\right),
+ \qquad
+ \Phi(z)=\int_1^\infty r(t)t^{-z-1}\,dt .
+\]
+This integral converges locally uniformly in $\Re z>0$. On each compact subset, we can use
+$2q(1+\log t)t^{-1-\epsilon}$ to dominate the integrand and its derivative with respect to $z$, where $\epsilon>0$ is a lower bound for the real parts on the compact set.
+Hence $\Phi$ is holomorphic on $\Re z>0$, and the identity theorem gives $f_\chi(z)=\kappa+(z-\delta)\Phi(z)$ for all $\Re z>0$. When $\Re z\ge1/2$, we have $|z-\delta|\le|z|$ and
+$|\Phi(z)|\le2q/\Re z\le4q$, hence
+\[
+ |f_\chi(z)|\le 1+4q|z| \qquad (\Re z\ge1/2).
+\]
+
+Put $R=e^\ell$ and $a=\Re s+2/\ell-1/3$ and consider on the closed strip $a\le\Re z\le a+1/3$
+\[
+ g(z)=\frac{f_\chi(z)}{z-(s-2)}.
+\]
+The closed strip is contained in $\Re z>1/2$ and satisfies $|z-(s-2)|\ge1$. By $|s|\le3R$,
+$|z|\le |z-(s-2)|+3R+2\le 4R|z-(s-2)|$, so
+\[
+ |g(z)|\le1+16R^2\le R^3.
+\]
+On the right boundary $\Re z\ge1+1/\ell$. Since $|z-\delta|\le|z|$, we have $|f_\chi(z)|\le |L(z,\chi)|$. The absolutely convergent Dirichlet series gives
+\[
+ |g(z)|\le\sum_{j\ge1} j^{-\Re z}
+   \le 1+\int_1^\infty t^{-1-1/\ell}\,dt=1+\ell .
+\]
+The horizontal distance from $s$ to the right boundary is $2/\ell$, and the total width of the strip is $1/3$. By the \emph{Hadamard three-lines theorem}, the left and right boundary weights at $s$ are $6/\ell$ and $1-6/\ell$, respectively. Thus
+\[
+ |f_\chi(s)|=2|g(s)|
+ \le 2(R^3)^{6/\ell}(1+\ell)^{1-6/\ell}
+ \le 2e^{18}(1+\ell)\le\ell^2.
+\]
+The last step follows from $e<3$ and $4\cdot3^{18}<10^{10}\le\ell$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion.lean}{157}.}
+\begin{lemma}[A uniform zero-free region with a bound for the logarithmic derivative]
+\label{lem:zero-free-region}
+\emitthmsource
+Let $\chi$ be a Dirichlet character modulo $q\ge1$ with $\ell\ge10^{10}$ and $q\le e^\ell$, and let $f_\chi$ be its pole-removed regularization. If $\chi^2$ is principal, also assume
+\[
+ |f_\chi(w)|\ge\ell^{-1}\qquad (|w-1|\le\ell^{-1}).
+\]
+Writing $\mathcal L_\chi(s)=\widetilde L(s,\chi)$ as in \statementref{Definition}{def:entire-l}, in the region
+\[
+ \Re s\ge 1-\ell^{-25},\qquad |s|\le e^\ell
+\]
+we have $\mathcal L_\chi(s)\ne0$ (a \emph{zero-free region}), and its \emph{logarithmic derivative} satisfies $\bigl|\mathcal L_\chi'(s)/\mathcal L_\chi(s)\bigr|\le2\ell^{25}$.
+\end{lemma}
+
+\begin{proof}
+Put $R=e^\ell$ and $\eta=\ell^{-25}$. If $\Re z\ge1-(2\ell)^{-1}$ and $|z|\le2R$, the closed disk centered at $z$ with radius $(2\ell)^{-1}$ lies entirely in
+$\Re w\ge1-\ell^{-1}$ and $|w|\le3R$. \statementref{Lemma}{lem:regular-l-growth} and Cauchy's derivative estimate give
+\[
+ |f_\chi'(z)|\le 2\ell^3.
+\]
+
+First prove $|f_\chi(w)|\ge12/\ell^{22}$ in the region on the right with $\Re w\ge1+\eta$ and $|w|\le 3R/2$.
+If $\chi^2$ is principal and $|w-1|\le\ell^{-1}$, the hypothesis and $12/\ell^{22}\le\ell^{-1}$ give the bound.
+In the remaining cases, write $w=\sigma+it$ and $w_2=\sigma+2it$, and let $\chi_0$ denote the principal character modulo $q$. The \emph{Euler product} gives
+\[
+ |L(\sigma,\chi_0)|^3\,|L(w,\chi)|^4\,|L(w_2,\chi^2)|\ge1.
+\]
+Taking the logarithm of the absolute value on the left gives an absolutely convergent series over $p\nmid q$ and $j\ge1$, with general term
+$p^{-j\sigma}(3+4\cos\theta+\cos(2\theta))/j$, where
+$e^{i\theta}=\chi(p)^j p^{-ijt}$. The expression in parentheses is $2(1+\cos\theta)^2\ge0$.
+
+We now estimate the three factors. The Dirichlet series gives the following bound for the absolute value of the first factor.
+$1+(\sigma-1)^{-1}\le2/\eta$.
+For the second factor, if $\chi$ is principal, then $|w-1|\ge\ell^{-1}$, so
+$|w/(w-1)|\le1+\ell\le2\ell$. If $\chi$ is nonprincipal, then $L(w,\chi)=f_\chi(w)$.
+Thus $|L(w,\chi)|\le2\ell|f_\chi(w)|$ holds in either case.
+Similarly the third factor satisfies $|L(w_2,\chi^2)|\le2\ell|f_{\chi^2}(w_2)|$, using the following when $\chi^2$ is principal:
+$|w_2-1|\ge|w-1|\ge\ell^{-1}$. Also, by $|w_2|\le2|w|\le3R$ and $\Re w_2=\sigma$, \statementref{Lemma}{lem:regular-l-growth} gives
+$|f_{\chi^2}(w_2)|\le\ell^2$. Substituting the three estimates into the product inequality yields
+\[
+ \eta^3\le 256\ell^7 |f_\chi(w)|^4.
+\]
+Since $256\cdot12^4\le\ell^6$ and $\eta^3=\ell^{-75}$, we have
+$256\ell^7(12/\ell^{22})^4\le\eta^3$, proving the lower bound in the right-hand region.
+
+For a point $s$ satisfying the hypotheses, take $v=s+2\eta$. Then $\Re v\ge1+\eta$ and $|v|\le3R/2$.
+Since $\eta\le(2\ell)^{-1}$ and the modulus of every point of the segment is at most $R+2\eta\le2R$, the segment joining $s$ to $v$ lies entirely in the region of the derivative bound. Integrating along the segment gives
+\[
+ |f_\chi(v)-f_\chi(s)|\le(2\ell^3)(2\eta)=4/\ell^{22},
+ \qquad |f_\chi(s)|\ge 8/\ell^{22},
+\]
+so $f_\chi(s)\ne0$ and $|f_\chi'(s)/f_\chi(s)|\le\ell^{25}/4$.
+
+If $\chi$ is nonprincipal, then $\mathcal L_\chi=f_\chi$. If $\chi$ is principal, then $\mathcal L_\chi(s)=s f_\chi(s)$, and $|s|\ge\Re s\ge1/2$. Thus $\mathcal L_\chi(s)\ne0$ still holds, and the logarithmic derivative changes only by $1/s$, of absolute value at most $2$. Both cases satisfy the upper bound $2\ell^{25}$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion.lean}{193}.}
+\begin{lemma}[A zero-free region for a fixed character]
+\label{lem:fixed-character-zero-free-region}
+\emitthmsource
+Fix a Dirichlet character $\chi$ modulo $q\ge1$ and write $\mathcal L_\chi(s)=\widetilde L(s,\chi)$ as in \statementref{Definition}{def:entire-l}. For all sufficiently large real $\ell$, in the region
+$\Re s\ge1-\ell^{-25}$ and $|s|\le e^\ell$ we have
+\[
+ \mathcal L_\chi(s)\ne0,\qquad
+ |\mathcal L_\chi'(s)/\mathcal L_\chi(s)|\le2\ell^{25}.
+\]
+\end{lemma}
+
+\begin{proof}
+For the fixed character $\chi$, nonvanishing of the Dirichlet $L$-function at $s=1$ and the nonzero residue for the principal character at $s=1$ give $f_\chi(1)\ne0$. Continuity gives $c,\delta>0$ such that $|f_\chi(s)|\ge c$ when $|s-1|\le\delta$. Take $\ell$ large enough for $\ell\ge10^{10}$, $q\le e^\ell$, and $\ell^{-1}\le\min(c,\delta)$. Then \statementref{Lemma}{lem:zero-free-region} applies and gives the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/Primes.lean}{133}.}
+\begin{lemma}[Uniform estimates near $1$ for characters of power moduli]
+\label{lem:prime-window-disc}
+\emitthmsource
+Let $M$ be a positive multiple of $4$, fix $A\in\mathbb N$, and write $\mathcal L_\chi(s)=\widetilde L(s,\chi)$ as in \statementref{Definition}{def:entire-l}. For all sufficiently large real $X$, for every $k\in\mathbb N$ with $k>1$ and $M^k\le X^A$, every Dirichlet character $\chi$ modulo $M^k$, and every $s\in\mathbb C$ with $|s-1|\le X^{-1}$, we have
+\[
+ \mathcal L_\chi(s)\ne0,\qquad
+ \left|\frac{\mathcal L'_\chi(s)}{\mathcal L_\chi(s)}\right|\le X .
+\]
+\end{lemma}
+
+\begin{proof}
+First we establish a reduction of the modulus. If $\chi^2=1$, then $\chi$ is $1$ on every square in $(\mathbb Z/M^k\mathbb Z)^\times$. The moduli $M^k$ and $M^2$ have the same prime factors, so the natural reduction $(\mathbb Z/M^k\mathbb Z)^\times\to(\mathbb Z/M^2\mathbb Z)^\times$ is surjective. Write $R=\mathbb Z/M^k\mathbb Z$. For any unit $u=1+M^2t$ in its kernel, set $a=M(M/4)t\in MR$ and define the following iteration in $R$.
+\[
+ c_0=0,\qquad c_{j+1}=a-c_j^2 .
+\]
+Every $c_j\in MR$, and $c_1-c_0\in MR$. The recurrence
+$c_{j+1}-c_j=-(c_j+c_{j-1})(c_j-c_{j-1})$ gives $c_{j+1}-c_j\in M^{j+1}R$ by induction. Since $M^kR=0$, the iteration reaches a fixed point $c\in R$ in finitely many steps, with $c+c^2=a$ and hence $(1+2c)^2=1+4a=u$. Since $u$ is a unit, so is $1+2c$. Therefore $\chi$ is identically $1$ on the kernel of reduction and is pulled back from a character $\chi_0$ modulo $M^2$.
+
+The extensions of $\chi_0$ and $\chi$ to Dirichlet characters on the integers agree pointwise. They coincide on units by reduction, and vanish on the same set of nonunits. Their Dirichlet series on $\Re s>1$ agree, and they are either both principal or both nonprincipal. Their entire functions and pole-removed regularizations therefore satisfy $\mathcal L_\chi=\mathcal L_{\chi_0}$ and $f_\chi=f_{\chi_0}$.
+
+Nonvanishing of the Dirichlet $L$-function at $1$ and the nonzero residue for the principal character give $f_{\chi_0}(1)\ne0$ for each character $\chi_0$ modulo $M^2$. The characters modulo $M^2$ form a fixed finite family, so continuity gives $\delta,c_*>0$ for which the following holds uniformly over them.
+\[
+ |w-1|\le\delta\quad\Longrightarrow\quad |f_{\chi_0}(w)|\ge c_* .
+\]
+
+Now apply \statementref{Lemma}{lem:zero-free-region}. For $q=M^k$ take $\ell=(A+1)\log X$. When $X$ is sufficiently large,
+\[
+ q\le X^A\le e^\ell,\qquad
+ \ell\ge10^{10},\qquad
+ \ell^{-1}\le\min(\delta,c_*),\qquad
+ 2\ell^{25}\le X .
+\]
+The modulus reduction and uniform lower bound for characters modulo $M^2$ also give the hypothesis of \statementref{Lemma}{lem:zero-free-region} on quadratic characters. When $|s-1|\le X^{-1}$, we have from $2\ell^{25}\le X$
+$\Re s\ge1-X^{-1}\ge1-\ell^{-25}$ and $|s|\le1+X^{-1}\le e^\ell$.
+\statementref{Lemma}{lem:zero-free-region} now gives the claimed nonvanishing and upper bound for the logarithmic derivative.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/Primes.lean}{386}.}
+\begin{lemma}[Prime windows for moduli that are powers of a fixed base]
+\label{lem:prime-window}
+\emitthmsource
+Let $M$ be a positive multiple of $4$ and fix $A\in\mathbb N$. For all sufficiently large real $W$ the following holds uniformly in $k$ and $U$. If
+\[
+ k\in\mathbb N,\qquad 1<k,\qquad
+ M^k\le W^A,\qquad W\le U\le W^A,
+\]
+then there is a prime $p$ satisfying $p\equiv1\pmod{M^k}$ and $U\le\log p\le U+W$.
+\end{lemma}
+
+\begin{proof}
+Put $X=\sqrt W$ and $q=M^k$, so $X^2\le U\le X^{2A}$ and $q\le X^{2A}$. Take $X\ge200$ and write
+\[
+ a_j=\mathbf1_{j\equiv1\pmod q}\Lambda(j),\qquad
+ b_j=\mathbf1_{j\text{ is not prime}}\Lambda(j)
+ \qquad(j\ge1),
+\]
+Here $\Lambda$ is the von Mangoldt function. Since $b_j$ can be nonzero only on prime powers of exponent at least $2$,
+\[
+ C:=\sum_{j\ge1}\frac{b_j}{j^{3/4}}
+   =\sum_p\sum_{v\ge2}\frac{\log p}{p^{3v/4}}
+   \le\frac{1}{1-2^{-3/4}}\sum_{j\ge2}\frac{\log j}{j^{3/2}}
+   <\infty .
+\]
+We further require $X\ge C$ below.
+
+For a Dirichlet character $\chi$ modulo $q$, again write $\mathcal L_\chi(s)=\widetilde L(s,\chi)$ as in \statementref{Definition}{def:entire-l} and define
+\[
+ F(z)=\frac{1}{\varphi(q)}
+      \left(1-z\sum_{\chi\bmod q}
+        \frac{\mathcal L'_\chi(1+z)}{\mathcal L_\chi(1+z)}\right).
+\]
+On $\Re z>0$, the Euler product gives $\sum_{j\ge1}\chi(j)\Lambda(j)j^{-1-z}=-L'(1+z,\chi)/L(1+z,\chi)$.
+Average over all characters modulo $q$. Orthogonality selects the residue class $1\pmod q$, and removing the principal pole contributes $1/z$. This gives
+\[
+ \sum_{j\ge1}a_j j^{-1-z}=F(z)/z \qquad(\Re z>0).
+\]
+Applying \statementref{Lemma}{lem:prime-window-disc} with exponent $2A$ shows that on the closed disk $|z|\le1/X$ every $\mathcal L_\chi(1+z)$ is nonzero and its logarithmic derivative has absolute value at most $X$. Consequently $F$ is holomorphic on a neighborhood of the disk and satisfies $F(0)=1/\varphi(q)$ and
+\[
+ |F(z)|\le\frac{1+\varphi(q)}{\varphi(q)}\le2
+ \qquad (|z|\le1/X).
+\]
+
+Suppose the window $[U,U+W]$ contains no prime satisfying the conditions. For an integer $j$ with $U\le\log j\le U+X^2$, if $j$ is prime then $a_j=0$, and if $j$ is composite then $a_j\le\Lambda(j)=b_j$. Thus $a_j\le b_j$ throughout the window. Define
+\[
+ P(z)=\sum_{j<e^U}a_j j^{-1-z},\qquad
+ H(z)=2-Uz-\frac X4(1+Xz)^2,\qquad
+ G(z)=\bigl(F(z)-zP(z)\bigr)e^{-H(z)}.
+\]
+We now bound the absolute value of $G(z)$ on the circle $|z|=1/X$.
+Let $u=\Re z$ and $t=X^2(1+Xu)/2$. By $|z|=1/X$, we have $0\le t\le X^2\le U$, and
+\[
+ \Re(1+Xz)^2=2Xu(1+Xu),\qquad
+ h:=\Re H(z)=2-(U+t)u .
+\]
+Put $\sigma=1/U\le1/X$. By $a_j\ge0$, at the real point $z=\sigma$ the Dirichlet series gives
+\[
+ \sum_{j\ge1} a_j j^{-1-\sigma}
+   =U F(1/U)\le2U .
+\]
+
+If $u\le\sigma$, then $t u\le t/U\le1$, hence $h\ge0$ and
+$U(\sigma-u)=1-Uu\le h$. Thus $(\sigma-u)\log j\le h$ holds for all $j<e^U$. Multiplying both sides by $a_j j^{-1-\sigma}$ and summing gives $|P(z)|\le2Ue^h$, so
+\[
+ |F(z)-zP(z)|\le 2+(2U/X)e^h\le3Ue^h.
+\]
+
+If $u>\sigma$, absolute convergence of the series gives
+$F(z)/z-P(z)=\sum_{j\ge e^U}a_j j^{-1-z}$. For $\log j>U+X^2$, since $\sigma-u<0$,
+\[
+ (\sigma-u)\log j\le(\sigma-u)(U+t)
+ =1+t/U-(U+t)u\le h,
+\]
+so this part of the tail has absolute value at most $2Ue^h$. For $U\le\log j\le U+X^2$, we obtain $tu\le U/X\le U/4$ from $u\le1/X$, and hence
+\[
+ (-1/4-u)\log j\le -U/4-Uu\le h.
+\]
+Using $a_j\le b_j$ in this range gives $|a_j j^{-1-z}|\le e^h b_jj^{-3/4}$, whose sum is at most $Ce^h$.
+Combining $C\le X\le U$ and $|z|\le1$ again gives $|F(z)-zP(z)|\le3Ue^h$.
+
+In both cases $|G(z)|\le3U$ on the entire circle $|z|=1/X$, so the maximum modulus principle gives $|G(0)|\le3U$. On the other hand,
+\[
+ |G(0)|=\frac{e^{X/4-2}}{\varphi(q)}.
+\]
+For $X$ sufficiently large, $e^{X/4-2}>3X^{4A}$ while $U\varphi(q)\le Uq\le X^{4A}$, and hence $|G(0)|>3U$, a contradiction. The thresholds depend only on $M$ and $A$, so the result is uniform in $k$ and $U$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/Existence.lean}{77}.}
+\begin{lemma}[A Behrend set of exponents]
+\label{lem:behrend-exponents}
+\emitthmsource
+Let $n,H,J,o\in\mathbb N$ satisfy $J>0$ and $(JH)^n\le o$. There is a subset $S\subseteq\{0,\ldots,o-1\}$ with
+\[
+ |S|\ge\frac{H^n}{nH^2},
+\]
+Moreover, for any $e_1,e_2,e_3\in S$ and positive integers $\alpha,\beta$ satisfying $\alpha+\beta\le J$, the congruence
+\[
+ (\alpha+\beta)e_2\equiv\alpha e_1+\beta e_3\pmod o
+\]
+implies $e_1=e_2=e_3$. The cardinality bound uses Lean's convention for real division, under which the right-hand side is zero when its denominator vanishes.
+\end{lemma}
+
+\begin{proof}
+If $nH=0$, use the empty set. Assume henceforth that $n,H\ge1$. The cube $\{0,\ldots,H-1\}^n$ contains $H^n$ lattice points, and their squared Euclidean norms $\|u\|^2$ are integers from $0$ to $n(H-1)^2$, giving at most $n(H-1)^2+1\le nH^2$ values.
+By the pigeonhole principle, there is a subset $V$ of lattice points on a common sphere with cardinality $|V|\ge H^n/(nH^2)$.
+
+In base $B=JH$, encode each $u=(u_0,\ldots,u_{n-1})\in V$ by
+$e(u)=\sum_{j=0}^{n-1}u_j B^j$. If $B=1$, the cube is a singleton. Otherwise uniqueness of base-$B$ expansions implies that the encoding is injective.
+Since $u_j<H\le B$, we also have $e(u)\in[0,B^n)\subseteq[0,o)$. Set $S=e(V)$. Its cardinality and range are as required.
+
+Let $e_1=e(u)$, $e_2=e(v)$, and $e_3=e(w)$ satisfy the congruence in the hypothesis. In the base-$B$ expansions of the two sides, each digit is at most
+$(\alpha+\beta)(H-1)<B$, so the weighted addition does not carry, and both sides lie in $[0,B^n)\subseteq[0,o)$.
+Thus the congruence is an integer equality. Comparing digits gives $(\alpha+\beta)v=\alpha u+\beta w$.
+Combining this with $\|u\|^2=\|v\|^2=\|w\|^2$ gives
+\[
+ 0
+ =\alpha\|u\|^2+\beta\|w\|^2-(\alpha+\beta)\|v\|^2
+ =\frac{\alpha\beta}{\alpha+\beta}\|u-w\|^2 .
+\]
+so $u=w$. The weighted equality gives $v=u$, and hence $e_1=e_2=e_3$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/Existence.lean}{482}.}
+\begin{lemma}[Constructing sparse sets of places from the rank and scale parameters]
+\label{lem:sparse-places-ranks}
+\emitthmsource
+Fix $P=(q_0,d)$. Suppose $m,r,s,n\in\mathbb N$ and $y,W\in\mathbb R$ satisfy
+\[
+\begin{gathered}
+ 2\le y,\qquad 0<n,\qquad 10^6 y\le W\le e^{y/2}\le m,\qquad
+ r\le 3 e^{5y},\\
+ 2^s=m^{22}\le W^n,\qquad s\le32y,\qquad
+ (5184y)^n\le W,\qquad 7776yn2^n\le W .
+\end{gathered}
+\]
+Put $l_0=3^{\lfloor\log_3 s\rfloor+4}$, $A_s=3l_0 2^s$, and $q_1=q_0A_s$, taking the integer logarithm to be zero when $s=0$. Put $B_r=(r+1-m)5r$, with subtraction in the natural numbers.
+Let $\Phi(s)$ be the group of infinite places of $E=K(\zeta_{q_1})$, identified with $(\mathbb Z/q_1\mathbb Z)^\times$ by cyclotomic coordinates. There is a Behrend--Shapira-type subset $T\subseteq\Phi(s)$ (see~\cite{Behrend1946,Shapira2006}) whose elements all reduce to $-1$ modulo $q_0$ and which satisfies $A_s\le|T|W^6$. For each prime $\lambda\le B_r$ and integers $0<i<j<l_0$, there are no $\sigma,\tau,\rho\in T$ satisfying both $\tau/\sigma\equiv\pm\lambda^i$ and $\rho/\sigma\equiv\pm\lambda^j$ modulo the largest divisor of $q_1$ coprime to $\lambda$. The two signs may be chosen independently.
+\end{lemma}
+
+\begin{proof}
+First turn the rank assumptions into bounds for the parameters of the exponent set. By $1<W\le m\le m^{22}=2^s$ we have $s\ge1$, so
+$l_0\le81s\le2592y$, so
+\[
+ (2l_0)^n\le(5184y)^n\le W,\qquad
+ 3l_0 n2^n\le7776yn2^n\le W\le W^3 .
+\]
+By $m\ge1$, the subtraction in the natural numbers gives $r+1-m\le r$, hence
+$B_r+1\le 5r^2+1\le46 e^{10y}$.
+In conjunction with $10^6y\le W\le e^{y/2}\le e^y$ this gives
+\[
+ 2l_0(B_r+1)
+ \le 2\cdot2592y\cdot46e^{10y}
+ <10^6y e^{10y}\le e^{11y}\le m^{22}=2^s .
+\]
+
+Choose a power $H\ge1$ of $2$ with $H^n\le2^s/W<(2H)^n$. Such a $H$ exists by $n>0$ and $W\le2^s$.
+Also $2^s\le W^n$ gives $H\le W$, and
+\[
+ (2l_0H)^n\le WH^n\le2^s.
+\]
+Apply \statementref{Lemma}{lem:behrend-exponents} with $J=2l_0$ and $o=2^s$. This gives an exponent set $S\subseteq[0,2^s)$ with the weighted congruence property and $|S|\ge H^n/(nH^2)$.
+
+Identify $\Phi(s)$ with $(\mathbb Z/q_1\mathbb Z)^\times$, and let $g$ be the residue class of $1+3l_0q_0$. Every prime factor of $q_1$ divides $q_0$, so $g$ is a unit residue class.
+Write $q_0=2^v q_0'$ with $q_0'$ odd. From $4\mid q_0$ we get $v\ge2$. The integer $1+3l_0q_0$ has the form $1+2^v a$ with $a$ odd, and $2^{s+v}\mid q_1$.
+Let $\nu_p$ denote the $p$-adic valuation. Successive squaring gives
+\[
+ \nu_2\bigl((1+2^v a)^{2^j}-1\bigr)=v+j\qquad(j\ge0).
+\]
+In the induction, factor the new difference as the difference times the sum for the preceding power. That power is congruent to $1$ modulo $4$, so the sum is divisible by $2$ exactly once. Thus $g$ has order exactly $2^s$ modulo $2^{s+v}$.
+
+Set $T=\{-g^e:e\in S\}$. The order of $g$ makes the powers distinct as $e$ runs over $[0,2^s)$, so $|T|=|S|$. Also $g\equiv1\pmod{q_0}$, so every element of $T$ is $-1$ modulo $q_0$. The required cardinality bound follows from
+\[
+ A_s=3l_0 2^s
+ <3l_0 2^n H^n W
+ =\frac{H^n}{nH^2}(3l_0 n2^n)W H^2
+ \le |T| W^6 .
+\]
+
+Finally we check sparseness. Suppose there exist $\sigma=-g^{e_1}$, $\tau=-g^{e_2}$, and $\rho=-g^{e_3}\in T$, satisfying, for some prime
+$\lambda\le B_r$ and $0<i<j<l_0$, both of the forbidden congruences. If $\lambda=2$, reduce the first congruence modulo
+$3l_0=3^c$, where $c=\lfloor\log_3 s\rfloor+5$. As $g\equiv1\pmod{3l_0}$, squaring gives $4^i\equiv1\pmod{3^c}$.
+But $4$ has order $3^{c-1}=l_0$ modulo $3^c$. Indeed, for any $u\equiv1\pmod3$, the $3$-adic valuation of $u^2+u+1$ is exactly $1$, so from
+$u^3-1=(u-1)(u^2+u+1)$ we obtain $\nu_3(4^{3^a}-1)=1+a$ by induction. Thus $l_0\mid i$, contradicting $0<i<l_0$.
+
+If $\lambda$ is odd, both congruences hold modulo $2^{s+v}$. Raising them to the powers $2j$ and $2i$, respectively, removes the signs and gives
+\[
+ g^{2j(e_2-e_1)}\equiv g^{2i(e_3-e_1)}
+ \pmod{2^{s+v}}.
+\]
+Using the order of $g$ gives the exponent congruence
+\[
+ 2j e_2\equiv 2(j-i)e_1+2i e_3\pmod{2^s}.
+\]
+The coefficients $2(j-i)$ and $2i$ are positive integers and have sum $2j<2l_0$. The property of the exponent set $S$ gives $e_1=e_2=e_3$.
+Reduce the first forbidden congruence modulo $2^{s+1}$ and square it to get $\lambda^{2i}\equiv1\pmod{2^{s+1}}$.
+Choose $\epsilon\in\{1,-1\}$ with $u=\epsilon\lambda\equiv1\pmod4$. Successive squaring and factorization of odd powers give
+\[
+ \nu_2(u^{2i}-1)=\nu_2(u-1)+\nu_2(2i).
+\]
+Specifically, write $2i$ as $2^h b$, where $b$ is odd. Each squaring adds exactly $1$ to the $2$-adic valuation, and raising to $b$ gives an odd cofactor. Since $u^{2i}=\lambda^{2i}$,
+$2^{s+1}\mid (\lambda-\epsilon)2i$. In particular,
+\[
+ 2^s\le(\lambda+1)(2i)\le (B_r+1)2l_0<2^s,
+\]
+This is again a contradiction, ruling out every forbidden triple of congruences.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/Existence.lean}{812}.}
+\begin{lemma}[Constructing admissible data at large scales]
+\label{lem:admissible-construction}
+\emitthmsource
+Fix the parameters $P=(q_0,d)$. Let $x$ be a positive integer with $n\in\mathbb N$, write $y=\log x$, and assume the real number $W$ satisfies
+\[
+\begin{gathered}
+ 100(6\log W+1)\le y,\qquad 10^{12}c_P\le\log W,\qquad
+ 2\cdot10^6y\le W,\qquad 2h_K+2\le W,\\
+ 0<n,\qquad n+1\le W,\qquad 99q_0dy\le n\log W,\\
+ (5184y)^n\le W,\qquad 7776yn2^n\le W,
+\end{gathered}
+\]
+Here $c_P$ is the fixed parameter constant and $h_K$ is the class number of the imaginary quadratic field $K=\mathbb Q(\sqrt{-d})$. Write $Q=q_0d$ and assume that for each integer $k$ satisfying $k>1$ and $Q^k\le W^{n+7}$ and for each $U\in[W,W^{n+7}]$, there is a prime $p$ such that
+\[
+ p\equiv1\pmod{Q^k},\qquad U\le\log p\le U+W.
+\]
+Then there is a collection of admissible objects as follows. Take $m$ to be the least power of $2$ at least $\sqrt{x}$, and $r$ to be the least power of $3$ at least $x^5$. Set $2^s=m^{22}$ and write
+\[
+ A_s=3^{\lfloor\log_3 s\rfloor+5}2^s,
+ \qquad q_1=q_0 A_s,\qquad q_2=Q^{s+6},\qquad E=K(\zeta_{q_1})
+\]
+The integer logarithm in the exponent is taken to be zero when $s=0$. Put $x_1=\lfloor e^W\rfloor$, and take $b$ to be the least multiple of $q_1x_1$ strictly greater than $e^{W^6}$. There is a subset $T$ of the infinite places of $E$ whose elements are congruent to $-1$ modulo $q_0$, with $A_s\le |T|\log b$ and the sparseness property for all primes up to $(r+1-m)5r$. There also exist distinct primes $g_0,g_1\in[b^{10},b^{11}]$, a prime $N$, and algebraic integers $\alpha\in\mathcal O_K$ and $\beta\in\mathcal O_E$ satisfying
+\[
+ g_0,g_1,N\equiv1\pmod{q_2^2},\qquad
+ \alpha\bar\alpha=g_0g_1,\qquad \beta\bar\beta=N .
+\]
+Let $\Phi(s)$ be the set of all infinite places of $E$. Write $\ell=\log b$ and $M=g_0g_1$, let $R_E$ be the root discriminant of $E$, and put
+\[
+ \kappa(\tau)=
+ \begin{cases}
+ b,&\tau\in T,\\
+ xb/x_1,&\tau\notin T,
+ \end{cases}
+ \qquad
+ N_{\log}=\frac{m}{|\Phi(s)|}\sum_{\tau\in\Phi(s)}\log\kappa(\tau)
+     +(m-1)\log\frac{MR_E}{2\pi}-\frac{15}{2}\ell .
+\]
+Then $N_{\log}\le\log N\le N_{\log}+\sqrt \ell$.
+\end{lemma}
+
+\begin{proof}
+By $W\ge n+1\ge2$ and the first scale condition, $y\ge100$ and $\log W\le y/2$. Take the least powers $m=2^a$ and $r=3^c$ as above, with $a,c>0$, and put $s=22a$. The next smaller powers fall below the corresponding thresholds, so
+\[
+ e^{y/2}\le m\le 2e^{y/2},\qquad
+ e^{5y}\le r\le3e^{5y},\qquad
+ 2^s=m^{22},\qquad
+ s\le22+\frac{11y}{\log 2}\le32y,
+\]
+The last step uses $\log 2\ge1/2$ and $y\ge100$.
+
+By $6\mid Q$ and $\lfloor\log_3 s\rfloor\le s$,
+\[
+ q_1d=Q\,3^{\lfloor\log_3 s\rfloor+5}2^s\mid Q^{s+6}=q_2 .
+\]
+Also $s+6\le33y$, so
+\[
+ \log(q_2^2)=2(s+6)\log Q\le66yQ\le99yQ\le n\log W.
+\]
+Consequently
+\[
+ 2^s\le q_1d\le q_2^2\le W^n,\qquad
+ W\le e^{y/2}\le m\le2^s\le W^n.
+\]
+
+Apply \statementref{Lemma}{lem:sparse-places-ranks} to $y,W,m,r,s,n$. Its scale and rank inequalities follow from the large-scale hypotheses and the preceding estimates. We obtain a subset $T\subseteq\Phi(s)$ whose elements are all $-1$ modulo $q_0$, with $A_s\le|T|W^6$ and the sparseness condition for all primes $\lambda\le(r+1-m)5r$.
+
+Set $x_1=\lfloor e^W\rfloor$ and $u=q_1x_1$. By $n+1\le W$ and $\log W\le W$,
+\[
+ 0<u\le W^n e^W\le e^{(n+1)W}\le e^{W^2}\le e^{W^6}.
+\]
+Thus $b=u(\lfloor e^{W^6}/u\rfloor+1)$ is the least multiple of $u$ strictly greater than $e^{W^6}$, and
+\[
+ e^{W^6}<b\le e^{W^6}+u\le2e^{W^6},\qquad
+ W^6\le \ell\le W^6+1 .
+\]
+This gives $A_s\le |T|\ell$. Since $W\ge y$ and $x$ are integers and $x_1\mid b$, we have $1\le x\le x_1\le b$. All weights $\kappa(\tau)$ are therefore integers in $[1,b]$. We also have
+\[
+ W^2\le \ell,\qquad 7\le \ell,\qquad q_1d\le W^n\le b,\qquad
+ 24\ell\le48W^6\le W^7 ,
+\]
+where the last step uses $W\ge2\cdot10^6y\ge2\cdot10^8$.
+
+For each $U\in[\ell,24m\ell]$, we have $\ell\ge W$, $24m\ell\le W^{n+7}$, and $q_2^2=Q^{2(s+6)}\le W^n$. Hence the prime-window hypothesis applies, and the resulting primes are $1$ modulo $q_2^2$. By $2h_K+2\le W$ and $W^2\le \ell$ we have $(2h_K+2)W\le \ell$. For $i=0,\ldots,h_K$, choose a prime in each window starting at
+$10\ell+2iW$ and denote it by $p_i$. The windows lie in $[10\ell,11\ell]$ and adjacent windows are separated by at least $W>0$. Hence the $p_i$ are distinct and all lie in $[b^{10},b^{11}]$.
+
+Since $q_1d\mid q_2^2$, all the primes satisfy $p_i\equiv1\pmod{q_1d}$. In particular $p_i\equiv1\pmod d$, so $\chi_K(p_i)=1$ and the principal ideal
+$(p_i)=\mathfrak p_i\mathfrak p'_i$ splits in $K$ as a product of two prime ideals of norm $p_i$. Two of the $h_K+1$ ideals $\mathfrak p_i$ lie in the same ideal class. Choose the corresponding $i\ne j$. By $[\mathfrak p'_j]=[\mathfrak p_j]^{-1}$ the product $\mathfrak p_i\mathfrak p'_j$ is an integral principal ideal. Choose an integral generator $\alpha\in\mathcal O_K$ and put $g_0=p_i$ and $g_1=p_j$. Then
+\[
+ \alpha\bar\alpha
+ =\operatorname{N}_{K/\mathbb Q}(\mathfrak p_i\mathfrak p'_j)
+ =g_0g_1.
+\]
+The element norm on the left is positive and equals the absolute norm of the principal ideal.
+
+Finally, write $R_E=|\operatorname{disc}E|^{1/[E:\mathbb Q]}$. The different of the cyclotomic tower contains $q_1d$, so
+$\mathfrak D_{E/\mathbb Q}\mid(q_1d)$. Taking ideal norms gives $|\operatorname{disc}E|\le(q_1d)^{[E:\mathbb Q]}$, that is, $1\le R_E\le q_1d\le b$.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Field/PrimeDecomposition.lean\#L253}{The different of the cyclotomic tower}.}
+
+The mean logarithmic place weight lies in $[0,\ell]$, and $M=g_0g_1\in[b^{20},b^{22}]$. Using $1\le2\pi\le e^\ell=b$ gives
+\[
+ 19\ell\le\log\frac{MR_E}{2\pi}\le23\ell .
+\]
+Consequently
+\[
+ m\ell\le \bigl(19(m-1)-15/2\bigr)\ell
+ \le N_{\log}
+ \le \bigl(m+23(m-1)-15/2\bigr)\ell\le24m\ell ,
+\]
+where the first inequality uses $m\ge2$. Choose a prime $N\equiv1\pmod{q_2^2}$ in the prime window starting at $N_{\log}$. Then
+$N_{\log}\le\log N\le N_{\log}+W\le N_{\log}+\sqrt \ell$.
+By $4\mid q_0\mid q_2^2$, we have $N\equiv1\pmod4$. Fermat's two-square theorem gives
+$N=a_0^2+a_1^2$. Since $4\mid q_1$, the field $E$ contains an algebraic integer $\iota=\zeta_{q_1}^{q_1/4}$ satisfying $\iota^2=-1$ and $\bar\iota=-\iota$. Put $\beta=a_0+a_1\iota\in\mathcal O_E$ to get $\beta\bar\beta=N$. This verifies all the conditions.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/Existence.lean}{729}.}
+\begin{lemma}[Assembling admissible data from admissible objects]
+\label{lem:admissible-fields}
+\emitthmsource
+Fix parameters $P$ and positive integers $x$ and $n\in\mathbb N$. Assume $W$ is a large scale for $y=\log x$ with exponent $n$. Given a collection of admissible objects at $x$ and $W$,
+\[
+ (m,r,s,b,T,(g_0,g_1),\alpha,N,\beta),
+\]
+we can assemble admissible data $D$ whose integer scales are $x$, $x_1=\lfloor e^W\rfloor$, and $b$, respectively, satisfying
+\[
+ W-1\le\log x_1,\qquad W^6\le\log b\le W^6+1 .
+\]
+\end{lemma}
+
+\begin{proof}
+Write $x_1=\lfloor e^W\rfloor$ and $\ell=\log b$. The large-scale conditions imply $W\ge n+1\ge2$, $y\ge100$, and $W\ge2\cdot10^6y$. From $\lfloor e^W\rfloor\ge e^W-1\ge e^W/2$ and $\log 2\le1$ we get
+\[
+ W-1\le\log x_1\le W .
+\]
+By the least-power conditions for the admissible objects, there are positive integers $a,c$ with $m=2^a$ and $r=3^c$. Comparing the next smaller powers with the respective thresholds gives
+\[
+ e^{y/2}\le m\le2e^{y/2},\qquad
+ e^{5y}\le r\le3e^{5y},\qquad
+ s=22a\le22+\frac{11y}{\log2}\le32y ,
+\]
+Here $s=22a$ comes from $2^s=m^{22}$. Using $q_1d\mid q_2^2$, the large-scale conditions, and $s+6\le33y$ gives
+\[
+ \log(q_2^2)=2(s+6)\log(q_0d)\le99q_0dy\le n\log W,\qquad
+ q_1\le W^n.
+\]
+Put $u=q_1x_1$, so $u\le W^ne^W\le e^{W^2}\le e^{W^6}$. Since $b$ is the least multiple of $u$ strictly greater than $e^{W^6}$,
+\[
+ e^{W^6}<b\le e^{W^6}+u\le2e^{W^6}.
+\]
+Taking two logarithms and using $W\ge1$ gives
+\[
+ W^6\le \ell\le W^6+1,\qquad
+ 6\log W\le\log \ell\le 6\log W+1 .
+\]
+
+To construct $D$, take the three log scales to be $y$, $\log x_1$, and $\ell$. Their exponentials are the given integer scales. The five log-scale inequalities are given in order by
+\[
+\begin{aligned}
+ 10^{12}c_P &\le \log W\le 6\log W\le\log \ell,\\
+ 100\log \ell &\le100(6\log W+1)\le y,\\
+ 10^6y &\le W-1\le\log x_1,\\
+ 10^6\log x_1 &\le10^6W\le W^2\le \ell,\\
+ 6\log\log x_1 &\le 6\log W\le\log \ell
+\end{aligned}
+\]
+The third and fourth lines use $y\ge100$ and $W\ge2\cdot10^6y$, and the last uses $0<\log x_1\le W$.
+Take $m,r,s$ for the lift count, rank, and tower exponent. The power bounds give the required parameter restrictions, and $u\mid b$ gives the divisibility condition. Take $T$ for the set of $b$-places and use weight $b$ on $T$ and $xb/x_1$ elsewhere, giving pointwise agreement with the weights in Definition~$N_{\log}$. All remaining conditions on residue classes, the cardinality and sparseness of the place set, the principal level primes and $\alpha\bar\alpha$, and the ramification level prime $N$ and $\beta\bar\beta$ come directly from the admissible objects. This gives admissible data $D$ with the two established scale estimates.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Data/Existence.lean}{890}.}
+\begin{lemma}[Construction and scales of admissible data]
+\label{lem:data-existence}
+\emitthmsource
+Fix parameters $P=(q_0,d)$ and $0<\eta<1/100$. For each sufficiently large integer $x$ there are admissible data $D$ with primary scale $x$ satisfying
+\[
+ x_1=\lfloor\exp(x^{\eta/6})\rfloor,\qquad
+ x^{\eta/6}-1\le \log x_1,\qquad x^\eta\le\log b\le x^\eta+1,
+\]
+Here $b$ is the least multiple of $q_1x_1$ strictly greater than $\exp(x^\eta)$, with $q_1$ the cyclotomic tower modulus for $D$. The count $m$ is the least power of $2$ at least $\sqrt{x}$, and the target rank $r_0$ the least power of $3$ at least $x^5$.
+\end{lemma}
+\begin{proof}
+Put $W=x^{\eta/6}$ and $w=\log x$. First check the large-scale hypotheses for the construction. Choose a positive integer $n$ with $n\eta/6>99q_0d$. For $x$ sufficiently large,
+\[
+ 99q_0dw\le n\log W,\qquad
+ 100(6\log W+1)=100\eta w+100\le w.
+\]
+Let $h_K$ be the class number of $K=\mathbb Q(\sqrt{-d})$ and $c_P$ a constant depending only on the fixed parameters. By $W\to\infty$ we have $W\ge2h_K+2$, $W\ge n+1$, and $\log W\ge10^{12}c_P$ for $x$ sufficiently large. Also $(\log x)^j=o(x^{\eta/6})$ for each fixed integer $j$, which gives
+\[
+ W\ge 2\cdot10^6w,\qquad W\ge(5184w)^n,\qquad
+ W\ge7776wn2^n.
+\]
+This verifies the large-scale hypotheses.
+
+Set $M=q_0d$, so $4\mid M$. Apply \statementref{Lemma}{lem:prime-window} with exponent $n+7$. For $W$ sufficiently large, for every integer $k$ satisfying $k>1$ and $M^k\le W^{n+7}$ and every $V\in[W,W^{n+7}]$, there is a prime $p\equiv1\pmod{M^k}$ with $V\le\log p\le V+W$. By $W=x^{\eta/6}\to\infty$, both the prime-window conditions and the large-scale hypotheses hold for $x$ sufficiently large.
+
+Apply \statementref{Lemma}{lem:admissible-construction} to obtain the admissible objects and \statementref{Lemma}{lem:admissible-fields} to assemble them into admissible data $D$ satisfying $x_1=\lfloor e^W\rfloor$, $W-1\le\log x_1$, and $W^6\le\log b\le W^6+1$. Substitute $W=x^{\eta/6}$ to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{69}.}
+\begin{lemma}[Existence of admissible scales]
+\label{lem:data-scales}
+\emitthmsource
+Fix parameters $P$ and $0<\eta<1/100$. For each sufficiently large integer $x$, there are admissible data $D$ of primary scale $x$ satisfying
+\[
+ \ell\le2x^\eta,\qquad \sqrt{x}\le m,\qquad
+ \log x_1\ge x^{\eta/12}.
+\]
+\end{lemma}
+\begin{proof}
+By \statementref{Lemma}{lem:data-existence}, for each sufficiently large integer $x$ there are admissible data $D$ of primary scale $x$ satisfying $m\ge\sqrt{x}$ and
+\[
+ x^{\eta/6}-1\le \log x_1,\qquad x^\eta\le\log b\le x^\eta+1.
+\]
+When $x\ge1$ we have $x^\eta+1\le2x^\eta$, so $\ell=\log b\le2x^\eta$. Take $x$ still larger so that $v=x^{\eta/12}\ge2$. Then $v^2-1-v=v(v-1)-1\ge1$ gives $x^{\eta/6}-1=v^2-1\ge v$ and hence $\log x_1\ge x^{\eta/12}$. All three estimates hold for the same data $D$.
+\end{proof}
+
+\section{The one-sided bound from the two-scale identity}
+\label{sec:one-sided-bound}
+
+Solving the two-scale identity~\eqref{eq:ch1-remainder-eq} for $R_{d,q_0}(x)$ gives a term involving the total remainder $S$ and two at the larger scale $x_1$. The main inequality bounds the first, and a weighted prime number theorem for fixed moduli bounds the latter two. We derive the one-sided bound at integers and then pass to real arguments.
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{27}.}
+\begin{lemma}[The normalized two-scale upper bound]
+\label{lem:normalized}
+\emitthmsource
+For every set of admissible data,
+\[
+ R_{d,q_0}(x)\le\frac{\varphi(q_0)\ell^6}{m}
+                     +|R_{d,q_0}(x_1)|+\ell|R_{d,1}(x_1)|.
+\]
+\end{lemma}
+\begin{proof}
+Counting places gives $A=|\Phi_a|=q_1/q_0>0$ and $f=\varphi(q_0)A$. The lower bound on the size of the sparse place set gives $A\le J\ell$, where $J=|\Phi_b|$ and $\ell>0$, so $J>0$. Write $u=A/J$, so $0<u\le\ell$. Since $a,m>0$, divide the two-scale identity~\eqref{eq:ch1-remainder-eq} by $aJ$ and rearrange to obtain
+\[
+ R_{d,q_0}(x)
+ =\frac{S}{aJ}+R_{d,q_0}(x_1)-uR_{d,1}(x_1).
+\]
+The main inequality~\eqref{eq:ch1-star} together with $maJ>0$ gives
+\[
+ \frac{S}{aJ}\le\frac{fa\ell^5}{maJ}
+   =\frac{\varphi(q_0)u\ell^5}{m}
+   \le\frac{\varphi(q_0)\ell^6}{m}.
+\]
+Also, $R_{d,q_0}(x_1)\le |R_{d,q_0}(x_1)|$ and
+$-uR_{d,1}(x_1)\le u|R_{d,1}(x_1)|\le\ell|R_{d,1}(x_1)|$. Adding the three bounds gives the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/PrimeNumberTheorem.lean}{212}.}
+\begin{lemma}[A weighted prime number theorem for a fixed modulus]
+\label{lem:weighted-pnt}
+\emitthmsource
+Let $d$ be an odd prime with $q\ge1$ and $(q,d)=1$. For a fixed integer $K\ge0$ and all sufficiently large real $z$ we have
+\[
+ |R_{d,q}(z)|\le(\log z)^{-K}.
+\]
+\end{lemma}
+\begin{proof}
+Write $\lambda_q(n)=\mathbf 1_{n\equiv1\pmod q}\Lambda(n)(1-(n/d))$,
+$E(y)=\sum_{n\le y}\lambda_q(n)-y/\varphi(q)$, and $C=C_{d,q}$. From
+$0\le\lambda_q(n)\le2\Lambda(n)$ and the Chebyshev bound $\sum_{n\le y}\Lambda(n)\le6y$,
+we obtain $|E(y)|\le13y$. Integrating the finite sum for $y\ge1$ term by term gives
+\[
+ R_{d,q}(y)=\int_1^y E(t)t^{-2}\,dt-C .
+\]
+Thus $r(v)=R_{d,q}(e^v)$ is measurable on $v\ge0$ and satisfies the Lipschitz estimate
+\[
+ |r(v)-r(u)|
+ \le \int_{e^u}^{e^v}|E(t)|t^{-2}\,dt
+ \le13(v-u),\qquad 0\le u\le v .
+\]
+
+Write $G(s)=G_{d,q}(s)$ and $F(s)=G(s)/s$. In $\operatorname{Re}s>1$, character orthogonality and the logarithmic derivatives of the Euler products give
+\[
+ \sum_{n\ge1}\frac{\lambda_q(n)}{n^s}
+ =G(s)+\frac{s}{\varphi(q)(s-1)}.
+\]
+The unique principal character modulo $q$ contributes the pole correction $1/(s-1)$. Every twist by the quadratic character modulo $d$ is nonprincipal. For this, use the Chinese remainder theorem to choose an integer congruent to $1$ modulo $q$ and a quadratic nonresidue modulo $d$. Restricting the displayed identity to the real axis $s>1$ shows that $G(s)$ is real there. Together with analyticity near $s=1$ proved below, this gives $F(1)=G(1)=C$. Integrating $\operatorname{Re}s>2$ by parts and using $R_{d,q}(1)=-C$ and the preceding integral representation gives
+\[
+\begin{aligned}
+ \int_0^\infty r(v)e^{(1-s)v}\,dv
+ &=\int_1^\infty R_{d,q}(y)y^{-s}\,dy\\
+ &=\frac{1}{s-1}\left(
+ \frac{1}{s}\sum_{n\ge1}\frac{\lambda_q(n)}{n^s}
+       -\frac{1}{\varphi(q)(s-1)}-C\right)
+ =\frac{F(s)-F(1)}{s-1}.
+\end{aligned}
+\]
+Here $R_{d,q}(y)=O(1+\log y)$ makes the boundary term at infinity vanish, and interchanging summation and integration is justified in the half-plane of absolute convergence.
+
+Apply \statementref{Lemma}{lem:fixed-character-zero-free-region} to the finitely many original characters and their quadratic twists. For $l$ sufficiently large, in the region
+$\operatorname{Re}s\ge1-l^{-25}$ and $|s|\le e^l$, their pole-removed $L$-functions are nonzero and their logarithmic derivatives have absolute value at most $2l^{25}$. Write $N$ for the number of characters modulo $q$. Then in the narrower region
+\[
+ \operatorname{Re}s\ge1-l^{-26},\qquad |s|\le e^l
+\]
+we have $|s|\ge\operatorname{Re}s\ge1/2$, so $F$ is holomorphic there. By the definition of $G$, for $l$ sufficiently large we have
+\[
+ |F(s)|\le 2(4Nl^{25}+1)\le (8N+2)l^{25}\le l^{26}.
+\]
+
+Finally we deduce a pointwise bound from this analytic estimate. Put
+\[
+ \Psi(s)=\frac{F(s)-F(1)}{s-1},
+ \quad k=\lfloor u^{2K+4}\rfloor,
+ \quad H=\frac{k+1}{u},\quad l=(2K+5)\log u,\quad \epsilon=l^{-26},
+\]
+and extend $\Psi$ across the removable singularity at $s=1$. Choose $u$ sufficiently large so that $H>1$. Taking $k$ derivatives of the transform identity at $s=1+H$ gives
+\[
+ Z_u:=\frac{(-H)^k H}{k!}\Psi^{(k)}(1+H)
+  =\int_0^\infty r(v)\frac{H^{k+1}v^k e^{-Hv}}{k!}\,dv .
+\]
+In a small enough neighborhood of $1+H$, exponential decay dominates the linear growth of $r(v)$ and the powers introduced by differentiation. Thus differentiation and integration commute. The integral kernel is a probability density. From $\int_0^\infty v^j e^{-Hv}\,dv=j!H^{-j-1}$ its mean is $(k+1)/H=u$ and its variance is $(k+1)/H^2=u^2/(k+1)$. Using the Lipschitz estimate and Cauchy--Schwarz gives
+\[
+ |Z_u-r(u)|\le13\frac{u}{\sqrt{k+1}}\le13u^{-K-1}.
+\]
+
+The closed disk centered at $1+H$ of radius $H+\epsilon$ lies in the analytic region above. Its minimum real part is $1-\epsilon$ and the modulus of each point on it is at most $1+2H+\epsilon\le u^{2K+5}=e^l$. On the boundary $|s-1|\ge\epsilon$, so $|\Psi(s)|\le 2l^{26}/\epsilon=2l^{52}$. Cauchy's coefficient estimate gives
+\[
+ |Z_u|\le2Hl^{52}(1+\epsilon/H)^{-k}
+        \le2Hl^{52}e^{-u\epsilon/4},
+\]
+The last step uses $\log(1+t)\ge t/2$, with $0\le t\le1$, and $k/H\ge u/2$. Since $H=O(u^{2K+3})$ and $u\epsilon/\log u\to\infty$, take $u$ sufficiently large that the right-hand side is at most $u^{-K-1}$. Adding the two bounds gives $|r(u)|\le14u^{-K-1}\le u^{-K}$. Substitute $u=\log z$ to conclude.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{91}.}
+\begin{lemma}[Remainders at the larger scale]
+\label{lem:second-scale}
+\emitthmsource
+Fix parameters $P$ and $\eta>0$. For all sufficiently large integers $x$ and all $u\ge x^{\eta/12}$, we have
+\[
+ |R_{d,q_0}(e^u)|\le x^{-2},\qquad |R_{d,1}(e^u)|\le x^{-2}.
+\]
+\end{lemma}
+\begin{proof}
+Apply the weighted prime number theorem for fixed moduli, \statementref{Lemma}{lem:weighted-pnt}, to $q_0$ and $1$. Write $h=q_0/2$. By $18480\mid q_0$, $h$ is even, so $d\equiv h-1\pmod{2h}$ is an odd prime and $(d,q_0)=(h-1,2h)=(h-1,2)=1$. The modulus $1$ also satisfies the coprimality requirement.
+
+Take $K=\lceil24/\eta\rceil$. By \statementref{Lemma}{lem:weighted-pnt} there is a common threshold $Y>1$ such that for all real $y\ge Y$ we have $|R_{d,q}(y)|\le(\log y)^{-K}$ for $q\in\{q_0,1\}$. Since $x^{\eta/12}\to\infty$, for all sufficiently large integers $x$ we have $x\ge1$ and $x^{\eta/12}\ge\log Y$. For any $u\ge x^{\eta/12}$ this gives $e^u\ge Y$, so
+\[
+ |R_{d,q}(e^u)|\le u^{-K}
+ \le (x^{\eta/12})^{-K}=x^{-\eta K/12}\le x^{-2},
+ \qquad q\in\{q_0,1\},
+\]
+The last step uses $x\ge1$ and $\eta K/12\ge2$. The threshold for $x$ is independent of $u$, so the conclusion holds uniformly for all such $u$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{119}.}
+\begin{lemma}[A one-sided upper bound at integers]
+\label{lem:integer-bound}
+\emitthmsource
+Fix parameters $P$ and $0<\eta<1/100$. For every sufficiently large integer $x$,
+\[
+ R_{d,q_0}(x)\le \bigl(64\varphi(q_0)+3\bigr)x^{-1/2+6\eta}.
+\]
+\end{lemma}
+\begin{proof}
+Take an integer $x\ge1$ large enough for \statementref{Lemmas}{lem:data-scales} and~\ref{lem:second-scale}. By \statementref{Lemma}{lem:data-scales} take admissible data $D$ of primary scale $x$ with $m\ge\sqrt{x}$, $0<\ell\le2x^\eta$, and $\log x_1\ge x^{\eta/12}$. Taking $u=\log x_1$ in \statementref{Lemma}{lem:second-scale} gives $|R_{d,q_0}(x_1)|\le x^{-2}$ and $|R_{d,1}(x_1)|\le x^{-2}$. Substituting into the normalized bound of \statementref{Lemma}{lem:normalized} gives
+\[
+ \begin{aligned}
+ R_{d,q_0}(x)
+ &\le \frac{\varphi(q_0)(2x^\eta)^6}{\sqrt{x}}
+       +x^{-2}+2x^\eta x^{-2}\\
+ &=64\varphi(q_0)x^{-1/2+6\eta}+x^{-2}+2x^{-2+\eta}.
+ \end{aligned}
+\]
+Since $-2\le -1/2+6\eta$ and $-2+\eta\le -1/2+6\eta$, together with $x\ge1$ the last two terms are at most $x^{-1/2+6\eta}$ and $2x^{-1/2+6\eta}$, respectively. Combining the coefficients gives $64\varphi(q_0)+3$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{197}.}
+\begin{theorem}[A one-sided upper bound for the prime remainder]
+\label{thm:one-sided}
+\emitthmsource
+For any $\varepsilon>0$ and fixed parameters $P$, all sufficiently large real $y$ satisfy
+\begin{equation}
+ R_{d,q_0}(y)\le y^{-1/2+\varepsilon}.
+\label{eq:ch1-onesided}
+\end{equation}
+\end{theorem}
+\begin{proof}
+First bound the rounding error. Write $R=R_{d,q_0}$, $A(t)=\sum_{n\le t}\lambda_{q_0}(n)$, and $E(t)=A(t)-t/\varphi(q_0)$. From $0\le\lambda_{q_0}(n)\le2\Lambda(n)$ and the Chebyshev bound $\sum_{n\le t}\Lambda(n)\le6t$ we obtain
+\[
+ |E(t)|\le 12t+t/\varphi(q_0)\le13t,\qquad t\ge0.
+\]
+For $z\ge1$, apply the integral identity $\int_n^z t^{-2}\,dt=1/n-1/z$ term by term and use $\Lambda(1)=0$ to get
+\[
+ R(z)=\int_1^z E(t)t^{-2}\,dt-C_{d,q_0}.
+\]
+Hence, when $y\ge2$ and $x=\lfloor y\rfloor$, we obtain from $1\le y/2\le x\le y$ and $0\le y-x<1$
+\[
+ R(y)-R(x)
+   \le \int_x^y |E(t)|t^{-2}\,dt
+   \le 13(y-x)/x\le26/y.
+\]
+This step uses only the finite-sum integral identity and the Chebyshev bound, and is independent of the sign of the two-scale remainder.
+
+Put $\eta=\min\{1/200,\varepsilon/7\}$, $C=64\varphi(q_0)+3$, and $t_0=-1/2+6\eta$. Then $0<\eta<1/100$, $7\eta\le\varepsilon$, and $-1\le t_0\le0$. By $d+1\equiv q_0/2\pmod{q_0}$ we have $q_0\mid2(d+1)$ and $q_0\nmid d+1$, so the fixed parameters $P$ meet the requirements of \statementref{Lemma}{lem:integer-bound}. For $y$ sufficiently large, its floor $x=\lfloor y\rfloor$ exceeds the threshold of \statementref{Lemma}{lem:integer-bound}, giving $R(x)\le Cx^{t_0}$. Monotonicity of the negative power gives $x^{t_0}\le(y/2)^{t_0}=2^{-t_0}y^{t_0}\le2y^{t_0}$, and $y^{-1}\le y^{t_0}$. Thus
+\[
+ R(y)\le Cx^{t_0}+26y^{-1}\le (2C+26)y^{t_0}.
+\]
+Take $y$ still larger so that $y^\eta\ge2C+26$. Combining with $y\ge1$ gives $R(y)\le y^{t_0+\eta}=y^{-1/2+7\eta}\le y^{-1/2+\varepsilon}$.
+\end{proof}
+
+\section{Character theta series and zero counts for quadratic twists}
+\label{sec:twist-density}
+
+To deduce nonvanishing from the one-sided bound~\eqref{eq:ch1-onesided}, we must keep the original characters and the quadratic twists from canceling in the residue formula. We obtain the inversion formula and tail integral estimate~\cite{Davenport2000,MontgomeryVaughan2007} for the character theta series by Poisson summation. A mean-square bound for quadratic symbols then gives a prime $d$ such that all the relevant quadratic twists are simultaneously zero-free in a prescribed rectangle. For the related mean-value theory of real characters, see Heath-Brown~\cite{HeathBrown1995}.
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{34}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/DirichletTheta.lean\#L35}{Character theta series}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/QuadraticTwist.lean\#L61}{The theta tail integral}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/Analysis/MellinTransform.lean\#L91}{The Mellin transform in Mathlib}.}
+\begin{definition}[Character theta series and tail integrals]
+\label{def:char-theta-series}
+\emitthmsource
+For a parity index $j\in\{0,1\}$, define the Gaussian weight $w_j(u)=u^j e^{-\pi u^2}$. For a complex sequence $c\colon\mathbb N\to\mathbb C$ with $|c(n)|\le1$ and a real number $u>0$, define the \emph{character theta series} and its \emph{theta tail integral} by
+\[
+ \theta_{j,c}(u)=\sqrt{u}\sum_{n\ge1}c(n)w_j(nu),\qquad
+ J_j(c,T)=\int_{1/T}^\infty
+ \bigl(|\theta_{j,c}(u)|+|\theta_{j,\mu c}(u)|\bigr)\frac{du}{u},
+\]
+Here $\mu$ is the \emph{Möbius function}. The Mellin transform of the weight $w_j$ is $\Gamma_j(s)=\int_0^\infty w_j(u)u^s\,\frac{du}{u}$. Below $n_{\mathrm{odd}}$ denotes the odd part of the positive integer $n$, and $\mathrm J$ denotes the \emph{Jacobi symbol}.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/EntireLFunction.lean}{72}. See also \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Lib/Analytic/EntireLFunction.lean\#L76}{Definition of a polar function}.}
+\begin{definition}[Polar functions]
+\label{def:polar-function}
+\emitthmsource
+Let $E\colon\mathbb R\to\mathbb R$ be a measurable function and $r\colon\mathbb C\to\mathbb C$ a residue function. We call $E$ a \emph{polar function} with residues $r$ if there exist a constant $C$ and a meromorphic function $\Phi$ on the plane satisfying the following conditions.
+\begin{itemize}
+\item Exponential growth. For all $v\ge0$ we have $|E(v)|\le Ce^v$.
+\item Transform representation. For $\operatorname{Re}s>2$ we have $\Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv$.
+\item Simple poles and residues. On the right half-plane $\operatorname{Re}\rho>0$, the function $\Phi$ has at most simple poles and $\lim_{z\to\rho}(z-\rho)\Phi(z)=r(\rho)$.
+\end{itemize}
+For $E(v)=R_{d,q}(e^v)$, this transform is $\int_1^\infty R_{d,q}(y)y^{-s}\,dy$.
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{265}.}
+\begin{lemma}[Poisson summation for the Gaussian weights]
+\label{lem:gaussian-poisson}
+\emitthmsource
+For any $u>0$ and $a\in\mathbb R$,
+\[
+ \sum_{n\in\mathbb Z} e^{2\pi ian}w_j(n/u)
+   =i^j u\sum_{n\in\mathbb Z}w_j((n+a)u),
+\]
+and both series converge absolutely.
+\end{lemma}
+\begin{proof}
+Use $e^{-2\pi i x\xi}$ as the Fourier transform kernel and write
+$g(x)=e^{-\pi x^2}$. By $g'(x)=-2\pi xg(x)$,
+Differentiation in $\xi$ under the Fourier integral and integration by parts in $x$ give
+$\widehat g'(\xi)=-2\pi\xi\widehat g(\xi)$.
+Using the Gaussian integral $\widehat g(0)=1$ gives $\widehat g(\xi)=e^{-\pi\xi^2}$,
+and consequently $\widehat{xg}(\xi)=-\widehat g'(\xi)/(2\pi i)=-i\xi e^{-\pi\xi^2}$.
+Thus in both cases $\widehat w_j=(-i)^jw_j$.
+
+Put $f(x)=w_j(ux)$. Then $\widehat f(\xi)=u^{-1}\widehat w_j(\xi/u)$.
+Apply the classical \emph{Poisson summation formula} to the periodization of $f$ at $a$ to get
+\[
+ \sum_{n\in\mathbb Z}f(n+a)
+ = \sum_{n\in\mathbb Z}e^{2\pi ina}\widehat f(n)
+ =\frac{(-i)^j}{u}\sum_{n\in\mathbb Z}e^{2\pi ina}w_j(n/u).
+\]
+Gaussian decay gives absolute convergence on both sides. Collecting the factors yields the formula.
+\end{proof}
+
+Write $A_c(u)=\sum_{n\ge1}c(n)w_j(nu)$ so that $\theta_{j,c}(u)=\sqrt u\,A_c(u)$.
+For a character $\chi$ modulo $q$, write its inverse discrete Fourier transform as
+\[
+ \check\chi(n)=\frac1q\sum_{a\bmod q}\chi(a)e^{2\pi ian/q}.
+\]
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{357}.}
+\begin{lemma}[The modular transformation of character theta series]
+\label{lem:theta-poisson-classes}
+\emitthmsource
+Let $\chi$ be a nonprincipal character modulo $q$ with $\chi(-1)=(-1)^j$. For any $u>0$ we have
+\[
+ u\,|A_\chi(u)|=|A_{\check\chi}(1/(qu))|.
+\]
+\end{lemma}
+\begin{proof}
+Split the integers into residue classes modulo $q$. For each representative $a$, use \statementref{Lemma}{lem:gaussian-poisson}
+with scale $qu$ and translation $a/q$ to get
+\[
+ \sum_{n\in\mathbb Z} e^{2\pi ian/q}w_j(n/(qu))
+ =i^jqu\sum_{h\in\mathbb Z}w_j((qh+a)u).
+\]
+Multiply by $\chi(a)/q$ and sum over $a\bmod q$. The left-hand side becomes $\sum_{n\in\mathbb Z}\check\chi(n)w_j(n/(qu))$,
+and the right-hand side becomes $i^j u\sum_{n\in\mathbb Z}\chi(n)w_j(nu)$.
+Boundedness of the coefficients and Gaussian decay of the weight justify changing the order of summation.
+
+We have $\chi(0)=0$. The sum of the nonprincipal character on the unit group is zero: choose a unit $b$ with $\chi(b)\ne1$ and multiply the index by $b$ to see that the sum equals itself times $\chi(b)$. Hence $\check\chi(0)=0$.
+Substituting $a\mapsto-a$ gives $\check\chi(-n)=(-1)^j\check\chi(n)$.
+The parity of $\chi$ and $w_j(-v)=(-1)^jw_j(v)$ show that the zero term of each two-sided series vanishes and positive and negative terms agree in pairs. Dividing both sides by $2$ gives
+\[
+ A_{\check\chi}(1/(qu))=i^j u A_\chi(u).
+\]
+Taking absolute values proves the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{395}.}
+\begin{lemma}[Inversion of theta sums for primitive characters]
+\label{lem:theta-primitive-symmetry}
+\emitthmsource
+Let $\chi$ be a nonprincipal \emph{primitive character} modulo $q$, with conductor \emph{conductor} equal to $q$. If $\chi(-1)=(-1)^j$, then for all $u>0$
+\[
+ |\theta_{j,\chi}(1/(qu))|=|\theta_{j,\chi}(u)|.
+\]
+\end{lemma}
+\begin{proof}
+Write $e_q(v)=e^{2\pi iv/q}$ and let $\tau(\chi)=\sum_{a\bmod q}\chi(a)e_q(a)$ be its \emph{Gauss sum}.
+First prove $q\check\chi(n)=\overline{\chi(n)}\tau(\chi)$. If $(n,q)=1$, the substitution $a\mapsto n^{-1}a$ gives it directly.
+Otherwise choose a prime divisor $p\mid(q,n)$. The reduction map $(\mathbb Z/q\mathbb Z)^\times\to(\mathbb Z/(q/p)\mathbb Z)^\times$ on unit groups is surjective. By primitivity of $\chi$ there is a unit $b$ modulo $q$
+with $b\equiv1\pmod{q/p}$ and $\chi(b)\ne1$. Then $q\mid n(b-1)$, and the exponential factor is invariant under $a\mapsto ba$,
+so $q\check\chi(n)=\chi(b)q\check\chi(n)$ and both sides vanish.
+
+By finite Fourier orthogonality,
+\[
+ \sum_{n\bmod q}|q\check\chi(n)|^2=q\sum_{a\bmod q}|\chi(a)|^2=q\varphi(q).
+\]
+Substituting the preceding relation gives $\varphi(q)|\tau(\chi)|^2=q\varphi(q)$ and hence $|\tau(\chi)|=\sqrt q$.
+Substitute $\check\chi(n)=q^{-1}\tau(\chi)\bar\chi(n)$ into the complex equality in the proof of \statementref{Lemma}{lem:theta-poisson-classes}
+and divide by $\sqrt{qu}$ to get
+\[
+ \theta_{j,\chi}(u)=\frac{i^{-j}\tau(\chi)}{\sqrt q}\,
+                         \theta_{j,\bar\chi}(1/(qu)).
+\]
+Since $w_j$ is real-valued, $\theta_{j,\bar\chi}(v)=\overline{\theta_{j,\chi}(v)}$. Take absolute values to conclude.
+\end{proof}
+
+Set
+\[
+ \Gamma_j(s)=\int_0^\infty w_j(u)u^s\,\frac{du}{u}
+              =\frac12\pi^{-(s+j)/2}\Gamma((s+j)/2)
+ \qquad(\operatorname{Re}s>0),
+\]
+where the second equality comes from the change of variable $v=\pi u^2$.
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{462}.}
+\begin{lemma}[The Mellin formula for character theta functions]
+\label{lem:theta-mellin}
+\emitthmsource
+Let $\chi$ be a nonprincipal character modulo $q$ with $\chi(-1)=(-1)^j$.
+When $\operatorname{Re}s>0$, the \emph{Mellin transform} integral of $\theta_{j,\chi}$ at $s-1/2$ converges absolutely and
+\[
+ \int_0^\infty\theta_{j,\chi}(u)u^{s-1/2}\frac{du}{u}
+   =\Gamma_j(s)L(s,\chi).
+\]
+\end{lemma}
+\begin{proof}
+For any coefficient sequence satisfying $|c(n)|\le1$, if $v>0$ then $|w_j(v)|\le3e^{-2v}$.
+For $j=0$ use $2v-\pi v^2\le1/\pi$. For $j=1$ use $v\le e^{v-1}$ to bound the exponent from above by $9/(4\pi)-1$.
+This gives
+\[
+ |A_c(u)|\le 3\sum_{n\ge1}e^{-2nu}
+ =\frac{3}{e^{2u}-1}\le\frac{3e^{-u}}{u},
+\]
+where the last step uses $e^{2u}-1=2e^u\sinh u\ge2ue^u$.
+Since the inverse discrete Fourier transform is an average of $q$ terms, $|\check\chi(n)|\le1$.
+By \statementref{Lemma}{lem:theta-poisson-classes}, for $0<u\le1$ we have
+$|A_\chi(u)|\le 3q e^{-1/(qu)}$, and for $u\ge1$ we directly have $|A_\chi(u)|\le 3e^{-u}/u$. Combining the two ranges gives $|A_\chi(u)|\le 3eq e^{-u}$.
+
+Let $\sigma=\operatorname{Re}s>0$. By
+$\theta_{j,\chi}(u)u^{s-1/2}=A_\chi(u)u^s$ and the estimates above, the integral converges absolutely. On any compact subset of $\operatorname{Re}s>0$,
+the minimum and maximum real parts bound the powers at $0<u\le1$ and $u\ge1$, respectively.
+The bounds remain integrable after multiplication by any fixed power of $\log u$, so the integral defines a holomorphic function on $\operatorname{Re}s>0$.
+
+When $\sigma>1$, the change of variable $v=nu$ gives
+\[
+ \sum_{n\ge1}\int_0^\infty |\chi(n)w_j(nu)|u^\sigma\,\frac{du}{u}
+ \le \Gamma_j(\sigma)\sum_{n\ge1} n^{-\sigma}<\infty ,
+\]
+so termwise integration gives $\Gamma_j(s)\sum_{n\ge1}\chi(n)n^{-s}=\Gamma_j(s)L(s,\chi)$.
+Since $L(s,\chi)$ and $\Gamma_j(s)$ for a nonprincipal character are holomorphic on $\operatorname{Re}s>0$, the identity theorem extends the formula to the entire half-plane $\operatorname{Re}s>0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/DirichletTheta.lean}{488}.}
+\begin{lemma}[Folding the theta integral for a primitive character]
+\label{lem:theta-integral-fold}
+\emitthmsource
+Let $\chi$ be a primitive nonprincipal character of conductor $q$ with $\chi(-1)=(-1)^j$. Then
+\[
+ \int_0^\infty|\theta_{j,\chi}(u)|\frac{du}{u}
+ =2\int_{q^{-1/2}}^\infty|\theta_{j,\chi}(u)|\frac{du}{u}.
+\]
+\end{lemma}
+\begin{proof}
+Taking $s=1/2$ in \statementref{Lemma}{lem:theta-mellin} shows absolute convergence on the left.
+The change of variable $u\mapsto v=1/(qu)$ reverses the interval $(0,q^{-1/2})$ bijectively onto $(q^{-1/2},\infty)$
+and satisfies $du/u=-dv/v$. By \statementref{Lemma}{lem:theta-primitive-symmetry}, the theta function has the same absolute value at corresponding points,
+so the two integrals coincide and their sum gives the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{199}.}
+\begin{lemma}[Bounding the Gamma factor at zeros by tail integrals]
+\label{lem:theta-three-lines}
+\emitthmsource
+For each parity index $j\in\{0,1\}$ there is a constant $C_j>0$ with the following property. Let $\chi$ be a primitive nonprincipal character of conductor $q$ with $\chi(-1)=(-1)^j$, $\eta,T>0$, $q\le T^2$, and $J_j(\chi,T)\le T^{2\eta}$. Then every zero $s$ of $L(s,\chi)$ in $1/2+9\eta\le\operatorname{Re}s\le1$ satisfies
+\[
+ |\Gamma_j(s)|^2\le C_j T^{-2\eta}.
+\]
+\end{lemma}
+\begin{proof}
+Define
+\[
+ \mathcal M(z)=\int_{1/T}^\infty \theta_{j,\mu\chi}(u)u^{z-1/2}\frac{du}{u},
+ \qquad
+ \Psi(z)=\Gamma_j(z)L(z,\chi)\mathcal M(z)-\Gamma_j(z)^2.
+\]
+On the right boundary $\operatorname{Re}z=2$, $\Gamma_j(z)L(z,\chi)$ and $\Gamma_j(z)/L(z,\chi)$ are the full Mellin integrals of $\theta_{j,\chi}$ and $\theta_{j,\mu\chi}$, respectively, multiplied by $u^{z-1/2}$, by termwise integration and $1/L(z,\chi)=\sum_{n\ge1}\mu(n)\chi(n)n^{-z}$. For any bounded coefficient sequence $|c(n)|\le1$, use $|w_j(t)|\le3e^{-2t}$ and $e^{2u}-1=2e^u\sinh u\ge2ue^u$ to get
+\[
+ |\theta_{j,c}(u)u^{z-3/2}|
+ \le 3u\sum_{n\ge1}e^{-2nu}\le 3e^{-u}.
+\]
+This gives $|\Gamma_j(z)L(z,\chi)|\le3$. Also, $\Gamma_j(z)/L(z,\chi)-\mathcal M(z)$ is the integral over $0<u\le1/T$ and has absolute value at most $3/T$. Multiplying the bounds yields the right-boundary estimate $|\Psi(z)|\le9/T$.
+
+On the left boundary $\operatorname{Re}z=1/2$, \statementref{Lemmas}{lem:theta-mellin} and~\ref{lem:theta-integral-fold} together with $q^{-1/2}\ge T^{-1}$ give
+\[
+ |\Gamma_j(z)L(z,\chi)|
+ \le 2\int_{q^{-1/2}}^\infty|\theta_{j,\chi}(u)|\,\frac{du}{u}
+ \le 2J_j(\chi,T).
+\]
+On the same boundary $|\mathcal M(z)|\le J_j(\chi,T)$. The uniform integrable bound of \statementref{Lemma}{lem:theta-mellin} gives boundedness of $\Gamma_j(z)L(z,\chi)$ on the closed strip $1/2\le\operatorname{Re}z\le2$ and holomorphy in its interior. The absolute convergence of the integral for $\mathcal M(z)$ and exponential decay for large $u$ give the same properties. The Mellin integral of $\Gamma_j$ gives a bound $G$ on the closed strip depending only on $j$.
+
+By $J_j(\chi,T)\le T^{2\eta}$ and $T\ge1$, the latter from $q\ge1$ and $q\le T^2$, the left boundary satisfies $|\Psi(z)|\le (2+G^2)T^{4\eta}$. Let $C=9+G^2$ depend only on $j$. At the hypothesized zero $s$ use $t=(\operatorname{Re}s-1/2)/(3/2)\ge6\eta$ in Hadamard's three-lines theorem to obtain
+\[
+ |\Gamma_j(s)|^2=|\Psi(s)|
+ \le (CT^{4\eta})^{1-t}(CT^{-1})^t
+ =CT^{4\eta-t(1+4\eta)}\le CT^{-2\eta}.
+\]
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{271}.}
+\begin{lemma}[Detecting zeros by a three-lines estimate]
+\label{lem:theta-detect}
+\emitthmsource
+Fix a parity index $j$, $\eta>0$, and a real $H_0$. For all sufficiently large $T$, with threshold depending only on $j,\eta,H_0$, suppose the conductor of a primitive nonprincipal character $\chi$ satisfies $q\le T^2$ and $\chi(-1)=(-1)^j$. If $L(s,\chi)$ has a zero in the region $\operatorname{Re}s\ge1/2+9\eta$ and $|\operatorname{Im}s|\le H_0$, then $J_j(\chi,T)>T^{2\eta}$.
+\end{lemma}
+\begin{proof}
+If $H_0<0$ or $1/2+9\eta>1$, nonvanishing of $L(s,\chi)$ on $\operatorname{Re}s>1$ rules out the stated zero.
+Otherwise $\Gamma_j$ is continuous and nonzero on the compact rectangle
+given by $1/2\le\operatorname{Re}z\le1$ and $|\operatorname{Im}z|\le H_0$, so its absolute value has a positive lower bound $c$.
+Dirichlet's nonvanishing theorem also implies that the zero $s$ satisfies $\operatorname{Re}s\le1$.
+If $J_j(\chi,T)\le T^{2\eta}$, \statementref{Lemma}{lem:theta-three-lines} gives
+$c^2\le|\Gamma_j(s)|^2\le C_jT^{-2\eta}$,
+which is a contradiction for $T$ sufficiently large. The threshold depends only on $j,\eta,H_0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{370}.}
+\begin{lemma}[Jacobi symbol sums for nonsquare odd parts]
+\label{lem:jacobi-interval}
+\emitthmsource
+If the odd part $N_{\mathrm{odd}}$ of a positive integer $N\ge1$ is not a square and $\eta>0$, then for each integer $X\ge0$,
+\[
+ \left|\sum_{v=1}^X\mathrm J(-v\mid N_{\mathrm{odd}})\right|
+ \le 2(1+2/\eta)N^{1/2+\eta/2}.
+\]
+\end{lemma}
+\begin{proof}
+Write $D=N_{\mathrm{odd}}$. On the units modulo $D$, the Jacobi symbol is the product of the Legendre symbols at the odd prime factors raised to their multiplicities.
+It is zero on nonunits, so it is a Dirichlet character modulo $D$.
+Since $D$ is not a square, some odd prime has odd exponent in the factorization of $D$.
+Choose a quadratic nonresidue at that prime and $1$ at the other prime factors.
+The Chinese remainder theorem gives a unit modulo $D$ whose Jacobi symbol is $-1$, so this character is nonprincipal.
+Factoring out $\mathrm J(-1\mid D)$ preserves absolute values.
+Pólya--Vinogradov bounds the absolute value of the sum over an initial interval by $2\sqrt D(1+\log D)$.
+Combine $D\le N$ with the following inequality, which follows from $N^{\eta/2}\ge1$ and $e^v\ge v$ on taking $v=(\eta/2)\log N$:
+$1+\log N\le (1+2/\eta)N^{\eta/2}$. This gives the claimed bound.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{626}.}
+\begin{lemma}[The odd-part identity for quadratic symbols]
+\label{lem:twist-reciprocity}
+\emitthmsource
+If $d$ is prime and $d\equiv7\pmod8$, then for every positive integer $n$,
+\[
+ \chi_d(n)=\mathrm J(-d\mid n_{\mathrm{odd}}).
+\]
+\end{lemma}
+\begin{proof}
+Write the positive integer $n$ as $n=2^a v$ with $v$ odd. By $d\equiv7\pmod8$,
+$\chi_d(2)=1$, hence $\chi_d(n)=\chi_d(v)$.
+If $d\mid v$, both sides vanish. Otherwise, by $d\equiv3\pmod4$ and quadratic reciprocity for the Jacobi symbol,
+\[
+ (v/d)=(-1)^{(v-1)/2}\mathrm J(d\mid v)
+       =\mathrm J(-1\mid v)\,\mathrm J(d\mid v)
+       =\mathrm J(-d\mid v).
+\]
+When $v=1$ both symbols are $1$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{642}.}
+\begin{lemma}[Primitive quadratic twists with coprime conductors]
+\label{lem:twist-primitivity}
+\emitthmsource
+Let $\psi$ be primitive of conductor $M$ and let $d$ be an odd prime coprime to $M$. Then the quadratic twist $\psi\chi_d$ has conductor $Md$.
+\end{lemma}
+\begin{proof}
+As $\chi_d$ is a nonprincipal character modulo the prime $d$, its conductor is $d$.
+Write $f_0$ for the conductor of $\psi\chi_d$.
+The conductor of the product of two characters divides the least common multiple of their conductors, since both characters are induced from that modulus. Thus $f_0\mid Md$.
+The inverse of a character has the same conductor. Multiply $\psi\chi_d$ by $\chi_d^{-1}$ and $\psi^{-1}$, respectively.
+The same argument gives $M\mid f_0d$ and $d\mid f_0M$.
+From $(M,d)=1$ we get $M\mid f_0$ and $d\mid f_0$, hence $Md\mid f_0$. Combining with $f_0\mid Md$ gives $f_0=Md$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{528}.}
+\begin{lemma}[A mean-square bound for Jacobi symbol theta sums]
+\label{lem:theta-second-moment}
+\emitthmsource
+Fix $j\in\{0,1\}$ and $\eta>0$. For arbitrary $T>0$ and $u\ge T^{-1}$ and any coefficient sequence with $|a_n|\le1$, put $c_v(n)=a_n\mathrm J(-v\mid n_{\mathrm{odd}})$. Then
+\[
+ \sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|^2\ll_{j,\eta} T^2u^{-2\eta}.
+\]
+\end{lemma}
+\begin{proof}
+When $u>0$ each theta series converges absolutely. Expand the squares and interchange the finite sum with the absolutely convergent double series. The Jacobi symbol is real and completely multiplicative in the denominator, so the contribution of $(n,m)$ in the double series is
+\[
+ a_n\bar a_m\,u\,w_j(nu)w_j(mu)
+ \sum_{1\le v\le T^2}\mathrm J(-v\mid(nm)_{\mathrm{odd}}).
+\]
+For any $A>0$, the function $t^A|w_j(t)|$ is bounded on $t>0$. Thus
+\[
+ u|w_j(nu)w_j(mu)|\ll_{j,A} u^{1-2A}(nm)^{-A}.
+\]
+If $(nm)_{\mathrm{odd}}$ is a square, the inner Jacobi symbol sum has absolute value at most $T^2$. Take $A=1/2+\eta$. We can write all such $(n,m)$ as $n=2^a k h^2$ and $m=2^b k l^2$, where $k$ is their common squarefree odd part, $h,l$ are odd, and $a,b\ge0$. Since for $A>1/2$,
+\[
+ \sum_{\substack{n,m\ge1\\(nm)_{\mathrm{odd}}\ \text{is a square}}}(nm)^{-A}
+ \le\left(\sum_{a\ge0}2^{-aA}\right)^2
+     \left(\sum_{k\ge1}k^{-2A}\right)
+     \left(\sum_{h\ge1}h^{-2A}\right)^2<\infty,
+\]
+the total contribution of these terms is at most $O_{j,\eta}(T^2u^{-2\eta})$.
+
+If $(nm)_{\mathrm{odd}}$ is not a square, apply \statementref{Lemma}{lem:jacobi-interval} to $N=nm$ and $X=\lfloor T^2\rfloor$ to obtain $O_\eta((nm)^{1/2+\eta/2})$ for the inner interval sum. Take $A=3/2+\eta$. Then the absolute value of each term is at most a constant times
+\[
+ u^{-2-2\eta}(nm)^{-1-\eta/2}
+ \le T^2u^{-2\eta}(nm)^{-1-\eta/2}.
+\]
+The right-hand side is summable over $(n,m)$. Adding the square and nonsquare contributions gives the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{612}.}
+\begin{lemma}[A bound for the sum of theta tail integrals]
+\label{lem:theta-tail-average}
+\emitthmsource
+In the notation of \statementref{Lemma}{lem:theta-second-moment},
+\[
+ \sum_{1\le v\le T^2}J_j(c_v,T)\ll_{j,\eta}T^{2+\eta}.
+\]
+\end{lemma}
+\begin{proof}
+For each $u\ge T^{-1}$, Cauchy--Schwarz and \statementref{Lemma}{lem:theta-second-moment} give
+\[
+ \sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|
+ \le \sqrt{\lfloor T^2\rfloor}
+       \left(\sum_{1\le v\le T^2}|\theta_{j,c_v}(u)|^2\right)^{1/2}
+ \ll_{j,\eta} T^2u^{-\eta}.
+\]
+Replacing $a_n$ by $\mu(n)a_n$ gives the same bound for $\theta_{j,\mu c_v}$. Add the two terms, integrate over $u\in[1/T,\infty)$, and use $\int_{1/T}^\infty u^{-\eta-1}\,du=T^\eta/\eta$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{675}.}
+\begin{lemma}[Counting bad primes for a fixed primitive character]
+\label{lem:primitive-twist-count}
+\emitthmsource
+Fix a primitive character $\psi$ modulo $M\ge1$, $\eta>0$, and height $H_0$. For all sufficiently large real $T$, the number of primes $d$ satisfying $d\equiv7\pmod8$, $(M,d)=1$, and $Md\le T^2$ for which $L(s,\psi\chi_d)$ has a zero in $\operatorname{Re}s\ge1/2+9\eta,\ |\operatorname{Im}s|\le H_0$ is at most $O(T^{2-\eta})$.
+\end{lemma}
+\begin{proof}
+Choose $j\in\{0,1\}$ so that $\psi(-1)=-(-1)^j$. Since $\bigl(\frac{-1}{d}\bigr)=-1$, every twist $\psi\chi_d$ has parity $j$. By \statementref{Lemmas}{lem:twist-primitivity} and~\ref{lem:twist-reciprocity}, the twist $\psi\chi_d$ is primitive nonprincipal of conductor $Md$ and satisfies $\chi_d(n)=\mathrm J(-d\mid n_{\mathrm{odd}})$.
+Take $a_n=\psi(n)$ in \statementref{Lemma}{lem:theta-tail-average}. The tail integral for each bad prime $d$ is the nonnegative term at $v=d$ in that sum, and \statementref{Lemma}{lem:theta-detect} makes it greater than $T^{2\eta}$. Therefore the number of bad primes times $T^{2\eta}$ is at most the total $O(T^{2+\eta})$. Divide by $T^{2\eta}$ to get $O(T^{2-\eta})$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{728}.}
+\begin{lemma}[Density of bad primes for a fixed modulus]
+\label{lem:twist-density}
+\emitthmsource
+Fix a residue class $a$ modulo $q\ge1$ whose primes are all coprime to $q$ and congruent to $7$ modulo $8$. Fix $\eta>0$ and $H_0$ also. A prime $d$ in the class is bad if some character modulo $q$ has a quadratic twist whose $L$-function has a zero in $\operatorname{Re}s\ge1/2+9\eta,\ |\operatorname{Im}s|\le H_0$. Then the number of bad primes up to $X$ is $O(X^{1-\eta/2})$.
+\end{lemma}
+\begin{proof}
+For each character $\xi$ modulo $q$ take the primitive character $\psi_\xi$ inducing it and write $M_\xi\mid q$ for its conductor. At primes $d$ in the class, $\psi_\xi\chi_d$ induces the quadratic twist $\xi\chi_d$. If $L(s,\xi\chi_d)$ has a zero $s$ in the specified region, then $s$ is a zero of $L(s,\psi_\xi\chi_d)$. Indeed every finite Euler factor in the modulus enlargement formula is nonzero at $s$, since the character values have modulus at most $1$ and $\operatorname{Re}s>0$ implies $|p^{-s}|<1$.
+
+Put $T=\sqrt{qX}$. For $d\le X$ we have $M_\xi d\le T^2$, and \statementref{Lemma}{lem:primitive-twist-count} gives at most $O(T^{2-\eta})$ bad primes $d$ for fixed $\xi$. Since there are finitely many characters modulo $q$, sum over them and take a common threshold. Substitute $T^{2-\eta}=q^{1-\eta/2}X^{1-\eta/2}$ and absorb the fixed factor $q^{1-\eta/2}$ into the implied constant.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/QuadraticTwist.lean}{789}.}
+\begin{lemma}[Choosing quadratic twists that are zero-free in a given region]
+\label{lem:twist-choice}
+\emitthmsource
+Let $a$ be a unit residue class modulo $q$ whose primes $d$ satisfy $d\equiv7\pmod8$ and $(q,d)=1$. Given $\beta>1/2$ and real $T$, one can choose a prime $d$ in that class such that $\widetilde L(s,\xi\chi_d)$ is nonzero in $\operatorname{Re}s\ge\beta,\ |\operatorname{Im}s|\le T$ for every character $\xi$ modulo $q$.
+\end{lemma}
+\begin{proof}
+Put $\eta=(\beta-1/2)/9>0$. \statementref{Lemma}{lem:twist-density} shows that the number of bad primes up to $X$ is $O(X^{1-\eta/2})$, with the implied constant allowed to depend on fixed $q,\eta,T$. Each twist $\xi\chi_d$ is nonprincipal. Indeed, use the Chinese remainder theorem to find an integer congruent to $1$ modulo $q$ and a quadratic nonresidue modulo $d$, on which the twist takes the value $-1$. Thus the $L(s,\xi\chi_d)$ in the count is the entire function $\widetilde L(s,\xi\chi_d)$.
+
+If all primes in the class were bad, the contribution from the dyadic interval $(2^j,2^{j+1}]$ to $\sum_{p\equiv a}\log p/p$ would be at most a constant times $(j+1)2^{-j\eta/2}$, and the sum over $j$ would converge. But Dirichlet's theorem on the divergence of the prime series in a unit residue class gives $\sum_{p\equiv a}\log p/p=\infty$. This contradiction gives a prime $d$ that is not bad.
+\end{proof}
+
+\section{Residues, Landau's lemma, and the right half-plane}
+\label{sec:landau-criterion}
+
+Equation~\eqref{eq:prime-transform-residue} expresses the residue of the mean logarithmic derivative as a difference of zero multiplicities. After choosing zero-free quadratic twists, we apply Landau's lemma using the signs of the residues on the real axis and the one-sided upper bound. Taylor expansion and monotone convergence rule out a removable singularity on the real axis at the abscissa of convergence.
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/PrimeError.lean}{405}.}
+\begin{lemma}[The prime remainder transform and its residues]
+\label{lem:prime-transform}
+\emitthmsource
+Let $d\equiv7\pmod8$ be a prime coprime to $q$, put $E(v)=R_{d,q}(e^v)$, and define on $\operatorname{Re}s>2$
+\[
+ \Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv.
+\]
+Then $E$ is measurable and satisfies $E(v)=O(e^v)$ with $v\ge0$. The function $\Phi$ extends meromorphically to the whole complex plane, has at most simple poles in $\operatorname{Re}z>0$, and has a removable singularity at $z=1$. At such $z\ne1$ the residue is
+\begin{equation}\label{eq:prime-transform-residue}
+ r_E(z)=\frac{\sum_{\xi\bmod q}
+  \bigl(\operatorname{ord}_z\widetilde L(\cdot,\xi)
+       -\operatorname{ord}_z\widetilde L(\cdot,\xi\chi_d)\bigr)}
+  {\varphi(q)z(1-z)}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Write $\lambda(n)=\Lambda(n)(1-\chi_d(n))\mathbf 1_{n\equiv1\bmod q}$ for the weighted coefficients and retain $G(s)=G_{d,q}(s)$.
+\[
+ G(s)=\frac1{\varphi(q)}\left(\sum_{\xi\bmod q}
+ \left[\frac{\widetilde L'}{\widetilde L}(s,\xi\chi_d)
+             -\frac{\widetilde L'}{\widetilde L}(s,\xi)\right]-1\right).
+\]
+Since $0\le\lambda(n)\le 2n$, for $v\ge0$ each weighted summand is at most $2$ and there are at most $e^v$ terms. The main term grows only linearly in $v$, so $E(v)=O(e^v)$. The summands are measurable in $v$, and hence $E$ is measurable.
+
+In $\operatorname{Re}s>1$, character orthogonality writes $\lambda$ as $\varphi(q)^{-1}\sum_\xi \Lambda(\xi-\xi\chi_d)$. Logarithmic differentiation of the Euler product gives $-L'/L(s,\xi)$. Passing to the pole-removed entire function $\widetilde L$ requires adding $1/(s-1)$ only for the principal character. The quadratic twists are all nonprincipal, giving
+\[
+ \sum_{n\ge1}\frac{\lambda(n)}{n^s}
+ =\frac1{\varphi(q)(s-1)}+G(s)+\frac1{\varphi(q)}
+ =\frac{s}{\varphi(q)(s-1)}+G(s).
+\]
+For each term, take the integral transform starting from $v=\log n$:
+\[
+ \int_{\log n}^\infty (n^{-1}-e^{-v})e^{(1-s)v}\,dv
+ =\frac{n^{-s}}{s-1}-\frac{n^{-s}}s=\frac{n^{-s}}{s(s-1)}.
+\]
+In $\operatorname{Re}s>2$, the estimate $\lambda(n)\le 2n$ gives absolute integrability and permits termwise integration. Subtracting the transforms of $v/\varphi(q)$ and the constant $C_{d,q}$ yields
+\[
+ \Phi(s)=\frac{1}{s(s-1)}\sum_{n\ge1}\frac{\lambda(n)}{n^s}
+            -\frac{1}{\varphi(q)(s-1)^2}-\frac{C_{d,q}}{s-1}
+         =\frac{G(s)/s-C_{d,q}}{s-1}.
+\]
+Meromorphicity of the logarithmic derivatives gives the continuation of $\Phi$ to the plane. All $\widetilde L$ are nonzero on $\operatorname{Re}s\ge1$, so $G$ is analytic there. For real $s>1$ the Dirichlet series identity gives real values for $G(s)$. Letting $s\downarrow1$ gives $G(1)=C_{d,q}$, making the singularity of $\Phi$ at $s=1$ removable.
+
+Let $z\ne1$ with $\operatorname{Re}z>0$. If $\widetilde L$ has a zero of order $k$ at $z$, write $\widetilde L(s)=(s-z)^k u(s)$ with $u(z)\ne0$ to get $\widetilde L'/\widetilde L=k/(s-z)+u'/u$. Substitute the character residues into $\Phi$ and write the denominator $z(z-1)$ as $-z(1-z)$ to give~\eqref{eq:prime-transform-residue}.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/Landau.lean}{212}.}
+\begin{lemma}[A one-sided form of Landau's lemma]
+\label{lem:landau}
+\emitthmsource
+Let the real-valued function $E$ be measurable with $|E(v)|\le C e^v$ for $v\ge0$. Suppose its integral transform $\Phi(s)=\int_0^\infty E(v)e^{(1-s)v}\,dv$ has a meromorphic continuation with at most simple poles in $\operatorname{Re}s>0$ and residues $r_E(s)$. For the classical Landau theorem for Dirichlet or Laplace integrals of nonnegative functions, see Montgomery and Vaughan~\cite{MontgomeryVaughan2007}. Let $\beta>0$ and assume $\operatorname{Re}r_E(x)\ge0$ for each real $x>\beta$. If $E(v)\le e^{(\beta-1)v}$ holds for all sufficiently large $v$, then $r_E(z)=0$ for all $z$ with $\operatorname{Re}z>\beta$.
+\end{lemma}
+\begin{proof}
+Take a constant $K\ge1$ large enough that $u(v)=Ke^{\beta v}-E(v)e^v\ge0$ holds for all $v>0$. The one-sided bound gives this for large $v$, and exponential growth bounds the function on the remaining compact interval. The \emph{Laplace transform} $F(s)=\int_0^\infty e^{-sv}u(v)\,dv$ of the nonnegative function $u$ converges absolutely far enough to the right and equals
+\[
+ \Psi(s)=\frac K{s-\beta}-\Phi(s).
+\]
+Let $a$ be the larger of $\beta$ and the real abscissa of convergence of $F$, taking $a=\beta$ for the latter if the integral converges for all real arguments. By $u\ge0$ the real points of convergence form a ray to the right. In $\operatorname{Re}s>a$ we may use convergence at a smaller real point for domination and differentiate under the integral successively on compact subsets. Thus $F$ is holomorphic on $\operatorname{Re}s>a$. The identity theorem for meromorphic functions makes $F$ and $\Psi$ agree in that half-plane, so any isolated singularity of $\Psi$ there is removable.
+
+Suppose $a>\beta$. The residue of $\Psi$ at $a$ is $-r_E(a)$, whose real part is nonpositive. On the other hand, $(x-a)F(x)\ge0$ for real $x>a$. Taking $x\downarrow a$ shows the residue is real and nonnegative, hence zero. Because $\Psi$ has at most simple poles in the right half-plane, $\Psi$ extends holomorphically to a neighborhood of $a$.
+
+Using this extension, choose a real $x>a$ such that the disk of convergence of the Taylor series of $\Psi$ at $x$ contains a real point $\sigma<a$. For each $k\ge0$ we have $F^{(k)}(x)=\int_0^\infty(-v)^k e^{-xv}u(v)\,dv$, so at $\sigma$ each Taylor term is a nonnegative integral:
+\[
+ \frac{F^{(k)}(x)(\sigma-x)^k}{k!}
+   =\int_0^\infty e^{-xv}\frac{((x-\sigma)v)^k}{k!}u(v)\,dv.
+\]
+The Taylor series converges to a finite value. By monotone convergence the sum on the right equals the finite integral $\int_0^\infty e^{-\sigma v}u(v)\,dv$, contrary to $a$ being the real abscissa of convergence when $a>\beta$. Therefore $a=\beta$, and $\Psi$ is holomorphic in $\operatorname{Re}s>\beta$. Since $K/(s-\beta)$ is holomorphic there as well, the residues of $\Phi$ on $\operatorname{Re}s>\beta$ all vanish.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/Zeros/Criterion.lean}{31}.}
+\begin{theorem}[A Landau-type zero-free criterion]
+\label{thm:criterion}
+\emitthmsource
+Let $8\mid q_0$ and let $d_0$ be coprime to $q_0$ with $d_0\equiv7\pmod 8$. Fix $\beta>1/2$. Assume that, for every prime $d$ satisfying $d\equiv d_0\pmod{q_0}$, $R_{d,q_0}(x)\le x^{\beta-1}$ for all sufficiently large $x$. Then for any character $\psi$ modulo $q_0$ we have $L(\rho,\psi)\ne0$ at $\operatorname{Re}\rho>\beta$ with $\rho\ne1$.
+\end{theorem}
+\begin{proof}
+Fix the complex number $\rho\ne1$ in question, with $\operatorname{Re}\rho>\beta$. Since $8\mid q_0$, $d\equiv d_0\pmod{q_0}$ implies $d\equiv7\pmod8$. This residue class is a unit class, so its primes $d$ are coprime to $q_0$. Take $T=|\operatorname{Im}\rho|$ in \statementref{Lemma}{lem:twist-choice} and choose a prime $d$ in the class such that every quadratic twist of a character modulo $q_0$ has no zeros in $\operatorname{Re}s\ge\beta$ and $|\operatorname{Im}s|\le T$.
+
+Write $n(z)=\sum_{\xi\bmod q_0}\operatorname{ord}_z\widetilde L(\cdot,\xi)$. In that region, at points with $\operatorname{Re}z>\beta$ and $z\ne1$, all the quadratic twist zero multiplicities in~\eqref{eq:prime-transform-residue} vanish. Thus
+\[
+ r_E(z)=\frac{n(z)}{\varphi(q_0)z(1-z)}.
+\]
+In particular, every real $x>\beta$ lies in the chosen zero-free region. When $\beta<x<1$ the denominator is positive and $n(x)\ge0$, hence $r_E(x)\ge0$. When $x>1$, all the $\widetilde L$ are nonzero and the numerator vanishes. When $x=1$, \statementref{Lemma}{lem:prime-transform} gives $r_E(1)=0$. Moreover, the hypothesis for the chosen $d$ gives $E(v)\le e^{(\beta-1)v}$ for all sufficiently large $v$. \statementref{Lemma}{lem:landau} therefore applies and gives $r_E(\rho)=0$.
+
+By $\operatorname{Re}\rho>\beta>0$ and $\rho\ne1$, the denominator $\varphi(q_0)\rho(1-\rho)\ne0$, so $n(\rho)=0$. As $n(\rho)$ is a finite sum of nonnegative integers, each term is zero, in particular $\operatorname{ord}_\rho\widetilde L(\cdot,\psi)=0$. When $\psi$ is principal, we still have $\widetilde L(\rho,\psi)=(\rho-1)L(\rho,\psi)$ at $\rho\ne1$, so $L(\rho,\psi)\ne0$. For a nonprincipal character the two functions agree, giving the result.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Reduction/OneSidedBound.lean}{237}.}
+\begin{theorem}[Nonvanishing in the right half-plane]
+\label{thm:half-plane}
+\emitthmsource
+Let $\chi$ be a Dirichlet character modulo $q\ge1$. If $\operatorname{Re}\rho>1/2$ and, when $\chi$ is principal, $\rho\ne1$, then $L(\rho,\chi)\ne0$.
+\end{theorem}
+\begin{proof}
+When $\rho=1$, the hypothesis excludes the principal character and Dirichlet's nonvanishing theorem applies. Now suppose $\rho\ne1$, take $1/2<\beta<\operatorname{Re}\rho$, and put $q_0=18480q$ and $d_0=q_0/2-1=9240q-1$. We have $8\mid q_0$ and $d_0\equiv7\pmod8$. Also $d_0$ is odd and coprime to $d_0+1$, hence coprime to $q_0=2(d_0+1)$.
+
+For every prime $d\equiv d_0\pmod{q_0}$, apply \statementref{Theorem}{thm:one-sided} with $\varepsilon=\beta-1/2>0$ to get $R_{d,q_0}(x)\le x^{-1/2+\varepsilon}=x^{\beta-1}$ for sufficiently large $x$. Enlarge the modulus of $\chi$ to $q_0$ and write $\chi_{q_0}$ for the resulting character. All conditions of \statementref{Theorem}{thm:criterion} now hold, so $L(\rho,\chi_{q_0})\ne0$.
+
+Since $q\mid q_0$ and $\rho\ne1$, the finite Euler product formula for enlarging the modulus gives
+\[
+ L(\rho,\chi_{q_0})=L(\rho,\chi)\prod_{p\mid q_0}(1-\chi(p)p^{-\rho}).
+\]
+The right-hand side is a finite product. If $L(\rho,\chi)=0$ the left-hand side would vanish, a contradiction. Hence $L(\rho,\chi)\ne0$.
+\end{proof}
+
+\section{Functional equations and the five public theorems}
+\label{sec:public-theorems}
+
+\begin{definition}[Completed $L$-functions, Gamma factors, and the statements of the public theorems]
+\label{def:completed-l-and-statements}
+For a Dirichlet character $\chi$ modulo $N\ge1$, write $\Gamma_\chi(s)$ for its \emph{gamma factor} and $\Lambda(s,\chi)=\Gamma_\chi(s)L(s,\chi)$ for its \emph{completed $L$-function}. These are the factors for the Dirichlet $L$-function. In particular the completed Riemann $\zeta$-function is $\Lambda(s)$. When $\psi$ is primitive modulo $M$, the functional equation in Mathlib gives
+\[
+ \Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi),
+\]
+Here $\varepsilon(\psi^{-1})$ is the \emph{root number}. We now combine nonvanishing in the right half-plane from \statementref{Theorem}{thm:half-plane} with the functional equation to prove Mathlib's \texttt{RiemannHypothesis} and the other four public theorems of the authors.\leanfn{See \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/DirichletContinuation.lean\#L206}{Gamma factors and completed $L$-functions in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L68}{The completed $\zeta$-function in Mathlib}, \href{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L185}{The Riemann hypothesis in Mathlib}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Statements.lean\#L3}{The file of statements of the five public theorems}.}
+\end{definition}
+
+\thmsource{Lean source: \leansourcelink{src/Lib/Analytic/ZeroSymmetry.lean}{55}.}
+\begin{lemma}[Zero symmetry for arbitrary characters from the primitive functional equation]
+\label{lem:primitive-zero-reflection}
+\emitthmsource
+Let $\chi$ be any Dirichlet character. Suppose $\operatorname{Re}s\ne0$, $s\ne1$, and $L(s,\chi)=0$. With the convention for values of the Gamma factor, either $\Gamma_\chi(s)=0$ or $L(1-s,\chi^{-1})=0$.
+\end{lemma}
+\begin{proof}
+Let $N$ be the modulus of $\chi$, and let $\psi$ be the primitive character of modulus $M$ inducing $\chi$. The formula for enlarging the modulus is $L(s,\chi)=L(s,\psi)\prod_{p\mid N}(1-\psi(p)p^{-s})$. Each finite Euler factor is nonzero: if $\psi(p)=0$ it is $1$, and otherwise $|\psi(p)|=1$ and $|p^{-s}|=p^{-\operatorname{Re}s}\ne1$. Hence $L(s,\psi)=0$.
+
+Now assume $\Gamma_\chi(s)\ne0$. Enlarging the modulus preserves the character value at $-1$ and thus the parity, giving $\Gamma_\psi(s)=\Gamma_\chi(s)\ne0$. Since $s\ne0$, the completed $L$-function satisfies $\Lambda(s,\psi)=\Gamma_\psi(s)L(s,\psi)=0$. The inverse character $\psi^{-1}$ is primitive as well, and Mathlib's functional equation for it gives
+\[
+ \Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi)=0,
+\]
+where $\varepsilon(\psi^{-1})$ is the \emph{root number}.
+
+Since $1-s\ne0$, expressing the original function as the completed function divided by the Gamma factor, with the convention for values at Gamma poles, gives $L(1-s,\psi^{-1})=0$. By $1-s\ne1$, enlarging the modulus of $\psi^{-1}$ to $\chi^{-1}$ preserves the zero by the finite Euler product formula, yielding $L(1-s,\chi^{-1})=0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Main.lean}{25}.}
+\begin{lemma}[Zero symmetry for Dirichlet $L$-functions]
+\label{lem:dirichlet-reflection}
+\emitthmsource
+Assume nonvanishing in the right half-plane. Then every zero of a Dirichlet $L$-function in the critical strip $0<\operatorname{Re}s<1$ satisfies $\operatorname{Re}s=1/2$.
+\end{lemma}
+\begin{proof}
+Let $L(s,\chi)=0$ and $0<\operatorname{Re}s<1$. By character parity, $\Gamma_\chi(s)=\Gamma_{\mathbb R}(s+a)$ with $a\in\{0,1\}$. From $\operatorname{Re}(s+a)>0$ the Gamma factor is nonzero. Since $s\ne1$ and $\operatorname{Re}s\ne0$, \statementref{Lemma}{lem:primitive-zero-reflection} gives $L(1-s,\chi^{-1})=0$. Neither $s$ nor $1-s$ equals $1$, so applying the nonvanishing hypothesis to both gives
+\[
+ \operatorname{Re}s\le\tfrac12,
+ \qquad 1-\operatorname{Re}s=\operatorname{Re}(1-s)\le\tfrac12.
+\]
+The two inequalities give $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/New/Main.lean}{44}.}
+\begin{lemma}[Zero symmetry for the Riemann $\zeta$-function]
+\label{lem:zeta-reflection}
+\emitthmsource
+Assume nonvanishing in the right half-plane. Then every zero of $\zeta$ outside $\{1,-2,-4,\dots\}$ satisfies $\operatorname{Re}s=1/2$.
+\end{lemma}
+\begin{proof}
+The $L$-function of the principal character modulo $1$ is the Riemann $\zeta$-function. Let $\zeta(s)=0$ and $s\notin\{1,-2,-4,\ldots\}$. Apply nonvanishing in the right half-plane to $s$ to get $\operatorname{Re}s\le1/2$. Since $\zeta(0)=-1/2$, we have $s\ne0$. Thus $s$ avoids all the poles of $\Gamma_{\mathbb R}(s)=\pi^{-s/2}\Gamma(s/2)$, and the completed function satisfies $\Lambda(s)=\Gamma_{\mathbb R}(s)\zeta(s)=0$.
+
+The functional equation $\Lambda(1-s)=\Lambda(s)$ gives $\Lambda(1-s)=0$. Now $\operatorname{Re}(1-s)\ge1/2>0$, so $\Gamma_{\mathbb R}(1-s)$ is finite and nonzero, and $\zeta(1-s)=0$. Since $s\ne0$ implies $1-s\ne1$, apply nonvanishing in the right half-plane once more to the principal character modulo $1$ to get $1-\operatorname{Re}s\le1/2$ and thus $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Main.lean}{4}.}
+\begin{theorem}[The Riemann hypothesis]
+\label{thm:rh}
+\emitthmsource
+Every nontrivial zero of the Riemann $\zeta$-function lies on the critical line.
+\end{theorem}
+\begin{proof}
+\statementref{Theorem}{thm:half-plane} gives the hypothesis of \statementref{Lemma}{lem:zeta-reflection}. Thus for any complex $s$, if $\zeta(s)=0$, $s\ne1$, and $s\notin\{-2,-4,\ldots\}$, then $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Main.lean}{7}.}
+\begin{theorem}[Real parts of zeros of the Riemann $\zeta$-function]
+\label{thm:zeta-zeros}
+\emitthmsource
+If $\zeta(s)=0$, $s\ne1$, and $s$ is not a negative even integer, then $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+Take any complex number $s$ satisfying the three hypotheses. \statementref{Theorem}{thm:rh} says $\operatorname{Re}s=1/2$ for precisely these $s$. The Lean statements agree after unfolding their definitions.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Main.lean}{10}.}
+\begin{theorem}[Nonvanishing of Dirichlet $L$-functions in the right half-plane]
+\label{thm:right-nonvanishing}
+\emitthmsource
+For any modulus $q\ge1$ and Dirichlet character $\chi$ modulo $q$, we have $L(s,\chi)\ne0$ at $\operatorname{Re}s>1/2$ when the principal-character pole $s=1$ is excluded.
+\end{theorem}
+\begin{proof}
+Take any modulus $q\ge1$ and a character $\chi$ of that modulus. If $\operatorname{Re}s>1/2$ and at least one of $\chi\ne1$ and $s\ne1$ holds, apply \statementref{Theorem}{thm:half-plane} to $q,\chi,s$ to obtain $L(s,\chi)\ne0$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Main.lean}{15}.}
+\begin{theorem}[Real parts of Dirichlet $L$-function zeros in the critical strip]
+\label{thm:l-zeros}
+\emitthmsource
+Every zero of a Dirichlet $L$-function in the critical strip $0<\operatorname{Re}s<1$ satisfies $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+\statementref{Theorem}{thm:half-plane} gives the right-half-plane nonvanishing hypothesis of \statementref{Lemma}{lem:dirichlet-reflection} for every modulus and character. Applying the lemma to any character $\chi$ modulo $q$ and any complex $s$ satisfying $0<\operatorname{Re}s<1$ and $L(s,\chi)=0$ yields $\operatorname{Re}s=1/2$.
+\end{proof}
+
+\thmsource{Lean source: \leansourcelink{src/Main.lean}{19}.}
+\begin{theorem}[GRH for primitive characters]
+\label{thm:primitive}
+\emitthmsource
+If $\chi$ is primitive, every zero of $L(s,\chi)$ in the critical strip (\emph{critical strip}) satisfies $\operatorname{Re}s=1/2$.
+\end{theorem}
+\begin{proof}
+Let $\chi$ be primitive modulo $q$. \statementref{Theorem}{thm:l-zeros} applies to all characters modulo $q$, so every zero $s$ of $L(s,\chi)$ in the critical strip satisfies $\operatorname{Re}s=1/2$.
+\end{proof}

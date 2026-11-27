@@ -2,31 +2,34 @@
 \thispagestyle{empty}
 \sffamily
 \setlength{\parindent}{0pt}
-\vspace*{0.19\textheight}
+\vspace*{0.02\textheight}
 
 {\large\bfseries\color{DefinitionInk} Lean 形式化证明导读\par}
-\vspace{1.2em}
+\vspace{0.55em}
 {\color{DefinitionInk}\rule{27mm}{1pt}\par}
-\vspace{1.7em}
+\vspace{1.35em}
 
-{\fontsize{32pt}{45pt}\selectfont\bfseries\color{OxfordNavy}
+{\fontsize{29pt}{38pt}\linespread{1.08}\selectfont\bfseries\color{OxfordNavy}
  从 Theta 提升\par
- 到广义 Riemann 猜想\par}
-\vspace{0.8em}
+ 到广义 Riemann 猜想的证明\par}
+\vspace{0.75em}
 
 {\Large\rmfamily\color{SlateInk}
- From Theta Lifts to the\par
+ From Theta Lifts to the Proof of the\par
  Generalized Riemann Hypothesis\par}
-\vspace{2.6em}
+\vspace{1.65em}
 
-{\normalsize\rmfamily
+{\normalsize\rmfamily\color{SlateInk}
  本书根据 \href{https://github.com/lsernau/grh-lean}{\texttt{lsernau/grh-lean}}
  的可读版 Lean 证明及配套蓝图编写.\par}
+\vspace{0.35em}
+{\small\sffamily\color{SlateInk!75}
+ 上游库编译环境：Lean 4.35.0\quad\textperiodcentered\quad
+ Mathlib \texttt{56a00585}\par}
 
 \vfill
-{\small\color{SlateInk}
- Lean 4.35.0\quad\textperiodcentered\quad
- Mathlib \texttt{56a00585}\par}
+{\graphicspath{{figures/}}%
+ \noindent\input{figures/cover-illustration}\par}
 \end{titlepage}
 
 
@@ -34,7 +37,7 @@
 \addcontentsline{toc}{chapter}{内容提要}
 \markboth{内容提要}{内容提要}
 
-本书以简化的 Lean 蓝图为基础，系统叙述 Riemann 猜想与 Dirichlet $L$ 函数广义 Riemann 猜想的完整论证. 该蓝图根据 Levent Alpöge 与 Claude 的 Lean~4 形式化证明整理而成. 正文从容许数据、加权素数幂余项与酉群上的阿代尔及代数 Theta 提升出发，建立四组核心算术与解析估计：短整源形式的阿基米德范数上界（定理 A(a)）、归一化提升族的局部格指数上界（定理 A(b)）、少量 Poincaré 平移对好目标形式空间的近乎张成性（定理 B），以及整形式提升链的余体积下界（定理 C）. 将这四组估计作用于同一个几乎张成目标空间的线性无关向量族，维数因子与公共主量精确抵消，从而导出主不等式 \eqref{eq:ch1-star}.
+本书以简化的 Lean 蓝图为基础，系统叙述 Riemann 猜想与 Dirichlet $L$ 函数广义 Riemann 猜想的完整论证. 该蓝图根据 Levent Alpöge 与 Claude 的 Lean~4 形式化证明整理而成. 正文从容许数据、加权素数幂余项与酉群上的阿代尔及代数 Theta 提升出发，建立四组核心算术与解析估计：短整形式对分歧源空间的张成及其归一化像在平凡扭转下的提升平方范数上界（定理 A(a)）、归一化像族的局部格指数上界（定理 A(b)）、少量归一化 Poincaré 平移像之和的维数下界（定理 B），以及计入局部格指数损失的提升余体积下界（定理 C）. 将这四组估计作用于同一个几乎张成目标空间的线性无关向量族，维数因子与公共主量精确抵消，从而导出主不等式 \eqref{eq:ch1-star}.
 
 借助迭代重数 $m\asymp\sqrt{x}$ 带来的平方根量级节省，并结合固定模数的算术级数素数定理控制第二尺度上的误差，主不等式转化为惰性素数幂加权余项的单侧上界. 随后，利用二次扭转族的零点密度估计排除极点抵消，并经由 Landau 正性判据将单侧余项界转化为右半平面 $\RePart s>1/2$ 内的非零性. 最后，借助 Dirichlet $L$ 函数与 Riemann $\zeta$ 函数的函数方程，完成临界线定理及五条公开定理的证明.
 

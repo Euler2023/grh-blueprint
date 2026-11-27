@@ -4,7 +4,7 @@
 
 | 来源 | 版本和作用 |
 | --- | --- |
-| [配套蓝图 PDF](../../blueprint.pdf) | 内容基准为本地 TeX 源文件 `grh/blueprint/src/content.tex`。保留 300 个带标签的数学对象及其证明链，按用途分入第 1 至第 7 章。 |
+| [配套蓝图](../../grh/blueprint/src/content.tex) | 用户指定的内容基准。保留 300 个带标签的数学对象及其证明链，按用途分入第 1 至第 7 章。 |
 | [可读版 Lean](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh) | 固定提交。用于复核主要结论、归一化、局部输入、原声明的行号及第 8 章。 |
 | [锁定的 Mathlib](https://github.com/leanprover-community/mathlib4/tree/56a005855ea17e0b0958f73ec801ae140b0a1679) | Dirichlet 函数方程、公开定理陈述及背景定义的出处。 |
 | [精简版 Lean](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact) | 附录的记号和窗口引理对照。正文的单侧界沿可读版路线。 |

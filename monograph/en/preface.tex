@@ -1,0 +1,137 @@
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\markboth{Preface}{Preface}
+
+\section*{Sources and formal verification}
+
+This book follows the
+\href{https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh}{readable edition \texttt{grh/}},
+which uses Lean~4.35.0 and the Mathlib commit \texttt{56a00585}. The proof framework is due to Levent Alpöge and Claude. See the original account in~\cite{Alpoge2026} and the description of the Lean code and accompanying documentation in the upstream repository. The five public theorems are collected in
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Main.lean}{\texttt{Main.lean}}.
+The first uses Mathlib's statement
+\leanlink{https://github.com/leanprover-community/mathlib4/blob/56a005855ea17e0b0958f73ec801ae140b0a1679/Mathlib/NumberTheory/LSeries/RiemannZeta.lean\#L185}{RiemannHypothesis},
+and the statements of the other four are in
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/Statements.lean}{\texttt{Statements.lean}}.
+
+The upstream repository records the axiom audit and the checks of the individual proof terms in the
+\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/README.md}{README of the readable edition}.
+According to that record, the five public theorems depend only on the standard Lean axioms \lean{propext}, \lean{Classical.choice}, and \lean{Quot.sound}. We cite the Lean sources for the definitions, theorems, lemmas, and proof steps in footnotes to keep the mathematical exposition readable. Each link identifies the commit above and the precise line, so that readers can check the hypotheses and conclusions directly. See \appref{app:edition-comparison} for a comparison of the notation and analytic arguments of the readable and compact editions.
+
+\section*{The Riemann hypothesis, its generalization, and their consequences}
+
+In his foundational paper of 1859~\cite{Riemann1859}, Riemann connected the distribution of the primes to the analytic continuation, functional equation, and location of the nontrivial zeros of the complex function $\zeta(s)$. He proposed the Riemann hypothesis (RH), which asserts that every nontrivial zero of $\zeta(s)$ lies on the critical line $\RePart s=1/2$. Piltz~\cite{Piltz1884} subsequently extended the conjecture to all Dirichlet $L$-functions. This is the generalized Riemann hypothesis (GRH) proved in this book. For systematic treatments of the Riemann $\zeta$-function, see the classical monographs of Titchmarsh~\cite{Titchmarsh1986}, Edwards~\cite{Edwards1974}, and Ivić~\cite{Ivic1985}. Standard references for Dirichlet $L$-functions, zero distribution, and multiplicative analytic number theory include Davenport~\cite{Davenport2000}, Iwaniec and Kowalski~\cite{IwaniecKowalski2004}, and Montgomery and Vaughan~\cite{MontgomeryVaughan2007}. For modern surveys and background, see Bombieri~\cite{Bombieri2000} and Conrey~\cite{Conrey2003}.
+
+RH and GRH for Dirichlet $L$-functions turn many classical conditional results in analytic, algebraic, and computational number theory into unconditional theorems. Broughan's three-volume work~\cite{Broughan2017a,Broughan2017b,Broughan2023} and the collection edited by Borwein et al.~\cite{BorweinEtAl2008} give systematic accounts of the arithmetic and analytic equivalents and consequences of RH. The five public theorems of this book directly imply the following representative results.
+\begin{itemize}
+\item \emph{Prime distribution and optimal estimates for arithmetic functions.} RH is equivalent to the square-root-scale errors $\pi(x)=\operatorname{li}(x)+O(\sqrt{x}\log x)$ and $\psi(x)=x+O(\sqrt{x}(\log x)^2)$ in the prime number theorem, due to von Koch~\cite{vonKoch1901}, with explicit constants in Schoenfeld~\cite{Schoenfeld1976}. It is also equivalent to Robin's inequality $\sigma(n)<e^{\gamma_{\mathrm E}}n\log\log n$ for the sum-of-divisors function when $n>5040$~\cite{Robin1984} and to Lagarias's elementary equivalent criterion~\cite{Lagarias2002}. It directly implies the Lindelöf hypothesis and square-root cancellation for the Möbius function, $\sum_{n\le x}\mu(n)=O_\varepsilon(x^{1/2+\varepsilon})$~\cite{Titchmarsh1986,IwaniecKowalski2004}.
+\item \emph{Primes in arithmetic progressions and class number lower bounds.} GRH for Dirichlet $L$-functions gives the uniform square-root error $\psi(x;q,a)=x/\varphi(q)+O(\sqrt{x}(\log qx)^2)$ for primes in arithmetic progressions and an $O\bigl((\varphi(q)\log q)^2\bigr)$ bound for the least prime in a progression. It also rules out Siegel zeros and thus yields precise effective lower bounds for the class number $h(-D)$ of an imaginary quadratic field~\cite{Davenport2000,IwaniecKowalski2004,MontgomeryVaughan2007}.
+\item \emph{Least quadratic nonresidues and deterministic primality testing.} Under GRH for Dirichlet $L$-functions, the least quadratic nonresidue modulo a prime $p$ satisfies the bound $O((\log p)^2)$ of Ankeny~\cite{Ankeny1952}, with the explicit bound $2(\log p)^2$ due to Bach~\cite{Bach1990}. Consequently, Miller's primality test runs in deterministic polynomial time~\cite{Miller1976,Bach1990}.
+\end{itemize}
+Results that depend on GRH for Dedekind $\zeta$-functions of general number fields or for higher-rank automorphic $L$-functions, such as Hooley's conditional proof of Artin's primitive root conjecture, require hypotheses beyond the Dirichlet $L$-functions treated by the public theorems of this book.
+
+\section*{From Jacobi's theta functions to theta lifts}
+
+The classical theta functions originated in Carl Gustav Jacob Jacobi's study of elliptic functions. In his 1828 paper he expressed elliptic functions in terms of theta functions. He developed the theory further in the \emph{New Foundations of the Theory of Elliptic Functions}, published the following year~\cite{Jacobi1828,Jacobi1829}. A familiar special case is the series obtained by summing a Gaussian over the integers,
+\[
+  \theta(t)=\sum_{n\in\mathbb Z} e^{-\pi n^2t},
+  \qquad t>0.
+\]
+Poisson summation gives the transformation law $\theta(t)=t^{-1/2}\theta(1/t)$. In his 1859 paper, Riemann used it to prove the functional equation of the $\zeta$-function, explicitly citing page 184 of Jacobi's monograph~\cite{Riemann1859,Jacobi1829}. In $\RePart s>1$, he first wrote the completed function $\Lambda(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$ as a Mellin integral of $(\theta(t)-1)/2$. Splitting the integral at $t=1$, he used the transformation law to rewrite the part over $0<t<1$ as an integral over $t>1$. The resulting expression gives the meromorphic continuation and is invariant under interchanging $s$ and $1-s$, whence $\Lambda(s)=\Lambda(1-s)$. In \secref{sec:public-theorems}, the corresponding functional equations carry nonvanishing in the right half-plane to the other side of the critical line.
+
+In Jacobi's example, the exponent contains the one-variable quadratic form $n^2$. Replacing it by a positive definite quadratic form gives a theta series whose coefficients count representations of integers by that form. Siegel took weighted averages of the theta series in a genus and related them to Eisenstein series~\cite{Siegel1935}. Weil used a representation of the metaplectic cover of the symplectic group to give a uniform explanation of the transformation laws of theta series. The Siegel--Weil formula extends the averaging identities to classical groups~\cite{Weil1964,Weil1965}. Howe's reductive dual pairs introduce two groups that centralize each other into this framework, allowing a single theta kernel to define an integral transform between them~\cite{Howe1979,Howe1989}.
+
+Concretely, the Weil representation transforms the test function $\varphi$ by the source-group variable $g$ and the target-group variable $h$. Summing the resulting function over the rational points of the corresponding vector space gives the theta kernel $\theta_\varphi(g,h)$. For fixed $h$, multiply the kernel by an automorphic form on the source group and integrate in $g$ over the source automorphic quotient. The resulting automorphic form on the target group is the theta lift. Kudla's seesaw identity interchanges lifting and restriction in the pairing~\cite{Kudla1984}. Via the Siegel--Weil formula, the Rallis inner product formula relates the Petersson pairing of lifts to special values of automorphic $L$-functions and local pairings~\cite{Li1992,KudlaRallis1994,GQT2014}.
+
+The argument of Levent Alpöge and Claude (AI) takes its inspiration from Stepanov's function-field method.
+\begin{itemize}
+\item \emph{Using lift steps to simulate multiplicity.} On a curve over a finite field, one constructs a nonzero function vanishing to high order at the rational points. The degree of its pole divisor bounds the total multiplicity of its zeros, giving an upper bound on the number of points~\cite{Bombieri1974}. Alpöge observes in his account that iterated theta lifting over a number field can play a role analogous to increasing the multiplicity. For a von Mangoldt-weighted sum of length $x$, Claude proposed taking the number $m$ of lifts to be of order $\sqrt{x}$~\cite{Alpoge2026}. To turn that idea into an estimate for a prime sum, the local divisibility gains must accumulate along the chain while the increase in norm and the cost of clearing denominators remain controlled at each step.
+
+\item \emph{Transferring divisibility gains between two chains of lifts.} The Alpöge--Claude proof uses two chains between unitary groups over a CM extension, with splitting characters for the Weil representation~\cite{HKS1996}. Along the definite upper chain, a jet map in Taylor coefficients expresses the action of the archimedean kernel, and the finite adelic integral becomes a weighted sum over classes. The divisibility of higher derivatives on CM elliptic curves can thus control the lift kernels step by step. The local valuation bounds add along the chain, and the weighted prime-power sum records the gains at inert primes. See \secref{sec:theta-lifts} for the two lifts and their arrangement in chains and \chapref{chap:derivatives} for the jet divisibility estimates.
+
+The seesaw identity used here compares entire chains. Starting with a definite source form, the first route applies the Poincaré map and then lifts along the lower chain, which starts indefinite and ends definite. The second route applies the composite algebraic theta lift along the definite upper chain and then restricts to the same terminal space. Stepwise unfolding of the Bessel periods along the lower chain gives the proportionality~\eqref{eq:a-seesaw}. The constant of proportionality is independent of the source form and twist, and the construction ensures that the upper-chain kernel data meet the required integrality conditions away from the twist modulus. The divisibility estimates for the upper chain therefore control the integral lattice for the lower-chain lifts. After rational normalization using the local gains, the squared norms of the lifts of the normalized images of the short integral forms of \statementlink{thm:short-forms}{Theorem~A(a)} are bounded by $\exp(H-mS+L)$ under every complex conjugate, for the trivial twist. Here $H$ is the common main amount, $S$ the total two-scale prime-power remainder, and $L$ the error budget. See \chapref{chap:upperbound} for the constructions and upper bounds.
+
+\item \emph{Controlling the cost of lifting by comparing twists.} The covolume lower bound comes from comparing Gram determinants of the whole chain under twisting. The proof passes the single-step Rallis pairings through a commutative diagram and factors the full-chain determinant ratio into a product of single-step ratios, level factors, and ratios of partial Hecke $L$-values. At each $p$-adic embedding we choose a regular twist whose first $m$ powers simultaneously meet the local denominator bounds required at every step. Combining these comparisons in the global product formula gives the covolume lower bound for the trivial twist. See~\eqref{eq:c-chain-ratio} for the chain factorization and \chapref{chap:onelift} and \chapref{chap:congruences} for the single-step height and congruence denominator estimates, respectively.
+\end{itemize}
+
+\statementlink{thm:enough-forms}{Theorem~B} shows that the sum of the images of a small number of Poincaré translates nearly spans the target space. From those images we choose a linearly independent family coming from short integral forms, then apply the norm and index upper bounds and the covolume lower bound to that same family. Comparing the upper and lower bounds cancels the common main amount $H$ and gives the main inequality~\eqref{eq:ch1-star} for $mS$. Dividing by $m$ converts the number of lift steps into a square-root saving in the prime-power remainder. See \chapref{chap:reduction} for the deduction of GRH for Dirichlet $L$-functions from this estimate.
+
+\section*{How the main results fit together}
+
+Let $U$ and $W$ be the spaces of ramified source forms and good target forms, respectively, and write $r=\dim_{\CC}W$. Put $h=H-mS+L$, where $H$ is the common main amount in the upper and lower bounds, $S$ is the two-scale total remainder, and $L=fa(\log b)^4$ is the error budget. \statementlink{thm:short-forms}{Theorem~A(a)} gives the spanning set of source forms used to construct short vectors. \statementlink{thm:index-bound}{Theorem~A(b)} controls the local lattice index of their normalized images. Using a second moment, \statementlink{thm:enough-forms}{Theorem~B} bounds the number of translates and the dimension of the sum of their images, so that one can extract a linearly independent family satisfying the rank condition of \statementlink{thm:long-forms}{Theorem~C}. \statementlink{thm:long-forms}{Theorem~C} gives a covolume lower bound for this family through the anticyclotomic twist factorization of the chain and the global product formula~\cite{BombieriGubler2006}. Figure~\ref{fig:global-arch} shows how these results combine into the main inequality \eqref{eq:ch1-star} and lead to RH and GRH for Dirichlet $L$-functions.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+  input/.style={draw=OxfordNavy, rounded corners=1.5pt, fill=SoftSlateBg,
+    text width=2.75cm, minimum height=0.90cm, inner sep=2pt, align=center, font=\small},
+  result/.style={draw=OxfordNavy, rounded corners=1.5pt,
+    text width=7.5cm, minimum height=0.62cm, inner sep=2pt, align=center, font=\small},
+  primary/.style={result, draw=DeepBurgundy, fill=SoftIvory},
+  arrow/.style={-{Stealth[length=1.5mm]}, color=OxfordNavy, line width=0.55pt},
+]
+  \node[input] (short) at (-5.25,0)
+    {\hyperref[thm:short-forms]{\textbf{A(a)}}\\Norms of short forms};
+  \node[input] (index) at (-1.75,0)
+    {\hyperref[thm:index-bound]{\textbf{A(b)}}\\Local lattice index};
+  \node[input] (span) at (1.75,0)
+    {\hyperref[thm:enough-forms]{\textbf{B}}\\Spanning by translates};
+  \node[input] (volume) at (5.25,0)
+    {\hyperref[thm:long-forms]{\textbf{C}}\\Covolume lower bound};
+  \node[primary] (star) at (0,-1.07)
+    {Main inequality \eqref{eq:ch1-star}};
+  \node[result, below=2.4mm of star] (onesided)
+    {\hyperref[thm:one-sided]{\mbox{One-sided bound $R_{d,q_0}(y)\le y^{-1/2+\varepsilon}$}}};
+  \node[result, below=2.4mm of onesided] (nonzeros)
+    {\hyperref[thm:half-plane]{Nonvanishing in the right half-plane}};
+  \node[primary, below=2.4mm of nonzeros] (public)
+    {\hyperref[thm:rh]{\textbf{RH and GRH}}};
+  \draw[arrow] (short.south) -- ++(0,-0.12)
+    -| ([xshift=-29mm]star.north);
+  \draw[arrow] (index.south) -- (index.south |- star.north);
+  \draw[arrow] (span.south) -- (span.south |- star.north);
+  \draw[arrow] (volume.south) -- ++(0,-0.12)
+    -| ([xshift=29mm]star.north);
+  \draw[arrow] (star) -- (onesided);
+  \draw[arrow] (onesided) -- (nonzeros);
+  \draw[arrow] (nonzeros) -- (public);
+\end{tikzpicture}
+\caption{The main inequality and its analytic applications. Each arrow runs from an input to a result that uses it.}
+\label{fig:global-arch}
+\end{figure}
+
+\section*{Organization and suggested reading}
+
+Begin with \chapref{chap:reduction}, taking Theorems~\statementlink{sec:a-conclusions}{A}, \statementlink{thm:enough-forms}{B}, and~\statementlink{thm:long-forms}{C} as inputs. It explains how the main inequality \eqref{eq:ch1-star} leads to nonvanishing and the critical-line conclusions for Dirichlet $L$-functions through the two-scale identity, a zero-density estimate for quadratic twists, and Landau's criterion. The rest of the book develops the upper and lower bounds.
+\begin{itemize}
+\item \emph{Upper bounds and spanning (\chapref{chap:derivatives} to \chapref{chap:spanning}).} \chapref{chap:derivatives} gives lower bounds for the $p$-adic valuations of theta-kernel derivatives on CM formal groups and proves attainability of coefficients. \chapref{chap:upperbound} uses the seesaw identity, marking at exceptional primes, and the elementary divisors of the edge Hecke operators to prove Theorems~\statementlink{thm:short-forms}{A(a)} and~\statementlink{thm:index-bound}{A(b)}. \chapref{chap:spanning} proves \statementlink{thm:enough-forms}{Theorem~B} by establishing a second-moment bound through Petersson unfolding, local correlation integrals, and a Poisson sieve.
+\item \emph{Lower bounds and analytic inputs (\chapref{chap:determinant} to \chapref{chap:discrete-series}).} \chapref{chap:determinant} factors the Gram determinant ratio of the full lower chain into a product over its steps and deduces \statementlink{thm:long-forms}{Theorem~C} from the global product formula. \chapref{chap:onelift} constructs comparison operators and bounds the height of the single-step determinant ratio. \chapref{chap:congruences} uses crystalline Selmer modules, root-of-unity specialization, and Ribet elements to construct families of regular anticyclotomic twists and bound congruence denominators. \chapref{chap:discrete-series} gives a quantitative Laplace period lower bound for large-gap discrete series at the real place, used in the Bessel test in \statementlink{thm:enough-forms}{Theorem~B} and the spanning by auxiliary forms in \statementlink{thm:long-forms}{Theorem~C}.
+\end{itemize}
+\appref{app:lib-overview} lists the parts of the background library used in the proof. \appref{app:edition-comparison} compares the notation and analytic steps of the readable and compact editions.
+
+\section*{Notation}
+
+Table~\ref{tab:global-scales} summarizes the global parameters and spaces along the main proof. See \chapref{chap:reduction} for the full constraints on the admissible data and their construction at large scales.
+
+\begin{table}[htbp]
+\centering
+\caption{Admissible data and notation for spaces}
+\label{tab:global-scales}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+                  >{\raggedright\arraybackslash}p{0.69\textwidth}@{}}
+\toprule
+Notation & Meaning and conventions\\
+\midrule
+$q_0,d$ & Fixed parameters satisfying $18480\mid q_0$, with $d$ prime and $d\equiv q_0/2-1\pmod{q_0}$. \\
+$K,E$ & $K=\QQ(\sqrt{-d})$ and $E=K(\zeta_{q_1})$, where $q_1$ is the cyclotomic modulus. \\
+$\Phi,\Phi_a,\Phi_b$ & The set of infinite places of $E$ and two selected subsets, with $f=|\Phi|$. \\
+$x,x_1,b,a$ & Primary scale, second scale, weight scale, and long order, with $a=xb$. \\
+$m,k,r_0,t$ & Number of lifts and rank parameters, with $\sqrt{x}\le m\le2\sqrt{x}$, $k=r_0+1-m$, and $t=5r_0$. \\
+$U,W,r$ & Spaces of ramified source forms and good target forms, and complex target dimension $r=\dim_{\CC}W$. \\
+$M,N$ & Product $M=p_0p_1$ of the principal congruence level primes, and ramification level prime $N$. \\
+$H,S,B,L$ & Main amount, total two-scale remainder, and error budgets $B=fa(\log b)^3$ and $L=B\log b$. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The upper chain $X_0,\ldots,X_m$ consists of standard positive definite Hermitian spaces of $E$-ranks $\operatorname{rk}_E X_j=k+j(t+1)$. The lower chain $Y_0,\ldots,Y_m$ has $\operatorname{rk}_E Y_j=r_0+jt$, and its last term $Y_m$ embeds into $X_m$ as a positive definite subspace of codimension one. For the single-step comparison at step $j$, the descent pair $W_j,V_j$ has $E$-ranks $r_0$ and $r_0+t$, respectively. Here $V_j$ is positive definite and $W_j$ has $m-j$ negative signs at each infinite place. The rank $r_0$ refers to the target Hermitian space over $E$, while $r=\dim_{\CC}W$ is the complex dimension of the space of good target forms.

@@ -2,7 +2,7 @@
 \label{chap:upperbound}
 
 \begin{chapterguide}
-定理 A(a) 以短整形式张成分歧源空间，并控制其归一化像在各复共轭下的范数. 定理 A(b) 控制这些映射在整源形式上的局部格指数. 两个估计均依赖式~\eqref{eq:a-local-gain} 定义的局部增益，以及式~\eqref{eq:normalized-poincare} 中的有理归一化因子 $c_B$. \secref{sec:a-seesaw}的 Seesaw 恒等式将上链的复合提升估计转移至下链.
+定理 A(a) 以短整形式张成分歧源空间，并控制其归一化像在平凡扭转下的提升平方范数，且对每个复自同构统一成立. 定理 A(b) 控制由这些映射所得的整源形式归一化像族的局部格指数. 两个估计均依赖式~\eqref{eq:a-local-gain} 定义的局部增益，以及式~\eqref{eq:normalized-poincare} 中的有理归一化因子 $c_B$. \secref{sec:a-seesaw}的 Seesaw 恒等式将上链的复合提升估计转移至下链.
 \end{chapterguide}
 
 \section{短整形式与无穷位范数}
@@ -617,7 +617,7 @@ $q_1$ 的素因子均在 $K$ 中分裂，而 $\chi_K(d)=0$；由 $\chi_K(p)=-1$ 
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean}{1158}.}
-\begin{theorem}[边 Hecke 算子的初等因子界]
+\begin{theorem}[边 Hecke 算子诱导映射的截断余长上界]
 \label{thm:a-edge-elementary-divisors}
 \emitthmsource
 沿用引理~\ref{lem:a-edge-pairing-colength} 的周期、大小条件及记号. 设 $X$ 为有限顶点集，$H$ 为每个顶点上自由辅助模的基指标集，$J:I\simeq\mathcal B\times H$. 边坐标由如下数据给定：进入 $x\in X$ 的边以 $c\in\mathcal P$ 编号，边 $e=(x,c)$ 的起点为 $a(e)$，其起点基变换为 $\gamma_e$，终点基变换为 $h_c$，辅助模的平移为 $u_e\in\mathrm{GL}_H(O)$. 假设 $[h_c^{-1}]=c$，且每条边均由 $a(e)$ 与 $[(\gamma_e^\top)^{-1}]$ 唯一确定. 定义边 Hecke 算子（\emph{edge Hecke operator}）$A_T$ 如下：在边 $e=(x,c)$ 上，将起点值经
@@ -2017,7 +2017,7 @@ $H_j(h)=\mathcal W_j(\xi,y;h)(L_j^{\mathrm t}z)(h)$，将第 $j$ 个外层变量
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/UpperBound/Seesaw/SeesawIdentity.lean}{624}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L592}{截面张量的容许展开}.}
-\begin{theorem}[Seesaw 恒等式]
+\begin{theorem}[比较上下提升链的 Seesaw 恒等式]
 \label{thm:a-seesaw}
 \emitthmsource
 Seesaw 恒等式（\emph{seesaw identity}）在此比较如下两种提升. 固定 $Y_0$ 的无穷位阿代尔点 $g_\infty$ 以及 $X_0$ 的 Weyl 模上的复线性泛函 $t$，记 $\mathcal P=\mathcal P_{g_\infty,t}\colon U\to\operatorname{Forms}(Y_0)$ 为相应的 Poincaré 映射. 则存在与扭转和源形式均无关的常数 $c_{\mathrm{ss}}\in\mathbb C^\times$，使得对每个扭转 $\vartheta$ 皆存在链数据 $\Psi_\vartheta$，满足
@@ -2074,13 +2074,13 @@ $\sum_x|\sigma(r_{\vartheta,\omega}(x))|\le1$.
 该式在自守形式与相应代数形式的等同下表达同一等式；取 $c_{\mathrm{ss}}=u^{-1}$ 即证.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean\#L612}{链数据的统一归一化}.}
 \end{proof}
 
-\section{短形式范数界与局部格指数界}
+\section{短整形式的张成、提升范数与局部格指数}
 \label{sec:a-conclusions}
 
 式~\eqref{eq:a-short} 涉及全部平移及所有复自同构；式~\eqref{eq:a-index} 则涉及由有限多个平移像中选出的任意有限族，其局部校正须对同一素数处的所有允许扭转同时生效.
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{254}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L231}{有理归一化与共轭平方范数}.}
-\begin{theorem}[A(a)：短整形式张成源空间]
+\begin{theorem}[A(a)：分歧源空间的张成与提升平方范数上界]
 \label{thm:short-forms}
 \emitthmsource
 令 $h=H-mS+L$. 满足
@@ -2166,7 +2166,7 @@ $\sum_{p\in Q'}\log p\le\lceil x_1\rceil x_1+\log N\le b$ 控制，其中第一�
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Reduction/ShortAndEnough.lean}{373}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Reduction/ShortAndEnough.lean\#L342}{单个平移像的局部格指数}.}
-\begin{theorem}[A(b)：归一化像的局部格指数]
+\begin{theorem}[A(b)：归一化像族的局部格指数上界]
 \label{thm:index-bound}
 \emitthmsource
 设 $T\subset G$ 是有限集. 若有限族 $y$ 的每个成员都属于 $\bigcup_{g\in T}P_g(I)$，则 $y$ 满足

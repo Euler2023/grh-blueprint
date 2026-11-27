@@ -1,5 +1,5 @@
 {
-  "document": "从 Theta 提升到广义 Riemann 猜想",
+  "document": "从 Theta 提升到广义 Riemann 猜想的证明",
   "authoritative_source": "../grh/blueprint/src/content.tex",
   "generated_tex": "GRH_Monograph.tex",
   "output_pdf": "GRH_Monograph.pdf",
@@ -21,6 +21,6 @@
     "citation_keys_used": 70,
     "bib_database_entries": 75,
     "cited_bibliography_entries": 70,
-    "pdf_pages": 240
+    "pdf_pages": 242
   }
 }

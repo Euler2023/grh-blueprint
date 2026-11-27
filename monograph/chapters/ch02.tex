@@ -1,4 +1,4 @@
-\chapter{复乘形式群与 Theta 导数}
+\chapter{复乘形式群与 Theta 函数的高阶导数}
 \label{chap:derivatives}
 
 \begin{chapterguide}
@@ -108,7 +108,7 @@ p\text{ 在 }K\text{ 中的类型}&\text{分裂}&\text{惰性}&\text{分歧 }(p=
 \end{definition}
 由于 $\Gamma_e$ 为 $p^e+1$ 次齐次多项式，对任意给定的总次数，上述双重和仅有有限项能作贡献；又指数内的幂级数常数项为零，故右端在形式幂级数环中良定.\leanfn{Lean 源码：\leansourcelink{src/New/Derivatives/Divisibility/NormalForm.lean}{50}.}
 
-\begin{theorem}[标准 Theta 数据的正规形]
+\begin{theorem}[非分裂素数处标准 Theta 数据的 Taylor 正规形]
 \label{thm:ch2-normal-form}
 设 $p$ 在 $K$ 中不分裂. 给定定义~\ref{def:ch2-int-vacuum} 中的标准有限数据 $\psi$ 及满足 $|\iota(c)|_p\le1$ 的复标量 $c$. 取 $\psi$ 的 Theta 函数在尺度 $c\,s_{\rm jet}$ 下的 Taylor 级数并通过 $\iota$ 读取其系数，则所得级数 $F$ 满足定义~\ref{def:ch2-normal-form} 的正规形（关于 CM 形式群与代数 Theta 函数的 $p$-进指数结构，可参见 Lubin--Tate~\cite{LubinTate1965} 与 Bannai--Kobayashi~\cite{BannaiKobayashi2010}）.
 \end{theorem}
@@ -486,7 +486,7 @@ p\text{ 在 }K\text{ 中的类型}&\text{分裂}&\text{惰性}&\text{分歧 }(p=
 
 则存在不依赖于有限位及模的选取的非零常数 $u$，对所有 $\sigma\in\operatorname{Aut}(\mathbb C)$ 满足
 \[
-     |\sigma(u)|\le \exp(fmb/k)；
+     |\sigma(u)|\le \exp(fmb/k)
 \]
 并且对每个理想为 $(\pi_M)$ 的模 $\mathfrak m$、每个素数 $p$ 及每个 $p$-进嵌入 $\iota$，均存在剩余类 $a$ 与多重指标 $\gamma=(\gamma_{\tau,j})$（$1\le j\le12$），使得
 \begin{equation}
