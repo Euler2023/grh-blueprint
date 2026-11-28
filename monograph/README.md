@@ -38,7 +38,11 @@ python3 figures/plot_critical_strip.py
 ## 源码结构
 
 - [GRH_Monograph.tex](GRH_Monograph.tex) 组装中文全书，版式、脚注与链接宏在 [preamble.tex](preamble.tex)，参考文献数据库见 [references.bib](references.bib)。
-- [frontmatter.tex](frontmatter.tex) 放置中文封面、内容提要和目录，[preface.tex](preface.tex) 收录前言，正文分八章放在 `chapters/`，附录见 [backmatter.tex](backmatter.tex)。
-- `en/` 收录完整英文版源码（[GRH_Monograph_EN.tex](en/GRH_Monograph_EN.tex)、[preamble.tex](en/preamble.tex)、[frontmatter.tex](en/frontmatter.tex)、[preface.tex](en/preface.tex)、`en/chapters/` 与 [backmatter.tex](en/backmatter.tex)）。
+- [frontmatter.tex](frontmatter.tex) 放置中文封面、内容提要和目录，[preface.tex](preface.tex) 收录前言，正文分八章放在 `chapters/`，附录见 [backmatter.tex](backmatter.tex)（含附录 C [appendixC.tex](appendixC.tex)）。
+- `en/` 收录完整英文版源码（[GRH_Monograph_EN.tex](en/GRH_Monograph_EN.tex)、[preamble.tex](en/preamble.tex)、[frontmatter.tex](en/frontmatter.tex)、[preface.tex](en/preface.tex)、`en/chapters/`、[backmatter.tex](en/backmatter.tex) 与 [appendixC.tex](en/appendixC.tex)）。
 - `figures/` 收录中英文共用的 TikZ 封面插图 [cover-illustration.tex](figures/cover-illustration.tex)、高精度数据生成脚本 [plot_critical_strip.py](figures/plot_critical_strip.py) 与生成的坐标数据 [critical-strip-data.tex](figures/critical-strip-data.tex)。
 - [来源与核对范围](work/source-ledger.md) 和 [数学复核提要](work/content-review-guide.md) 记录正文、蓝图与形式化源码的对应。
+
+## Updates
+
+- **2026-11-28**：更新中英文版前言的历史背景（补充 Hardy《Ramanujan》第九、十讲的 $r_{24}(1)=48$ 与 $\rho_{24}(1)=16/691$、Siegel--Weil 公式与质量比、$\tau(n)$ 与 Deligne/Weil 猜想、Stepanov--Bombieri 及 Terence Tao 2026 年 10 月关于阿代尔 Stepanov 方法的评述）；新增中英文双语**附录 C**（[appendixC.tex](appendixC.tex) / [en/appendixC.tex](en/appendixC.tex)，从 Hardy 平方和到 Siegel--Weil 公式、$\rho_{24}(1)=16/691$ 双侧详证与 GRH 证明导读），并同步更新参考文献与双语 PDF。

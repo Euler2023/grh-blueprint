@@ -1,0 +1,578 @@
+\chapter{从 Hardy 的平方和到 Siegel--Weil 公式与 GRH}
+\label{app:hardy-theta-intro}
+
+\begin{chapterguide}
+本附录作为全书的历史与概念导读，从 G.~H.~Hardy《Ramanujan》第九、十、十二讲中的经典平方和公式出发，经由高次数 Siegel Theta 级数、Siegel--Weil 公式与 $\rho_{24}(1)=16/691$ 的双侧详证，以及 Ramanujan 函数 $\tau(n)$ 与有限域 Weil 猜想之间的关联，系统展示古典二次型理论如何自然延伸至本书正文（\chapref{chap:reduction}至\chapref{chap:congruences}）所用的多步 Theta 提升链与广义 Riemann 猜想（GRH）证明. 文末附八平方和局部密度与判别式 $-23$ 属权重的完整补算.
+\end{chapterguide}
+
+1940 年，G.~H.~Hardy 在剑桥出版了著名的《Ramanujan》十二讲~\cite{Hardy1940}. 第九讲「数的平方和表示」开篇，他这样概括这一古老问题的历史：\footnote{以下所引 Hardy 原文与编号公式均出自~\cite[第九讲，\S\,9.1--\S\,9.17，第~132--155~页]{Hardy1940}.}
+\begin{quote}
+\itshape
+The problem of the representation of an integer $n$ as the sum of a given number $k$ of integral squares is one of the most celebrated in the theory of numbers. Its history may be traced back to Diophantus, but begins effectively with Girard's (or Fermat's) theorem that a prime $4m+1$ is the sum of two squares. Almost every arithmetician of note since Fermat has contributed to the solution of the problem, and it has its puzzles for us still.
+\end{quote}
+
+记 $r_k(n)$ 为把正整数 $n$ 写成 $k$ 个整数平方之和 $x_1^2+x_2^2+\cdots+x_k^2=n$ 的方式数（区分 $x_i$ 的次序与正负号）. 当 $k=2s$ 为偶数时，Jacobi 率先完整解决了 $2s=2,4,6,8$ 的情形. 他是如何把一个纯算术的整数计数问题转化成显式因数公式的？Hardy 在紧接着的 \S\,9.2 开门见山地指出：
+\begin{quote}
+\itshape
+Jacobi found his formulae from the theory of the elliptic theta-functions.
+\end{quote}
+
+具体而言，引入椭圆 theta 级数
+\begin{equation*}\tag{9.2.1}
+\vartheta(x)=1+2x+2x^4+\cdots=\sum_{n=-\infty}^{\infty}x^{n^2},
+\end{equation*}
+将它取 $2s$ 次幂，展开式 $\vartheta^{2s}(x)=1+\sum_{n=1}^{\infty}r_{2s}(n)x^n$ 的 $x^n$ 系数便直接记录了全部表示数 $r_{2s}(n)$. Jacobi 在椭圆函数理论中证明了如下 Lambert 级数恒等式：
+\begin{equation*}\tag{9.2.2}
+\vartheta^2(x)=1+4\left(\frac{x}{1-x}-\frac{x^3}{1-x^3}+\frac{x^5}{1-x^5}-\frac{x^7}{1-x^7}+\cdots\right),
+\end{equation*}
+\begin{equation*}\tag{9.2.3}
+\vartheta^4(x)=1+8\left(\frac{x}{1-x}+\frac{2x^2}{1+x^2}+\frac{3x^3}{1-x^3}+\frac{4x^4}{1+x^4}+\cdots\right).
+\end{equation*}
+将两端按 $x^n$ 逐项展开并比较系数，立刻得到两平方和与四平方和的经典算术公式（原书式~(9.1.1)--(9.1.3)）：$r_2(n)=4\{d_1(n)-d_3(n)\}$（$n$ 的模 $4$ 余 $1$ 与余 $3$ 的因数个数之差的 $4$ 倍），而 $r_4(n)$ 在 $n$ 为奇数时等于 $8\sigma(n)$、在 $n$ 为偶数时等于 $24\sigma^o(n)$（奇因数之和的 $24$ 倍）. 对六平方和与八平方和，theta 函数同样把 $r_{2s}(n)$ 精确表成纯粹的因数函数.
+
+可是一旦平方数个数 $2s$ 超过 $8$，事情就不再这么单纯. 正如 Hardy 在 \S\,9.3 指出的那样，从 Liouville 和 Eisenstein 处理 $2s=10,12$ 开始，$r_{2s}(n)$ 一般不能再写成纯粹的因数函数，而是分裂为一个起支配作用的因数函数主项 $\delta_{2s}(n)$ 与一个较小的补充项 $e_{2s}(n)$ 之和：
+\[
+r_{2s}(n)=\delta_{2s}(n)+e_{2s}(n).
+\]
+在第九讲中，Hardy 选取了两个最具代表性的情形作完整剖析：$2s=8$ 与 $2s=24$. 在八平方和情形，他用模函数方法证明 $r_8(n)$ 处处等于圆法「奇异级数」给出的 $\rho_8(n)$；而在紧接着讨论二十四平方和时，这种精确吻合不再成立. 在 \S\,9.16 开头，Hardy 写下了这样一句冷静的判断：
+\begin{quote}
+\itshape
+If $\vartheta^{-24}\Theta_{24}$ were bounded in $D_3$, it would follow that $\vartheta^{24}=\Theta_{24}$ and $r_{24}(n)=\rho_{24}(n)$; but this is untrue.
+\end{quote}
+
+这里的 $D_3$ 是 Hardy 使用的模子群 $\Gamma_3$ 的基本域，$\vartheta^{24}(x)=1+\sum_{n=1}^\infty r_{24}(n)x^n$ 是二十四平方和表示数的生成函数，而 $\Theta_{24}(x)=1+\sum_{n=1}^\infty \rho_{24}(n)x^n$ 则是奇异级数的生成函数. 把两者展开，甚至不需要看高次项，单看 $n=1$ 就足以发现巨大的落差.
+
+一方面，要将 $1$ 写成二十四个整数平方之和，只能在二十四个坐标中任选一个取 $\pm 1$，其余全取 $0$，所以实际表示数是明明白白的整数 $r_{24}(1)=48$. 另一方面，Hardy 在式~(9.9.4) 中求出的奇异级数却是
+\begin{equation*}\tag{9.9.4}
+\rho_{24}(n)=\frac{16}{691}\sigma_{11}^*(n),
+\end{equation*}
+其中 $\sigma_{11}^*(n)$ 在 $n$ 为奇数时等于 $n$ 的所有正因数的 $11$ 次幂之和（在 $n$ 为偶数时等于偶因数与奇因数的 $11$ 次幂之和的差），而神秘的素数 $691$ 源自 Bernoulli 数 $B_6=691/2730$. 代入 $n=1$，奇异级数给出的是一个小于 $1$ 的分数 $\rho_{24}(1)=16/691$.
+
+两者相差的 $48-\frac{16}{691}=\frac{33152}{691}$ 从何而来？Hardy 在式~(9.16.1)--(9.16.2) 中写出了 Ramanujan 发现的精确关系：
+\begin{equation*}\tag{9.16.1}
+\vartheta^{24}(x)=\Theta_{24}(x)-\frac{33152}{691}g(-x)-\frac{65536}{691}g(x^2),
+\end{equation*}
+\begin{equation*}\tag{9.16.2}
+g(x)=x\bigl\{(1-x)(1-x^2)(1-x^3)\cdots\bigr\}^{24}=\sum_{n=1}^{\infty}\tau(n)x^n.
+\end{equation*}
+逐项比较系数，便得到 \S\,9.17 中著名的 Ramanujan 公式（约定 $y$ 非整数时 $\tau(y)=0$）：
+\begin{equation*}\tag{9.17.1}
+r_{24}(n)=\frac{16}{691}\sigma_{11}^*(n)+e_{24}(n),
+\end{equation*}
+\begin{equation*}\tag{9.17.2}
+e_{24}(n)=\frac{128}{691}\bigl\{(-1)^{n-1}259\,\tau(n)-512\,\tau(\tfrac12 n)\bigr\}.
+\end{equation*}
+当 $n=1$ 时，$\tau(1)=1$、$\tau(\tfrac12)=0$，误差项给出 $e_{24}(1)=\frac{128\times 259}{691}=\frac{33152}{691}$，与主项 $\frac{16}{691}$ 相加正好等于 $\frac{33168}{691}=48$.
+
+可这反而留下了一个更耐人寻味的问题：\textbf{$r_{24}(1)=48$ 在数标准格 $\ZZ^{24}$ 中的单位向量，那么由实数体积和各个素数处的同余解数算出来的 $\rho_{24}(1)=16/691$，究竟在数什么？}
+
+C.~L.~Siegel 给出了第一个根本回答~\cite{Siegel1935}：$\rho_{24}(1)=16/691$ 不是某一个格的计数，而是\textbf{整个「属」（genus）中所有同属格的加权平均}；只有当属里仅含一个类时（例如八平方和），平均值才等于单个格的表示数. 三十年后，A.~Weil 又把这个有限加权平均改写成正交群商空间上的一个 \textbf{theta 积分}，从而把 Siegel 的计数公式提升为自守形式理论中的 \textbf{Siegel--Weil 公式}~\cite{Weil1964,Weil1965}. 一旦在这个积分里把常数函数 $1$ 换成一般的源自守形式，便得到当代数论中极为有力的工具——\textbf{theta 提升}（theta lift）：它不仅串联起二次型、模形式与 $L$ 函数，更在本书所呈现的 Levent Alpöge 与 Claude 的广义 Riemann 猜想（GRH）证明中，以「多步提升链」的形式承担了核心机制.
+
+下面我们顺着这条思想脉络，从 Hardy 书中的经典公式一步步走到本书的主线框架.
+
+\section{奇异级数、Eisenstein 级数与更小的二维格}
+
+先交代一下记号：在第九讲 \S\,9.11，由于字母 $q$ 要留给有理点 $e^{2p\pi i/q}$ 的分母，Hardy 在式~(9.2.1) 中采用 $x=e^{\pi i\tau}$（$\ImPart\tau>0$）；到了第十二讲，他又回到 Ramanujan 常用的 $q=e^{\pi i\tau}$ 与 $\phi(q)=\vartheta_3(0,\tau)$. 而在现代模形式文献中，通常取 $q=e^{2\pi i\tau}$，因此 Hardy 的上半平面变量 $\tau_H$ 满足 $\tau_H=2\tau$.
+
+回到 $\vartheta^{2s}(x)=1+\sum_{n=1}^{\infty}r_{2s}(n)x^n$. 为了从解析角度估计 $r_{2s}(n)$，Hardy 在 \S\,9.8 沿用他与 Littlewood 创立的圆法思想：考察 $\vartheta^{2s}(x)$ 在单位圆上每个有理点 $e^{2p\pi i/q}$ 附近的主奇性，把所有这些局部主部加起来构造辅助函数 $\Theta_{2s}(x)=1+\sum_{n=1}^{\infty}\rho_{2s}(n)x^n$，从而得到式~(9.8.4)--(9.8.5) 的\textbf{奇异级数}：
+\begin{equation*}\tag{9.8.4}
+\rho_{2s}(n)=\frac{\pi^s}{\Gamma(s)}n^{s-1}\sum_{q=1}^{\infty}A_q(n),
+\end{equation*}
+其中 $A_1(n)=1$，当 $q>1$ 时（$p\,(q)$ 表示 $p$ 遍历模 $q$ 的既约剩余系）
+\begin{equation*}\tag{9.8.2,\,9.8.5}
+A_q(n)=q^{-2s}\sum_{p\,(q)}S_{p,q}^{2s}\,e^{-2np\pi i/q},
+\qquad
+S_{p,q}=\sum_{j=1}^{q}e^{2j^2p\pi i/q}.
+\end{equation*}
+式~(9.8.4) 的结构极具几何与算术透明性. 前面的外部因子 $\alpha_\infty(n)=\pi^s n^{s-1}/\Gamma(s)$ 是 $2s$ 维实球 $\sum_{j=1}^{2s}u_j^2\le t$ 的体积 $\pi^s t^s/\Gamma(s+1)$ 在 $t=n$ 处的导数，刻画了方程在\textbf{实处}的解密度；后面的和 $\sum_{q=1}^{\infty}A_q(n)$ 则因为 $A_q(n)$ 的积性，在 $2s\ge 6$ 绝对收敛时分解为所有素数 $p$ 处的局部因子之积 $\prod_p\alpha_p(n)$，其中 $\alpha_p(n)=\sum_{r\ge 0}A_{p^r}(n)=\lim_{k\to\infty}p^{-k(2s-1)}N_{p^k}(n)$ 恰好是方程模 $p^k$ 的归一化解数极限.
+
+当 $2s\equiv 0\pmod 8$ 时，Gauss 和的 $2s$ 次幂大幅简化，Hardy 在 \S\,9.9 借助 Ramanujan 和把整条奇异级数封闭求值，得到式~(9.9.2)：
+\begin{equation*}\tag{9.9.2}
+\rho_{2s}(n)=\frac{\pi^s}{\Gamma(s)(1-2^{-s})\zeta(s)}\sigma_{s-1}^*(n).
+\end{equation*}
+令 $2s=8$，利用 $(1-2^{-4})\zeta(4)=\pi^4/96$，便得到式~(9.9.3)：
+\begin{equation*}\tag{9.9.3}
+\rho_8(n)=16\sigma_3^*(n),
+\end{equation*}
+而随后 \S\S\,9.13--9.15 的模函数论证进一步确立了 $r_8(n)=\rho_8(n)$. 不妨拿 $n=2$ 亲手验算三种完全不同的算法：
+\begin{itemize}
+\item \emph{直接计数.} 把 $2$ 写成八个整数平方之和，只需从 $8$ 个坐标中选 $2$ 个并各自赋予 $\pm 1$，得 $r_8(2)=4\binom{8}{2}=112$.
+\item \emph{Hardy 式~(9.9.3).} $n=2$ 的偶因数是 $2$、奇因数是 $1$，故 $\sigma_3^*(2)=2^3-1^3=7$，立得 $\rho_8(2)=16\times 7=112$.
+\item \emph{局部密度乘积.} 实处密度为 $\alpha_\infty(2)=4\pi^4/3$，二进密度为 $\alpha_2(2)=7/8$，所有奇素数处的密度乘积为 $\prod_{p>2}(1-p^{-4})=96/\pi^4$（详细推导见\secref{sec:appC-calculations}），三者相乘恰为
+\[
+\frac{4\pi^4}{3}\cdot\frac{7}{8}\cdot\frac{96}{\pi^4}=112.
+\]
+\end{itemize}
+
+更值得注意的是，为了证明 $\vartheta^{-2s}\Theta_{2s}$ 在模子群 $\Gamma_3$ 下不变，Hardy 在 \S\,9.14 把奇异级数的生成函数 $\Theta_{2s}$ 直接改写成了格点上的双重级数——也就是经典的 \textbf{Eisenstein 级数}. 记 $\eta(s)=(1-2^{-s})\zeta(s)$，Hardy 的式~(9.14.8) 写道：
+\begin{equation*}\tag{9.14.8}
+\eta(s)\Theta_{2s}=\frac{1}{2}\sum_{p+q\equiv 1\pmod 2}\frac{1}{(p-q\tau)^s},
+\end{equation*}
+求和遍历所有满足 $p+q$ 为奇数的整数对 $(p,q)$. 这意味着早在 Siegel--Weil 理论成型之前，奇异级数与 Eisenstein 级数之间的直接联系就已经出现在 Hardy 的书中.
+
+为了方便后文直观地操控多个向量，我们先暂时离开八维的 $\ZZ^8$，转向 Hardy 第十二讲里的一个更小的二维格~\cite[\S\,12.2 与 \S\,12.10，第~213、220~页]{Hardy1940}. 从这里起我们统一使用现代模形式记号 $q=e^{2\pi i\tau}$（就 $q$ 的形式幂级数而言，与 Hardy 第十二讲中取 $q=e^{\pi i\tau_H}$ 的 $\phi(q)=1+2q+2q^4+\cdots$ 完全一致，只是变量差一个因子 $\tau_H=2\tau$）. 取二维格 $L=\ZZ^2$ 及正定二次型 $Q(u,v)=u^2+3v^2$，它的次数一 theta 级数就是两个一维 theta 级数的乘积：
+\[
+\Theta_L^{(1)}(\tau)=\sum_{(u,v)\in L}q^{Q(u,v)}=\phi(q)\phi(q^3).
+\]
+Hardy 在 \S\,12.10 式~(12.10.2) 中引用了 Ramanujan 笔记本里的一个 Lambert 级数恒等式（与开头 Jacobi 的式~(9.2.2)--(9.2.3) 形式相仿，右端符号以模 $6$ 为周期，跳过 $3$ 的倍数）：
+\begin{equation*}\tag{12.10.2}
+\phi(q)\phi(q^3)=1+2\left(\frac{q}{1-q}-\frac{q^2}{1+q^2}+\frac{q^4}{1+q^4}-\frac{q^5}{1-q^5}+\cdots\right).
+\end{equation*}
+例如求 $Q(u,v)=u^2+3v^2=4$ 的整数解：直接枚举有 $(\pm 2,0)$ 和 $(\pm 1,\pm 1)$ 共 $6$ 组. 看式~(12.10.2) 右端，对 $q^4$ 项有贡献的只有前三项分式：$\frac{q}{1-q}=q+\cdots+q^4+\cdots$、$-\frac{q^2}{1+q^2}=-q^2+q^4-\cdots$ 以及 $+\frac{q^4}{1+q^4}=q^4-\cdots$，它们各自的 $q^4$ 系数恰好都是 $+1$，于是得到 $2(1+1+1)=6$. 事实上，利用 $\frac{q^d}{1+q^d}=\frac{q^d}{1-q^d}-\frac{2q^{2d}}{1-q^{2d}}$ 稍作变形即可看出，式~(12.10.2) 的右端同样是一个权 $1$ 的 Eisenstein 级数组合（$2E_{\chi_{-3}}(q)+4E_{\chi_{-3}}(q^4)$）. 之所以像 $u^2+3v^2$ 这样单个格的 theta 级数也能直接等于 Eisenstein 级数，背后原因与八平方和如出一辙——判别式 $-12$ 的本原约化二次型同样只有一个类.
+
+\section{同时取多个向量：Gram 矩阵与高次数 Siegel Theta 级数}
+
+经典的 theta 级数 $\Theta_L^{(1)}$ 每次只挑选格 $L$ 中的\textbf{单个}向量 $x$，记录它的平方长度 $Q(x)$. 但在二次型理论中，一个自然而深刻的问题随之而来：如果我们一次同时挑选 $d$ 个向量 $\mathbf x=(x_1,\ldots,x_d)\in L^d$，不仅关心它们各自的长度，还想记录它们彼此之间的夹角与相对位置，生成函数应当怎样改写？
+
+继续用上一节的二维格 $L=\ZZ^2$、$Q(u,v)=u^2+3v^2$ 来动手实验. 记与之配套的对称双线性型为
+\[
+b\bigl((u,v),(u',v')\bigr)=uu'+3vv',
+\]
+满足 $b(x,x)=Q(x)$. 现在同时取两个向量 $x_1,x_2\in L$，要求 $Q(x_1)=1$ 且 $Q(x_2)=4$. 如果只看长度，第一个向量有 $2$ 种取法 $(\pm 1,0)$，第二个向量有 $6$ 种取法 $(\pm 2,0)$ 与 $(\pm 1,\pm 1)$，合起来共有 $2\times 6=12$ 组有序向量对.
+
+可是这 $12$ 组向量对的几何姿态并不相同：有的彼此共线，有的彼此成锐角或钝角. 要把相对位置也记录下来，就必须引入内积 $a=b(x_1,x_2)$，把两向量的全部度量信息记入 $2\times 2$ 的 \textbf{Gram 矩阵}：
+\[
+G_{(x_1,x_2)}=\begin{pmatrix} Q(x_1) & b(x_1,x_2) \\ b(x_2,x_1) & Q(x_2) \end{pmatrix}=\begin{pmatrix} 1 & a \\ a & 4 \end{pmatrix}.
+\]
+设 $x_1=(\varepsilon,0)$（$\varepsilon=\pm 1$）、$x_2=(u,v)$，则内积为 $a=\varepsilon u$. 按 $a$ 的取值，这 $12$ 组向量对立刻分成四类，见表~\ref{tab:appC-gram-pairs}. 注意当 $(u,v)=(\pm 1,\pm 1)$ 时，$v$ 的正负号不影响内积 $a=\varepsilon u$，因此 $a=\pm 1$ 各对应 $4$ 组，总计依然是 $2+2+4+4=12$ 组.
+
+\begin{table}[htbp]
+\centering
+\caption{二维格 $Q(u,v)=u^2+3v^2$ 中满足 $Q(x_1)=1$、$Q(x_2)=4$ 的向量对按内积分类}
+\label{tab:appC-gram-pairs}
+\small
+\begin{tabular}{@{}clc@{}}
+\toprule
+Gram 矩阵中的 $a=b(x_1,x_2)$ & 对应的向量对 $(x_1,x_2)$ & 组数 \\
+\midrule
+$a=2$ & $\bigl((1,0),(2,0)\bigr),\ \bigl((-1,0),(-2,0)\bigr)$ & $2$ \\
+$a=-2$ & $\bigl((1,0),(-2,0)\bigr),\ \bigl((-1,0),(2,0)\bigr)$ & $2$ \\
+$a=1$ & $\bigl((1,0),(1,\pm 1)\bigr),\ \bigl((-1,0),(-1,\pm 1)\bigr)$ & $4$ \\
+$a=-1$ & $\bigl((1,0),(-1,\pm 1)\bigr),\ \bigl((-1,0),(1,\pm 1)\bigr)$ & $4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+推广到一般情形：对任意正定格 $(L,Q)$ 及满足 $b(x,x)=Q(x)$ 的对称双线性型 $b$，给出一组有序向量 $\mathbf x=(x_1,\ldots,x_d)\in L^d$，其 Gram 矩阵 $G_{\mathbf x}=\bigl(b(x_i,x_j)\bigr)_{1\le i,j\le d}$ 完整记录了这组向量所诱导的 $d$ 元二次型：
+\[
+Q\!\left(\sum_{i=1}^{d} t_i x_i\right)=t^{\mathsf T}G_{\mathbf x}t.
+\]
+要让不同的 Gram 矩阵 $G$ 对应不同的 Fourier 指标，单一复变量 $\tau$ 就不够用了——我们必须用 $d\times d$ 复对称矩阵变量 $Z=X+iY$（要求虚部 $Y$ 正定，即 $Z$ 属于\textbf{次数 $d$ 的 Siegel 上半空间} $\mathbb H_d$）来与之配对，这就是\textbf{次数 $d$ 的 Siegel theta 级数}~\cite[定义~2.1.1]{Li2023}：
+\[
+\Theta_L^{(d)}(Z)=\sum_{\mathbf x\in L^d}e^{2\pi i\tr(G_{\mathbf x}Z)}.
+\]
+回头看刚才 $d=2$ 的例子，就能一眼明白矩阵变量的全部妙处. 对于 $G=\bigl(\begin{smallmatrix}1&a\\a&4\end{smallmatrix}\bigr)$ 与对称矩阵 $Z=\bigl(\begin{smallmatrix}z_{11}&z_{12}\\z_{12}&z_{22}\end{smallmatrix}\bigr)$，矩阵迹展开为
+\[
+\tr(GZ)=z_{11}+4z_{22}+2az_{12}.
+\]
+对角变量 $z_{11},z_{22}$ 负责追踪两个向量的平方长度 $1$ 和 $4$，而非对角变量 $z_{12}$ 则以系数 $2a$（来自矩阵中两个对称的非对角元）精确分辨它们之间的内积 $a$. 如果强行令 $z_{12}=0$，非对角信息被抹去，$\Theta_L^{(2)}\!\bigl(\begin{smallmatrix}z_{11}&0\\0&z_{22}\end{smallmatrix}\bigr)$ 退化为乘积 $\Theta_L^{(1)}(z_{11})\Theta_L^{(1)}(z_{22})$，上面四个不同的 Fourier 项随之合并回单一的系数 $2+2+4+4=12$. 一句话总结：\textbf{次数 $d$ 决定了我们一次选取多少个向量，而矩阵变量 $Z$ 的非对角元决定了我们能否看清它们的相对几何位置.}（若改用 Hardy 与 Siegel 1935 年原论文的变量 $Z_H=2Z$，则指数写作 $\pi i\tr(G_{\mathbf x}Z_H)$；Chao Li~\cite{Li2023} 的极化双线性型为本文 $b$ 的两倍，其 Fourier 指标取极化 Gram 矩阵的一半.）
+
+\section{从奇异级数到 Siegel--Weil 公式}
+
+现在回到开篇悬而未决的谜题：为什么八平方和有 $r_8(n)=\rho_8(n)$，而二十四平方和却有 $r_{24}(1)=48\ne 16/691=\rho_{24}(1)$？
+
+事实上，Hardy 本人在第九讲文末的注释（\S\,9.3，第~158--159~页）中就已经指明了背后的原因，并直接引述了 Siegel 1935 年的奠基性论文~\cite{Siegel1935,Hardy1940}：
+\begin{quote}
+\itshape
+In order that $e_{2s}(n)=0$ for all $n$, it is necessary and sufficient that $2s\le 8$. In these cases only $r_{2s}(n)$ is a `divisor function', represented by the `singular series' of \S\,9.8. The `reasons' for this have been shown in a new light recently by Siegel, \textup{Annals of Math.} (2), \textbf{36} (1935), 527--606.
+
+If the discriminant is $1$, then $x_1^2+x_2^2+\cdots+x_k^2$ is a representative of a class in the principal genus. In order that there should be only one such class, it is necessary and sufficient that $k\le 8$. In this case only is $r_k(n)$ the sum of the singular series.
+\end{quote}
+
+这段话引出了二次型算术中最核心的一对概念：\textbf{属}（genus）与\textbf{整等距类}（integral isometry class）.\footnote{术语说明：二次型与格理论中的英文 \emph{genus} 译作「属」，衡量局部等距性；代数曲线理论中的 \emph{genus} 则是拓扑不变量，译作「亏格」. 因此文献~\cite[第~331~页]{Li2023}中的 “within its genus class” 意指「在同一属内」.} 如果两个正定整格在实数域 $\RR$ 上等距，且在每一个 $p$ 进整数环 $\ZZ_p$ 上也都等距，就说它们属于同一个\textbf{属} $\mathcal G$；如果它们在整数环 $\ZZ$ 上全局等距，才属于同一个整等距类 $[M]$. 一个属总是只包含有限多个整等距类.
+
+症结就在局部信息的界限上：既然奇异级数 $\alpha_\infty(n)\prod_p\alpha_p(n)$ 完全由实处和各个 $\ZZ_p$ 上的局部解密度构成，它自然无法区分局部处处等距、全局却不等距的两个同属格；它所能反映的，必然是整个属 $\mathcal G$ 的平均. Siegel 证明，只要把每个整等距类 $[M]\in\mathcal G$ 以其整自同构群阶数的倒数 $1/|\mathrm O(M)|$ 为权重作归一化平均，定义\textbf{属 theta 级数}~\cite[式~(2.1.3.1)]{Li2023}：
+\[
+\overline{\Theta}_{\mathcal G}^{(d)}(Z)
+=\frac{\displaystyle\sum_{[M]\in\mathcal G}\frac{1}{|\mathrm O(M)|}\,\Theta_M^{(d)}(Z)}
+      {\displaystyle\sum_{[M]\in\mathcal G}\frac{1}{|\mathrm O(M)|}},
+\]
+那么在次数 $d=1$、对正定格的表示数 $r_M(n)=\#\{x\in M:Q(x)=n\}$（$n>0$）而言，Siegel 表示数公式给出精确恒等式~\cite{Siegel1935,Li2023}：
+\[
+\frac{\displaystyle\sum_{[M]\in\mathcal G} r_M(n)/|\mathrm O(M)|}
+     {\displaystyle\sum_{[M]\in\mathcal G} 1/|\mathrm O(M)|}
+=\alpha_\infty(n)\prod_p\alpha_p(n).
+\]
+
+回到平方和问题，答案便一目了然：
+\begin{itemize}
+\item \emph{八平方和（$I_8=\ZZ^8$）.} 标准格 $I_8$ 所在的属里\textbf{只有它自己这一个类}（顺带一提，著名的 $E_8$ 格行列式虽也为 $1$，但它在 $\ZZ_2$ 上的范数恒为偶数，因而落在另一个属里）. 属中仅有一类时，加权平均退化为单个格本身，于是 $r_8(n)=\rho_8(n)=16\sigma_3^*(n)$ 毫无误差.
+\item \emph{二十四平方和（$I_{24}=\ZZ^{24}$）.} $I_{24}$ 所在的属庞大得多，包含着大量互不等距的二十四维幺模格. 由于同属格的内积均为整数，Cauchy--Schwarz 不等式迫使其中任意两对不同的单位向量 $\{\pm u\}$ 互相正交；而一旦凑齐 $24$ 对正交单位向量，它们就张成一个行列式为 $1$ 的满秩子格，从而把整个格强制等同于 $I_{24}$ 本身. 因此，属里其他所有格的单位向量数都严格少于 $48$（绝大多数甚至一个也没有），最终把属平均从 $r_{24}(1)=48$ 拉低到 $\rho_{24}(1)=16/691$——本节末将用 Siegel--Weil 公式对此给出双侧的详细论证.
+\end{itemize}
+
+如果嫌二十四维太过遥远，Hardy 第十二讲 \S\,12.22（第~229~页）恰好提供了一个清晰的二维例子~\cite{Hardy1940}. 在讨论判别式 $-n$ 的复乘奇异模数时，Hardy 指出：当 $n=23$ 时，二次型共有 $N=1$ 个属，属内有 $r=3$ 个真等价类（即 $\SL_2(\ZZ)$-类数 $h=Nr=3$），由此解释了奇异模数不变量 $F_{23}$ 满足三次方程
+\[
+F^3-F-1=0.
+\]
+这三个约化真等价类具体是 $Q_A(x,y)=x^2+xy+6y^2$ 与 $Q_B^\pm(x,y)=2x^2\pm xy+3y^2$. 如果放宽到全整等距群 $\GL_2(\ZZ)$，反射 $(x,y)\mapsto(x,-y)$ 会把 $Q_B^+$ 与 $Q_B^-$ 合并成同一类 $[Q_B]$，于是该属只剩 $[Q_A]$ 与 $[Q_B]$ 两个整等距类. 如\secref{sec:appC-calculations}所示，它们确实同属，且全自同构群阶数分别为 $|\mathrm O(Q_A)|=4$ 与 $|\mathrm O(Q_B)|=2$，归一化权重分别是 $\frac{1/4}{1/4+1/2}=\frac{1}{3}$ 和 $\frac{1/2}{1/4+1/2}=\frac{2}{3}$. 于是这个属的 theta 级数为
+\[
+\overline{\Theta}_{\mathcal G}^{(1)}=\frac{1}{3}\Theta_A+\frac{2}{3}\Theta_B.
+\]
+看看 $q$ 的一次项系数：$Q_A$ 用 $(\pm 1,0)$ 两次表示 $1$，而 $Q_B$ 的最小正值就是 $2$，根本无法表示 $1$. 所以属平均在 $n=1$ 处的值是 $\frac{1}{3}\cdot 2+\frac{2}{3}\cdot 0=\frac{2}{3}$——这正是 $r_{24}(1)=48$ 与 $\rho_{24}(1)=16/691$ 现象在二维情形下的直接重现.
+
+\subsection{Weil 的视角：Siegel--Weil 公式的精确表述}
+
+Siegel 的公式给出了一个漂亮的有限和，但为什么权重偏偏是 $1/|\mathrm O(M)|$？为什么这个有限和总等于一个 Eisenstein 级数？1964--1965 年，André Weil 在阿代尔（adele）群与表示论的框架下给出了统一而深刻的回答~\cite{Weil1964,Weil1965,Li2023}.
+
+设秩为偶数 $r$ 的有理非退化二次空间 $V$（在经典正定格情形取 $V=L\otimes\QQ$），记 $G=\mathrm O(V)$ 为其正交群，并引入辛群 $H=\mathrm{Sp}_{2d}$ 作为目标群，$(G,H)$ 构成一对\textbf{对偶约化对}~\cite{Howe1979,Howe1989}. 阿代尔环 $\AAA=\RR\times\AAf$ 把实数域与所有 $p$ 进数域纳入同一框架. 核心工具是 \textbf{Weil 表示} $\omega(g,h)$，它让源群变量 $g\in G(\AAA)$ 与目标群变量 $h\in H(\AAA)$ 同时作用在 Schwartz 测试函数 $\varphi\in\mathcal S(V(\AAA)^d)$ 上. 将变换后的函数在全部有理向量组 $\mathbf x\in V(\QQ)^d$ 上求和，得到双变量的 \textbf{theta 核} $\theta_\varphi(g,h)$；再把它与源群上的自守函数 $f(g)$ 相乘并在自守商空间上积分，便定义了 \textbf{theta 提升} $\mathcal T_\varphi f$~\cite[第~334--337~页]{Li2023}：
+\[
+\begin{aligned}
+\theta_\varphi(g,h)&=\sum_{\mathbf x\in V(\QQ)^d}\bigl(\omega(g,h)\varphi\bigr)(\mathbf x),\\
+(\mathcal T_\varphi f)(h)&=\int_{G(\QQ)\backslash G(\AAA)}\theta_\varphi(g,h)\,f(g)\,dg.
+\end{aligned}
+\]
+
+为了陈述 Siegel--Weil 公式，还需要明确右端的 \textbf{Siegel Eisenstein 级数}. 令 $P\subset\mathrm{Sp}_{2d}$ 为稳定 $\QQ^{2d}$ 中一个极大迷向子空间的 \textbf{Siegel 抛物子群}（当 $d=1$ 时，$\mathrm{Sp}_2=\SL_2$，$P=B$ 就是上三角 Borel 子群）. 测试函数 $\varphi$ 在原点 $\mathbf 0\in V(\AAA)^d$ 处的取值给出特殊点 $s_0=\frac{r-d-1}{2}$ 处的 \textbf{Siegel--Weil 截面}
+\[
+f_\varphi(h,s_0)=\bigl(\omega(1,h)\varphi\bigr)(\mathbf 0),
+\]
+再由 Iwasawa 分解延拓为复参数 $s$ 的标准截面 $f_\varphi(h,s)$. 在 $\RePart s$ 充分大时，对商集 $P(\QQ)\backslash\mathrm{Sp}_{2d}(\QQ)$ 求和即定义 \textbf{Siegel Eisenstein 级数}：
+\[
+E(h,s,\varphi)=\sum_{\gamma\in P(\QQ)\backslash\mathrm{Sp}_{2d}(\QQ)}f_\varphi(\gamma h,s).
+\]
+
+\begin{theorem}[Siegel--Weil 公式~\cite{Weil1965,Li2023}]
+设 $V$ 的 Witt 指数（极大迷向子空间的维数）为 $\alpha$. 在 \emph{Weil 收敛条件}下——即 $V$ 各向异性（特别地，$V$ 正定时 $\alpha=0$），或者 $r-\alpha>d+1$——左端的 theta 积分与右端的 Eisenstein 级数在 $s_0=\frac{r-d-1}{2}$ 处均收敛（边界情形按解析延拓理解）；当 $G(\QQ)\backslash G(\AAA)$ 上的 Tamagawa 测度 $dg$ 归一化为总体积 $1$ 时，有
+\[
+\kappa\int_{\mathrm O(V)(\QQ)\backslash\mathrm O(V)(\AAA)}\theta_\varphi(g,h)\,dg
+=E(h,s_0,\varphi),
+\qquad
+s_0=\frac{r-d-1}{2},
+\qquad
+\kappa=\begin{cases} 1, & r>d+1,\\ 2, & r\le d+1. \end{cases}
+\]
+\end{theorem}
+
+现在将这一抽象公式落回正定格 $L$（秩 $r$ 为偶数，$V=L\otimes\QQ$）：取测试函数 $\varphi=\varphi_\infty\otimes\bigotimes_p\varphi_p$，其中每个有限素数 $p$ 处取局部格 $L_p^d$（$L_p=L\otimes\ZZ_p$）的示性函数 $\mathbf 1_{L_p^d}$，实处取高斯函数 $\varphi_\infty(\mathbf x)=e^{-2\pi\tr(G_{\mathbf x})}$；并在目标群实处取 $h_Z\in\mathrm{Sp}_{2d}(\RR)$（先作伸缩 $Y^{1/2}$、再作平移 $X$，有限处取单位元）. 拆开左端 theta 积分中的两个变量，Siegel 的属平均公式便自然显现出来：
+\begin{enumerate}
+\item \emph{固定 $g=1$，考察实处变量 $h_Z$.} 有限处的示性函数 $\mathbf 1_{L_p^d}$ 恰好将有理向量组 $V(\QQ)^d$ 限制到整格 $L^d$ 上. 实处伸缩把高斯函数变为 $(\det Y)^{r/4}e^{-2\pi\tr(G_{\mathbf x}Y)}$，平移则乘上相位 $e^{2\pi i\tr(G_{\mathbf x}X)}$. 除去公共因子 $(\det Y)^{r/4}$ 后，两项相乘正是上一节的 Siegel theta 级数 $\Theta_L^{(d)}(Z)=\sum_{\mathbf x\in L^d}e^{2\pi i\tr(G_{\mathbf x}Z)}$.
+\item \emph{让源变量 $g\in G(\AAA)$ 跑遍整个商空间.} 在每个有限素数 $p$ 处，$g_p$ 把局部格 $L_p$ 变成 $g_p L_p$，所得全局格 $M=V(\QQ)\cap\prod_p g_p L_p$ 恰好遍历 $L$ 所在的整个属 $\mathcal G$. 按保持局部格的紧开子群 $K_L$ 将 $G(\QQ)\backslash G(\AAA)$ 拆成双陪集，每一个整等距类 $[M]\in\mathcal G$ 恰好出现一次；而它所占的商测度体积正等于固定紧子群 $K_L$ 除以有限稳定子 $\mathrm O(M)$ 的结果，因而天然与 $1/|\mathrm O(M)|$ 成正比.
+\end{enumerate}
+
+由此，把上面的 Siegel--Weil 公式两边同除以 $\kappa(\det Y)^{r/4}$，并记归一化后的 Siegel Eisenstein 级数为 $E_{\mathcal G}^{(d)}(Z)=\kappa^{-1}(\det Y)^{-r/4}\allowbreak E(h_Z,s_0,\varphi)$（使其常数项为 $1$），便得到经典的三方恒等式~\cite[定理~2.1.3 与定理~2.2.9]{Li2023}：
+\[
+\underbrace{(\det Y)^{-r/4}(\mathcal T_\varphi 1)(h_Z)}_{\text{Weil 的 theta 积分}}
+=\underbrace{\overline{\Theta}_{\mathcal G}^{(d)}(Z)}_{\text{Siegel 的加权属 theta 级数}}
+=\underbrace{E_{\mathcal G}^{(d)}(Z)}_{\text{归一化的 Siegel Eisenstein 级数}}.
+\]
+至此，Hardy 书中的奇异级数（乃至式~(9.14.8) 的 Eisenstein 级数）、Siegel 的格属平均，以及 Weil 对常数函数 $1$ 所作的 theta 积分，统一为同一个数学对象的三种表达.
+
+\subsection{回到开头：用 Siegel--Weil 公式详细验证 \texorpdfstring{$\rho_{24}(1)=16/691$}{rho\_24(1) = 16/691}}
+
+有了 Siegel--Weil 公式的明确表述，现在可以逐项对照，把开篇的 $\rho_{24}(1)=16/691$ 放进公式两端作完整检验.
+
+取 $V=\QQ^{24}$、$L=I_{24}=\ZZ^{24}$、$d=1$（此时 $\mathrm{Sp}_2=\SL_2$，$P=B$ 为上三角 Borel 子群），则 $r=24>d+1=2$，故 $\kappa=1$、$s_0=\frac{24-1-1}{2}=11$. 取测试函数 $\varphi=e^{-2\pi Q(x)}\otimes\mathbf 1_{\widehat{I_{24}}}$ 与实处变量 $h_\tau\in\SL_2(\RR)$（$\tau=X+iY\in\mathbb H_1$，令 $q=e^{2\pi i\tau}=e^{\pi i\tau_H}$，$\tau_H=2\tau$）. 两边同除以 $Y^{r/4}=Y^6$ 后，Siegel--Weil 公式具体化为：
+\[
+\underbrace{Y^{-6}\int_{\mathrm O(V)(\QQ)\backslash\mathrm O(V)(\AAA)}\theta_\varphi(g,h_\tau)\,dg}_{\text{左端：属 theta 级数 }\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}(\tau)}
+\;=\;
+\underbrace{Y^{-6}\sum_{\gamma\in B(\QQ)\backslash\SL_2(\QQ)}\bigl(\omega(1,\gamma h_\tau)\varphi\bigr)(0)}_{\text{右端：Siegel Eisenstein 级数 }Y^{-6}E(h_\tau,11,\varphi)}.
+\]
+下面分别把\textbf{右端}、\textbf{左端}各自算到 $q^1$ 项系数 $16/691$，再直接说明\textbf{两端为何相等}.
+
+\paragraph{第一步：算清 Siegel--Weil 右端——$Y^{-6}E(h_\tau,11,\varphi)$ 就是 Hardy 的 $\Theta_{24}$，其 $q^1$ 项系数为 $16/691$.}
+先看右端的陪集求和 $B(\QQ)\backslash\SL_2(\QQ)$. 商集由单位元陪集（底行 $c=0$，给出常数项 $1$）和所有满足 $c\ge 1$、$\gcd(c,d)=1$ 的底行 $(c,d)$ 组成. 对 $\gamma=\bigl(\begin{smallmatrix}a&b\\c&d\end{smallmatrix}\bigr)\in\SL_2(\ZZ)$（$c\ge 1$），利用 Bruhat 分解
+\[
+\begin{pmatrix}a&b\\c&d\end{pmatrix}
+=\begin{pmatrix}1&a/c\\0&1\end{pmatrix}
+ \begin{pmatrix}c^{-1}&0\\0&c\end{pmatrix}
+ \begin{pmatrix}0&-1\\1&0\end{pmatrix}
+ \begin{pmatrix}1&d/c\\0&1\end{pmatrix}
+\]
+逐素位计算 $\bigl(\omega(1,\gamma h_\tau)\varphi\bigr)(0)$：
+\begin{itemize}
+\item \emph{实处.} 除去 $Y^6$ 后给出经典的权 $12$ 自守因子 $(c\tau+d)^{-12}$.
+\item \emph{有限处.} 双线性型 $B(x,y)=2\sum_{j=1}^{24}x_j y_j$ 对应的自对偶 Haar 测度满足 $\vol(\ZZ_p^{24})=1$（$p>2$）与 $\vol(\ZZ_2^{24})=2^{-12}$（$p=2$）. 把 $\omega_p(1,\gamma)\mathbf 1_{\ZZ_p^{24}}$ 在 $0$ 处的取值沿所有有限素数相乘（Weil 指标之积在 $8\mid 24$ 时为 $1$），由中国剩余定理即得归一化 Gauss 和的 $24$ 次幂：
+\[
+\bigl(\omega_f(1,\gamma)\mathbf 1_{\widehat{I_{24}}}\bigr)(0)
+=2^{-12}\frac{S_{-d,c}^{24}}{c^{12}}
+=2^{-12}\epsilon_c,
+\]
+其中 $\epsilon_c$ 在 $c$ 为奇数时为 $1$、$c\equiv 2\pmod 4$ 时为 $0$、$4\mid c$ 时为 $2^{12}$——与 Hardy \S\,9.9 中的 $\epsilon_q$ 完全一致.
+\end{itemize}
+把 $\tau_H=2\tau$ 代入 $2^{12}(c\tau+d)^{12}=(2d+c\tau_H)^{12}$，并令 $p=-d$（利用指数 $12$ 为偶数），Weil 的 Siegel Eisenstein 级数逐项化为 \textbf{Hardy 第九讲式~(9.14.4)} 中的 $\Theta_{24}$~\cite[第~150~页]{Hardy1940}：
+\[
+Y^{-6}E(h_\tau,11,\varphi)
+=1+\sum_{\substack{c\ge 1,\ \gcd(c,d)=1}}\frac{2^{-12}\epsilon_c}{(c\tau+d)^{12}}
+=1+\sum_{\substack{c\ge 1,\ \gcd(p,c)=1}}\frac{\epsilon_c}{(2p-c\tau_H)^{12}}
+=\Theta_{24}(q).
+\]
+进一步，按 \S\,9.8 与 \S\,9.14 的 Fourier 展开（等价于计算阿代尔 Eisenstein 级数的局部 Whittaker 积分），$Y^{-6}E(h_\tau,11,\varphi)$ 的 $q^n$ 项系数就是局部表示密度之积 $\alpha_\infty(n)\prod_p\alpha_p(n)=\rho_{24}(n)$. 在 $n=1$ 处逐个素位精算各项因子：
+\begin{itemize}
+\item \emph{实处.} $24$ 维实球 $\sum_{j=1}^{24}x_j^2\le t$ 的体积为 $\dfrac{\pi^{12}}{\Gamma(13)}t^{12}=\dfrac{\pi^{12}}{12!}t^{12}$，在 $t=1$ 处对 $t$ 求导得 $\alpha_\infty(1)=\dfrac{\pi^{12}}{11!}$.
+\item \emph{奇素数 $p>2$.} 仿照\secref{sec:appC-calculations}，记 $S(u)=\sum_{x\bmod p}e_p(ux^2)$. 对 $u\not\equiv 0\pmod p$ 有 $S(u)^2=\chi_p(-1)p$，从而 $S(u)^{24}=(\chi_p(-1)p)^{12}=p^{12}$. 由加性特征正交性及 $\sum_{u=1}^{p-1}e_p(-u)=-1$，模 $p$ 解数为
+\[
+N_p(1)=\frac{1}{p}\sum_{u\bmod p}e_p(-u)S(u)^{24}=\frac{p^{24}-p^{12}}{p}=p^{23}-p^{11}.
+\]
+因右端 $1\not\equiv 0\pmod p$，每个模 $p$ 解都至少有一个非零坐标，Hensel 提升每次恰有 $p^{23}$ 个选择，故 $\alpha_p(1)=p^{-23}N_p(1)=1-p^{-12}$. 全体奇素数相乘得
+\[
+\prod_{p>2}\alpha_p(1)=\prod_{p>2}(1-p^{-12})=\frac{1}{(1-2^{-12})\zeta(12)}.
+\]
+\item \emph{素数 $p=2$.} 考察同余方程 $\sum_{j=1}^{24}x_j^2\equiv 1\pmod 8$. 奇数平方模 $8$ 为 $1$，偶数平方模 $8$ 为 $0$ 或 $4$，故奇数坐标个数必模 $4$ 余 $1$（即 $1,5,9,13,17,21$）. 由单位根滤项，奇坐标位置选法总数为
+\[
+\sum_{k\equiv 1\pmod 4}\binom{24}{k}=\frac{1}{4}\Bigl((1+1)^{24}+(1-1)^{24}-i(1+i)^{24}+i(1-i)^{24}\Bigr)=\frac{2^{24}}{4}=2^{22}
+\]
+（其中 $(1+i)^{24}=(2i)^{12}=2^{12}=(1-i)^{24}$，两项相消）. 固定奇偶位置后，每个坐标模 $8$ 有 $4$ 种取值，共 $4^{24}=2^{48}$ 组；由于偶坐标至少有 $3$ 个，任取一个偶坐标加 $2$ 都会使其平方模 $8$ 改变 $4$，在「和 $\equiv 1$」与「和 $\equiv 5\pmod 8$」间建立双射，故恰有一半合格：
+\[
+N_8(1)=\frac{1}{2}\cdot 2^{22}\cdot 2^{48}=2^{69}=8^{23},\qquad \frac{N_8(1)}{8^{23}}=1.
+\]
+对 $k\ge 3$，将模 $2^k$ 解的第一个奇坐标加 $2^{k-1}$ 仍是模 $2^k$ 的解，但平方和模 $2^{k+1}$ 恰改变 $2^k$；于是恰有一半解各有全部 $2^{24}$ 个提升，保持 $2^{-23k}N_{2^k}(1)=1$，从而 $\alpha_2(1)=1$.（也可由 Hardy \S\,9.9 核对：对 $a\ge 2$，Ramanujan 和 $c_{2^a}(1)=\mu(2^a)=0$，故 $\alpha_2(1)=A_1(1)=1$.）
+\end{itemize}
+将三部分相乘，并代入 Euler 公式 $\zeta(12)=\dfrac{2^{11}\pi^{12}}{12!}|B_{12}|$（其中 $|B_{12}|=\dfrac{691}{2730}$，即 Hardy 记号下的 $B_6$）：
+\[
+\begin{aligned}
+a_1\bigl(Y^{-6}E(h_\tau,11,\varphi)\bigr)
+&=\alpha_\infty(1)\,\alpha_2(1)\prod_{p>2}\alpha_p(1)\\
+&=\frac{\pi^{12}}{11!}\cdot 1\cdot\frac{12!}{(1-2^{-12})2^{11}\pi^{12}\cdot\frac{691}{2730}}
+=\frac{12\cdot 2730}{(4095/2)\cdot 691}
+=\frac{16}{691}.
+\end{aligned}
+\]
+公式中 $\pi^{12}$ 与 $11!$ 悉数消去，$2730/4095=2/3$，这便是 Siegel--Weil 右端 Eisenstein 级数的 $q^1$ 项系数 $\rho_{24}(1)=16/691$.
+
+\paragraph{第二步：算清 Siegel--Weil 左端——属平均就是 $\mathrm{mass}(\mathcal G_{23})/\mathrm{mass}(\mathcal G(I_{24}))=16/691$.}
+现在独立计算 Siegel--Weil 左端 $\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}(\tau)$ 的 $q^1$ 项系数，也就是加权属平均 $\dfrac{\sum_{[M]\in\mathcal G(I_{24})} r_M(1)/|\mathrm O(M)|}{\sum_{[M]\in\mathcal G(I_{24})} 1/|\mathrm O(M)|}$.
+
+任取 $M\in\mathcal G(I_{24})$ 及其中的单位向量 $u\in R_M(1)=\{x\in M:Q(x)=1\}$. 因 $M$ 幺模且 $b(u,u)=1$，每个 $x\in M$ 都能写成 $b(x,u)u+(x-b(x,u)u)$，故 $M$ 精确正交分裂为
+\[
+M=\ZZ u\oplus N,\qquad N=u^\perp,
+\]
+其中 $N$ 为 $23$ 维正定幺模格. 反之，对任意 $23$ 维正定幺模格 $N$，直和 $\ZZ e\oplus N$ 必属于 $\mathcal G(I_{24})$；而且因为偶幺模格只存在于秩为 $8$ 的倍数时，全部 $23$ 维正定幺模格都落在同一个属 $\mathcal G_{23}$ 中. 于是映射 $[(M,u)]\mapsto [u^\perp]$ 在带单位向量的等距类 $[(M,u)]$（注意 $+u$ 与 $-u$ 经反射 $u\mapsto -u$ 属同一 $\mathrm O(M)$-轨道）与 $\mathcal G_{23}$ 中的全部类 $[N]$ 之间建立一一对应，且固定 $u$ 的稳定子正是 $\operatorname{Stab}_{\mathrm O(M)}(u)\cong\mathrm O(N)$. 由轨道--稳定子定理，将全部轨道求和即得
+\[
+\sum_{[M]\in\mathcal G(I_{24})}\frac{r_M(1)}{|\mathrm O(M)|}
+=\sum_{[M]\in\mathcal G(I_{24})}\sum_{[u]\in\mathrm O(M)\backslash R_M(1)}\frac{1}{|\operatorname{Stab}_{\mathrm O(M)}(u)|}
+=\sum_{[N]\in\mathcal G_{23}}\frac{1}{|\mathrm O(N)|}
+=\mathrm{mass}(\mathcal G_{23}).
+\]
+由此可见，Siegel--Weil 左端的 $q^1$ 项系数在几何上正是\textbf{两个相邻维数幺模属的质量之比}：
+\[
+a_1\bigl(\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}\bigr)
+=\frac{\displaystyle\sum_{[M]\in\mathcal G(I_{24})} r_M(1)/|\mathrm O(M)|}
+      {\displaystyle\sum_{[M]\in\mathcal G(I_{24})} 1/|\mathrm O(M)|}
+=\frac{\mathrm{mass}(\mathcal G_{23})}{\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)}.
+\]
+
+现在代入一般的 \textbf{Smith--Minkowski--Siegel 质量公式}~\cite{Siegel1935,ConwaySloane1988,ConwaySloane1999}：对任意秩 $n\ge 2$、Gram 矩阵为 $A=\bigl(b(e_i,e_j)\bigr)$（满足 $Q(x)=x^{\mathsf T}Ax$）的正定整格 $L$，记素数 $p$ 处的局部自同构密度为
+\[
+\alpha_p(A)=\frac{1}{2}\lim_{k\to\infty}p^{-k\,n(n-1)/2}\,\#\bigl\{X\in M_n(\ZZ/p^k\ZZ):X^{\mathsf T}AX\equiv A\pmod{p^k}\bigr\}
+\]
+（前置因子 $\frac{1}{2}$ 用于抵消有限域正交群阶数中的因子 $2$，使欧拉乘积收敛），实处自同构密度为 $\alpha_\infty(A)=\pi^{n(n+1)/4}\bigl(\prod_{j=1}^{n}\Gamma(\tfrac{j}{2})\bigr)^{-1}(\det A)^{-(n+1)/2}$，则该格所在属的质量由下式精确给出：
+\[
+\begin{aligned}
+\mathrm{mass}\bigl(\mathcal G(L)\bigr)
+=\sum_{[M]\in\mathcal G(L)}\frac{1}{|\mathrm O(M)|}
+&=2\,\pi^{-n(n+1)/4}\left(\prod_{j=1}^{n}\Gamma\!\left(\frac{j}{2}\right)\right)(\det A)^{(n+1)/2}\prod_{p}\alpha_p(A)^{-1}\\
+&=2\,\alpha_\infty(A)^{-1}\prod_{p}\alpha_p(A)^{-1},
+\end{aligned}
+\]
+其中最前面的常数 $2$ 本质上就是下一小步将用到的 Tamagawa 数 $\tau(\mathrm{SO}(V))=2$.
+
+对满足 $2s\equiv 0\pmod 8$ 的标准格 $I_{2s-1}$ 与 $I_{2s}$（$\det A=1$），奇素数处直接由有限域正交群阶数算得 $\alpha_p(I_{2s-1})=\prod_{j=1}^{s-1}(1-p^{-2j})$ 与 $\alpha_p(I_{2s})=(1-p^{-s})\prod_{j=1}^{s-1}(1-p^{-2j})$；连同实处 Gamma 因子、Euler 的 $\zeta(2j)=\frac{2^{2j-1}\pi^{2j}}{(2j)!}|B_{2j}|$ 以及 $2$-进局部密度 $\alpha_2(I_{2s})=\alpha_2(I_{2s-1})$，上述一般质量公式化为显式的 Bernoulli 数乘积~\cite{ConwaySloane1988,ConwaySloane1999}：
+\[
+\mathrm{mass}(\mathcal G_{2s-1})
+=\frac{2^{s-1}+1}{2}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j},
+\qquad
+\mathrm{mass}\bigl(\mathcal G(I_{2s})\bigr)
+=\frac{(2^s-1)(2^{s-1}+1)}{2}\cdot\frac{|B_s|}{2s}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j}.
+\]
+两者相除，公共因子 $\frac{2^{s-1}+1}{2}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j}$ 全部相消（从一般质量公式看，商也恰等于局部自同构密度之比 $\frac{\alpha_\infty(I_{2s})}{\alpha_\infty(I_{2s-1})}\prod_p\frac{\alpha_p(I_{2s})}{\alpha_p(I_{2s-1})}=\frac{\pi^s}{\Gamma(s)}\prod_{p>2}(1-p^{-s})$），得到统一的质量比公式：
+\[
+\frac{\mathrm{mass}(\mathcal G_{2s-1})}{\mathrm{mass}\bigl(\mathcal G(I_{2s})\bigr)}
+=\frac{2s}{(2^s-1)|B_s|}.
+\]
+代入 $2s=8$（$|B_4|=1/30$）得 $16=\rho_8(1)$；代入 $2s=16$（$|B_8|=1/30$）得 $\frac{32}{17}=\rho_{16}(1)$（此时 $\mathcal G_{15}$ 仅有 $5$ 类、$\mathcal G(I_{16})$ 仅有 $6$ 类，可直接逐类累加核对）；代入 $2s=24$（$|B_{12}|=691/2730$）便独立算出左端系数同样等于
+\[
+\frac{\mathrm{mass}(\mathcal G_{23})}{\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)}
+=\frac{24}{(2^{12}-1)\cdot\frac{691}{2730}}
+=\frac{16}{691}.
+\]
+
+这一等式也从定量上彻底解释了为什么 $16/691$ 远小于 $r_{24}(1)=48$：凡含单位向量的格，单位向量必成对出现（$\pm u$），即 $r_M(1)\ge 2$，因此所有含单位向量的格在属中所占质量至多为
+\[
+\sum_{\substack{[M]\in\mathcal G(I_{24})\\ r_M(1)>0}}\frac{1}{|\mathrm O(M)|}
+\le \frac{1}{2}\sum_{[M]\in\mathcal G(I_{24})}\frac{r_M(1)}{|\mathrm O(M)|}
+=\frac{8}{691}\,\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)
+\approx 1.16\%\,\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr).
+\]
+也就是说，在 $\mathcal G(I_{24})$ 的总质量（$\approx 3.33\times 10^{-8}$）中，\textbf{超过 $98.8\%$ 的加权份额属于完全不含单位向量（$r_M(1)=0$）的 $24$ 维奇幺模格}；至于标准格 $I_{24}$ 本身，由于其自同构群阶数高达 $|\mathrm O(I_{24})|=2^{24}\cdot 24!$，它在属中的权重仅占约 $2.89\times 10^{-24}$. 虽然 $I_{24}$ 拥有 $48$ 个单位向量，但在整个属的加权平均中几乎微不足道，平均值于是落在了 $16/691$.
+
+\paragraph{第三步：直接打通两端——阿代尔轨道展开与 Tamagawa 数.}
+最后，不依赖各自算出 $16/691$ 后的比对，我们也可以在 $q^1$ 项系数上直接看清 Siegel--Weil 左端为何必然等于右端的局部密度乘积~\cite{Weil1965,Weil1982}.
+
+取 $e_1=(1,0,\ldots,0)\in V(\QQ)$ 及正交补 $V'=e_1^\perp\cong\QQ^{23}$，并改用特殊正交群 $G=\mathrm{SO}(V)$ 与稳定子 $H=\mathrm{SO}(V')$.（在 $\mathrm{SO}$ 商中，若格 $M$ 含反射则占一个 $\mathrm{SO}$-类、权为 $1/|\mathrm{SO}(M)|=2/|\mathrm O(M)|$，若不含反射则拆为两个 $\mathrm{SO}$-类、总权仍为 $2/|\mathrm O(M)|$，公共因子 $2$ 在归一化比值中自动消去.）
+
+在左端 $Y^{-6}(\mathcal T_\varphi 1)(h_\tau)$ 中取出 $q^1$ 项系数，被积函数就是有理球面 $X_1=\{x\in V:Q(x)=1\}$ 上的求和 $\sum_{x\in X_1(\QQ)}\varphi_f(g_f^{-1}x)$. 由 \textbf{Witt 定理}（且 $\dim V'=23\ge 1$），$G(\QQ)$ 在 $X_1(\QQ)$ 上传递作用，稳定子为 $H(\QQ)$，因此 $X_1(\QQ)\cong G(\QQ)/H(\QQ)$. 以 $G,H$ 上的 Tamagawa 测度 $\mathrm d\omega_G,\mathrm d\omega_H$ 以及满足 $\mathrm dQ\wedge\omega_{X_1}=\mathrm dx_1\wedge\cdots\wedge\mathrm dx_{24}$ 的 Gelfand--Leray 形式 $\omega_{X_1}$ 作\textbf{轨道展开}（unfolding）：
+\[
+\begin{aligned}
+\int_{G(\QQ)\backslash G(\AAA)}\sum_{x\in X_1(\QQ)}\varphi_f(g_f^{-1}x)\,\mathrm d\omega_G(g)
+&=\int_{H(\QQ)\backslash G(\AAA)}\varphi_f(g_f^{-1}e_1)\,\mathrm d\omega_G(g)\\
+&=\vol_{\omega_H}\bigl(H(\QQ)\backslash H(\AAA)\bigr)
+  \int_{X_1(\AAA)}\varphi_f(x_f)\,\mathrm d\omega_{X_1}(x).
+\end{aligned}
+\]
+将两端同除以总体积 $\vol_{\omega_G}\bigl(G(\QQ)\backslash G(\AAA)\bigr)$：
+\begin{itemize}
+\item 左端恰为 Siegel--Weil 左端 $\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}$ 的 $q^1$ 项系数；
+\item 右端前面是两个特殊正交群的 Tamagawa 数之比——对维数 $\ge 3$ 的二次空间，Tamagawa 数恒等于 $2$~\cite{Weil1982}，因此 $\dfrac{\tau(\mathrm{SO}(V'))}{\tau(\mathrm{SO}(V))}=\dfrac{2}{2}=1$；
+\item 右端后面的阿代尔轨道积分按素位分解为 Gelfand--Leray 局部积分之积：实处恰为 $\int_{X_1(\RR)}\mathrm d\omega_{X_1,\infty}=\alpha_\infty(1)$，有限素数 $p$ 处恰为 $\int_{X_1(\ZZ_p)}\mathrm d\omega_{X_1,p}=\lim_{k\to\infty}p^{-23k}N_{p^k}(1)=\alpha_p(1)$，正好复原第一步中右端 Eisenstein 级数的 $q^1$ 项系数 $\alpha_\infty(1)\prod_p\alpha_p(1)=\frac{16}{691}$.
+\end{itemize}
+至此，Siegel--Weil 公式的两端在 $I_{24}$ 的 $q^1$ 项系数上完成了完全闭合的双向验证.
+
+回到 Weil 的积分写法，上述论证用的只是最平凡的源自守函数 $f\equiv 1$. 更一般地，\textbf{如果把积分中的常数函数 $f\equiv 1$ 换成一般的、非平凡的自守形式 $f$，会得到什么？} 这时 $\mathcal T_\varphi$ 不再只是对格取平均，而成为一个从源群自守形式映到目标群自守形式的积分算子——即 \textbf{theta 提升}. 它能把一个群上的算术整除性、周期与 $L$ 函数信息传递到另一个群上.
+
+\section{从 \texorpdfstring{$\tau(n)$}{tau(n)} 与 Theta 提升链到 Alpöge--Claude 的 GRH 证明}
+
+在二十四平方和公式~(9.17.1)--(9.17.2) 中，主项 $\frac{16}{691}\sigma_{11}^*(n)$ 已由 Siegel--Weil 公式彻底解释清楚；但误差项里却留下了一个颇为奇怪的函数 $\tau(n)$——它只是无穷乘积 $g(x)=x\prod_{m=1}^{\infty}(1-x^m)^{24}$ 的展开系数，没有任何初等的算术表达式. Hardy 本人也很清楚它乍看之下有多么偏僻，他在《Ramanujan》紧接着的\textbf{第十讲}（《Ramanujan 函数 $\tau(n)$》，\S\,10.1 第~161~页）开篇写道~\cite{Hardy1940}：
+\begin{quote}
+\itshape
+We may seem to be straying into one of the backwaters of mathematics, but the genesis of $\tau(n)$ as a coefficient in so fundamental a function compels us to treat it with respect.
+\end{quote}
+
+随后，Hardy 在第十讲中逐一揭示了 $\tau(n)$ 的算术意义与用途. 首先，Ramanujan 猜想并由 Mordell 证明了 $\tau(n)$ 的\textbf{可乘性}（式~(10.2.1)：互素时 $\tau(nn')=\tau(n)\tau(n')$），由此它的 Dirichlet 级数拥有与 Riemann $\zeta(s)$ 相仿的 \textbf{Euler 乘积}（\S\,10.3 式~(10.3.8)，第~164~页）：
+\begin{equation*}\tag{10.3.8}
+F(s)=\sum_{n=1}^{\infty}\frac{\tau(n)}{n^s}=\prod_{p}\frac{1}{1-\tau(p)p^{-s}+p^{11-2s}}.
+\end{equation*}
+其次，$\tau(n)$ 的增长阶直接决定了主项 $\rho_{24}(n)$ 对 $r_{24}(n)$ 的逼近精度. Hardy 在 \S\,10.7（第~169~页）称这是关于 $\tau(n)$「最根本的未解问题」，并写下著名的 \textbf{Ramanujan 猜想}（式~(10.7.1)）：对一切素数 $p$，
+\begin{equation*}\tag{10.7.1}
+|\tau(p)|\le 2p^{11/2},
+\end{equation*}
+等价于局部二次多项式 $X^2-\tau(p)X+p^{11}$ 的两个复根绝对值皆为 $p^{11/2}$.
+
+后来的发展证明，Hardy 的判断极为精准：$\tau(n)$ 绝非数学的偏僻支流，而是直通 \textbf{Weil 猜想}（粗略地说，即\textbf{有限域上的 Riemann 猜想}）. 1969--1974 年，Pierre Deligne 为权 $12$ 尖点形式 $\Delta$ 构造了实现于 Kuga--Sato 簇 $11$ 次 étale 上同调中的 $\ell$-进 Galois 表示~\cite{Deligne1971}，使素数 $p\ne\ell$ 处的 Frobenius 特征多项式恰为 $X^2-\tau(p)X+p^{11}$；随后他证明了有限域上高维代数簇的 Weil 猜想（Frobenius 特征值的纯性定理）~\cite{Deligne1974}，从而彻底证明了式~(10.7.1).
+
+须加区分的是，Deligne 借助 Weil 猜想证明的是单个素位处 Frobenius 特征值的局部模长界，并不能直接推出数域上全局 Dirichlet $L$ 函数 $L(s,\chi)$ 的零点位置（数域 GRH）. 不过，围绕「如何证明有限域上的 Riemann 猜想」发展出的两套核心方法，在本书所叙述的 Levent Alpöge 与 Claude 的数域 GRH 证明~\cite{Alpoge2026}中再次汇合：有限域曲线上的 Riemann 猜想除了 Weil--Grothendieck--Deligne 的上同调几何路线外，还有 \textbf{Stepanov（1969）开创~\cite{Stepanov1969}、Bombieri（1974）系统阐述~\cite{Bombieri1974}的初等辅助函数方法}. 2026 年 10 月 Landau--Siegel 零点一致排除证明公开后，Terence Tao 在博文评论中就指出该证明与证明有限域 Weil 猜想的 Stepanov 方法关系密切，并明确提到可以尝试发展「某种阿代尔版本的 Stepanov 方法」（\emph{an adelic version of Stepanov's method}）~\cite{Tao2026SiegelComment}（相关背景梳理另见~\cite{SIYZ2026}）；次月公开的 Alpöge--Claude 证明正是将这一方向推进到了完整的 GRH.
+
+回顾有限域曲线上的 Stepanov 原理（亦见前言\hyperref[par:stepanov-method]{相关段落}）：若曲线 $C/\FF_q$ 上存在非零有理函数 $F$，它在待计数点集 $U$ 的每一点至少消失 $e$ 阶，且极点除子次数至多为 $d$，则有 $e|U|\le\deg((F)_0)=\deg((F)_\infty)\le d$，除以高重数 $e$ 便压低了 $|U|$ 的上界. 在数域的素数分布问题中，没有现成的多项式零点重数可用；Alpöge--Claude 证明的关键想法，是\textbf{用一条长度为 $m\asymp\sqrt{x}$ 的迭代 theta 提升链来扮演高重数 $e$ 的角色}：每经过一步提升，局部 $p$ 进整除增益就累加一次，经 $m$ 步后放大 $m$ 倍；与此同时，提升像所张成格的余体积下界由 Siegel--Weil 公式的直接推论——Rallis 内积公式——加以控制（其中同余分母的估计还动用了源自 Deligne 纲领的酉 Shimura 簇整模型与 $\ell$-进 Galois 表示）. 将范数上界与余体积下界合并比较时，庞大的公共主项恰好抵消，两边除以步数 $m\asymp\sqrt{x}$ 后即得到素数幂余项中的\textbf{平方根量级节省}，进而导出 GRH.
+
+以下四个核心部分分别对应本书正文的主线结构：
+
+\subsection{酉群上的单步提升与有限类和}
+
+将前文的有理二次空间换成 CM 域 $E$ 上的一对 Hermite 空间 $(S,T)$，源群与目标群变为对应的酉群 $\Ugrp(S)$ 与 $\Ugrp(T)$（有理点群记为 $\Gamma_S,\Gamma_T$）. 本书\secref{sec:theta-lifts}（式~\eqref{eq:adelic-theta-integral}）中的阿代尔 theta 提升，与上一节的 Weil 积分几乎完全相同：\leanfn{Lean 源码：\leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{291}、\leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{186} 与 \leansourcelink{src/Lib/Adelic/Hecke/ClassSums.lean}{169}.}
+\[
+(\operatorname{lift}_K(\varphi,y))(h)
+=\int_{\Gamma_S\backslash \Ugrp(S)(\AAA)}
+  \theta\bigl(\omega(g,h)\varphi\bigr)\,y(g)\,dg.
+\]
+在正定酉群上的代数版本（式~\eqref{eq:finite-theta-sum}）中，这种联系更为直观：当被积函数在紧开层子群 $K\le G_f$ 下右不变时，取双陪集 $\Gamma\backslash G_f/K$ 的代表元 $g_i$（按 $\vol(K)=1$ 归一化），阿代尔积分立刻化作有限加权类和：
+\[
+\sum_i \frac{\operatorname{jetMap}\bigl(\omega(g_i,h)\Phi\bigr)\bigl(\varphi(g_i)\bigr)}{|\Gamma\cap g_i K g_i^{-1}|}.
+\]
+这里的 $\Phi$ 为测试数据，$\varphi$ 为源正定酉群上的代数自守形式，射流映射 $\operatorname{jetMap}$ 用 Taylor 系数编码无穷位的高阶导数，而分母中的有限稳定子阶数 $|\Gamma\cap g_i K g_i^{-1}|$，与 Siegel 属平均里的自同构权重 $1/|\mathrm O(M)|$ 如出一辙.
+
+\subsection{上下两条提升链与 Seesaw 恒等式}
+
+证明在酉群之间布置了两条长度为 $m$ 的提升链：一条是\textbf{正定上链} $X_0\to X_1\to\cdots\to X_m\xrightarrow{\operatorname{res}}Y_m$，其上每一步都是正定代数提升，可以借助复乘椭圆曲线上的高阶导数（\chapref{chap:derivatives}）在惰性素数处逐步累积 $p$ 进整除增益（增益总量由带权素数幂和记录）；另一条是\textbf{不定到正定的下链} $Y_0\to Y_1\to\cdots\to Y_m$，它连接着目标好形式空间 $W$，便于后文计算余体积.
+
+如何把上链得到的整除估计传递到下链上？这里用到的工具是 Kudla 风格的 \textbf{Seesaw 恒等式}~\cite{Kudla1984}（\chapref{chap:upperbound}，式~\eqref{eq:a-seesaw}）. 对源空间 $U$ 上的形式 $\phi$，令 $\mathcal P$ 为起点间的 Poincaré 级数映射，$T_\vartheta$ 为带扭转特征 $\vartheta$ 的下链复合提升，$\operatorname{Comp}_{\vartheta,\Psi_\vartheta}$ 为配备粘合测试数据 $\Psi_\vartheta$ 的上链复合提升再限制到 $Y_m$. Seesaw 恒等式断言，存在与 $\phi$ 及扭转 $\vartheta$ 均无关的非零常数 $c_{\mathrm{ss}}\in\CC^\times$，使得\leanfn{Lean 源码：\leansourcelink{src/New/UpperBound/Objects/Columns.lean}{987}、\leansourcelink{src/New/UpperBound/Objects/RowChain.lean}{170} 与 \leansourcelink{src/New/UpperBound/Seesaw/SeesawIdentity.lean}{624}.}
+\[
+T_\vartheta(\mathcal P\phi)=c_{\mathrm{ss}}\,\operatorname{Comp}_{\vartheta,\Psi_\vartheta}(\phi)
+\qquad (\phi\in U).
+\]
+借助这条恒等式，上链的局部整除增益得以直接转化为下链像的范数上界. 沿用本书\chapref{chap:reduction}的记号，以 $S$ 表示双尺度带权素数幂总余项（不再指上一小节的 Hermite 空间）、$H$ 表示上下界共有的主量、$L$ 表示误差预算，并记下链在好形式空间 $W$ 上的限制为 $\Theta_\vartheta$. 适当归一化后，在平凡扭转下存在张成源空间 $U$ 的短整形式，其像的平方范数在每个复共轭 $\sigma$ 下均受 $\exp(H-mS+L)$ 控制.
+
+\subsection{Rallis 内积公式与自守形式的 Gram 行列式}
+
+仅有上界还不够——如果提升像本身过小甚至退化，范数上界就没有约束力，因此还必须从下方控制提升像所张成格的余体积.
+
+这里 \textbf{Siegel--Weil 公式}再次发挥关键作用. 设 Hermite 空间 $S,T$ 的秩满足 Weil 收敛范围 $2\rk S<\rk T$. 将 Siegel--Weil 公式施用于加倍空间 $S\oplus S^-$，可把目标群上两个 theta 核的乘积积分化为源群有理点 $\Gamma_S$ 上 Weil 表示矩阵系数之和；再对两个快速衰减的源自守形式 $y,y'$ 积分并展开 $\Gamma_S$，便得到显式的 \textbf{Rallis 内积公式}~\cite{Li1992,KudlaRallis1994,GQT2014}：\leanfn{Lean 源码：\leansourcelink{src/Lib/SiegelWeil/RallisInner/Doubling.lean}{527}（\lean{inner\_product\_formula}）与 \leansourcelink{src/Lib/SiegelWeil/RallisInner/SharpData.lean}{367}（\lean{exists\_petersson\_formLift\_eq\_rallisSeries}）.}
+\[
+\bigl\langle \Theta_{\varphi'}y',\,\Theta_\varphi y\bigr\rangle_{\Ugrp(T)}
+=\vol\bigl([\Ugrp(T)]\bigr)
+ \int_{\Ugrp(S)(\AAA)}
+   \bigl\langle \varphi',\,\omega(g,1)\varphi\bigr\rangle\,
+   \bigl\langle y',\,R(g)y\bigr\rangle_{\Ugrp(S)}\,dg,
+\]
+其中 $\Theta_\varphi y=\operatorname{lift}_K(\varphi,y)$，$\langle\cdot,\cdot\rangle_{\Ugrp(T)}$ 与 $\langle\cdot,\cdot\rangle_{\Ugrp(S)}$ 分别为目标群与源群上的 Petersson 内积，$R(g)$ 表示右平移 $(R(g)y)(x)=y(xg)$，而 $\langle\varphi',\omega(g,1)\varphi\rangle$ 为 Weil 表示的矩阵系数. 选取尖锐测试数据后，右端积分进一步化为 $\langle y',\mathcal R\,y\rangle_{\Ugrp(S)}$ 的非零标量倍，其中 Rallis 算子 $\mathcal R$ 编码了自守 $L$ 函数的特殊值与局部配对.
+
+将每一步的 Rallis 算子 $S_j(\vartheta)$ 沿着下链的交换图依次传递到好形式空间 $W$ 上，整条提升链的复合算子便分解为单步算子之积，其行列式 $Z(\vartheta)$ 即为提升像所张成格的体积平方（\chapref{chap:determinant}）：\leanfn{Lean 源码：\leansourcelink{src/New/Determinant/Chain/NormOfChain.lean}{303} 与 \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{214}.}
+\[
+\Theta_\vartheta^*\Theta_\vartheta
+=c(\vartheta)\,c_Q(\vartheta)^m\,S_1(\vartheta)\cdots S_m(\vartheta),
+\qquad
+Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta).
+\]
+不妨回望本附录第二节：那里 $d\times d$ 的 Gram 矩阵 $G_{\mathbf x}$ 记录的是二维格向量的内积，而这里的 $\Theta_\vartheta^*\Theta_\vartheta$ 则是\textbf{自守形式}在 Petersson 内积下的 Gram 矩阵. 对上式取行列式并与平凡扭转 $\vartheta=1$ 作比，难以直接估计的全局常数随之消去，整链行列式比分解为 $m$ 步单步行列式比、层范数 $N_\vartheta$ 与 Hecke 值比 $Q_{ij}(\vartheta)$ 的乘积（其中 $r=\dim_{\CC}W$，见式~\eqref{eq:c-chain-ratio}）：
+\[
+\frac{Z(1)}{Z(\vartheta)}
+=\left(N_\vartheta^{e/2}\prod_{1\le i<j\le m}Q_{ij}(\vartheta)\right)^{-r}
+ \prod_{j=1}^{m}\frac{Z_j(1)}{Z_j(\vartheta)}.
+\]
+在每个有限素位处精心构造一组正则反分圆扭转 $\vartheta$——其同余分母的控制依托酉 Shimura 簇的整模型与附着的 $\ell$-进 Galois 表示，在分裂素位处将弱提升的 Hecke 特征多项式与几何 Frobenius 作用对齐~\cite{Shin2011,ChenevierHarris2013,BLGGT2014}（详述见\chapref{chap:congruences}及\appref{app:lib-overview}）——再把各处的比较汇入全局乘积公式，便确立了平凡扭转下的余体积下界 $\approx\exp\bigl(r(H-3L)\bigr)$.
+
+\subsection{主不等式与临界线上的零点}
+
+现在把上下两界合拢. 利用有限平移张成定理（\chapref{chap:spanning}），从上述短整形式的像中抽出一组长度为 $n\approx r$ 的线性无关向量 $y_1,\ldots,y_n$. 一方面，Hadamard 不等式给出它们像的 Gram 行列式上界：
+\[
+|\det G_\sigma|\le\prod_{i=1}^{n}\|\Theta_1 y_i\|_\sigma^2\le e^{n(H-mS+L)}.
+\]
+另一方面，余体积下界则给出 $e^{r(H-3L)}$ 量级的下方约束（计入局部格指数预算）. 两边取对数比较时，庞大的公共主量 $rH$ 精确相消，整理后便得到本书的核心\textbf{主不等式}~\eqref{eq:ch1-star}：\leanfn{Lean 源码：\leansourcelink{src/New/Reduction/MainInequality.lean}{82}、\leansourcelink{src/New/Reduction/OneSidedBound.lean}{1} 与 \leansourcelink{src/Main.lean}{9}.}
+\[
+mS\le fa(\log b)^5.
+\]
+这里 $S$ 为按无穷位汇总的双尺度带权素数幂总余项，$m\asymp\sqrt{x}$ 为提升步数，$f$ 为所用 CM 域 $E$ 的无穷位个数，$a,b$ 为容许数据的尺度参数. 两边同除以步数 $m$，多步提升立刻转化为素数幂余项的单侧平方根节省（$R_{d,q_0}(y)\le y^{-1/2+\varepsilon}$）. 再经由 Landau 式的解析非消失判据排除右半临界带 $\RePart s>1/2$ 内的零点，并借助本原特征完备 $L$ 函数的函数方程 $\Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi)$ 将无零点区域沿临界线对称反射到左半侧（\secref{sec:public-theorems}），便对一切模数的 Dirichlet 特征 $\chi$ 得出广义 Riemann 猜想：
+\[
+L(s,\chi)=0,\quad 0<\RePart s<1
+\quad\Longrightarrow\quad
+\RePart s=\frac{1}{2}.
+\]
+
+回望这条跨越近两个世纪的脉络：用椭圆 theta 级数 $\vartheta(x)=\sum x^{n^2}$ 计数平方和始于 Jacobi，而 Ramanujan 的二十四平方和公式以及 Hardy 在《Ramanujan》第九、十讲对主项 $16/691$ 与误差项 $\tau(n)$ 的剖析，引出了两条深远的主线——主项一侧经由高次数 Gram 矩阵、Siegel 的同属加权平均与 Weil 的阿代尔 theta 积分通向 Siegel--Weil 公式与多步 theta 提升链；误差项 $\tau(n)$ 一侧则经由 Ramanujan 猜想通向有限域上的 Weil 猜想与自守形式的 $\ell$-进 Galois 表示. 两条线索最终连同有限域上的 Stepanov 方法一起，汇入了对数域 Dirichlet $L$ 函数零点分布的现代攻克之中. 同一个数学对象，随着视角的不断深入，展现出远超最初问题范围的算术威力.
+
+\section{补算}
+\label{sec:appC-calculations}
+
+\subsection{八平方和 \texorpdfstring{$n=2$}{n = 2} 的局部密度计算}
+
+记 $N_{p^k}$ 为同余方程 $\sum_{j=1}^{8}x_j^2\equiv 2\pmod{p^k}$ 的有序八元组解数，局部密度定义为 $\alpha_p(2)=\lim_{k\to\infty}p^{-7k}N_{p^k}$.
+
+\begin{itemize}
+\item \emph{奇素数 $p$.} 记 $e_p(t)=e^{2\pi it/p}$ 及 Gauss 和 $S(u)=\sum_{x\bmod p}e_p(ux^2)$. 由加性特征的正交性，
+\[
+N_p=\frac{1}{p}\sum_{u\bmod p}e_p(-2u)S(u)^8.
+\]
+当 $u\not\equiv 0\pmod p$ 时，作可逆换元 $v=x-y$、$w=x+y$，得 $|S(u)|^2=\sum_{x,y}e_p(u(x^2-y^2))=\sum_{v,w}e_p(uvw)=p$. 又按平方剩余个数分组得 $S(u)=\sum_{t\bmod p}\chi_p(t)e_p(ut)$（其中 $\chi_p$ 为模 $p$ 二次特征），故 $\overline{S(u)}=S(-u)=\chi_p(-1)S(u)$，两边同乘 $S(u)$ 得 $S(u)^2=\chi_p(-1)p$，从而 $S(u)^8=p^4$. 因 $p\nmid 2$，有 $\sum_{u=1}^{p-1}e_p(-2u)=-1$，于是
+\[
+N_p=\frac{1}{p}\bigl(p^8-p^4\bigr)=p^7-p^3.
+\]
+又因 $2\not\equiv 0\pmod p$，每个模 $p$ 解至少有一个非零坐标，其梯度在模 $p$ 下非零；由 Hensel 提升，从模 $p^k$ 提升到模 $p^{k+1}$ 只需满足一条非零线性同余方程，每个解恰有 $p^7$ 个提升. 因此 $p^{-7k}N_{p^k}=p^{-7}N_p=1-p^{-4}$ 对所有 $k\ge 1$ 恒成立，即 $\alpha_p(2)=1-p^{-4}$. 所有奇素数因子的乘积为
+\[
+\prod_{p>2}(1-p^{-4})=\frac{1}{(1-2^{-4})\zeta(4)}=\frac{1}{\frac{15}{16}\cdot\frac{\pi^4}{90}}=\frac{96}{\pi^4}.
+\]
+
+\item \emph{素数 $p=2$.} 模 $8$ 下奇数平方恒为 $1$，偶数平方为 $0$ 或 $4$. 欲使八个平方之和模 $8$ 余 $2$，奇数坐标的个数必模 $4$ 余 $2$，即只能有 $2$ 个或 $6$ 个（共有 $\binom{8}{2}+\binom{8}{6}=56$ 种位置选法）. 固定奇偶位置后，每个坐标模 $8$ 有 $4$ 种取值，共 $4^8$ 组；由于偶坐标至少有 $2$ 个，任取一个偶坐标加上 $2$ 都会使其平方模 $8$ 改变 $4$，从而在「和 $\equiv 2\pmod 8$」与「和 $\equiv 6\pmod 8$」之间建立一一对应. 故
+\[
+N_8=\frac{1}{2}\left(\binom{8}{2}+\binom{8}{6}\right)4^8=56\cdot 2^{15}, \qquad \frac{N_8}{8^7}=\frac{56\cdot 2^{15}}{2^{21}}=\frac{7}{8}.
+\]
+当 $k\ge 3$ 时，模 $2^k$ 解 $\mathbf x$ 的任意提升 $\mathbf x+2^k\mathbf t$ 满足 $\sum(x_j+2^k t_j)^2\equiv\sum x_j^2\pmod{2^{k+1}}$，因此该解要么全部 $2^8$ 个提升都合格，要么全不合格. 把每个模 $2^k$ 解的第一个奇坐标加上 $2^{k-1}$，模 $2^k$ 下仍是解（因 $2k-2\ge k+1$），但平方和在模 $2^{k+1}$ 下恰好改变 $2^k$. 这一配对说明恰有一半的模 $2^k$ 解可以提升，故 $N_{2^{k+1}}=\tfrac{1}{2}N_{2^k}\cdot 2^8=2^7 N_{2^k}$，归一化计数始终保持在 $\alpha_2(2)=7/8$.（也可直接用 Hardy \S\,9.9 的素数幂项核对：$A_1(2)=1$、$A_2(2)=0$、$A_4(2)=16\cdot 4^{-4}c_4(2)=-1/8$，更高幂均为 $0$，和同样是 $7/8$.）
+
+\item \emph{实处与汇总.} 八维实球 $\sum_{j=1}^{8}x_j^2\le t$ 的体积为 $\pi^4 t^4/24$，对 $t$ 求导并代入 $t=2$ 得 $\alpha_\infty(2)=4\pi^4/3$. 三部分相乘即得
+\[
+\alpha_\infty(2)\,\alpha_2(2)\prod_{p>2}\alpha_p(2)=\frac{4\pi^4}{3}\cdot\frac{7}{8}\cdot\frac{96}{\pi^4}=112=r_8(2).
+\]
+\end{itemize}
+
+\subsection{判别式 \texorpdfstring{$-23$}{-23} 的两类、同属验证与自同构权重}
+
+\begin{itemize}
+\item \emph{枚举约化类.} 正定二元二次型 $Q(x,y)=ax^2+bxy+cy^2$ 若为约化型，满足 $|b|\le a\le c$（且在 $|b|=a$ 或 $a=c$ 时取 $b\ge 0$）. 由 $4ac-b^2=23$ 得 $3a^2\le 23$，故 $a\in\{1,2\}$，且 $b$ 为奇数. $a=1$ 时 $|b|\le 1$，边界条件给出 $b=1$、$c=6$，即 $Q_A=x^2+xy+6y^2$；$a=2$ 时 $|b|\le 2$，给出 $b=\pm 1$、$c=3$，即 $2x^2\pm xy+3y^2$. 在保定向等价（$\SL_2(\ZZ)$）下共有 $3$ 个类；允许反射 $(x,y)\mapsto(x,-y)$ 后，后两类合为一类，取代表元 $Q_B=2x^2+xy+3y^2$.
+
+\item \emph{证明 $Q_A$ 与 $Q_B$ 同属.} 在\emph{实处与一切奇素数处}，直接展开可验证恒等式
+\[
+\begin{aligned}
+Q_A\!\left(\frac{u-3v}{2},\frac{u+v}{2}\right)
+&=\frac{(u-3v)^2+(u-3v)(u+v)+6(u+v)^2}{4}\\
+&=2u^2+uv+3v^2=Q_B(u,v).
+\end{aligned}
+\]
+变换矩阵 $\frac{1}{2}\bigl(\begin{smallmatrix}1&-3\\1&1\end{smallmatrix}\bigr)$ 的行列式为 $1$，分母仅为 $2$，因此它在 $\RR$ 和所有奇素数环 $\ZZ_p$ 上皆可逆. 在\emph{素数 $2$ 处}，$Q_A(x,1)=x^2+x+6$ 在 $x\equiv 0\pmod 2$ 处有单根，$Q_B(x,1)=2x^2+x+3$ 在 $x\equiv 1\pmod 2$ 处有单根（两者导数模 $2$ 均为 $1$）. 由 Hensel 引理，两者在 $\ZZ_2^2$ 中各有本原零向量 $e$（$Q(e)=0$）. 两型的极化矩阵 $\bigl(\begin{smallmatrix}2a&b\\b&2c\end{smallmatrix}\bigr)$ 行列式都是 $23\in\ZZ_2^\times$，故极化配对 $B(v,w)=Q(v+w)-Q(v)-Q(w)$ 在 $\ZZ_2$ 上非退化幺模，可选取 $f\in\ZZ_2^2$ 使 $B(e,f)=1$. 以 $f'=f-Q(f)e$ 取代 $f$，则 $Q(e)=Q(f')=0$ 且 $B(e,f')=1$，两个二次型在 $\ZZ_2$-基 $\{e,f'\}$ 下都化为双曲平面 $uv$，故在 $\ZZ_2$ 上亦等距.
+
+\item \emph{计算自同构群阶数与权重.} 配方得
+\[
+Q(x,y)=a\left(x+\frac{b}{2a}y\right)^2+\frac{23}{4a}y^2.
+\]
+对 $Q_A$（$a=1$），$y\ne 0$ 时 $Q_A\ge 23/4>1$；对 $Q_B$（$a=2$），$y\ne 0$ 时 $Q_B\ge 23/8>2$. 因此两型的最短非零向量都只有 $\pm(1,0)$. 任意整等距变换必将 $(1,0)$ 映到 $\pm(1,0)$；固定 $(1,0)$ 的实等距只有恒等变换与沿 $(1,0)^\perp$ 方向的反射
+\[
+(x,y)\longmapsto\left(x+\frac{b}{a}y,-y\right).
+\]
+在 $Q_A$ 中 $b/a=1$，该反射保整；在 $Q_B$ 中 $b/a=1/2$，反射不保整. 再结合 $-I$，便得 $|\mathrm O(Q_A)|=4$、$|\mathrm O(Q_B)|=2$，归一化属权重分别为 $\frac{1/4}{1/4+1/2}=\frac{1}{3}$ 与 $\frac{1/2}{1/4+1/2}=\frac{2}{3}$.
+\end{itemize}

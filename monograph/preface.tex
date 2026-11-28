@@ -38,7 +38,7 @@
 \]
 Poisson 求和公式给出变换律 $\theta(t)=t^{-1/2}\theta(1/t)$. Riemann 在 1859 年的论文中用这条变换律给出了 $\zeta$ 函数方程的一种证明，并明确引了 Jacobi 专著的第 184 页~\cite{Riemann1859,Jacobi1829}. 他先在 $\RePart s>1$ 时将完备函数 $\Lambda(s)=\pi^{-s/2}\Gamma(s/2)\zeta(s)$ 写成 $(\theta(t)-1)/2$ 的 Mellin 积分，再在 $t=1$ 处分开积分，用变换律将 $0<t<1$ 的部分改写为 $t>1$ 上的积分. 所得表达式给出亚纯延拓，并在交换 $s$ 与 $1-s$ 后保持不变，因而 $\Lambda(s)=\Lambda(1-s)$. \secref{sec:public-theorems}使用相应的函数方程，将右半平面的无零点结论转移到临界线另一侧.
 
-在 Jacobi 的例子中，指数中的 $n^2$ 是一元二次型. 用正定二次型替换它，所得 Theta 级数就记录了该二次型表示整数的次数. Siegel 将同一属内的 Theta 级数作加权平均，并将所得级数与 Eisenstein 级数联系起来~\cite{Siegel1935}. Weil 用辛群的亚辛覆盖上的表示统一解释了 Theta 级数的变换律，并把这类平均恒等式推广为经典群上的 Siegel--Weil 公式~\cite{Weil1964,Weil1965}. Howe 的对偶约化对把一对互为中心化子的群同时引入这一框架，使同一个 Theta 核可以承担两个群之间的积分变换~\cite{Howe1979,Howe1989}.
+在 Jacobi 的例子中，指数中的 $n^2$ 是一元二次型. 用正定二次型替换它，所得 Theta 级数就记录了该二次型表示整数的次数. 正如 Hardy 在《Ramanujan》第九讲中所剖析的~\cite{Hardy1940}：当平方数个数 $2s\le 8$ 时，实际表示数 $r_{2s}(n)$ 处处等于圆法奇异级数 $\rho_{2s}(n)$；但当 $2s=24$ 时，两者在 $n=1$ 处便出现 $r_{24}(1)=48$ 与 $\rho_{24}(1)=16/691$ 的显著落差，差额由含 Ramanujan 函数 $\tau(n)$ 的尖点形式误差项补齐. 这条经典等式的两半分别引出两条深刻脉络：在主项一侧，Siegel 将同一属内的 Theta 级数以 $1/|\mathrm O(M)|$ 为权作加权平均，证明奇异级数正是属平均与 Siegel Eisenstein 级数的系数（对 $I_{24}$ 在 $n=1$ 处化为相邻维数幺模属质量之比 $\mathrm{mass}(\mathcal G_{23})/\mathrm{mass}(\mathcal G(I_{24}))=16/691$）~\cite{Siegel1935,ConwaySloane1988,Li2023}；Weil 用辛群的亚辛覆盖上的表示统一解释了 Theta 级数的变换律，把属平均写为阿代尔正交群上的 Theta 积分，并推广为经典群上的 Siegel--Weil 公式~\cite{Weil1964,Weil1965,Weil1982}. 在误差项一侧，Hardy 第十讲围绕 $\tau(n)$ 陈述的 Ramanujan 猜想 $|\tau(p)|\le 2p^{11/2}$ 最终由 Deligne 借 $\ell$-进 Galois 表示与有限域上的 Weil 猜想（有限域上的 Riemann 猜想）证明~\cite{Deligne1971,Deligne1974}；由此发展出的自守形式与 Shimura 簇 $\ell$-进 Galois 表示，亦将在\chapref{chap:congruences}控制反分圆扭转的同余分母时发挥关键作用. 上述历史脉络与 $\rho_{24}(1)=16/691$ 的双侧详证见\appref{app:hardy-theta-intro}. Howe 的对偶约化对把一对互为中心化子的群同时引入这一框架，使同一个 Theta 核可以承担两个群之间的积分变换~\cite{Howe1979,Howe1989}.
 
 具体地，先用 Weil 表示把测试函数 $\varphi$ 按源群变量 $g$ 和目标群变量 $h$ 变换，再对所得函数在相应向量空间的有理点上求和，便得到 Theta 核 $\theta_\varphi(g,h)$. 固定 $h$，将核与源群上的自守形式相乘，并在源群的自守商上对 $g$ 积分. 积分后得到目标群上的自守形式，这就是 Theta 提升. Kudla 的 Seesaw 恒等式允许交换提升和限制在配对中的位置~\cite{Kudla1984}. Rallis 内积公式则借助 Siegel--Weil 公式，把提升的 Petersson 配对与自守 $L$ 函数的特殊值及局部配对联系起来~\cite{Li1992,KudlaRallis1994,GQT2014}.
 
@@ -49,9 +49,7 @@ Poisson 求和公式给出变换律 $\theta(t)=t^{-1/2}\theta(1/t)$. Riemann 在
  e\,|U|\le \deg\bigl((F)_0\bigr)=\deg\bigl((F)_\infty\bigr)\le d.
 \]
 \end{samepage}
-这里 $(F)_0$ 和 $(F)_\infty$ 分别为零点除子和极点除子. 关键是让 $e$ 大而 $d$ 受控，并保证 $F$ 非零. Stepanov 在素域上的超椭圆曲线情形利用 $X^p-X$ 和导数条件构造辅助多项式~\cite{Stepanov1969}. Bombieri 用曲线上的有理函数与 Frobenius 映射阐述了这一点数估计方法~\cite[第~I--II~节]{Bombieri1974}. \hyperref[par:a-stepanov-count]{引理~\ref*{lem:a-edge-defect-count} 的证明开头}给出同一计数原理在剩余类上的一次应用.
-
-Alpöge 与 Claude（AI）将这种比较思路用于数域.
+这里 $(F)_0$ 和 $(F)_\infty$ 分别为零点除子和极点除子. 关键是让 $e$ 大而 $d$ 受控，并保证 $F$ 非零. 有限域曲线上的 Riemann 猜想除了 Weil--Grothendieck--Deligne 的上同调路线外，另有一条由 Stepanov 在素域超椭圆曲线上利用 $X^p-X$ 和导数条件开创的初等辅助多项式路线~\cite{Stepanov1969}；Bombieri 用曲线上的有理函数与 Frobenius 映射系统阐述了这一点数估计方法~\cite[第~I--II~节]{Bombieri1974}. \hyperref[par:a-stepanov-count]{引理~\ref*{lem:a-edge-defect-count} 的证明开头}给出同一计数原理在剩余类上的一次应用. 值得注意的当代背景是：2026 年 10 月 Landau--Siegel 零点一致排除证明公开后，Terence Tao 在博文评论中指出该证明与证明有限域 Weil 猜想的 Stepanov 多项式方法关系密切，并提议发展「某种阿代尔版本的 Stepanov 方法」~\cite{Tao2026SiegelComment}（相关背景梳理另见~\cite{SIYZ2026}）. 次月，Alpöge 与 Claude（AI）正是将这种比较思路在阿代尔框架下推广到了数域上的完整 GRH.
 \begin{itemize}
 \item \emph{用提升步数模拟重数.} 据 Alpöge 的说明稿，对长度尺度为 $x$ 的 von Mangoldt 加权和，Claude 提议令 Theta 提升的步数 $m$ 取 $\sqrt{x}$ 的量级~\cite[第~1~页]{Alpoge2026}. 为使整除增益沿链累积，证明逐步比较局部赋值，同时控制提升的范数增长与清分母代价.
 
@@ -117,7 +115,7 @@ Alpöge 与 Claude（AI）将这种比较思路用于数域.
 \item \emph{上界与张成板块（\chapref{chap:derivatives}至\chapref{chap:spanning}）：}\chapref{chap:derivatives}建立复乘形式群上 Theta 核导数的 $p$-进赋值下界与系数可达性；\chapref{chap:upperbound}借助 Seesaw 恒等式、例外素数标记与边 Hecke 算子初等因子，完成定理 A(a) 与 A(b) 的证明；\chapref{chap:spanning}通过 Petersson 展开、局部相关积分与 Poisson 筛建立二阶矩界，证明定理 B.
 \item \emph{下界与解析支撑板块（\chapref{chap:determinant}至\chapref{chap:discrete-series}）：}\chapref{chap:determinant}将整条下链的 Gram 行列式之比分解为单步之积，并由全局乘积公式导出定理 C；\chapref{chap:onelift}构造比较算子并估计单步行列式比的高度；\chapref{chap:congruences}以结晶 Selmer 模、单位根特化与 Ribet 元素构造正则反分圆扭转族并控制同余分母；\chapref{chap:discrete-series}给出大间隙离散序列在实位上的定量 Laplace 周期下界，支撑定理 B 的 Bessel 测试与定理 C 的辅助形式张成.
 \end{itemize}
-\appref{app:lib-overview}梳理证明所依托的前置背景库入口，\appref{app:edition-comparison}对照可读版与精简版的记号和解析步骤差异.
+\appref{app:lib-overview}梳理证明所依托的前置背景库入口，\appref{app:edition-comparison}对照可读版与精简版的记号和解析步骤差异，\appref{app:hardy-theta-intro}则从 Hardy《Ramanujan》第九、十、十二讲的经典平方和公式出发，以自成体系的导读方式贯通高次数 Siegel Theta 级数、Siegel--Weil 公式、$\rho_{24}(1)=16/691$ 的双侧验证、$\tau(n)$ 与有限域 Weil 猜想，直至全书的多步 Theta 提升链.
 
 \section*{常用记号}
 

@@ -1,0 +1,574 @@
+\chapter{From Hardy's Sums of Squares to the Siegel--Weil Formula and GRH}
+\label{app:hardy-theta-intro}
+
+\begin{chapterguide}
+This appendix serves as a self-contained historical and conceptual guide to the monograph. Starting from the classical sum-of-squares identities in Lectures~IX, X, and~XII of G.~H.~Hardy's \emph{Ramanujan}, it traces the progression through higher-degree Siegel theta series, the Siegel--Weil formula with a full two-sided verification of $\rho_{24}(1)=16/691$, and the bridge from Ramanujan's $\tau(n)$ to the finite-field Weil conjectures and Stepanov's method, showing how classical quadratic forms extend naturally to the iterated theta lift chains used in \chapref{chap:reduction} to \chapref{chap:congruences} to prove the generalized Riemann hypothesis (GRH). Worked local-density and genus-weight calculations for eight squares and discriminant $-23$ conclude the appendix.
+\end{chapterguide}
+
+In 1940, G.~H.~Hardy published his twelve Cambridge lectures on \emph{Ramanujan}~\cite{Hardy1940}. Opening Lecture~IX, ``The representation of numbers as sums of squares,'' he summarized the history of this classical problem:\footnote{All verbatim passages and numbered equations from Hardy below are drawn from~\cite[Lecture~IX, \S\S\,9.1--9.17, pp.~132--155]{Hardy1940} unless otherwise noted.}
+\begin{quote}
+\itshape
+The problem of the representation of an integer $n$ as the sum of a given number $k$ of integral squares is one of the most celebrated in the theory of numbers. Its history may be traced back to Diophantus, but begins effectively with Girard's (or Fermat's) theorem that a prime $4m+1$ is the sum of two squares. Almost every arithmetician of note since Fermat has contributed to the solution of the problem, and it has its puzzles for us still.
+\end{quote}
+
+Write $r_k(n)$ for the number of representations of a positive integer $n$ as a sum of $k$ integer squares, $x_1^2+x_2^2+\cdots+x_k^2=n$, counting both order and signs. When $k=2s$ is even, Jacobi gave complete formulas for $2s=2,4,6,8$. How did he convert a purely arithmetic counting problem into explicit divisor sums? Hardy states the answer at the start of \S\,9.2:
+\begin{quote}
+\itshape
+Jacobi found his formulae from the theory of the elliptic theta-functions.
+\end{quote}
+
+Specifically, one introduces the elliptic theta series
+\begin{equation*}\tag{9.2.1}
+\vartheta(x)=1+2x+2x^4+\cdots=\sum_{n=-\infty}^{\infty}x^{n^2},
+\end{equation*}
+and raises it to the $2s$-th power, so that the coefficient of $x^n$ in $\vartheta^{2s}(x)=1+\sum_{n=1}^{\infty}r_{2s}(n)x^n$ records $r_{2s}(n)$ directly. Within the theory of elliptic functions, Jacobi proved the Lambert-series identities
+\begin{equation*}\tag{9.2.2}
+\vartheta^2(x)=1+4\left(\frac{x}{1-x}-\frac{x^3}{1-x^3}+\frac{x^5}{1-x^5}-\frac{x^7}{1-x^7}+\cdots\right),
+\end{equation*}
+\begin{equation*}\tag{9.2.3}
+\vartheta^4(x)=1+8\left(\frac{x}{1-x}+\frac{2x^2}{1+x^2}+\frac{3x^3}{1-x^3}+\frac{4x^4}{1+x^4}+\cdots\right).
+\end{equation*}
+Expanding both sides in powers of $x$ and comparing coefficients yields the classical formulas for two and four squares (Hardy's~(9.1.1)--(9.1.3)): $r_2(n)=4\{d_1(n)-d_3(n)\}$ (four times the excess of divisors of $n$ congruent to $1\pmod 4$ over those congruent to $3\pmod 4$), while $r_4(n)$ equals $8\sigma(n)$ for odd $n$ and $24\sigma^o(n)$ (twenty-four times the sum of odd divisors) for even $n$. For six and eight squares as well, theta functions express $r_{2s}(n)$ purely in terms of divisor functions.
+
+Once the number of squares $2s$ exceeds $8$, however, this simplicity breaks down. As Hardy observes in \S\,9.3, beginning with Liouville and Eisenstein for $2s=10,12$, $r_{2s}(n)$ is no longer a pure divisor function; instead it splits into a dominant divisor-function main term $\delta_{2s}(n)$ and a smaller supplementary term $e_{2s}(n)$:
+\[
+r_{2s}(n)=\delta_{2s}(n)+e_{2s}(n).
+\]
+In Lecture~IX, Hardy analyzes two emblematic cases in full detail: $2s=8$ and $2s=24$. For eight squares, he uses modular-function arguments to prove that $r_8(n)$ agrees everywhere with the circle-method ``singular series'' $\rho_8(n)$. Turning immediately to twenty-four squares, exact agreement fails. At the opening of \S\,9.16, Hardy writes:
+\begin{quote}
+\itshape
+If $\vartheta^{-24}\Theta_{24}$ were bounded in $D_3$, it would follow that $\vartheta^{24}=\Theta_{24}$ and $r_{24}(n)=\rho_{24}(n)$; but this is untrue.
+\end{quote}
+
+Here $D_3$ is a fundamental domain for Hardy's modular subgroup $\Gamma_3$, $\vartheta^{24}(x)=1+\sum_{n=1}^{\infty}r_{24}(n)x^n$ is the generating series for representations by twenty-four squares, and $\Theta_{24}(x)=1+\sum_{n=1}^{\infty}\rho_{24}(n)x^n$ is the generating series of the singular series. Even the very first coefficient $n=1$ exposes a dramatic discrepancy.
+
+On the one hand, to write $1$ as a sum of twenty-four squares, one chooses one of the twenty-four coordinates to be $\pm 1$ and sets the rest to $0$, giving the obvious integer count $r_{24}(1)=48$. On the other hand, Hardy's formula~(9.9.4) for the singular series is
+\begin{equation*}\tag{9.9.4}
+\rho_{24}(n)=\frac{16}{691}\sigma_{11}^*(n),
+\end{equation*}
+where $\sigma_{11}^*(n)$ is the sum of the $11$-th powers of all positive divisors of $n$ when $n$ is odd (and the sum over even divisors minus the sum over odd divisors when $n$ is even), with the prime $691$ coming from the Bernoulli number $B_6=691/2730$ in Hardy's indexing. Setting $n=1$ produces a fraction strictly smaller than $1$: $\rho_{24}(1)=16/691$.
+
+Where does the gap $48-\frac{16}{691}=\frac{33152}{691}$ come from? In equations~(9.16.1)--(9.16.2), Hardy records Ramanujan's exact identity:
+\begin{equation*}\tag{9.16.1}
+\vartheta^{24}(x)=\Theta_{24}(x)-\frac{33152}{691}g(-x)-\frac{65536}{691}g(x^2),
+\end{equation*}
+\begin{equation*}\tag{9.16.2}
+g(x)=x\bigl\{(1-x)(1-x^2)(1-x^3)\cdots\bigr\}^{24}=\sum_{n=1}^{\infty}\tau(n)x^n.
+\end{equation*}
+Equating coefficients yields Ramanujan's celebrated formula in \S\,9.17 (with the convention $\tau(y)=0$ for nonintegral $y$):
+\begin{equation*}\tag{9.17.1}
+r_{24}(n)=\frac{16}{691}\sigma_{11}^*(n)+e_{24}(n),
+\end{equation*}
+\begin{equation*}\tag{9.17.2}
+e_{24}(n)=\frac{128}{691}\bigl\{(-1)^{n-1}259\,\tau(n)-512\,\tau(\tfrac12 n)\bigr\}.
+\end{equation*}
+At $n=1$, $\tau(1)=1$ and $\tau(\tfrac12)=0$, so $e_{24}(1)=\frac{128\times 259}{691}=\frac{33152}{691}$, and adding $\frac{16}{691}$ restores $\frac{33168}{691}=48$.
+
+Yet this sharpens the underlying puzzle: \textbf{$r_{24}(1)=48$ counts the unit vectors in the standard lattice $\ZZ^{24}$; what, then, is the fraction $\rho_{24}(1)=16/691$, built out of a real volume and congruence counts modulo prime powers, actually counting?}
+
+C.~L.~Siegel gave the first fundamental answer~\cite{Siegel1935}: $\rho_{24}(1)=16/691$ is not the count for a single lattice, but a \textbf{weighted average over all integral isometry classes in the entire genus} of $\ZZ^{24}$; only when the genus contains a single class (as in eight squares) does the average coincide with the representation number of a single lattice. Thirty years later, A.~Weil rewrote this finite weighted average as a \textbf{theta integral} on an adelic orthogonal quotient, elevating Siegel's counting theorem into the \textbf{Siegel--Weil formula} in the theory of automorphic forms~\cite{Weil1964,Weil1965}. Replacing the constant function $1$ inside Weil's integral by a general automorphic form on the source group yields the \textbf{theta lift}---an integral transform that links quadratic forms, modular forms, and $L$-functions, and that serves, in the form of iterated lift chains, as the central engine of the Alpöge--Claude proof of GRH presented in this monograph.
+
+Below we trace this trajectory step by step from Hardy's classical formulas to the architecture of the main text.
+
+\section{The singular series, Eisenstein series, and a two-dimensional lattice}
+
+A brief note on conventions: in Lecture~IX (\S\,9.11), because Hardy reserves $q$ for denominators of rational points $e^{2p\pi i/q}$, he sets $x=e^{\pi i\tau}$ ($\ImPart\tau>0$) in~(9.2.1); in Lecture~XII, he returns to Ramanujan's $q=e^{\pi i\tau}$ and $\phi(q)=\vartheta_3(0,\tau)$. Modern modular-form conventions usually take $q=e^{2\pi i\tau}$, so Hardy's upper-half-plane variable $\tau_H$ satisfies $\tau_H=2\tau$.
+
+Returning to $\vartheta^{2s}(x)=1+\sum_{n=1}^{\infty}r_{2s}(n)x^n$, Hardy follows the Hardy--Littlewood circle method in \S\,9.8: he isolates the principal singularity of $\vartheta^{2s}(x)$ near each rational point $e^{2p\pi i/q}$ on the unit circle, sums these local principal parts to form $\Theta_{2s}(x)=1+\sum_{n=1}^{\infty}\rho_{2s}(n)x^n$, and obtains the \textbf{singular series} in~(9.8.4)--(9.8.5):
+\begin{equation*}\tag{9.8.4}
+\rho_{2s}(n)=\frac{\pi^s}{\Gamma(s)}n^{s-1}\sum_{q=1}^{\infty}A_q(n),
+\end{equation*}
+where $A_1(n)=1$, and for $q>1$ (with $p\,(q)$ denoting a reduced residue system modulo $q$),
+\begin{equation*}\tag{9.8.2,\,9.8.5}
+A_q(n)=q^{-2s}\sum_{p\,(q)}S_{p,q}^{2s}\,e^{-2np\pi i/q},
+\qquad
+S_{p,q}=\sum_{j=1}^{q}e^{2j^2p\pi i/q}.
+\end{equation*}
+The geometric and arithmetic structure of~(9.8.4) is transparent. The outer factor $\alpha_\infty(n)=\pi^s n^{s-1}/\Gamma(s)$ is the derivative at $t=n$ of the volume $\pi^s t^s/\Gamma(s+1)$ of the $2s$-dimensional Euclidean ball $\sum_{j=1}^{2s}u_j^2\le t$, measuring the solution density at the \textbf{real place}. By multiplicativity of $A_q(n)$, whenever $2s\ge 6$ the sum $\sum_{q=1}^{\infty}A_q(n)$ converges absolutely and factors as an Euler product $\prod_p\alpha_p(n)$, where $\alpha_p(n)=\sum_{r\ge 0}A_{p^r}(n)=\lim_{k\to\infty}p^{-k(2s-1)}N_{p^k}(n)$ is the stabilized normalized count of solutions modulo $p^k$.
+
+When $2s\equiv 0\pmod 8$, the $2s$-th power of the Gauss sum simplifies dramatically. Using Ramanujan sums in \S\,9.9, Hardy evaluates the entire singular series in closed form in~(9.9.2):
+\begin{equation*}\tag{9.9.2}
+\rho_{2s}(n)=\frac{\pi^s}{\Gamma(s)(1-2^{-s})\zeta(s)}\sigma_{s-1}^*(n).
+\end{equation*}
+For $2s=8$, substituting $(1-2^{-4})\zeta(4)=\pi^4/96$ gives~(9.9.3):
+\begin{equation*}\tag{9.9.3}
+\rho_8(n)=16\sigma_3^*(n),
+\end{equation*}
+and the modular-function argument in \S\S\,9.13--9.15 establishes $r_8(n)=\rho_8(n)$. At $n=2$ one can verify three completely different computations by hand:
+\begin{itemize}
+\item \emph{Direct counting.} To write $2$ as a sum of eight squares, choose $2$ of the $8$ coordinates and assign each $\pm 1$, giving $r_8(2)=4\binom{8}{2}=112$.
+\item \emph{Hardy's formula~(9.9.3).} The even divisor of $2$ is $2$ and the odd divisor is $1$, so $\sigma_3^*(2)=2^3-1^3=7$ and $\rho_8(2)=16\times 7=112$.
+\item \emph{Product of local densities.} The real density is $\alpha_\infty(2)=4\pi^4/3$, the $2$-adic density is $\alpha_2(2)=7/8$, and the product over odd primes is $\prod_{p>2}(1-p^{-4})=96/\pi^4$ (verified in full in \secref{sec:appC-calculations}), yielding
+\[
+\frac{4\pi^4}{3}\cdot\frac{7}{8}\cdot\frac{96}{\pi^4}=112.
+\]
+\end{itemize}
+
+Equally revealing is Hardy's method in \S\,9.14 for showing that $\vartheta^{-2s}\Theta_{2s}$ is invariant under $\Gamma_3$: he rewrites the generating series $\Theta_{2s}$ directly as a double lattice sum---a classical \textbf{Eisenstein series}. Writing $\eta(s)=(1-2^{-s})\zeta(s)$, equation~(9.14.8) reads:
+\begin{equation*}\tag{9.14.8}
+\eta(s)\Theta_{2s}=\frac{1}{2}\sum_{p+q\equiv 1\pmod 2}\frac{1}{(p-q\tau)^s},
+\end{equation*}
+summed over all integer pairs $(p,q)$ with $p+q$ odd. Thus, long before the adelic Siegel--Weil theory took shape, the direct equality between singular series and Eisenstein series already stood in Hardy's lectures.
+
+To handle several lattice vectors transparently, we step down from $\ZZ^8$ to a small two-dimensional lattice from Hardy's Lecture~XII~\cite[\S\,12.2 and \S\,12.10, pp.~213, 220]{Hardy1940}. From here on we adopt the modern convention $q=e^{2\pi i\tau}$ (as a formal power series in $q$, this agrees identically with Hardy's $\phi(q)=1+2q+2q^4+\cdots$ at $q=e^{\pi i\tau_H}$, with $\tau_H=2\tau$). Take $L=\ZZ^2$ with the positive definite quadratic form $Q(u,v)=u^2+3v^2$. Its degree-$1$ theta series is the product of two one-dimensional theta series:
+\[
+\Theta_L^{(1)}(\tau)=\sum_{(u,v)\in L}q^{Q(u,v)}=\phi(q)\phi(q^3).
+\]
+In \S\,12.10, equation~(12.10.2), Hardy cites a Lambert-series identity from Ramanujan's notebooks (parallel to Jacobi's~(9.2.2)--(9.2.3), with signs periodic modulo $6$ and multiples of $3$ omitted):
+\begin{equation*}\tag{12.10.2}
+\phi(q)\phi(q^3)=1+2\left(\frac{q}{1-q}-\frac{q^2}{1+q^2}+\frac{q^4}{1+q^4}-\frac{q^5}{1-q^5}+\cdots\right).
+\end{equation*}
+For instance, $Q(u,v)=u^2+3v^2=4$ has $6$ integer solutions: $(\pm 2,0)$ and $(\pm 1,\pm 1)$. On the right-hand side of~(12.10.2), only the first three fractions contribute to $q^4$: $\frac{q}{1-q}=q+\cdots+q^4+\cdots$, $-\frac{q^2}{1+q^2}=-q^2+q^4-\cdots$, and $+\frac{q^4}{1+q^4}=q^4-\cdots$, each contributing $+1$, giving $2(1+1+1)=6$. Rewriting $\frac{q^d}{1+q^d}=\frac{q^d}{1-q^d}-\frac{2q^{2d}}{1-q^{2d}}$ shows that the right-hand side of~(12.10.2) is likewise a linear combination of weight-$1$ Eisenstein series ($2E_{\chi_{-3}}(q)+4E_{\chi_{-3}}(q^4)$). The reason a single lattice $u^2+3v^2$ equals an Eisenstein series with no cusp-form error is the same as for eight squares: primitive reduced forms of discriminant $-12$ form a single class.
+
+\section{Multiple vectors at once: Gram matrices and higher-degree Siegel theta series}
+
+The classical theta series $\Theta_L^{(1)}$ picks a \textbf{single} vector $x\in L$ at a time and records its squared length $Q(x)$. A natural question arises in quadratic-form theory: if we select an ordered $d$-tuple of vectors $\mathbf x=(x_1,\ldots,x_d)\in L^d$ simultaneously, and want to record not only their individual lengths but also their mutual angles and relative geometry, how must the generating series be modified?
+
+Test this on the two-dimensional lattice $L=\ZZ^2$ with $Q(u,v)=u^2+3v^2$ and associated symmetric bilinear form
+\[
+b\bigl((u,v),(u',v')\bigr)=uu'+3vv',
+\]
+so that $b(x,x)=Q(x)$. Pick two vectors $x_1,x_2\in L$ with $Q(x_1)=1$ and $Q(x_2)=4$. Looking at lengths alone, there are $2$ choices for $x_1$, namely $(\pm 1,0)$, and $6$ choices for $x_2$, namely $(\pm 2,0)$ and $(\pm 1,\pm 1)$, making $2\times 6=12$ ordered pairs in all.
+
+Geometrically, however, these $12$ pairs fall into distinct configurations: some are collinear, while others form acute or obtuse angles. To retain relative position, we record the inner product $a=b(x_1,x_2)$ in the $2\times 2$ \textbf{Gram matrix}
+\[
+G_{(x_1,x_2)}=\begin{pmatrix} Q(x_1) & b(x_1,x_2) \\ b(x_2,x_1) & Q(x_2) \end{pmatrix}=\begin{pmatrix} 1 & a \\ a & 4 \end{pmatrix}.
+\]
+Writing $x_1=(\varepsilon,0)$ ($\varepsilon=\pm 1$) and $x_2=(u,v)$, we have $a=\varepsilon u$. Grouping the $12$ pairs by $a$ yields four classes, listed in Table~\ref{tab:appC-gram-pairs}. Notice that for $(u,v)=(\pm 1,\pm 1)$, the sign of $v$ does not affect $a=\varepsilon u$, so $a=\pm 1$ each account for $4$ pairs, preserving the total $2+2+4+4=12$.
+
+\begin{table}[htbp]
+\centering
+\caption{Classification by inner product of pairs $(x_1,x_2)$ in $Q(u,v)=u^2+3v^2$ with $Q(x_1)=1$ and $Q(x_2)=4$}
+\label{tab:appC-gram-pairs}
+\small
+\begin{tabular}{@{}clc@{}}
+\toprule
+Off-diagonal entry $a=b(x_1,x_2)$ & Ordered pairs $(x_1,x_2)$ & Count \\
+\midrule
+$a=2$ & $\bigl((1,0),(2,0)\bigr),\ \bigl((-1,0),(-2,0)\bigr)$ & $2$ \\
+$a=-2$ & $\bigl((1,0),(-2,0)\bigr),\ \bigl((-1,0),(2,0)\bigr)$ & $2$ \\
+$a=1$ & $\bigl((1,0),(1,\pm 1)\bigr),\ \bigl((-1,0),(-1,\pm 1)\bigr)$ & $4$ \\
+$a=-1$ & $\bigl((1,0),(-1,\pm 1)\bigr),\ \bigl((-1,0),(1,\pm 1)\bigr)$ & $4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In general, for any positive definite lattice $(L,Q)$ with symmetric bilinear form $b(x,x)=Q(x)$, the Gram matrix $G_{\mathbf x}=\bigl(b(x_i,x_j)\bigr)_{1\le i,j\le d}$ of a $d$-tuple $\mathbf x=(x_1,\ldots,x_d)\in L^d$ encodes the induced $d$-variable quadratic form:
+\[
+Q\!\left(\sum_{i=1}^{d} t_i x_i\right)=t^{\mathsf T}G_{\mathbf x}t.
+\]
+To assign distinct Fourier modes to distinct Gram matrices $G$, a single complex variable $\tau$ is no longer enough: one pairs $G$ with a $d\times d$ complex symmetric matrix $Z=X+iY$ whose imaginary part $Y$ is positive definite (an element of the \textbf{Siegel upper half-space} $\mathbb H_d$ of degree $d$). This defines the \textbf{degree-$d$ Siegel theta series}~\cite[Definition~2.1.1]{Li2023}:
+\[
+\Theta_L^{(d)}(Z)=\sum_{\mathbf x\in L^d}e^{2\pi i\tr(G_{\mathbf x}Z)}.
+\]
+The $d=2$ example makes the role of the matrix variable clear. For $G=\bigl(\begin{smallmatrix}1&a\\a&4\end{smallmatrix}\bigr)$ and $Z=\bigl(\begin{smallmatrix}z_{11}&z_{12}\\z_{12}&z_{22}\end{smallmatrix}\bigr)$, the trace expands as
+\[
+\tr(GZ)=z_{11}+4z_{22}+2az_{12}.
+\]
+The diagonal entries $z_{11},z_{22}$ track the squared lengths $1$ and $4$, while the off-diagonal entry $z_{12}$ distinguishes the inner product $a$ with coefficient $2a$ (from the two symmetric off-diagonal positions). Setting $z_{12}=0$ erases the off-diagonal information: $\Theta_L^{(2)}\!\bigl(\begin{smallmatrix}z_{11}&0\\0&z_{22}\end{smallmatrix}\bigr)$ collapses to $\Theta_L^{(1)}(z_{11})\Theta_L^{(1)}(z_{22})$, merging the four distinct Fourier terms back into the single coefficient $2+2+4+4=12$. In short, \textbf{the degree $d$ specifies how many vectors are chosen simultaneously, while the off-diagonal entries of $Z$ resolve their relative geometry.} (In Hardy's and Siegel's 1935 normalization $Z_H=2Z$, the exponent reads $\pi i\tr(G_{\mathbf x}Z_H)$; in Chao Li~\cite{Li2023}, the polarized bilinear form is twice our $b$ and the Fourier index is half the polarized Gram matrix.)
+
+\section{From the singular series to the Siegel--Weil formula}
+
+We now return to the opening puzzle: why does $r_8(n)=\rho_8(n)$ hold identically for eight squares, whereas for twenty-four squares we find $r_{24}(1)=48\ne 16/691=\rho_{24}(1)$?
+
+Hardy himself recorded the explanation in the Notes to Lecture~IX (\S\,9.3, pp.~158--159), citing Siegel's landmark 1935 paper~\cite{Siegel1935,Hardy1940}:
+\begin{quote}
+\itshape
+In order that $e_{2s}(n)=0$ for all $n$, it is necessary and sufficient that $2s\le 8$. In these cases only $r_{2s}(n)$ is a `divisor function', represented by the `singular series' of \S\,9.8. The `reasons' for this have been shown in a new light recently by Siegel, \textup{Annals of Math.} (2), \textbf{36} (1935), 527--606.
+
+If the discriminant is $1$, then $x_1^2+x_2^2+\cdots+x_k^2$ is a representative of a class in the principal genus. In order that there should be only one such class, it is necessary and sufficient that $k\le 8$. In this case only is $r_k(n)$ the sum of the singular series.
+\end{quote}
+
+This brings forward the central pair of notions in the arithmetic of quadratic forms: the \textbf{genus} and the \textbf{integral isometry class}.\footnote{Here \emph{genus} is the Gauss--Siegel local-isometry genus of quadratic forms and lattices, not the topological genus of an algebraic curve.} Two positive definite integral lattices belong to the same \textbf{genus} $\mathcal G$ if they are isometric over $\RR$ and over $\ZZ_p$ for every prime $p$; they belong to the same integral isometry class $[M]$ if they are globally isometric over $\ZZ$. Every genus contains only finitely many integral isometry classes.
+
+The limitation of local data explains the discrepancy at once. Because the singular series $\alpha_\infty(n)\prod_p\alpha_p(n)$ is assembled solely from solution densities over $\RR$ and over each $\ZZ_p$, it cannot distinguish two lattices that are locally isometric everywhere yet globally inequivalent; it can only capture an average over the entire genus $\mathcal G$. Siegel proved that if each class $[M]\in\mathcal G$ is weighted by the reciprocal of the order of its integral automorphism group, $1/|\mathrm O(M)|$, yielding the \textbf{genus theta series}~\cite[(2.1.3.1)]{Li2023}
+\[
+\overline{\Theta}_{\mathcal G}^{(d)}(Z)
+=\frac{\displaystyle\sum_{[M]\in\mathcal G}\frac{1}{|\mathrm O(M)|}\,\Theta_M^{(d)}(Z)}
+      {\displaystyle\sum_{[M]\in\mathcal G}\frac{1}{|\mathrm O(M)|}},
+\]
+then in degree $d=1$ the representation numbers $r_M(n)=\#\{x\in M:Q(x)=n\}$ ($n>0$) satisfy Siegel's exact representation formula~\cite{Siegel1935,Li2023}:
+\[
+\frac{\displaystyle\sum_{[M]\in\mathcal G} r_M(n)/|\mathrm O(M)|}
+     {\displaystyle\sum_{[M]\in\mathcal G} 1/|\mathrm O(M)|}
+=\alpha_\infty(n)\prod_p\alpha_p(n).
+\]
+
+Returning to sums of squares, the contrast becomes clear:
+\begin{itemize}
+\item \emph{Eight squares ($I_8=\ZZ^8$).} The genus of $I_8$ consists of \textbf{a single class} (note that the $E_8$ lattice also has determinant $1$, but its norms over $\ZZ_2$ are all even, so it lies in a different genus). With one class in the genus, the weighted average collapses to the single lattice, giving $r_8(n)=\rho_8(n)=16\sigma_3^*(n)$ identically.
+\item \emph{Twenty-four squares ($I_{24}=\ZZ^{24}$).} The genus of $I_{24}$ is far larger, containing many inequivalent $24$-dimensional unimodular lattices. Because inner products in any lattice of this genus are integers, the Cauchy--Schwarz inequality forces any two distinct pairs $\{\pm u\}$ of unit vectors to be orthogonal; as soon as $24$ orthogonal pairs are present, they span a full-rank sublattice of determinant $1$, forcing the entire lattice to be isometric to $I_{24}$. Every other lattice in the genus therefore has strictly fewer than $48$ unit vectors (and most have none at all), pulling the genus average down from $r_{24}(1)=48$ to $\rho_{24}(1)=16/691$---a fact we verify completely from both sides of the Siegel--Weil formula below.
+\end{itemize}
+
+For a concrete two-dimensional illustration, Hardy's Lecture~XII (\S\,12.22, p.~229) discusses singular moduli of discriminant $-n$ and notes that at $n=23$ there is $N=1$ genus containing $r=3$ proper equivalence classes ($\SL_2(\ZZ)$-class number $h=Nr=3$), explaining why the singular-modulus invariant $F_{23}$ satisfies the cubic equation
+\[
+F^3-F-1=0.
+\]
+The three reduced proper classes are $Q_A(x,y)=x^2+xy+6y^2$ and $Q_B^\pm(x,y)=2x^2\pm xy+3y^2$. Under full integral isometries $\GL_2(\ZZ)$, the reflection $(x,y)\mapsto(x,-y)$ identifies $Q_B^+$ with $Q_B^-$, leaving two integral isometry classes $[Q_A]$ and $[Q_B]$ in the genus. As verified in \secref{sec:appC-calculations}, they lie in the same genus and have automorphism group orders $|\mathrm O(Q_A)|=4$ and $|\mathrm O(Q_B)|=2$, giving normalized weights $\frac{1/4}{1/4+1/2}=\frac{1}{3}$ and $\frac{1/2}{1/4+1/2}=\frac{2}{3}$. Thus the genus theta series is
+\[
+\overline{\Theta}_{\mathcal G}^{(1)}=\frac{1}{3}\Theta_A+\frac{2}{3}\Theta_B.
+\]
+Compare coefficients of $q^1$: $Q_A$ represents $1$ twice via $(\pm 1,0)$, whereas the minimum positive value of $Q_B$ is $2$, so $Q_B$ cannot represent $1$ at all. The genus average at $n=1$ is therefore $\frac{1}{3}\cdot 2+\frac{2}{3}\cdot 0=\frac{2}{3}$, a miniature two-dimensional analogue of $r_{24}(1)=48$ versus $\rho_{24}(1)=16/691$.
+
+\subsection{Weil's perspective: precise statement of the Siegel--Weil formula}
+
+Siegel's formula is a striking finite sum, yet two deeper questions remain: why do the weights $1/|\mathrm O(M)|$ appear, and why does this weighted average always equal an Eisenstein series? In 1964--1965, André Weil answered both questions uniformly within the framework of adelic groups and representation theory~\cite{Weil1964,Weil1965,Li2023}.
+
+Let $V$ be a nondegenerate rational quadratic space of even rank $r$ (for a classical positive definite lattice $L$, take $V=L\otimes\QQ$), write $G=\mathrm O(V)$ for its orthogonal group, and introduce the symplectic group $H=\mathrm{Sp}_{2d}$ as the target group; $(G,H)$ forms a \textbf{reductive dual pair}~\cite{Howe1979,Howe1989}. The adele ring $\AAA=\RR\times\AAf$ combines the real and all $p$-adic completions into a single framework. The central representation-theoretic object is the \textbf{Weil representation} $\omega(g,h)$, through which $g\in G(\AAA)$ and $h\in H(\AAA)$ act jointly on Schwartz test functions $\varphi\in\mathcal S(V(\AAA)^d)$. Summing over rational $d$-tuples $\mathbf x\in V(\QQ)^d$ defines the two-variable \textbf{theta kernel} $\theta_\varphi(g,h)$, and integrating against an automorphic form $f(g)$ on the source quotient defines the \textbf{theta lift} $\mathcal T_\varphi f$~\cite[pp.~334--337]{Li2023}:
+\[
+\begin{aligned}
+\theta_\varphi(g,h)&=\sum_{\mathbf x\in V(\QQ)^d}\bigl(\omega(g,h)\varphi\bigr)(\mathbf x),\\
+(\mathcal T_\varphi f)(h)&=\int_{G(\QQ)\backslash G(\AAA)}\theta_\varphi(g,h)\,f(g)\,dg.
+\end{aligned}
+\]
+
+To state the Siegel--Weil formula, we also specify the \textbf{Siegel Eisenstein series} on the right-hand side. Let $P\subset\mathrm{Sp}_{2d}$ be the \textbf{Siegel parabolic subgroup} stabilizing a maximal isotropic subspace of $\QQ^{2d}$ (when $d=1$, $\mathrm{Sp}_2=\SL_2$ and $P=B$ is the upper-triangular Borel subgroup). Evaluating at the origin $\mathbf 0\in V(\AAA)^d$ defines the \textbf{Siegel--Weil section} at the special point $s_0=\frac{r-d-1}{2}$,
+\[
+f_\varphi(h,s_0)=\bigl(\omega(1,h)\varphi\bigr)(\mathbf 0),
+\]
+extended to a standard section $f_\varphi(h,s)$ for $s\in\CC$ via the Iwasawa decomposition. For $\RePart s$ sufficiently large, summing over $P(\QQ)\backslash\mathrm{Sp}_{2d}(\QQ)$ defines the \textbf{Siegel Eisenstein series}:
+\[
+E(h,s,\varphi)=\sum_{\gamma\in P(\QQ)\backslash\mathrm{Sp}_{2d}(\QQ)}f_\varphi(\gamma h,s).
+\]
+
+\begin{theorem}[Siegel--Weil formula~\cite{Weil1965,Li2023}]
+Let $\alpha$ be the Witt index of $V$ (the dimension of a maximal isotropic subspace). Under \emph{Weil's convergence condition}---that is, either $V$ is anisotropic (in particular $\alpha=0$ when $V$ is positive definite) or $r-\alpha>d+1$---both the theta integral on the left and the Eisenstein series on the right converge at $s_0=\frac{r-d-1}{2}$ (understood by analytic continuation at boundary values). Normalizing the Tamagawa measure $dg$ on $G(\QQ)\backslash G(\AAA)$ to have total volume $1$, we have
+\[
+\kappa\int_{\mathrm O(V)(\QQ)\backslash\mathrm O(V)(\AAA)}\theta_\varphi(g,h)\,dg
+=E(h,s_0,\varphi),
+\qquad
+s_0=\frac{r-d-1}{2},
+\qquad
+\kappa=\begin{cases} 1, & r>d+1,\\ 2, & r\le d+1. \end{cases}
+\]
+\end{theorem}
+
+Now specialize this formula to a positive definite lattice $L$ of even rank $r$ ($V=L\otimes\QQ$). Choose $\varphi=\varphi_\infty\otimes\bigotimes_p\varphi_p$ where $\varphi_p=\mathbf 1_{L_p^d}$ is the characteristic function of $L_p^d$ ($L_p=L\otimes\ZZ_p$) at each finite prime $p$, and $\varphi_\infty(\mathbf x)=e^{-2\pi\tr(G_{\mathbf x})}$ is the Gaussian at the real place; in the target group take $h_Z\in\mathrm{Sp}_{2d}(\RR)$ (scaling by $Y^{1/2}$ then translating by $X$) at $\infty$ and $1$ at all finite places. Separating the roles of $h_Z$ and $g$ in the theta integral recovers Siegel's genus average directly:
+\begin{enumerate}
+\item \emph{Fixing $g=1$ and varying $h_Z$.} The finite-place characteristic functions $\mathbf 1_{L_p^d}$ restrict $\mathbf x\in V(\QQ)^d$ to the integral lattice $L^d$. At the real place, scaling turns the Gaussian into $(\det Y)^{r/4}e^{-2\pi\tr(G_{\mathbf x}Y)}$ and translation multiplies by the phase $e^{2\pi i\tr(G_{\mathbf x}X)}$. Dividing out $(\det Y)^{r/4}$ gives precisely the Siegel theta series $\Theta_L^{(d)}(Z)=\sum_{\mathbf x\in L^d}e^{2\pi i\tr(G_{\mathbf x}Z)}$.
+\item \emph{Integrating over $g\in G(\QQ)\backslash G(\AAA)$.} At each finite prime $p$, $g_p$ transports $L_p$ to $g_p L_p$, so the global lattice $M=V(\QQ)\cap\prod_p g_p L_p$ ranges over the entire genus $\mathcal G$ of $L$. Decomposing $G(\QQ)\backslash G(\AAA)$ into double cosets with respect to the compact open stabilizer $K_L$ of the local lattices yields one double coset for each class $[M]\in\mathcal G$, whose quotient volume is the fixed volume of $K_L$ divided by the order of the finite stabilizer $\mathrm O(M)$---hence naturally proportional to $1/|\mathrm O(M)|$.
+\end{enumerate}
+
+Dividing both sides of the Siegel--Weil formula by $\kappa(\det Y)^{r/4}$ and letting $E_{\mathcal G}^{(d)}(Z)$ denote the normalized Siegel Eisenstein series $\kappa^{-1}(\det Y)^{-r/4}E(h_Z,s_0,\varphi)$ (with constant term $1$), we arrive at the classical three-way identity~\cite[Theorems~2.1.3 and~2.2.9]{Li2023}:
+\[
+\underbrace{(\det Y)^{-r/4}(\mathcal T_\varphi 1)(h_Z)}_{\text{Weil's theta integral}}
+=\underbrace{\overline{\Theta}_{\mathcal G}^{(d)}(Z)}_{\text{Siegel's weighted genus theta series}}
+=\underbrace{E_{\mathcal G}^{(d)}(Z)}_{\text{normalized Siegel Eisenstein series}}.
+\]
+Hardy's singular series (including the Eisenstein expression~(9.14.8)), Siegel's genus average, and Weil's theta integral of the constant function $1$ are thus three faces of a single object.
+
+\subsection{Back to the beginning: a full verification of \texorpdfstring{$\rho_{24}(1)=16/691$}{rho\_24(1) = 16/691} via Siegel--Weil}
+
+With the Siegel--Weil formula explicitly in hand, we can test the opening identity $\rho_{24}(1)=16/691$ on both sides and link them directly.
+
+Take $V=\QQ^{24}$, $L=I_{24}=\ZZ^{24}$, and $d=1$ (so $\mathrm{Sp}_2=\SL_2$ and $P=B$ is the upper-triangular Borel subgroup). Then $r=24>d+1=2$, whence $\kappa=1$ and $s_0=\frac{24-1-1}{2}=11$. With $\varphi=e^{-2\pi Q(x)}\otimes\mathbf 1_{\widehat{I_{24}}}$ and $h_\tau\in\SL_2(\RR)$ ($\tau=X+iY\in\mathbb H_1$, $q=e^{2\pi i\tau}=e^{\pi i\tau_H}$, $\tau_H=2\tau$), dividing by $Y^{r/4}=Y^6$ specializes the Siegel--Weil formula to
+\[
+\underbrace{Y^{-6}\int_{\mathrm O(V)(\QQ)\backslash\mathrm O(V)(\AAA)}\theta_\varphi(g,h_\tau)\,dg}_{\text{LHS: genus theta series }\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}(\tau)}
+\;=\;
+\underbrace{Y^{-6}\sum_{\gamma\in B(\QQ)\backslash\SL_2(\QQ)}\bigl(\omega(1,\gamma h_\tau)\varphi\bigr)(0)}_{\text{RHS: Siegel Eisenstein series }Y^{-6}E(h_\tau,11,\varphi)}.
+\]
+We compute the $q^1$-coefficient $16/691$ independently on the right-hand side and on the left-hand side, and then explain directly why the two sides coincide.
+
+\paragraph{Step 1: The right-hand side---$Y^{-6}E(h_\tau,11,\varphi)$ is Hardy's $\Theta_{24}$, with $q^1$-coefficient $16/691$.}
+The coset space $B(\QQ)\backslash\SL_2(\QQ)$ consists of the identity coset ($c=0$, contributing $1$) together with all coprime bottom rows $(c,d)$ with $c\ge 1$. For $\gamma=\bigl(\begin{smallmatrix}a&b\\c&d\end{smallmatrix}\bigr)\in\SL_2(\ZZ)$ ($c\ge 1$), the Bruhat decomposition
+\[
+\begin{pmatrix}a&b\\c&d\end{pmatrix}
+=\begin{pmatrix}1&a/c\\0&1\end{pmatrix}
+ \begin{pmatrix}c^{-1}&0\\0&c\end{pmatrix}
+ \begin{pmatrix}0&-1\\1&0\end{pmatrix}
+ \begin{pmatrix}1&d/c\\0&1\end{pmatrix}
+\]
+lets us evaluate $\bigl(\omega(1,\gamma h_\tau)\varphi\bigr)(0)$ place by place:
+\begin{itemize}
+\item \emph{Real place.} Removing $Y^6$ produces the classical weight-$12$ automorphy factor $(c\tau+d)^{-12}$.
+\item \emph{Finite places.} For the polarized bilinear form $B(x,y)=2\sum_{j=1}^{24}x_j y_j$, the self-dual Haar measure satisfies $\vol(\ZZ_p^{24})=1$ for $p>2$ and $\vol(\ZZ_2^{24})=2^{-12}$ for $p=2$. Multiplying $\bigl(\omega_p(1,\gamma)\mathbf 1_{\ZZ_p^{24}}\bigr)(0)$ over all finite primes (the product of local Weil indices equals $1$ since $8\mid 24$), the Chinese remainder theorem yields the $24$-th power of the normalized Gauss sum:
+\[
+\bigl(\omega_f(1,\gamma)\mathbf 1_{\widehat{I_{24}}}\bigr)(0)
+=2^{-12}\frac{S_{-d,c}^{24}}{c^{12}}
+=2^{-12}\epsilon_c,
+\]
+where $\epsilon_c=1$ for $c$ odd, $\epsilon_c=0$ for $c\equiv 2\pmod 4$, and $\epsilon_c=2^{12}$ for $4\mid c$---matching Hardy's $\epsilon_q$ in \S\,9.9 exactly.
+\end{itemize}
+Substituting $\tau_H=2\tau$ into $2^{12}(c\tau+d)^{12}=(2d+c\tau_H)^{12}$ and setting $p=-d$ (using that $12$ is even), Weil's Siegel Eisenstein series matches \textbf{Hardy's Lecture~IX formula~(9.14.4)} term for term~\cite[p.~150]{Hardy1940}:
+\[
+Y^{-6}E(h_\tau,11,\varphi)
+=1+\sum_{\substack{c\ge 1,\ \gcd(c,d)=1}}\frac{2^{-12}\epsilon_c}{(c\tau+d)^{12}}
+=1+\sum_{\substack{c\ge 1,\ \gcd(p,c)=1}}\frac{\epsilon_c}{(2p-c\tau_H)^{12}}
+=\Theta_{24}(q).
+\]
+By the Fourier expansion of \S\S\,9.8 and~9.14 (equivalently, the local Whittaker integrals of the adelic Eisenstein series), the $q^n$-coefficient of $Y^{-6}E(h_\tau,11,\varphi)$ is the product of local representation densities $\alpha_\infty(n)\prod_p\alpha_p(n)=\rho_{24}(n)$. Evaluating each place at $n=1$:
+\begin{itemize}
+\item \emph{Real place.} The volume of the $24$-dimensional Euclidean ball $\sum_{j=1}^{24}x_j^2\le t$ is $\dfrac{\pi^{12}}{\Gamma(13)}t^{12}=\dfrac{\pi^{12}}{12!}t^{12}$; differentiating at $t=1$ gives $\alpha_\infty(1)=\dfrac{\pi^{12}}{11!}$.
+\item \emph{Odd primes $p>2$.} As in \secref{sec:appC-calculations}, let $S(u)=\sum_{x\bmod p}e_p(ux^2)$. For $u\not\equiv 0\pmod p$ we have $S(u)^2=\chi_p(-1)p$, so $S(u)^{24}=p^{12}$. By orthogonality of additive characters and $\sum_{u=1}^{p-1}e_p(-u)=-1$,
+\[
+N_p(1)=\frac{1}{p}\sum_{u\bmod p}e_p(-u)S(u)^{24}=\frac{p^{24}-p^{12}}{p}=p^{23}-p^{11}.
+\]
+Because $1\not\equiv 0\pmod p$, every solution modulo $p$ has a nonzero coordinate, so Hensel lifting gives $p^{23}$ lifts at each step and $\alpha_p(1)=p^{-23}N_p(1)=1-p^{-12}$. Taking the product over all odd primes,
+\[
+\prod_{p>2}\alpha_p(1)=\prod_{p>2}(1-p^{-12})=\frac{1}{(1-2^{-12})\zeta(12)}.
+\]
+\item \emph{The prime $p=2$.} Consider $\sum_{j=1}^{24}x_j^2\equiv 1\pmod 8$. Odd squares are $1\pmod 8$ and even squares are $0$ or $4\pmod 8$, so the number of odd coordinates must be congruent to $1\pmod 4$ (i.e.\ $1,5,9,13,17,21$). Filtering with fourth roots of unity gives
+\[
+\sum_{k\equiv 1\pmod 4}\binom{24}{k}=\frac{1}{4}\Bigl((1+1)^{24}+(1-1)^{24}-i(1+i)^{24}+i(1-i)^{24}\Bigr)=\frac{2^{24}}{4}=2^{22}
+\]
+(since $(1+i)^{24}=(2i)^{12}=2^{12}=(1-i)^{24}$). Once the parity pattern is fixed, each coordinate has $4$ residue classes modulo $8$, giving $4^{24}=2^{48}$ tuples; as at least $3$ coordinates are even, adding $2$ to one even coordinate shifts its square by $4\pmod 8$ and bijects ``sum $\equiv 1$'' with ``sum $\equiv 5\pmod 8$,'' leaving exactly half:
+\[
+N_8(1)=\frac{1}{2}\cdot 2^{22}\cdot 2^{48}=2^{69}=8^{23},\qquad \frac{N_8(1)}{8^{23}}=1.
+\]
+For $k\ge 3$, adding $2^{k-1}$ to the first odd coordinate of a solution modulo $2^k$ preserves the congruence modulo $2^k$ while flipping the sum of squares by $2^k\pmod{2^{k+1}}$; thus exactly half the solutions lift (each in all $2^{24}$ ways), keeping $2^{-23k}N_{2^k}(1)=1$ and hence $\alpha_2(1)=1$. (Alternatively, in Hardy \S\,9.9, $c_{2^a}(1)=\mu(2^a)=0$ for $a\ge 2$, so $\alpha_2(1)=A_1(1)=1$.)
+\end{itemize}
+Multiplying the three factors and substituting Euler's formula $\zeta(12)=\dfrac{2^{11}\pi^{12}}{12!}|B_{12}|$ (where $|B_{12}|=\dfrac{691}{2730}$, Hardy's $B_6$):
+\[
+\begin{aligned}
+a_1\bigl(Y^{-6}E(h_\tau,11,\varphi)\bigr)
+&=\alpha_\infty(1)\,\alpha_2(1)\prod_{p>2}\alpha_p(1)\\
+&=\frac{\pi^{12}}{11!}\cdot 1\cdot\frac{12!}{(1-2^{-12})2^{11}\pi^{12}\cdot\frac{691}{2730}}
+=\frac{12\cdot 2730}{(4095/2)\cdot 691}
+=\frac{16}{691}.
+\end{aligned}
+\]
+Both $\pi^{12}$ and $11!$ cancel cleanly and $2730/4095=2/3$, reproducing the $q^1$-coefficient $\rho_{24}(1)=16/691$ on the Eisenstein side.
+
+\paragraph{Step 2: The left-hand side---the genus average equals $\mathrm{mass}(\mathcal G_{23})/\mathrm{mass}(\mathcal G(I_{24}))=16/691$.}
+We now evaluate the $q^1$-coefficient of $\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}(\tau)$ independently, namely the weighted genus average $\dfrac{\sum_{[M]\in\mathcal G(I_{24})} r_M(1)/|\mathrm O(M)|}{\sum_{[M]\in\mathcal G(I_{24})} 1/|\mathrm O(M)|}$.
+
+For any $M\in\mathcal G(I_{24})$ and any unit vector $u\in R_M(1)=\{x\in M:Q(x)=1\}$, unimodularity of $M$ and $b(u,u)=1$ allow every $x\in M$ to be decomposed as $b(x,u)u+(x-b(x,u)u)$, giving an exact orthogonal splitting
+\[
+M=\ZZ u\oplus N,\qquad N=u^\perp,
+\]
+where $N$ is a $23$-dimensional positive definite unimodular lattice. Conversely, for any $23$-dimensional positive definite unimodular lattice $N$, the direct sum $\ZZ e\oplus N$ lies in $\mathcal G(I_{24})$; moreover, since even unimodular lattices occur only in ranks divisible by $8$, all $23$-dimensional positive definite unimodular lattices form a single genus $\mathcal G_{23}$. The assignment $[(M,u)]\mapsto [u^\perp]$ therefore gives a bijection between isomorphism classes of pointed lattices $[(M,u)]$ (note that $+u$ and $-u$ lie in the same $\mathrm O(M)$-orbit via the reflection $u\mapsto -u$) and classes $[N]\in\mathcal G_{23}$, with stabilizer $\operatorname{Stab}_{\mathrm O(M)}(u)\cong\mathrm O(N)$. By the orbit--stabilizer theorem, summing over all orbits gives
+\[
+\sum_{[M]\in\mathcal G(I_{24})}\frac{r_M(1)}{|\mathrm O(M)|}
+=\sum_{[M]\in\mathcal G(I_{24})}\sum_{[u]\in\mathrm O(M)\backslash R_M(1)}\frac{1}{|\operatorname{Stab}_{\mathrm O(M)}(u)|}
+=\sum_{[N]\in\mathcal G_{23}}\frac{1}{|\mathrm O(N)|}
+=\mathrm{mass}(\mathcal G_{23}).
+\]
+Geometrically, the $q^1$-coefficient on the left-hand side of Siegel--Weil is therefore the \textbf{mass ratio of two adjacent unimodular genera}:
+\[
+a_1\bigl(\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}\bigr)
+=\frac{\displaystyle\sum_{[M]\in\mathcal G(I_{24})} r_M(1)/|\mathrm O(M)|}
+      {\displaystyle\sum_{[M]\in\mathcal G(I_{24})} 1/|\mathrm O(M)|}
+=\frac{\mathrm{mass}(\mathcal G_{23})}{\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)}.
+\]
+
+Now substitute the general \textbf{Smith--Minkowski--Siegel mass formula}~\cite{Siegel1935,ConwaySloane1988,ConwaySloane1999}: for any positive definite integral lattice $L$ of rank $n\ge 2$ with Gram matrix $A=\bigl(b(e_i,e_j)\bigr)$ (satisfying $Q(x)=x^{\mathsf T}Ax$), define the local automorphism density at a prime $p$ by
+\[
+\alpha_p(A)=\frac{1}{2}\lim_{k\to\infty}p^{-k\,n(n-1)/2}\,\#\bigl\{X\in M_n(\ZZ/p^k\ZZ):X^{\mathsf T}AX\equiv A\pmod{p^k}\bigr\}
+\]
+(the factor $\frac{1}{2}$ cancels the factor $2$ in the order of finite orthogonal groups so that the Euler product converges), and define the real automorphism density by $\alpha_\infty(A)=\pi^{n(n+1)/4}\allowbreak\bigl(\prod_{j=1}^{n}\Gamma(\tfrac{j}{2})\bigr)^{-1}\allowbreak(\det A)^{-(n+1)/2}$. Then the mass of the genus $\mathcal G(L)$ is given exactly by
+\[
+\begin{aligned}
+\mathrm{mass}\bigl(\mathcal G(L)\bigr)
+=\sum_{[M]\in\mathcal G(L)}\frac{1}{|\mathrm O(M)|}
+&=2\,\pi^{-n(n+1)/4}\left(\prod_{j=1}^{n}\Gamma\!\left(\frac{j}{2}\right)\right)(\det A)^{(n+1)/2}\prod_{p}\alpha_p(A)^{-1}\\
+&=2\,\alpha_\infty(A)^{-1}\prod_{p}\alpha_p(A)^{-1},
+\end{aligned}
+\]
+where the leading factor $2$ is precisely the Tamagawa number $\tau(\mathrm{SO}(V))=2$ appearing in Step~3 below.
+
+For the standard lattices $I_{2s-1}$ and $I_{2s}$ with $2s\equiv 0\pmod 8$ ($\det A=1$), the orders of finite orthogonal groups at odd primes give $\alpha_p(I_{2s-1})=\prod_{j=1}^{s-1}(1-p^{-2j})$ and $\alpha_p(I_{2s})=(1-p^{-s})\prod_{j=1}^{s-1}(1-p^{-2j})$. Combining these with the real Gamma factors, Euler's formula $\zeta(2j)=\frac{2^{2j-1}\pi^{2j}}{(2j)!}|B_{2j}|$, and the $2$-adic equality $\alpha_2(I_{2s})=\alpha_2(I_{2s-1})$, the general mass formula reduces to explicit products of Bernoulli numbers~\cite{ConwaySloane1988,ConwaySloane1999}:
+\[
+\mathrm{mass}(\mathcal G_{2s-1})
+=\frac{2^{s-1}+1}{2}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j},
+\qquad
+\mathrm{mass}\bigl(\mathcal G(I_{2s})\bigr)
+=\frac{(2^s-1)(2^{s-1}+1)}{2}\cdot\frac{|B_s|}{2s}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j}.
+\]
+Taking the quotient cancels the entire common product $\frac{2^{s-1}+1}{2}\prod_{j=1}^{s-1}\frac{|B_{2j}|}{4j}$ (equivalently, from the general mass formula, the quotient is simply the ratio of local automorphism densities $\frac{\alpha_\infty(I_{2s})}{\alpha_\infty(I_{2s-1})}\prod_p\frac{\alpha_p(I_{2s})}{\alpha_p(I_{2s-1})}=\frac{\pi^s}{\Gamma(s)}\prod_{p>2}(1-p^{-s})$), yielding the unified mass-ratio formula
+\[
+\frac{\mathrm{mass}(\mathcal G_{2s-1})}{\mathrm{mass}\bigl(\mathcal G(I_{2s})\bigr)}
+=\frac{2s}{(2^s-1)|B_s|}.
+\]
+For $2s=8$ ($|B_4|=1/30$) this gives $16=\rho_8(1)$; for $2s=16$ ($|B_8|=1/30$) it gives $\frac{32}{17}=\rho_{16}(1)$ (where $\mathcal G_{15}$ has only $5$ classes and $\mathcal G(I_{16})$ has only $6$, allowing direct class-by-class checking); and for $2s=24$ ($|B_{12}|=691/2730$) it independently evaluates the left-hand side to
+\[
+\frac{\mathrm{mass}(\mathcal G_{23})}{\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)}
+=\frac{24}{(2^{12}-1)\cdot\frac{691}{2730}}
+=\frac{16}{691}.
+\]
+
+This identity also explains quantitatively why $16/691$ is so much smaller than $r_{24}(1)=48$. Whenever a lattice contains a unit vector $u$, it also contains $-u$, so $r_M(1)\ge 2$. Consequently, the total mass carried by all lattices in $\mathcal G(I_{24})$ that possess at least one unit vector is at most
+\[
+\sum_{\substack{[M]\in\mathcal G(I_{24})\\ r_M(1)>0}}\frac{1}{|\mathrm O(M)|}
+\le \frac{1}{2}\sum_{[M]\in\mathcal G(I_{24})}\frac{r_M(1)}{|\mathrm O(M)|}
+=\frac{8}{691}\,\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr)
+\approx 1.16\%\,\mathrm{mass}\bigl(\mathcal G(I_{24})\bigr).
+\]
+Thus, within the total genus mass $\mathrm{mass}(\mathcal G(I_{24}))\approx 3.33\times 10^{-8}$, \textbf{more than $98.8\%$ of the weight belongs to $24$-dimensional odd unimodular lattices with no unit vectors at all ($r_M(1)=0$)}. As for $I_{24}$ itself, its automorphism group has order $|\mathrm O(I_{24})|=2^{24}\cdot 24!$, so its share of the genus mass is roughly $2.89\times 10^{-24}$. Although $I_{24}$ has $48$ unit vectors, its weight in the genus average is negligible, pulling the average down to $16/691$.
+
+\paragraph{Step 3: Direct bridge between the two sides---adelic unfolding and Tamagawa numbers.}
+Finally, rather than comparing the two sides only after computing $16/691$ twice, one can see directly at the $q^1$-coefficient why the left-hand side of Siegel--Weil must equal the local-density product on the right~\cite{Weil1965,Weil1982}.
+
+Put $e_1=(1,0,\ldots,0)\in V(\QQ)$ and $V'=e_1^\perp\cong\QQ^{23}$, and pass to the special orthogonal groups $G=\mathrm{SO}(V)$ and $H=\mathrm{SO}(V')$. (In the $\mathrm{SO}$-quotient, a lattice $M$ admitting a reflection contributes one $\mathrm{SO}$-class of weight $1/|\mathrm{SO}(M)|=2/|\mathrm O(M)|$, whereas a lattice without reflections splits into two $\mathrm{SO}$-classes whose weights still sum to $2/|\mathrm O(M)|$; the common factor $2$ cancels in the normalized quotient.)
+
+Extracting the $q^1$-coefficient of $Y^{-6}(\mathcal T_\varphi 1)(h_\tau)$ replaces the theta kernel by the sum over the rational unit sphere $X_1=\{x\in V:Q(x)=1\}$, namely $\sum_{x\in X_1(\QQ)}\varphi_f(g_f^{-1}x)$. By \textbf{Witt's theorem} (since $\dim V'=23\ge 1$), $G(\QQ)$ acts transitively on $X_1(\QQ)$ with stabilizer $H(\QQ)$, so $X_1(\QQ)\cong G(\QQ)/H(\QQ)$. Using the Tamagawa measures $\mathrm d\omega_G,\mathrm d\omega_H$ on $G,H$ and the Gelfand--Leray form $\omega_{X_1}$ determined by $\mathrm dQ\wedge\omega_{X_1}=\mathrm dx_1\wedge\cdots\wedge\mathrm dx_{24}$, \textbf{unfolding} the integral gives
+\[
+\begin{aligned}
+\int_{G(\QQ)\backslash G(\AAA)}\sum_{x\in X_1(\QQ)}\varphi_f(g_f^{-1}x)\,\mathrm d\omega_G(g)
+&=\int_{H(\QQ)\backslash G(\AAA)}\varphi_f(g_f^{-1}e_1)\,\mathrm d\omega_G(g)\\
+&=\vol_{\omega_H}\bigl(H(\QQ)\backslash H(\AAA)\bigr)
+  \int_{X_1(\AAA)}\varphi_f(x_f)\,\mathrm d\omega_{X_1}(x).
+\end{aligned}
+\]
+Dividing both sides by $\vol_{\omega_G}\bigl(G(\QQ)\backslash G(\AAA)\bigr)$:
+\begin{itemize}
+\item the left-hand side is precisely the $q^1$-coefficient of $\overline{\Theta}_{\mathcal G(I_{24})}^{(1)}$;
+\item the prefactor on the right is the ratio of Tamagawa numbers of the two special orthogonal groups---which both equal $2$ for quadratic spaces of dimension at least $3$~\cite{Weil1982}---so $\dfrac{\tau(\mathrm{SO}(V'))}{\tau(\mathrm{SO}(V))}=\dfrac{2}{2}=1$;
+\item the adelic orbital integral factors over all places into local Gelfand--Leray integrals: at $\infty$ this is $\int_{X_1(\RR)}\mathrm d\omega_{X_1,\infty}=\alpha_\infty(1)$, and at each finite prime $p$ it is $\int_{X_1(\ZZ_p)}\mathrm d\omega_{X_1,p}=\lim_{k\to\infty}p^{-23k}N_{p^k}(1)=\alpha_p(1)$, recovering the Eisenstein $q^1$-coefficient $\alpha_\infty(1)\prod_p\alpha_p(1)=\frac{16}{691}$ from Step~1.
+\end{itemize}
+This completes the two-sided verification of the Siegel--Weil formula at $q^1$ for $I_{24}$.
+
+Returning to Weil's integral formulation, the calculation above uses only the constant automorphic function $f\equiv 1$. More generally, \textbf{what happens if we replace $f\equiv 1$ by a nontrivial automorphic form $f$ on the source group?} Then $\mathcal T_\varphi$ is no longer a mere genus average, but an integral operator sending automorphic forms on the source group to automorphic forms on the target group---the \textbf{theta lift}---capable of transferring divisibility, periods, and $L$-function data from one group to another.
+
+\section{From \texorpdfstring{$\tau(n)$}{tau(n)} and theta lift chains to the Alpöge--Claude proof of GRH}
+
+In the twenty-four-squares formula~(9.17.1)--(9.17.2), the main term $\frac{16}{691}\sigma_{11}^*(n)$ is now fully explained by the Siegel--Weil formula. The error term, however, leaves behind an enigmatic function $\tau(n)$---defined merely as the $x^n$-coefficient of the infinite product $g(x)=x\prod_{m=1}^{\infty}(1-x^m)^{24}$, with no elementary closed formula. Hardy was well aware how obscure it looks at first sight; opening the very next lecture of \emph{Ramanujan}, \textbf{Lecture~X} (``Ramanujan's function $\tau(n)$,'' \S\,10.1, p.~161), he wrote~\cite{Hardy1940}:
+\begin{quote}
+\itshape
+We may seem to be straying into one of the backwaters of mathematics, but the genesis of $\tau(n)$ as a coefficient in so fundamental a function compels us to treat it with respect.
+\end{quote}
+
+Lecture~X then lays out what $\tau(n)$ does and why it matters. First, Ramanujan conjectured and Mordell proved that $\tau(n)$ is \textbf{multiplicative} (equation~(10.2.1): $\tau(nn')=\tau(n)\tau(n')$ for $\gcd(n,n')=1$), so its Dirichlet series admits an \textbf{Euler product} analogous to Riemann's $\zeta(s)$ (\S\,10.3, equation~(10.3.8), p.~164):
+\begin{equation*}\tag{10.3.8}
+F(s)=\sum_{n=1}^{\infty}\frac{\tau(n)}{n^s}=\prod_{p}\frac{1}{1-\tau(p)p^{-s}+p^{11-2s}}.
+\end{equation*}
+Second, the size of $\tau(n)$ governs how closely the singular series $\rho_{24}(n)$ approximates $r_{24}(n)$. In \S\,10.7 (p.~169), Hardy calls this ``the most fundamental of the unsolved problems'' about $\tau(n)$ and states \textbf{Ramanujan's conjecture} (equation~(10.7.1)): for every prime $p$,
+\begin{equation*}\tag{10.7.1}
+|\tau(p)|\le 2p^{11/2},
+\end{equation*}
+meaning that the two complex roots of the local quadratic polynomial $X^2-\tau(p)X+p^{11}$ both have absolute value $p^{11/2}$.
+
+Later mathematics confirmed Hardy's instinct completely: far from being a backwater, $\tau(n)$ led straight to the \textbf{Weil conjectures} (roughly, the \textbf{Riemann hypothesis over finite fields}). Between 1969 and 1974, Pierre Deligne constructed an $\ell$-adic Galois representation attached to the weight-$12$ cusp form $\Delta$ inside the $11$-th étale cohomology of a Kuga--Sato variety~\cite{Deligne1971}, so that the characteristic polynomial of Frobenius at $p\ne\ell$ is $X^2-\tau(p)X+p^{11}$; he then proved the Weil conjectures (purity of Frobenius eigenvalues) for higher-dimensional varieties over finite fields~\cite{Deligne1974}, establishing~(10.7.1) in full.
+
+To keep the logical distinction sharp: Deligne's proof via the Weil conjectures bounds Frobenius eigenvalues at individual primes and does not directly locate the zeros of global Dirichlet $L$-functions $L(s,\chi)$ over number fields (number-field GRH). Yet the two main bodies of technique created around the Riemann hypothesis over finite fields reconverge in the Alpöge--Claude proof of number-field GRH~\cite{Alpoge2026} presented in this monograph. Alongside the cohomological proof of Weil, Grothendieck, and Deligne, the Riemann hypothesis for curves over finite fields also admits the \textbf{elementary auxiliary-function method introduced by Stepanov (1969)~\cite{Stepanov1969} and systematically developed by Bombieri (1974)~\cite{Bombieri1974}}. Following the October 2026 proof uniformly excluding Landau--Siegel zeros, Terence Tao remarked in his blog commentary on the close connection between that proof and Stepanov's polynomial method for the Weil conjectures, explicitly pointing to the possibility of developing ``some sort of adelic version of Stepanov's method''~\cite{Tao2026SiegelComment} (see also~\cite{SIYZ2026}). The following month, Alpöge and Claude carried this program all the way to full GRH.
+
+Recall Stepanov's principle on a curve $C/\FF_q$ (see also the \hyperref[par:stepanov-method]{preface}): if a nonzero rational function $F$ vanishes to order at least $e$ at every point of a set $U\subseteq C(\FF_q)$ and has pole degree at most $d$, then $e|U|\le\deg((F)_0)=\deg((F)_\infty)\le d$, so dividing by the high multiplicity $e$ forces down the upper bound on $|U|$. For primes over number fields there is no ready-made polynomial vanishing order; the key idea of the Alpöge--Claude proof is to \textbf{replace the high multiplicity $e$ by an iterated chain of $m\asymp\sqrt{x}$ theta lifts}. Each step along the chain adds another increment of local $p$-adic divisibility gain, amplifying the total gain by a factor of $m$, while the covolume lower bound for the lattice spanned by the lifted images is controlled by the Rallis inner product formula---a direct descendant of the Siegel--Weil formula (with twist congruence denominators controlled via integral models of unitary Shimura varieties and $\ell$-adic Galois representations descending from Deligne's program). Comparing the norm upper bound with the covolume lower bound cancels the huge common main amount, and dividing by $m\asymp\sqrt{x}$ yields a \textbf{square-root saving} in the prime-power remainder, from which GRH follows.
+
+The four subsections below map these mechanisms directly onto the main chapters of this book.
+
+\subsection{Single-step unitary lifts and finite class sums}
+
+Replacing the rational quadratic spaces above by a pair of Hermitian spaces $(S,T)$ over a CM field $E$, the source and target groups become the unitary groups $\Ugrp(S)$ and $\Ugrp(T)$ (with rational points $\Gamma_S,\Gamma_T$). The adelic theta lift in \secref{sec:theta-lifts} (equation~\eqref{eq:adelic-theta-integral}) has the exact same integral shape as Weil's formula above:\leanfn{Lean source: \leansourcelink{src/Lib/Weil/DualPair/ThetaLiftConvergence.lean}{291}, \leansourcelink{src/Lib/Weil/CompactLift/ThetaKernelDefs.lean}{186}, and \leansourcelink{src/Lib/Adelic/Hecke/ClassSums.lean}{169}.}
+\[
+(\operatorname{lift}_K(\varphi,y))(h)
+=\int_{\Gamma_S\backslash \Ugrp(S)(\AAA)}
+  \theta\bigl(\omega(g,h)\varphi\bigr)\,y(g)\,dg.
+\]
+In the algebraic version on definite unitary groups (equation~\eqref{eq:finite-theta-sum}), the parallel with Siegel is even more visible: when the integrand is right-invariant under a compact open level subgroup $K\le G_f$, choosing double-coset representatives $g_i$ for $\Gamma\backslash G_f/K$ (normalized by $\vol(K)=1$) reduces the adelic integral to a finite weighted class sum:
+\[
+\sum_i \frac{\operatorname{jetMap}\bigl(\omega(g_i,h)\Phi\bigr)\bigl(\varphi(g_i)\bigr)}{|\Gamma\cap g_i K g_i^{-1}|}.
+\]
+Here $\Phi$ is the test data, $\varphi$ is an algebraic automorphic form on the definite source group, $\operatorname{jetMap}$ encodes higher archimedean derivatives in Taylor coefficients, and the stabilizer denominator $|\Gamma\cap g_i K g_i^{-1}|$ plays the exact same role as the automorphism weight $1/|\mathrm O(M)|$ in Siegel's genus average.
+
+\subsection{The two lift chains and the seesaw identity}
+
+The proof arranges two chains of length $m$ between unitary groups: a \textbf{definite upper chain} $X_0\to X_1\to\cdots\to X_m\xrightarrow{\operatorname{res}}Y_m$, in which every step is a definite algebraic lift whose higher derivatives on CM elliptic curves (\chapref{chap:derivatives}) accumulate $p$-adic divisibility gains at inert primes (tallied by a weighted prime-power sum); and a \textbf{lower chain} $Y_0\to Y_1\to\cdots\to Y_m$ passing from indefinite to definite groups, which lands in the good target space $W$ where covolumes can be computed.
+
+To transfer the divisibility gains from the upper chain to the lower chain, the proof uses a Kudla-style \textbf{seesaw identity}~\cite{Kudla1984} (\chapref{chap:upperbound}, equation~\eqref{eq:a-seesaw}). For $\phi$ in the source space $U$, let $\mathcal P$ be the Poincaré map between the starting spaces, $T_\vartheta$ the composite lower-chain lift with twist character $\vartheta$, and $\operatorname{Comp}_{\vartheta,\Psi_\vartheta}$ the composite upper-chain lift with glued test data $\Psi_\vartheta$ followed by restriction to $Y_m$. The seesaw identity provides a nonzero constant $c_{\mathrm{ss}}\in\CC^\times$, independent of both $\phi$ and $\vartheta$, such that\leanfn{Lean source: \leansourcelink{src/New/UpperBound/Objects/Columns.lean}{987}, \leansourcelink{src/New/UpperBound/Objects/RowChain.lean}{170}, and \leansourcelink{src/New/UpperBound/Seesaw/SeesawIdentity.lean}{624}.}
+\[
+T_\vartheta(\mathcal P\phi)=c_{\mathrm{ss}}\,\operatorname{Comp}_{\vartheta,\Psi_\vartheta}(\phi)
+\qquad (\phi\in U).
+\]
+Through this identity, the local divisibility gains of the upper chain become norm upper bounds on the lower-chain images. Adopting the notation of \chapref{chap:reduction}, write $S$ for the two-scale weighted prime-power total remainder (distinct from the Hermitian space $S$ of the previous subsection), $H$ for the common main amount, $L$ for the error budget, and $\Theta_\vartheta$ for the restriction of the lower chain to the good space $W$. After rational normalization, there exists a spanning family of short integral source forms in $U$ whose images at the trivial twist have squared norm bounded by $\exp(H-mS+L)$ under every complex conjugate $\sigma$.
+
+\subsection[Rallis inner product and Gram determinants]{The Rallis inner product formula and Gram determinants of automorphic forms}
+
+An upper bound alone is vacuous if the lifted images collapse or become too small; one also needs a lower bound on the covolume of the lattice they span.
+
+Here the \textbf{Siegel--Weil formula} enters a second time. For Hermitian spaces $S,T$ in the Weil convergence range $2\rk S<\rk T$, applying the Siegel--Weil formula to the doubled space $S\oplus S^-$ rewrites the integral of a product of two theta kernels on $\Ugrp(T)$ as a sum over $\Gamma_S$ of matrix coefficients of the Weil representation. Integrating against two rapidly decaying source forms $y,y'$ and unfolding $\Gamma_S$ yields the explicit \textbf{Rallis inner product formula}~\cite{Li1992,KudlaRallis1994,GQT2014}:\leanfn{Lean source: \leansourcelink{src/Lib/SiegelWeil/RallisInner/Doubling.lean}{527} (\lean{inner\_product\_formula}) and \leansourcelink{src/Lib/SiegelWeil/RallisInner/SharpData.lean}{367} (\lean{exists\_petersson\_formLift\_eq\_rallisSeries}).}
+\[
+\bigl\langle \Theta_{\varphi'}y',\,\Theta_\varphi y\bigr\rangle_{\Ugrp(T)}
+=\vol\bigl([\Ugrp(T)]\bigr)
+ \int_{\Ugrp(S)(\AAA)}
+   \bigl\langle \varphi',\,\omega(g,1)\varphi\bigr\rangle\,
+   \bigl\langle y',\,R(g)y\bigr\rangle_{\Ugrp(S)}\,dg,
+\]
+where $\Theta_\varphi y=\operatorname{lift}_K(\varphi,y)$, $\langle\cdot,\cdot\rangle_{\Ugrp(T)}$ and $\langle\cdot,\cdot\rangle_{\Ugrp(S)}$ are the Petersson inner products on target and source, $R(g)$ is right translation $(R(g)y)(x)=y(xg)$, and $\langle\varphi',\omega(g,1)\varphi\rangle$ is the matrix coefficient of the Weil representation. For sharp test data, the right-hand side becomes a nonzero scalar multiple of $\langle y',\mathcal R\,y\rangle_{\Ugrp(S)}$, where the Rallis operator $\mathcal R$ encodes special values of automorphic $L$-functions and local pairings.
+
+Transporting the single-step Rallis operators $S_j(\vartheta)$ along the commutative diagram of the lower chain to the good space $W$ factors the composite operator into a product over steps, whose determinant $Z(\vartheta)$ is the squared volume of the lattice spanned by the lifted images (\chapref{chap:determinant}):\leanfn{Lean source: \leansourcelink{src/New/Determinant/Chain/NormOfChain.lean}{303} and \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{214}.}
+\[
+\Theta_\vartheta^*\Theta_\vartheta
+=c(\vartheta)\,c_Q(\vartheta)^m\,S_1(\vartheta)\cdots S_m(\vartheta),
+\qquad
+Z(\vartheta)=\det(\Theta_\vartheta^*\Theta_\vartheta).
+\]
+Recall the second section of this appendix: whereas $G_{\mathbf x}$ was the $d\times d$ Gram matrix of lattice vectors, $\Theta_\vartheta^*\Theta_\vartheta$ is the Gram matrix of \textbf{automorphic forms} with respect to the Petersson inner product. Taking determinants and forming the ratio against the trivial twist $\vartheta=1$ cancels global constants that are hard to estimate directly, factoring the full-chain determinant ratio into single-step ratios, level norms $N_\vartheta$, and Hecke value ratios $Q_{ij}(\vartheta)$ (with $r=\dim_{\CC}W$, equation~\eqref{eq:c-chain-ratio}):
+\[
+\frac{Z(1)}{Z(\vartheta)}
+=\left(N_\vartheta^{e/2}\prod_{1\le i<j\le m}Q_{ij}(\vartheta)\right)^{-r}
+ \prod_{j=1}^{m}\frac{Z_j(1)}{Z_j(\vartheta)}.
+\]
+At each finite place one constructs a regular anticyclotomic twist $\vartheta$---controlling its congruence denominators via integral models of unitary Shimura varieties and their attached $\ell$-adic Galois representations, matching Hecke characteristic polynomials with geometric Frobenius at split places~\cite{Shin2011,ChenevierHarris2013,BLGGT2014} (see \chapref{chap:congruences} and \appref{app:lib-overview})---and combines the local comparisons in the global product formula to obtain a covolume lower bound of order $\exp\bigl(r(H-3L)\bigr)$ at the trivial twist.
+
+\subsection{The main inequality and zeros on the critical line}
+
+Finally, the upper and lower bounds meet. Using the spanning theorem for finite Poincaré translates (\chapref{chap:spanning}), one extracts a linearly independent family $y_1,\ldots,y_n$ ($n\approx r$) of short integral forms. On the one hand, Hadamard's inequality gives the Gram determinant upper bound
+\[
+|\det G_\sigma|\le\prod_{i=1}^{n}\|\Theta_1 y_i\|_\sigma^2\le e^{n(H-mS+L)}.
+\]
+On the other hand, the covolume lower bound supplies a lower estimate of order $e^{r(H-3L)}$ (accounting for the local lattice-index budget). Taking logarithms cancels the massive common main amount $rH$, leaving the monograph's central \textbf{main inequality}~\eqref{eq:ch1-star}:\leanfn{Lean source: \leansourcelink{src/New/Reduction/MainInequality.lean}{82}, \leansourcelink{src/New/Reduction/OneSidedBound.lean}{1}, and \leansourcelink{src/Main.lean}{9}.}
+\[
+mS\le fa(\log b)^5.
+\]
+Here $S$ is the two-scale weighted prime-power total remainder aggregated over infinite places, $m\asymp\sqrt{x}$ is the number of lift steps, $f$ is the number of infinite places of the CM field $E$, and $a,b$ are scale parameters of the admissible data. Dividing both sides by $m$ converts the lift chain directly into a one-sided square-root saving $R_{d,q_0}(y)\le y^{-1/2+\varepsilon}$ for the prime-power remainder. A Landau-type analytic nonvanishing criterion then excludes zeros in the right half $\RePart s>1/2$ of the critical strip, and the functional equation $\Lambda(1-s,\psi^{-1})=M^{s-1/2}\varepsilon(\psi^{-1})\Lambda(s,\psi)$ for primitive Dirichlet characters reflects the zero-free region across the critical line (\secref{sec:public-theorems}), proving the generalized Riemann hypothesis for every Dirichlet character $\chi$:
+\[
+L(s,\chi)=0,\quad 0<\RePart s<1
+\quad\Longrightarrow\quad
+\RePart s=\frac{1}{2}.
+\]
+
+Looking back across nearly two centuries of development: counting sums of squares with $\vartheta(x)=\sum x^{n^2}$ began with Jacobi, and Hardy's dissection in Lectures~IX and~X of \emph{Ramanujan} of both the main term $16/691$ and the error term $\tau(n)$ in Ramanujan's twenty-four-squares identity opened two far-reaching paths. The main term led through higher-degree Gram matrices, Siegel's genus averages, and Weil's adelic theta integrals to the Siegel--Weil formula and iterated theta lift chains; the error term $\tau(n)$ led through Ramanujan's conjecture to the Weil conjectures over finite fields and $\ell$-adic Galois representations of automorphic forms. Together with Stepanov's finite-field method, those two lines now converge in a proof of the generalized Riemann hypothesis for Dirichlet $L$-functions.
+
+\section{Worked calculations}
+\label{sec:appC-calculations}
+
+\subsection{Local densities for eight squares at \texorpdfstring{$n=2$}{n = 2}}
+
+Let $N_{p^k}$ be the number of ordered $8$-tuples satisfying $\sum_{j=1}^{8}x_j^2\equiv 2\pmod{p^k}$, with local density $\alpha_p(2)=\lim_{k\to\infty}p^{-7k}N_{p^k}$.
+
+\begin{itemize}
+\item \emph{Odd primes $p$.} Put $e_p(t)=e^{2\pi it/p}$ and $S(u)=\sum_{x\bmod p}e_p(ux^2)$. By orthogonality of additive characters,
+\[
+N_p=\frac{1}{p}\sum_{u\bmod p}e_p(-2u)S(u)^8.
+\]
+For $u\not\equiv 0\pmod p$, the invertible change of variables $v=x-y$, $w=x+y$ gives $|S(u)|^2=\sum_{x,y}e_p(u(x^2-y^2))=\sum_{v,w}e_p(uvw)=p$. Grouping by quadratic residues shows $S(u)=\sum_{t\bmod p}\chi_p(t)e_p(ut)$ (where $\chi_p$ is the Legendre symbol), so $\overline{S(u)}=S(-u)=\chi_p(-1)S(u)$; multiplying by $S(u)$ yields $S(u)^2=\chi_p(-1)p$ and hence $S(u)^8=p^4$. Since $p\nmid 2$, $\sum_{u=1}^{p-1}e_p(-2u)=-1$, so
+\[
+N_p=\frac{1}{p}\bigl(p^8-p^4\bigr)=p^7-p^3.
+\]
+Since $2\not\equiv 0\pmod p$, every solution modulo $p$ has a nonzero coordinate and hence a nonzero gradient modulo $p$. By Hensel's lemma, lifting from modulo $p^k$ to modulo $p^{k+1}$ imposes one nontrivial linear congruence, giving exactly $p^7$ lifts per solution. Thus $p^{-7k}N_{p^k}=p^{-7}N_p=1-p^{-4}$ for all $k\ge 1$, i.e.\ $\alpha_p(2)=1-p^{-4}$. Multiplying over all odd primes,
+\[
+\prod_{p>2}(1-p^{-4})=\frac{1}{(1-2^{-4})\zeta(4)}=\frac{1}{\frac{15}{16}\cdot\frac{\pi^4}{90}}=\frac{96}{\pi^4}.
+\]
+
+\item \emph{The prime $p=2$.} Modulo $8$, odd squares equal $1$ and even squares equal $0$ or $4$. For a sum of eight squares to be $2\pmod 8$, the number of odd coordinates must be $2\pmod 4$, hence either $2$ or $6$ (giving $\binom{8}{2}+\binom{8}{6}=56$ parity patterns). Fixing the pattern leaves $4$ residue classes modulo $8$ per coordinate ($4^8$ tuples); as at least $2$ coordinates are even, adding $2$ to one even coordinate shifts its square by $4\pmod 8$ and bijects ``sum $\equiv 2\pmod 8$'' with ``sum $\equiv 6\pmod 8$.'' Thus
+\[
+N_8=\frac{1}{2}\left(\binom{8}{2}+\binom{8}{6}\right)4^8=56\cdot 2^{15}, \qquad \frac{N_8}{8^7}=\frac{56\cdot 2^{15}}{2^{21}}=\frac{7}{8}.
+\]
+For $k\ge 3$, every lift $\mathbf x+2^k\mathbf t$ of a solution $\mathbf x\pmod{2^k}$ satisfies $\sum(x_j+2^k t_j)^2\equiv\sum x_j^2\pmod{2^{k+1}}$, so either all $2^8$ lifts succeed or none do. Adding $2^{k-1}$ to the first odd coordinate keeps $\mathbf x$ a solution modulo $2^k$ (as $2k-2\ge k+1$) while shifting the sum of squares by $2^k\pmod{2^{k+1}}$. Hence exactly half the solutions modulo $2^k$ lift, giving $N_{2^{k+1}}=\tfrac{1}{2}N_{2^k}\cdot 2^8=2^7 N_{2^k}$ and $\alpha_2(2)=7/8$. (This agrees with Hardy \S\,9.9: $A_1(2)=1$, $A_2(2)=0$, $A_4(2)=16\cdot 4^{-4}c_4(2)=-1/8$, and $A_{2^a}(2)=0$ for $a\ge 3$, summing to $7/8$.)
+
+\item \emph{Real place and product.} The $8$-dimensional ball $\sum_{j=1}^{8}x_j^2\le t$ has volume $\pi^4 t^4/24$; differentiating at $t=2$ gives $\alpha_\infty(2)=4\pi^4/3$. Multiplying all places together yields
+\[
+\alpha_\infty(2)\,\alpha_2(2)\prod_{p>2}\alpha_p(2)=\frac{4\pi^4}{3}\cdot\frac{7}{8}\cdot\frac{96}{\pi^4}=112=r_8(2).
+\]
+\end{itemize}
+
+\subsection{Discriminant \texorpdfstring{$-23$}{-23}: reduced classes, genus equivalence, and weights}
+
+\begin{itemize}
+\item \emph{Reduced classes.} A positive definite binary quadratic form $Q(x,y)=ax^2+bxy+cy^2$ is reduced if $|b|\le a\le c$ (with $b\ge 0$ when $|b|=a$ or $a=c$). From $4ac-b^2=23$ we get $3a^2\le 23$, so $a\in\{1,2\}$ and $b$ is odd. When $a=1$, $|b|\le 1$ and the boundary rule give $b=1,c=6$, i.e.\ $Q_A=x^2+xy+6y^2$. When $a=2$, $|b|\le 2$ gives $b=\pm 1,c=3$, i.e.\ $2x^2\pm xy+3y^2$. There are $3$ proper ($\SL_2(\ZZ)$) classes; allowing the reflection $(x,y)\mapsto(x,-y)$ merges the last two into one class represented by $Q_B=2x^2+xy+3y^2$.
+
+\item \emph{Verifying that $Q_A$ and $Q_B$ lie in the same genus.} Over \emph{$\RR$ and $\ZZ_p$ for every odd prime $p$}, direct expansion verifies
+\[
+Q_A\!\left(\frac{u-3v}{2},\frac{u+v}{2}\right)=\frac{(u-3v)^2+(u-3v)(u+v)+6(u+v)^2}{4}=2u^2+uv+3v^2=Q_B(u,v).
+\]
+The transition matrix $\frac{1}{2}\bigl(\begin{smallmatrix}1&-3\\1&1\end{smallmatrix}\bigr)$ has determinant $1$ and denominator $2$, so it is invertible over $\RR$ and over $\ZZ_p$ for all $p>2$. At \emph{$p=2$}, $Q_A(x,1)=x^2+x+6$ has the simple root $x\equiv 0\pmod 2$ and $Q_B(x,1)=2x^2+x+3$ has the simple root $x\equiv 1\pmod 2$ (both have derivative $1\pmod 2$). By Hensel's lemma, each form possesses a primitive isotropic vector $e\in\ZZ_2^2$ ($Q(e)=0$). Both polarized matrices $\bigl(\begin{smallmatrix}2a&b\\b&2c\end{smallmatrix}\bigr)$ have determinant $23\in\ZZ_2^\times$, so the polarized pairing $B(v,w)=Q(v+w)-Q(v)-Q(w)$ is unimodular over $\ZZ_2$; choose $f\in\ZZ_2^2$ with $B(e,f)=1$ and replace $f$ by $f'=f-Q(f)e$. Then $Q(e)=Q(f')=0$ and $B(e,f')=1$, so both forms become the hyperbolic plane $uv$ in the $\ZZ_2$-basis $\{e,f'\}$, proving isometry over $\ZZ_2$ as well.
+
+\item \emph{Automorphism groups and genus weights.} Completing the square gives
+\[
+Q(x,y)=a\left(x+\frac{b}{2a}y\right)^2+\frac{23}{4a}y^2.
+\]
+For $Q_A$ ($a=1$), $y\ne 0$ implies $Q_A\ge 23/4>1$; for $Q_B$ ($a=2$), $y\ne 0$ implies $Q_B\ge 23/8>2$. Hence in both lattices the shortest nonzero vectors are solely $\pm(1,0)$. Every integral isometry must send $(1,0)$ to $\pm(1,0)$, and the real isometries fixing $(1,0)$ are the identity and the reflection across $(1,0)^\perp$,
+\[
+(x,y)\longmapsto\left(x+\frac{b}{a}y,-y\right).
+\]
+For $Q_A$ we have $b/a=1$, so this reflection is integral; for $Q_B$ we have $b/a=1/2$, so it is not. Combining with $-I$ yields $|\mathrm O(Q_A)|=4$ and $|\mathrm O(Q_B)|=2$, giving normalized genus weights $\frac{1/4}{1/4+1/2}=\frac{1}{3}$ and $\frac{1/2}{1/4+1/2}=\frac{2}{3}$.
+\end{itemize}

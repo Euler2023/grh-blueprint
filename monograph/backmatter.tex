@@ -86,4 +86,6 @@
 
 在解耦双尺度余项的步骤中，两版采用了略有区别的解析路线：可读版先选定满足尺度条件的第二尺度 $x_1$，并在该点直接调用固定模数的算术级数素数定理，详见\secref{sec:one-sided-bound}；精简版则借助窗口引理在区间 $[t,t^2]$ 中选取 $\log x_1$，使得所需的两项余项之差从上方受到 $e^{-t}$ 的一致控制.\leanfn{Lean 源码：\leansourcelink{src/New/Reduction/OneSidedBound.lean}{1}；另见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/src/New/Main.lean\#L149}{精简版的单侧界}.}
 
+\input{appendixC}
+
 \printbibliography[heading=monographbib,title={参考文献}]
