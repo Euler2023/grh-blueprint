@@ -31,7 +31,7 @@
 
 \section*{从 Jacobi 的 Theta 函数到 Theta 提升}
 
-经典 Theta 函数源于雅克比（Carl Gustav Jacob Jacobi）对椭圆函数的研究. 他在 1828 年的论文中用 Theta 函数表示椭圆函数，并在次年出版的《椭圆函数理论的新基础》中进一步发展了这一理论~\cite{Jacobi1828,Jacobi1829}. 其中一个常用的特例是把高斯函数在整数上求和所得的级数
+经典 Theta 函数源于 Carl Gustav Jacob Jacobi 对椭圆函数的研究. 他在 1828 年的论文中用 Theta 函数表示椭圆函数，并在次年出版的《椭圆函数理论的新基础》中进一步发展了这一理论~\cite{Jacobi1828,Jacobi1829}. 其中一个常用的特例是把 Gaussian 函数在整数上求和所得的级数
 \[
   \theta(t)=\sum_{n\in\mathbb Z} e^{-\pi n^2t},
   \qquad t>0.
@@ -42,9 +42,18 @@ Poisson 求和公式给出变换律 $\theta(t)=t^{-1/2}\theta(1/t)$. Riemann 在
 
 具体地，先用 Weil 表示把测试函数 $\varphi$ 按源群变量 $g$ 和目标群变量 $h$ 变换，再对所得函数在相应向量空间的有理点上求和，便得到 Theta 核 $\theta_\varphi(g,h)$. 固定 $h$，将核与源群上的自守形式相乘，并在源群的自守商上对 $g$ 积分. 积分后得到目标群上的自守形式，这就是 Theta 提升. Kudla 的 Seesaw 恒等式允许交换提升和限制在配对中的位置~\cite{Kudla1984}. Rallis 内积公式则借助 Siegel--Weil 公式，把提升的 Petersson 配对与自守 $L$ 函数的特殊值及局部配对联系起来~\cite{Li1992,KudlaRallis1994,GQT2014}.
 
-Levent Alpöge 与 Claude（AI）给出的论证取法于 Stepanov 的函数域方法.
+\begin{samepage}
+\leavevmode\phantomsection\label{par:stepanov-method}
+\emph{Stepanov 的函数域方法.} 设 $C/\mathbb F_q$ 是光滑射影曲线，$U\subseteq C(\mathbb F_q)$ 是待计数的点集. 若非零有理函数 $F$ 在 $U$ 中每一点至少消失 $e$ 阶，且其极点除子的次数至多为 $d$，则
+\[
+ e\,|U|\le \deg\bigl((F)_0\bigr)=\deg\bigl((F)_\infty\bigr)\le d.
+\]
+\end{samepage}
+这里 $(F)_0$ 和 $(F)_\infty$ 分别为零点除子和极点除子. 关键是让 $e$ 大而 $d$ 受控，并保证 $F$ 非零. Stepanov 在素域上的超椭圆曲线情形利用 $X^p-X$ 和导数条件构造辅助多项式~\cite{Stepanov1969}. Bombieri 用曲线上的有理函数与 Frobenius 映射阐述了这一点数估计方法~\cite[第~I--II~节]{Bombieri1974}. \hyperref[par:a-stepanov-count]{引理~\ref*{lem:a-edge-defect-count} 的证明开头}给出同一计数原理在剩余类上的一次应用.
+
+Alpöge 与 Claude（AI）将这种比较思路用于数域.
 \begin{itemize}
-\item \emph{用提升步数模拟重数.} 在有限域曲线上，构造一个在有理点处高重消失的非零函数，再用极点次数限制零点总重数，就能从重数中取得点数上界~\cite{Bombieri1974}. 与此相应，Alpöge 在说明稿中指出，反复作 Theta 提升可以在数域上起到类似增加重数的作用. 对长度尺度为 $x$ 的 von Mangoldt 加权和，Claude 提议令提升步数 $m$ 取 $\sqrt{x}$ 的量级~\cite{Alpoge2026}. 要让这一设想产生素数和的估计，需让各步的局部整除增益累积，同时控制每步提升带来的范数增长与清分母代价.
+\item \emph{用提升步数模拟重数.} 据 Alpöge 的说明稿，对长度尺度为 $x$ 的 von Mangoldt 加权和，Claude 提议令 Theta 提升的步数 $m$ 取 $\sqrt{x}$ 的量级~\cite[第~1~页]{Alpoge2026}. 为使整除增益沿链累积，证明逐步比较局部赋值，同时控制提升的范数增长与清分母代价.
 
 \item \emph{用两条提升链传递整除增益.} Alpöge--Claude 证明在 CM 扩张上的酉群间安排两条链，借助分裂特征使用 Weil 表示~\cite{HKS1996}. 正定上链的无穷位核作用由 Taylor 系数给出的射流映射表达，有限阿代尔积分化为加权类和. 这样，复乘椭圆曲线上得到的高阶导数整除性便能用于逐步控制提升核. 各步的局部赋值界沿链相加，其中惰性素数处的增益由加权素数幂和记录. 两种提升的定义及链配置见\secref{sec:theta-lifts}，射流的整除估计见\chapref{chap:derivatives}.
 

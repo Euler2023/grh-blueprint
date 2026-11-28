@@ -438,6 +438,15 @@ Over a coefficient field $\mathbf k$ of characteristic $p$ take Frobenius data w
 \end{lemma}
 
 \begin{proof}
+\phantomsection\label{par:a-stepanov-count}
+\emph{Stepanov's count in the root lemma.} Let $W$ be a local ring with $q$ residue classes, let $\iota:W\to R$ be a homomorphism to a commutative ring, and let $a$ range over a set of representatives for the residue classes. If a nonzero polynomial $\Phi\in R[T]$ is divisible by $(T-\iota(a))^e$ for every $a$, where $e$ is a nonnegative integer, then $qe\le\deg\Phi$. Indeed, distinct representatives differ by units in $W$, so the monic factors are pairwise coprime. Their product divides $\Phi$ and has degree $qe$. This is the local form of the \hyperref[par:stepanov-method]{zero count in the preface}.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L58}{Counting zeros with multiplicity at residue classes}.}
+
+Among the translates under $\mathrm{SL}_2(W)$ acting on the two adjacent rows, the root lemma picks a term $X^\beta$ minimizing the sum of the coefficient's $w$-adic order and the monomial weight. Write $\ell$ for the $w$-adic order of its coefficient. The proof makes a Frobenius substitution in the original polynomial and extracts the coefficient associated with $\beta$ to obtain a univariate auxiliary polynomial $\Phi$ modulo $w^{\ell+1}$. Let $d$ and $e$ be the pole and zero weights of $\beta$, respectively. Expansion at infinity gives $\deg\Phi\le d$ and identifies the coefficient of $T^d$ with the reduction of the selected coefficient, so $\Phi\ne0$. The Taylor expansions at the residue representatives give vanishing to order at least $e$. The two weights satisfy
+\[
+ \operatorname{def}_i(\beta)=\frac{e-d/q}{q-1}.
+\]
+Thus $qe\le\deg\Phi\le d$ implies $\operatorname{def}_i(\beta)\le0$. In the characteristic-$p$ case used here, applying this to the simple roots within the blocks yields a nonzero term of nonpositive defect along all these roots in a translate by a representative of a Levi flag. The lattice-point count below uses this fact.\leanfn{See \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L873}{The auxiliary polynomial and degree comparison}, \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L942}{The root lemma}, and \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L450}{The choice of a Levi flag representative}.}
+
 Write $E=4tP^{2r}$, let $\mathcal L$ be the Levi group, and let $\mathcal I$ be the lower Iwahori, consisting of matrices reducing to lower triangular ones. Counting lattice points in the defect cone gives the upper bounds $D_i\in[1,n+E]$ for the copies, such that
 \[
  \dim_{\mathbf k} C_t

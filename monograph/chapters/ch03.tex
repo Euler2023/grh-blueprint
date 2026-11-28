@@ -438,6 +438,15 @@ $q_1$ 的素因子均在 $K$ 中分裂，而 $\chi_K(d)=0$；由 $\chi_K(p)=-1$ 
 \end{lemma}
 
 \begin{proof}
+\phantomsection\label{par:a-stepanov-count}
+\emph{根引理中的 Stepanov 计数.} 设局部环 $W$ 有 $q$ 个剩余类，$\iota:W\to R$ 是到交换环 $R$ 的环同态，$a$ 遍历这些剩余类的一组代表. 若对某个非负整数 $e$，非零多项式 $\Phi\in R[T]$ 满足 $(T-\iota(a))^e\mid\Phi$ 对所有 $a$ 成立，则 $qe\le\deg\Phi$. 事实上，不同代表的差在 $W$ 中是单位，故这些首一因子两两互素. 它们的乘积整除 $\Phi$，而乘积的次数为 $qe$. 这是\hyperref[par:stepanov-method]{序言中的零点计数}在这一局部情形下的形式.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L58}{剩余类上的重根计数}.}
+
+根引理在相邻两行的所有 $\mathrm{SL}_2(W)$ 平移中选取 $w$-进阶与单项式权重之和最小的项 $X^\beta$，并记其系数的 $w$-进阶为 $\ell$. 对原多项式作 Frobenius 代换，再提取与 $\beta$ 对应的系数，得到模 $w^{\ell+1}$ 的一元辅助多项式 $\Phi$. 记 $d$ 和 $e$ 分别为 $\beta$ 的极点权和零点权. 无穷远处的展开给出 $\deg\Phi\le d$，且 $T^d$ 的系数为所选系数的约化，故 $\Phi\ne0$. 各剩余类代表处的 Taylor 展开给出至少 $e$ 阶的消失. 这两个权重满足
+\[
+ \operatorname{def}_i(\beta)=\frac{e-d/q}{q-1}.
+\]
+由 $qe\le\deg\Phi\le d$ 得 $\operatorname{def}_i(\beta)\le0$. 在本引理的特征 $p$ 情形，对块内的简单根应用这一结论，便可在某个 Levi 旗代表给出的平移中选取一个沿所有块内简单根均为非正亏量的非零项. 下文的格点计数利用了这一事实.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L873}{辅助多项式的构造和次数比较}、\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/RootLemma.lean\#L942}{根引理}及\href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/UpperBound/ElementaryDivisors/DefectCount.lean\#L450}{Levi 旗代表的选取}.}
+
 记 $E=4tP^{2r}$，$\mathcal L$ 为 Levi 群，$\mathcal I$ 为下 Iwahori 群（即约化后为下三角的矩阵群）. 亏量锥格点估计给出各份上界 $D_i\in[1,n+E]$，使得
 \[
  \dim_{\mathbf k} C_t
