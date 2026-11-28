@@ -1,29 +1,38 @@
 % Both editions use these coordinates and paths. Proof references are clickable in the book.
-\begingroup
-\newcommand{\MapText}[2]{\ifdefined\ProofMapEnglish #2\else #1\fi}
-\newcommand{\MapRef}[2]{%
-  \ifdefined\ProofMapInBook
-    \hyperref[#1]{\ref*{#1}}%
-  \else
+\begingroup%
+\newcommand{\MapText}[2]{\ifdefined\ProofMapEnglish #2\else #1\fi}%
+\newcommand{\MapLink}[2]{%
+  \ifdefined\ProofMapInBook%
+    \hyperref[#1]{\textcolor{MapJump}{#2}}%
+  \else%
     #2%
-  \fi
-}
-\newcommand{\MapSection}[2]{\S\MapRef{#1}{#2}}
-\newcommand{\MapLem}{\MapText{引理}{Lem.}}
-\newcommand{\MapThm}{\MapText{定理}{Thm.}}
-\newcommand{\MapId}[1]{\textbf{#1}}
-\newcommand{\MapLemma}[2]{\MapId{\MapLem~\MapRef{#1}{#2}}}
-\newcommand{\MapTheorem}[2]{\MapId{\MapThm~\MapRef{#1}{#2}}}
-\newcommand{\MapFont}[2]{\normalfont\sffamily\linespread{1}\fontsize{#1}{#2}\selectfont}
-
-\definecolor{MapNavy}{HTML}{20354C}
-\definecolor{MapBlue}{HTML}{47678A}
-\definecolor{MapGreen}{HTML}{35695F}
-\definecolor{MapBurgundy}{HTML}{864A58}
-\definecolor{MapOchre}{HTML}{786037}
-\definecolor{MapViolet}{HTML}{5D5078}
-\definecolor{MapSlate}{HTML}{64717C}
-
+  \fi%
+}%
+\newcommand{\MapRef}[2]{%
+  \ifdefined\ProofMapInBook%
+    \MapLink{#1}{\ref*{#1}}%
+  \else%
+    #2%
+  \fi%
+}%
+\newcommand{\MapSection}[2]{\S\MapRef{#1}{#2}}%
+\newcommand{\MapLem}{\MapText{引理}{Lem.}}%
+\newcommand{\MapThm}{\MapText{定理}{Thm.}}%
+\newcommand{\MapId}[1]{\textbf{#1}}%
+\newcommand{\MapLemma}[2]{\MapId{\MapLem~\MapRef{#1}{#2}}}%
+\newcommand{\MapTheorem}[2]{\MapId{\MapThm~\MapRef{#1}{#2}}}%
+\newcommand{\MapFont}[2]{\normalfont\sffamily\linespread{1}\fontsize{#1}{#2}\selectfont}%
+\newcommand{\MapArrow}{\enspace{\MapFont{10}{11}\ensuremath{\to}}\enspace}%
+%
+\definecolor{MapNavy}{HTML}{20354C}%
+\definecolor{MapBlue}{HTML}{47678A}%
+\definecolor{MapGreen}{HTML}{35695F}%
+\definecolor{MapBurgundy}{HTML}{864A58}%
+\definecolor{MapOchre}{HTML}{786037}%
+\definecolor{MapViolet}{HTML}{5D5078}%
+\definecolor{MapSlate}{HTML}{64717C}%
+\definecolor{MapJump}{HTML}{195A9A}%
+%
 \begin{tikzpicture}[
   x=1cm, y=-1cm,
   map node/.style={
@@ -49,7 +58,7 @@
   map crossover/.style={preaction={draw=white, line width=1.85pt, -}},
   map key/.style={anchor=west, inner sep=0pt, font=\MapFont{9.5}{10.8}, text=MapNavy},
 ]
-\path[use as bounding box] (0,0) rectangle (15.30,21.53);
+\path[use as bounding box] (0,0) rectangle (15.30,22.40);
 
 \node[text=MapNavy, font=\MapFont{18}{20}\bfseries, inner sep=0pt,
   minimum width=7.6cm, minimum height=.65cm] (title) at (7.65,.43)
@@ -108,12 +117,12 @@
    \MapText{Laplace 法的\\实位周期下界}{Laplace bound\\for real periods}};
 
 \node[map node,map period,minimum width=2.64cm,minimum height=1.10cm] (stationary) at (7.65,4.37)
-  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
+  {\MapId{\MapLink{use:ch8-stationary-period}{\S8.4}}\\
    \MapText{驻相位置群\\周期下界}{Stationary\\position periods}};
 
 \node[map node,map span,minimum width=2.64cm,minimum height=1.10cm] (bessel) at (7.65,5.80)
-  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
-   \MapText{实位 Bessel 测试}{Bessel tests\\at real places}};
+  {\MapId{\MapLink{use:ch8-bessel}{\S8.4 · Bessel}}\\
+   \MapText{实位测试}{Real-place tests}};
 
 \node[map node,map span,minimum width=2.64cm,minimum height=1.10cm] (moments) at (7.65,7.23)
   {\MapId{\MapRef{lem:b-amplitude-blocks}{4.1}\MapText{、}{, }\MapRef{lem:b-near-isometry}{4.30}\MapText{、}{, }\MapRef{lem:b-second-moment}{4.45}}\\
@@ -128,11 +137,11 @@
    \MapText{导数系数\\有限位下界}{Jet coefficient\\lower bound}};
 
 \node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (hecke) at (10.66,4.37)
-  {\MapId{\MapLem~\MapRef{lem:c-test-pairing-lower}{6.5}–\MapRef{lem:c-hecke-product-height}{6.7}}\\
+  {\MapId{\MapRef{lem:c-test-pairing-lower}{6.5} · \MapRef{lem:c-main-pair-height}{6.6} · \MapRef{lem:c-hecke-product-height}{6.7}}\\
    \MapText{测试配对与\\逆 Hecke 值比}{Inverse Hecke\\ratios via tests}};
 
 \node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (restriction) at (10.66,5.80)
-  {\MapId{\MapSection{sec:ch8-stationary-position}{8.4}}\\
+  {\MapId{\MapLink{use:ch8-restriction}{\S8.4}}\\
    \MapText{秩差一限制\\形式张成}{Rank gap of one\\restriction spans}};
 
 \node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (aux) at (10.66,7.23)
@@ -144,8 +153,9 @@
    \MapText{整链行列式\\比的分解}{Chain Gram ratio\\as a product}};
 
 \node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (regular) at (13.67,2.94)
-  {\MapId{\MapRef{lem:c-selmer-simultaneous-twist}{7.20}\MapText{、}{, }\MapRef{lem:c-clearing-determinant}{7.43}–\MapRef{lem:c-regular-family}{7.45}}\\
-   \MapText{正则扭转\\与投影分母}{Regular twists\\\& denominators}};
+  {\MapId{\MapRef{def:regular-twist-family}{7.1} · \MapRef{lem:c-selmer-simultaneous-twist}{7.20}}\\[3pt]
+   \MapId{\MapRef{lem:c-clearing-determinant}{7.43}/\MapRef{lem:c-local-twist}{7.44}/\MapRef{lem:c-regular-family}{7.45}}\\
+   \MapText{正则扭转与分母}{Regular twists}};
 
 \node[map node,map volume,minimum width=2.64cm,minimum height=1.10cm] (comp) at (13.67,4.37)
   {\MapId{\MapLem~\MapRef{lem:c-comparison-operator}{6.46}–\MapRef{lem:c-compression-identity}{6.47}}\\
@@ -299,5 +309,15 @@
   -- (10.14,19.00) -- (grh_line.west);
 \draw[map direct] (lsym.south) -- (grh_line.north);
 \draw[map implication] (grh_line.south) -- (grh_primitive.north);
+
+% Shortcuts between the exact book targets of the selected cross-chapter dependencies.
+\draw[MapSlate!40, line width=.45pt] (.32,21.44) -- (14.99,21.44);
+\node[map key] at (.32,21.66) {\MapId{\MapText{跨章跳转}{Cross-chapter links}}\quad
+  \MapRef{lem:c-derivative-sharpness}{2.16}\MapArrow\MapRef{lem:c-test-pairing-lower}{6.5}\quad
+  \MapRef{def:regular-twist-family}{7.1}\MapArrow\MapRef{lem:c-main-pair-height}{6.6}, \MapRef{lem:c-single-volume-height}{6.48}\quad
+  \MapRef{lem:c-single-volume-height}{6.48}, \MapRef{lem:c-regular-family}{7.45}\MapArrow\MapRef{lem:c-good-twists-volume}{5.3}};
+\node[map key] at (.32,22.21) {\MapId{\MapText{实位周期}{Real-place periods}}\quad
+  \MapLink{use:ch8-bessel}{\S8.4 · Bessel}\MapArrow\MapRef{lem:b-amplitude-blocks}{4.1}\quad
+  \MapLink{use:ch8-restriction}{\MapText{\S8.4 · 秩差一}{\S8.4 · Rank gap one}}\MapArrow\MapRef{lem:c-auxiliary-forms}{5.1}};
 \end{tikzpicture}%
-\endgroup
+\endgroup%

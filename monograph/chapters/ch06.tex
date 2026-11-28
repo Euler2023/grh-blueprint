@@ -2,7 +2,7 @@
 \label{chap:onelift}
 
 \begin{chapterguide}
-本章估计单步好形式提升的 Gram 行列式之比. 所需的平凡扭转范数取自主临界对的测试形式，分母界来自\chapref{chap:congruences}中的正则扭转族. 比较算子的构造则依托于与扭转无关的周期提升（相关的 Seesaw 配对与非消失理论可参见 Kudla~\cite{Kudla1984}、Li~\cite{Li1992} 与 Gan--Qiu--Takeda~\cite{GQT2014}）及其与伪提升空间的正交性.
+本章估计单步好形式提升的 Gram 行列式之比. 所需的平凡扭转范数取自主临界对的测试形式，分母界由定义~\ref{def:regular-twist-family} 的正则性条件给出，满足条件的族由引理~\ref{lem:c-regular-family} 构造。引理~\ref{lem:c-good-twists-volume} 将本章的单步高度界应用到同一扭转族的各步. 比较算子的构造则依托于与扭转无关的周期提升（相关的 Seesaw 配对与非消失理论可参见 Kudla~\cite{Kudla1984}、Li~\cite{Li1992} 与 Gan--Qiu--Takeda~\cite{GQT2014}）及其与伪提升空间的正交性.
 \end{chapterguide}
 
 \section{主临界对与测试形式}
@@ -183,7 +183,7 @@
  \langle\pi_\iota\Xi,\pi_\iota\Xi'\rangle\,
  \rho_\iota^{-2}\,\frac{\rho_\iota^2}{M_\iota}.
 \]
-最前的层范数因子为 $p$-进单位，其余四项因子的高度依次估计如下：引理~\ref{lem:c-untwisted-main-pair} 给出第一项预算 $B_0-J_0$；正则族关于直线投影的分母条件给出第二项预算 $B_0$；分歧对的逆比界给出第三项预算 $2x_1$；对第四项取共同乘子 $c_0\bar c_0$，其无穷位预算为 $2B_0$，有限位损失则受 $2\mu_p\log p$ 控制. 由导数整除性的计数，对任一有限素数集 $T$ 均有 $2\sum_{p\in T}\mu_p\log p\le S_0$，故第四项总预算为 $2B_0+S_0$. 将四项相加并利用 $x_1\le B_0$ 与 $\mathcal D=J_0-S_0$，即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L879}{两处测试形式和四个高度预算}.}
+最前的层范数因子为 $p$-进单位，其余四项因子的高度依次估计如下：引理~\ref{lem:c-untwisted-main-pair} 给出第一项预算 $B_0-J_0$；定义~\ref{def:regular-twist-family} 中引用的直线投影界（引理~\ref{lem:c-local-twist}）给出第二项预算 $B_0$；分歧对的逆比界给出第三项预算 $2x_1$；对第四项取共同乘子 $c_0\bar c_0$，其无穷位预算为 $2B_0$，有限位损失则受 $2\mu_p\log p$ 控制. 由导数整除性的计数，对任一有限素数集 $T$ 均有 $2\sum_{p\in T}\mu_p\log p\le S_0$，故第四项总预算为 $2B_0+S_0$. 将四项相加并利用 $x_1\le B_0$ 与 $\mathcal D=J_0-S_0$，即得\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/OneLift/HeckeValues/TwistedValueHeights.lean\#L879}{两处测试形式和四个高度预算}.}
 \[
  (B_0-J_0)+B_0+2x_1+(2B_0+S_0)
  \le6B_0-\mathcal D .
@@ -1474,10 +1474,10 @@
 其中 $Z_j(\vartheta_\iota)$ 表示第 $j$ 步采用 $\vartheta_\iota^j$ 时的 Gram 行列式.
 \end{lemma}
 \begin{proof}
-取引理~\ref{lem:c-comparison-operator} 中的比较算子，并沿用引理~\ref{lem:c-compression-identity} 的记号 $\Delta(\vartheta)$（此时参数为单步扭转）. 各步好形式空间的维数均为 $r$，记 $A=fmb\ell^2$. 固定 $j$. 由正则性可取一族对数预算 $(\beta_p)_p$，使在任一有限素数集上均有 $\sum_p\beta_p\le B_0$，且在 $\iota$ 处针对单步扭转 $\vartheta=\vartheta_\iota^j$ 的投影清分母条件以 $\beta_p$ 成立.
+取引理~\ref{lem:c-comparison-operator} 中的比较算子，并沿用引理~\ref{lem:c-compression-identity} 的记号 $\Delta(\vartheta)$（此时参数为单步扭转）. 各步好形式空间的维数均为 $r$，记 $A=fmb\ell^2$. 固定 $j$. 由定义~\ref{def:regular-twist-family} 可取一族对数预算 $(\beta_p)_p$，使在任一有限素数集上均有 $\sum_p\beta_p\le B_0$，且在 $\iota$ 处针对单步扭转 $\vartheta=\vartheta_\iota^j$ 的投影清分母条件以 $\beta_p$ 成立.
 
 \emph{压缩算子在有限位的行列式.}
-固定 $p$ 与 $\iota$. 投影清分母条件给出提升像上的算子 $\Lambda$，满足 $|\iota(\det\Lambda)|_p\ge e^{-rr_0\beta_p}$（此行列式控制来自\chapref{chap:congruences}的式~\eqref{eq:c-clearing-determinant}）. 对在 $\iota$ 处整的提升，$U_\vartheta$ 既保持整性又使其与伪提升正交，从而 $\Lambda D_\vartheta$ 将整提升映至整提升. 设 $\alpha$ 为 $\Lambda D_\vartheta$ 的任一特征值，$z$ 为对应的非零特征向量. 按 $p$-进 Weyl 规范将 $z$ 缩放为恰好整的向量：具体而言，选取在 $p$ 上方皆整的有限组类代表，使各代表处 Weyl 坐标的最大绝对值归一化为 $1$. 因这些坐标刻画了整性，故 $\alpha z$ 在同一归一化坐标下整直接推出 $|\iota(\alpha)|_p\le1$. 将各特征值按重数相乘，得 $|\iota(\det(\Lambda D_\vartheta))|_p\le1$；再除以 $\det\Lambda$，便得
+固定 $p$ 与 $\iota$. 投影清分母条件给出提升像上的算子 $\Lambda$，满足 $|\iota(\det\Lambda)|_p\ge e^{-rr_0\beta_p}$（见引理~\ref{lem:c-local-twist} 的第一项投影分母界及引理~\ref{lem:c-clearing-determinant} 的行列式估计）. 对在 $\iota$ 处整的提升，$U_\vartheta$ 既保持整性又使其与伪提升正交，从而 $\Lambda D_\vartheta$ 将整提升映至整提升. 设 $\alpha$ 为 $\Lambda D_\vartheta$ 的任一特征值，$z$ 为对应的非零特征向量. 按 $p$-进 Weyl 规范将 $z$ 缩放为恰好整的向量：具体而言，选取在 $p$ 上方皆整的有限组类代表，使各代表处 Weyl 坐标的最大绝对值归一化为 $1$. 因这些坐标刻画了整性，故 $\alpha z$ 在同一归一化坐标下整直接推出 $|\iota(\alpha)|_p\le1$. 将各特征值按重数相乘，得 $|\iota(\det(\Lambda D_\vartheta))|_p\le1$；再除以 $\det\Lambda$，便得
 \[
  |\iota(\Delta(\vartheta_\iota^j))|_p\le e^{rr_0\beta_p}.
 \]

@@ -533,4 +533,4 @@ p\text{ 在 }K\text{ 中的类型}&\text{分裂}&\text{惰性}&\text{分歧 }(p=
 这也顺带保证了所得 Taylor 系数非零.\leanfn{源码参见 \href{https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh/src/New/Derivatives/Sharpness/BoundAttained.lean\#L406}{曲线赋值与阶乘补偿}.}
 \end{proof}
 
-须注意，式~\eqref{eq:ch2-sharpness} 中的共同缩放因子 $u$ 一经给定次数向量 $\boldsymbol d$ 便完全确定，而在不同有限位处则允许分别选取剩余类 $a$ 与多重指标 $\gamma$. \chapref{chap:onelift}在建立单步提升的高度比较时，将同时运用 $u$ 的全局复共轭模界与各有限素位 $p$ 处的系数下界.
+须注意，式~\eqref{eq:ch2-sharpness} 中的共同缩放因子 $u$ 一经给定次数向量 $\boldsymbol d$ 便完全确定，而在不同有限位处则允许分别选取剩余类 $a$ 与多重指标 $\gamma$. 引理~\ref{lem:c-test-pairing-lower} 在构造单步高度比较所需的测试配对时，同时使用 $u$ 的全局复共轭模界与各有限素位 $p$ 处的系数下界.

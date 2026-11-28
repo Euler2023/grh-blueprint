@@ -2,7 +2,7 @@
 \label{chap:determinant}
 
 \begin{chapterguide}
-对近乎张成好目标空间的线性无关向量族，本章先借助辅助形式将其补全为一组基，再于有限位与无穷位同时估量同一个未扭转 Gram 行列式的大小，并由全局乘积公式导出余体积下界（定理 C）. 其中单步行列式比的高度界来自\chapref{chap:onelift}，所需的正则反分圆扭转族由\chapref{chap:congruences}构造.
+对近乎张成好目标空间的线性无关向量族，本章先借助辅助形式将其补全为一组基，再于有限位与无穷位同时估量同一个未扭转 Gram 行列式的大小，并由全局乘积公式导出余体积下界（定理 C）. 引理~\ref{lem:c-good-twists-volume} 合用引理~\ref{lem:c-single-volume-height} 的单步高度界与引理~\ref{lem:c-regular-family} 构造的正则反分圆扭转族.
 \end{chapterguide}
 
 \section{行列式比与高度预算}
@@ -31,7 +31,7 @@
 \section{辅助形式、补基与链分解}
 \label{sec:c-chain}
 
-辅助形式的张成性依托于秩一限制周期的非零性，其实际调用的实位估计见\chapref{chap:discrete-series}的式~\eqref{eq:ch8-laplace-lower}.
+引理~\ref{lem:c-auxiliary-forms} 所用限制映射的满射性以\hyperref[use:ch8-restriction]{秩差一限制形式的张成性}为输入。这是定理~\ref{thm:ch8-laplace} 的实位周期下界在补基论证中的应用.
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{53}.}
 \begin{lemma}[具有整提升的辅助形式]
@@ -150,7 +150,7 @@
 \end{equation}
 \end{lemma}
 \begin{proof}
-由引理~\ref{lem:c-regular-family} 选取正则扭转族，它自动满足所需的互素条件与分歧对高度界. 对该族在每一步 $j$ 分别应用式~\eqref{eq:c-single-volume}，并代入 $k\ell B_0=k\ell B/(mk)=L/m$，即得式~\eqref{eq:c-uniform-volume}.
+由引理~\ref{lem:c-regular-family} 选取正则扭转族，它自动满足所需的互素条件与分歧对高度界. 对该族在每一步 $j$ 分别应用引理~\ref{lem:c-single-volume-height} 的高度界~\eqref{eq:c-single-volume}，并代入 $k\ell B_0=k\ell B/(mk)=L/m$，即得式~\eqref{eq:c-uniform-volume}.
 \end{proof}
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Determinant/Twist/LongForms.lean}{208}.}

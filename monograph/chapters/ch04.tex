@@ -8,7 +8,7 @@
 \section{Petersson 展开与坏类型}
 \label{sec:b-amplitude}
 
-本章的二阶矩由各平移振幅矩阵的 Hilbert--Schmidt 范数给出. 展开所用的 Bessel 测试函数在无穷位需要归一化的周期下界，其用法见\chapref{chap:discrete-series}，具体周期估计见式~\eqref{eq:ch8-laplace-lower}.
+本章的二阶矩由各平移振幅矩阵的 Hilbert--Schmidt 范数给出. 引理~\ref{lem:b-amplitude-blocks} 的展开使用实位 Bessel 测试函数。构造归一化测试所需的周期下界来自定理~\ref{thm:ch8-laplace} 的\hyperref[use:ch8-bessel]{Bessel 特例}.
 
 \thmsource{Lean 源码：\leansourcelink{src/New/Spanning/SecondMoment/SpanningTheorem.lean}{158}.}
 \begin{lemma}[缩放 Poincaré 映射的 Petersson 展开]

@@ -2,7 +2,7 @@
 \label{chap:determinant}
 
 \begin{chapterguide}
-Given a linearly independent family that nearly spans the good target space, we use auxiliary forms to extend it to a basis. We bound the same untwisted Gram determinant at the finite and infinite places, and use the global product formula to obtain the covolume lower bound of \statementlink{thm:long-forms}{Theorem~C}. The bounds for the heights of the single-step determinant ratios come from \chapref{chap:onelift}, and \chapref{chap:congruences} constructs the required family of regular anticyclotomic twists.
+Given a linearly independent family that nearly spans the good target space, we use auxiliary forms to extend it to a basis. We bound the same untwisted Gram determinant at the finite and infinite places, and use the global product formula to obtain the covolume lower bound of \statementlink{thm:long-forms}{Theorem~C}. \statementref{Lemma}{lem:c-good-twists-volume} combines the single-step height bound of \statementref{Lemma}{lem:c-single-volume-height} with the regular anticyclotomic twists constructed in \statementref{Lemma}{lem:c-regular-family}.
 \end{chapterguide}
 
 \section{Determinant ratios and height budgets}
@@ -31,7 +31,7 @@ Write $B_0=B/(mk)$ for the single-step logarithmic denominator budget. In~\eqref
 \section{Auxiliary forms, basis completion, and chain factorization}
 \label{sec:c-chain}
 
-Spanning by the auxiliary forms uses nonvanishing of the restriction period for unitary groups whose ranks differ by one. The real-place estimate used here is~\eqref{eq:ch8-laplace-lower} in \chapref{chap:discrete-series}.
+Surjectivity of the restriction map in \statementref{Lemma}{lem:c-auxiliary-forms} uses the \hyperref[use:ch8-restriction]{spanning criterion for restrictions with rank difference one}. The criterion uses the real-place period bound in \statementref{Theorem}{thm:ch8-laplace}.
 
 \thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{53}.}
 \begin{lemma}[Auxiliary forms with integral lifts]
@@ -150,7 +150,7 @@ There is a family of $m$-fold twists $(\vartheta_\iota)_\iota$ such that each tw
 \end{equation}
 \end{lemma}
 \begin{proof}
-Choose the regular twist family of \statementref{Lemma}{lem:c-regular-family}. It meets the coprimality conditions and height bounds for the ramification pairs. Apply~\eqref{eq:c-single-volume} at every step $j$ and substitute $k\ell B_0=k\ell B/(mk)=L/m$ to obtain~\eqref{eq:c-uniform-volume}.
+Choose the regular twist family of \statementref{Lemma}{lem:c-regular-family}. It meets the coprimality conditions and height bounds for the ramification pairs. Apply the bound~\eqref{eq:c-single-volume} from \statementref{Lemma}{lem:c-single-volume-height} at every step $j$ and substitute $k\ell B_0=k\ell B/(mk)=L/m$ to obtain~\eqref{eq:c-uniform-volume}.
 \end{proof}
 
 \thmsource{Lean source: \leansourcelink{src/New/Determinant/Twist/LongForms.lean}{208}.}
